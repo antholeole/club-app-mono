@@ -1,0 +1,7 @@
+version: 2
+endpoint: https://club-app-db.herokuapp.com/
+admin_secret: '*hV@?*xh0)aL,@1+Tza>Kj[zC(5akn'
+metadata_directory: metadata
+actions:
+  kind: synchronous
+  handler_webhook_baseurl: http://localhost:3000

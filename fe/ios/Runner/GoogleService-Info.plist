@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>962929179530-dhdrlhef0davumm1aegfhnjhrkkcdd4s.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.962929179530-dhdrlhef0davumm1aegfhnjhrkkcdd4s</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>962929179530-utmni9p2cmd2uuhvrthf7dp4kdnku1vc.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDYXB1uYQzMLr-qZiXdA68MpTVsooSjpwo</string>
+	<key>GCM_SENDER_ID</key>
+	<string>962929179530</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.anthOleinik.clubApp</string>
+	<key>PROJECT_ID</key>
+	<string>club-app-307720</string>
+	<key>STORAGE_BUCKET</key>
+	<string>club-app-307720.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:962929179530:ios:7cdd4df14e10dae377a673</string>
+</dict>
+</plist>

@@ -1,0 +1,4 @@
+terraform.tfvars
+node_modules/
+variables.tf
+.terraform/
