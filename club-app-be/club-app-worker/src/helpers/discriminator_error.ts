@@ -1,7 +1,7 @@
-import { GlobalError } from './global_error'
+import { StatusError } from 'itty-router-extras'
 
-export class DiscriminatorError extends GlobalError {
+export class DiscriminatorError extends StatusError {
     constructor() {
-        super('Malformed input', 400)
+        super(400, 'Malformed input')
     }
 }

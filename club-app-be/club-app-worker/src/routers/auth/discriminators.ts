@@ -1,5 +1,4 @@
 import { DiscriminatorError } from '../../helpers/discriminator_error'
-import { GlobalError } from '../../helpers/global_error'
 
 const validProviders = <const>[
     'Google'

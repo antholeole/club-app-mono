@@ -1,9 +1,8 @@
-import 'package:fe/constants.dart';
 import 'package:fe/data_classes/backend_access_tokens.dart';
 import 'package:fe/data_classes/local_user.dart';
 import 'package:fe/data_classes/provider_access_token.dart';
-import 'package:fe/helpers/DEBUG_print.dart';
-import 'package:fe/conn_clients/http_client.dart';
+import 'package:fe/stdlib/clients/http_client.dart';
+import 'package:fe/stdlib/helpers/tuple.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../service_locator.dart';
@@ -17,15 +16,15 @@ class LoginService {
 
   Future<void> logout() async {}
 
-  //Returns idToken
-  Future<String> login(LoginType loginType, LocalUser user) async {
+  //Returns localUser, idToken
+  Future<Tuple<LocalUser, String>> login(LoginType loginType) async {
     switch (loginType) {
       case LoginType.Google:
-        return _googleLogin(user);
+        return _googleLogin();
     }
   }
 
-  Future<String> _googleLogin(LocalUser user) async {
+  Future<Tuple<LocalUser, String>> _googleLogin() async {
     final _googleSignIn = GoogleSignIn(
       scopes: [],
     );
@@ -36,15 +35,12 @@ class LoginService {
       throw UserDeniedException();
     }
 
-    user.providerLogin(
-      LoginType.Google,
-      acc.displayName ?? DEFAULT_USERNAME,
-      acc.email,
-    );
+    final localUser = LocalUser.fromProviderLogin(LoginType.Google, acc.email,
+        name: acc.displayName);
 
     final auth = await acc.authentication;
 
-    return auth.idToken!;
+    return Tuple(item1: localUser, item2: auth.idToken!);
   }
 
   Future<BackendAccessTokens> getGqlAuth(ProviderIdToken providerAccess) async {

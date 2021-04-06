@@ -4,11 +4,13 @@ account_id = "e0d74c227439ece29e62209d109ae43e"
 route = "getclub.app/*"
 zone_id = "835cc77a0715a00ad22e11584f6065a7"
 webpack_config = "webpack.config.js"
+vars = { ENVIRONMENT = "dev" }
 
 kv_namespaces = [
-    { binding = "PUBLIC_KEYS", id = "8275e93c0b994521b30d957f72d0029f", preview_id = "c6d84f0ea05c4001aecf7090933974f0" }
+    { binding = "PUBLIC_KEYS", id = "8275e93c0b994521b30d957f72d0029f", preview_id = "c6d84f0ea05c4001aecf7090933974f0" },
+    { binding = "REFRESH_TOKENS", id = "d9eaecb741ca4d9c946890d01e5d5bcf", preview_id = "c3f515508613435aa77ae0c9aa2a408b" }
 ]
 
 [site]
 bucket = "./static"
-entry-point = "./site"
+entry-point = "./site" #will never be deployed. Just essentially using the "bucket" binding and this is required

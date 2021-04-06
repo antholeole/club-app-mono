@@ -1,5 +1,5 @@
 import 'package:fe/config.dart';
-import 'package:fe/conn_clients/http_client.dart';
+import 'package:fe/stdlib/clients/http_client.dart';
 import 'package:fe/pages/login/login_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';

@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import { GlobalError } from './global_error'
+import { StatusError } from 'itty-router-extras'
 
 const ISSUER = 'Club App'
 
@@ -11,7 +11,7 @@ export const decodeJwt = (token: string): Map<string, unknown> => {
 
         return new Map(Object.entries(payload))
     } catch (e) {
-        throw new GlobalError('Unauthorized JWT', 401)
+        throw new StatusError(401, 'Unauthorized JWT')
     }
 }
 

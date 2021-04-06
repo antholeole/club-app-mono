@@ -2,13 +2,17 @@ import 'dart:collection';
 
 import 'package:fe/data_classes/local_user.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:fe/helper_widgets/router.gr.dart';
+import 'package:fe/pages/main/cubit/hive_cubit.dart';
 import 'package:fe/pages/main/cubit/scaffold_update_cubit.dart';
-import 'package:fe/theme/bottom_nav/bottom_nav.dart';
+import 'package:fe/stdlib/helpers/uuid_type.dart';
+import 'package:fe/stdlib/router/router.gr.dart';
+import 'package:fe/stdlib/theme/bottom_nav/bottom_nav.dart';
+import 'package:fe/stdlib/theme/logo.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter/material.dart';
-import 'package:fe/conn_clients/gql_client.dart';
+import 'package:fe/stdlib/clients/gql_client.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 
 import 'bottom_sheet/channels_bottom_sheet.dart';
@@ -17,12 +21,6 @@ import 'drawers/club_drawer.dart';
 class MainWrapper extends StatefulWidget {
   late final LocalUser _user;
   late final Client _gqlClient;
-
-  //LinkedHashMap to preserve order
-  final LinkedHashMap<PageRouteInfo, IconData> _routes = LinkedHashMap.from({
-    ChatPageRoute(): Icons.chat_bubble_outline,
-    EventsPageRoute(): Icons.event,
-  });
 
   MainWrapper({required LocalUser user}) {
     _user = user;
@@ -36,57 +34,81 @@ class MainWrapper extends StatefulWidget {
 class _MainWrapperState extends State<MainWrapper> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final ScaffoldUpdateCubit _scaffoldUpdateCubit = ScaffoldUpdateCubit();
+  late final HiveCubit _hiveCubit = HiveCubit();
+  UuidType? selectedChat;
 
   @override
   void initState() {
     WidgetsBinding.instance!.addPostFrameCallback((_) => _scaffoldKeySetup());
+    Hive.openBox('main').then(_hiveCubit.addBox);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => _scaffoldUpdateCubit,
-      child: Scaffold(
-        key: _scaffoldKey,
-        endDrawer: _scaffoldUpdateCubit.state.endDrawer,
-        appBar: AppBar(
-          backwardsCompatibility: false,
-          backgroundColor: Color(0xffFBFBFB),
-          foregroundColor: Colors.grey[900],
-          automaticallyImplyLeading: false,
-          title: Column(
-            children: _buildTitle(context),
-          ),
-          leading: IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: _scaffoldKey.currentState?.openDrawer,
-          ),
-          actions: _scaffoldUpdateCubit.state.endDrawer != null
-              ? [
-                  IconButton(
-                    icon: Icon(Icons.more_vert),
-                    onPressed: _scaffoldKey.currentState?.openEndDrawer,
-                  )
-                ]
-              : [],
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => _scaffoldUpdateCubit,
         ),
-        drawer: ClubDrawer(),
-        backgroundColor: Colors.white,
-        body: MultiProvider(
-            providers: [
-              Provider<LocalUser>(create: (_) => widget._user),
-              Provider<Client>(
-                create: (_) => widget._gqlClient,
-              )
-            ],
-            child: AutoTabsRouter(
-              routes: widget._routes.keys.toList(),
-            )),
-        bottomNavigationBar: BottomNav(
-          onClickTab: _changeTab,
-          icons: widget._routes.values.toList(),
+        BlocProvider(
+          create: (_) => _hiveCubit,
         ),
+      ],
+      child: BlocBuilder<HiveCubit, HiveState>(
+        builder: (context, state) {
+          if (state is HiveInitial) {
+            return Container(
+                height: double.infinity,
+                width: double.infinity,
+                color: Colors.white,
+                child: Center(child: Logo()));
+          } else {
+            return Scaffold(
+              key: _scaffoldKey,
+              endDrawer: _scaffoldUpdateCubit.state.endDrawer,
+              appBar: AppBar(
+                backwardsCompatibility: false,
+                backgroundColor: Color(0xffFBFBFB),
+                foregroundColor: Colors.grey[900],
+                automaticallyImplyLeading: false,
+                title: Column(
+                  children: _buildTitle(context),
+                ),
+                leading: IconButton(
+                  icon: Icon(Icons.menu),
+                  onPressed: _scaffoldKey.currentState?.openDrawer,
+                ),
+                actions: _scaffoldUpdateCubit.state.endDrawer != null
+                    ? [
+                        IconButton(
+                          icon: Icon(Icons.more_vert),
+                          onPressed: _scaffoldKey.currentState?.openEndDrawer,
+                        )
+                      ]
+                    : [],
+              ),
+              drawer: ClubDrawer(),
+              backgroundColor: Colors.white,
+              body: MultiProvider(
+                  providers: [
+                    Provider<LocalUser>(create: (_) => widget._user),
+                    Provider<Client>(
+                      create: (_) => widget._gqlClient,
+                    )
+                  ],
+                  child: AutoTabsRouter(
+                    routes: [
+                      EventsRoute(), //ChatRoute(chat: selectedChat!)
+                      EventsRoute(),
+                    ],
+                  )),
+              bottomNavigationBar: BottomNav(
+                  onClickTab: _changeTab,
+                  icons: [Icons.chat_bubble_outline, Icons.event]),
+            );
+          }
+        },
       ),
     );
   }
@@ -108,13 +130,12 @@ class _MainWrapperState extends State<MainWrapper> {
   }
 
   void _changeTab(int tab) {
-    if (widget._routes.entries.elementAt(tab).key.routeName ==
-        ChatPageRoute.name) {
+    if (tab == 0) {
       showModalBottomSheet(
           context: context, builder: (context) => ChannelsBottomSheet());
     } else {
       AutoRouter.of(context)
-          .innerRouterOf<TabsRouter>(MainWrapperRoute.name)!
+          .innerRouterOf<TabsRouter>(Main.name)!
           .setActiveIndex(tab);
     }
 

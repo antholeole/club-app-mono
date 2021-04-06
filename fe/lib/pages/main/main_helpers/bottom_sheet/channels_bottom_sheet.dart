@@ -1,4 +1,4 @@
-import 'package:fe/theme/search_bar.dart';
+import 'package:fe/stdlib/theme/search_bar.dart';
 import 'package:flutter/material.dart';
 
 class ChannelsBottomSheet extends StatefulWidget {

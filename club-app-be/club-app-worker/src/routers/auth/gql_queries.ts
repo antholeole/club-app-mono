@@ -1,4 +1,4 @@
-import { refresh_tokens_constraint, refresh_tokens_update_column } from '../../generated/zeus'
+import { refresh_tokens_constraint, refresh_tokens_update_column } from '../../../generated/zeus'
 import { thunder } from '../../helpers/gql_connector'
 
 export interface IUser {
@@ -58,44 +58,3 @@ export const addUser = async (sub: string, name?: string, email?: string): Promi
 
     return res.insert_users_one
 }
-
-export const upsertRefreshToken = async (user_id: string, refresh_token: string): Promise<string> => {
-    const res = await thunder.mutation({
-        insert_refresh_tokens_one: [{
-            object: {
-                user_id,
-                refresh_token: refresh_token
-            },
-            on_conflict: {
-                constraint: refresh_tokens_constraint.refresh_tokens_user_id_key,
-                update_columns: [
-                    refresh_tokens_update_column.refresh_token
-                ],
-            }
-        },
-        {
-            refresh_token: true,
-        }],
-    })
-
-    return res.insert_refresh_tokens_one.refresh_token
-}
-
-export const checkRefreshTokenEquality = async (user_id: string, refresh_token: string): Promise<boolean> => {
-    const { refresh_tokens: res } = await thunder.query({
-        refresh_tokens: [{
-            where: {
-                refresh_token: {
-                    _eq: refresh_token
-                },
-                user_id: {
-                    _eq: user_id
-                }
-            } 
-        }, {
-            user_id: true
-        }]
-    })
-
-    return (res.length === 1)
-} 

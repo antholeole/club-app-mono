@@ -1,14 +1,12 @@
-import { Router } from 'itty-router'
-import { response } from 'cfw-easy-utils'
+import { ThrowableRouter, json } from 'itty-router-extras'
 
-
-export const gatewayRouter = Router({
-  base: '/gateway'
+export const gatewayRouter = ThrowableRouter({
+  base: '/api/gateway'
 })
 
 gatewayRouter.post('/connect', () => {
     console.log('hi')
-    return response.json({
+    return json({
         'hi': 'hi'
     })
 })

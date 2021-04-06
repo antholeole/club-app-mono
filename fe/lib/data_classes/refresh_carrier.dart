@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:fe/helpers/uuid_type.dart';
+import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'refresh_carrier.g.dart';

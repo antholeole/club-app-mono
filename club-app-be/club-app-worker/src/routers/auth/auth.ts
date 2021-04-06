@@ -1,25 +1,29 @@
-import { Router } from 'itty-router'
-import { Gql } from '../../generated/zeus'
+import { ThrowableRouter, StatusError, json } from 'itty-router-extras'
 import { readJsonBody } from '../../helpers/read_json_body'
-import { response } from 'cfw-easy-utils'
 import { discrimiateAccessToken, discriminateRefresh } from './discriminators'
-import { generateAccessToken, verifyIdTokenWithGoogle } from './helpers'
-import { addUser, checkRefreshTokenEquality, getUserById, getUserBySub, upsertRefreshToken } from './gql_queries'
+import { generateAccessToken, hash, verifyHash, verifyIdTokenWithGoogle } from './helpers'
+import { addUser, getUserBySub } from './gql_queries'
 import cryptoRandomString from 'crypto-random-string'
-import { GlobalError } from '../../helpers/global_error'
+import { scryptSync } from 'crypto'
 
 
-export const authRouter = Router({
-  base: '/auth'
+export const authRouter = ThrowableRouter({
+  base: '/api/auth'
 })
 
 authRouter.post('/refresh', async (req: Request) => {
   const body = discriminateRefresh(await readJsonBody(req))
 
-  if (await checkRefreshTokenEquality(body.userId, body.refreshToken)) {
+  const hash = await PUBLIC_KEYS.get(body.userId)
+
+  if (hash === null) {
+    throw new StatusError(404, `user with id ${body.userId} not found`)
+  }
+
+  if (await verifyHash(body.refreshToken, hash)) {
     return new Response(generateAccessToken(body.userId))
   } else {
-    throw new GlobalError(`invalid refresh token ${body.refreshToken}`, 402) //returns 402 to avoid loop
+    throw new StatusError(402, `invalid refresh token ${body.refreshToken}`) //returns 402 to avoid loop
   }
 })
 
@@ -29,21 +33,23 @@ authRouter.post('/', async (req: Request) => {
   let sub
   switch (body.from) {
     case 'Google':
-      sub = await verifyIdTokenWithGoogle(body.idToken)
+      sub = 'google:' + (await verifyIdTokenWithGoogle(body.idToken))
   }
 
-  let user = await getUserBySub('google:' + sub)
+  let user = await getUserBySub(sub)
 
   if (user == null) {
-    user = await addUser('google:' + sub, body.name, body.email)
+    user = await addUser(sub, body.name, body.email)
   }
 
-  const refreshToken = await upsertRefreshToken(user.id, cryptoRandomString({ length: 20 }))
+
+  const refreshUnhashed = cryptoRandomString({ length: 20 })
+  REFRESH_TOKENS.put(user.id, await hash(refreshUnhashed))
 
   const aToken = generateAccessToken(user.id)
-  return response.json({
+  return json({
     accessToken: aToken,
-    refreshToken: refreshToken,
+    refreshToken: refreshUnhashed,
     ...user,
   })
 })

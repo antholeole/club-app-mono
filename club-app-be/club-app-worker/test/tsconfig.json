@@ -1,11 +1,14 @@
 {
   "compilerOptions": {
     "outDir": "../transpiled",
-    "target": "esnext",
     "module": "commonjs",
+    "target": "es2018",
+    "lib": ["es2018", "webworker"],
     "sourceMap": true,
     "experimentalDecorators": true,
-    "lib": ["esnext", "webworker"]
+    "typeRoots": ["node_modules/@types"],
+    "types": ["mocha", "node"],
+    "esModuleInterop": true
   },
-  "include": ["./*.ts", "../node_modules/@cloudflare/workers-types/index.d.ts"]
+  "include": ["./**/*.ts", "../node_modules/@cloudflare/workers-types/index.d.ts", "./decs.d.ts"]
 }

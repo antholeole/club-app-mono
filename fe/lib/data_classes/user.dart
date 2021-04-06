@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:fe/helpers/uuid_type.dart';
+import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'local_user.dart';
@@ -11,17 +11,10 @@ part 'user.g.dart';
 @CustomUuidConverter()
 class User {
   final String name;
+  final String pfpUrl;
   final UuidType uuid;
-  final LoginType loggedInWith;
-  final String accessToken;
-  final String? email;
 
-  User(
-      {required this.name,
-      required this.uuid,
-      this.email,
-      required this.loggedInWith,
-      required this.accessToken});
+  User({required this.name, required this.uuid, required this.pfpUrl});
 
   factory User.fromJson(String jsonString) =>
       _$UserFromJson(json.decode(jsonString));

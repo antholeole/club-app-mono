@@ -1,4 +1,4 @@
-import 'package:fe/theme/option_pill.dart';
+import 'package:fe/stdlib/theme/option_pill.dart';
 import 'package:flutter/material.dart';
 
 //Need to include a two tab swiper... One to see stuff dependent on view,

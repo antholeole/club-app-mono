@@ -35,11 +35,11 @@
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.1.1",
-    "cfw-easy-utils": "^0.3.0",
     "concurrently": "^6.0.0",
     "crypto-random-string": "^3.3.1",
     "graphql": "^15.5.0",
     "itty-router": "^2.1.9",
+    "itty-router-extras": "^0.2.3",
     "jsonwebtoken": "^8.5.1"
   }
 }

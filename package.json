@@ -1,0 +1,21 @@
+{
+  "name": "club-app-repo",
+  "version": "1.0.0",
+  "description": "club-app monorepo.",
+  "scripts": {
+    "dev": "concurrently -c \"#add8e6.bold,#800080.bold,#ffa500.bold\" -n \"FLUTTER,BACKEND,HASURA\" --handle-input  \"cd fe && flutter run\" \"cd club-app-be && npm run dev\" \"cd club-app-hasura && docker-compose --log-level ERROR up\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antholeole/club-app-mono.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/antholeole/club-app-mono/issues"
+  },
+  "homepage": "https://github.com/antholeole/club-app-mono#readme",
+  "dependencies": {
+    "concurrently": "^6.0.0"
+  }
+}

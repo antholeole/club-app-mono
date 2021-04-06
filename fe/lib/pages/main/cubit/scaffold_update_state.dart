@@ -7,7 +7,14 @@ abstract class ScaffoldUpdateState {
   ScaffoldUpdateState({this.endDrawer, this.subtitle});
 }
 
-class ScaffoldUpdateInitial extends ScaffoldUpdateState {}
+class ScaffoldUpdateInitial extends ScaffoldUpdateState {
+  @override
+  String? subtitle = 'ISU lax';
+  @override
+  Widget? endDrawer = Container(
+    color: Color(0xffFFFFFF),
+  );
+}
 
 class ScaffoldUpdate extends ScaffoldUpdateState {
   ScaffoldUpdate({Widget? endDrawer, String? subtitle})
