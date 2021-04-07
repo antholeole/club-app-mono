@@ -1,43 +1,30 @@
 version: '3.6'
 services:
-  db:
-    build:
-      context: .
-      dockerfile: Dockerfile.postgres
-    image: postgres:13
+  postgres:
+    image: postgres:12
     restart: always
     volumes:
-      - db_volume:/var/lib/postgresql/data
+    - db_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: siddhant   # default postgres superuse
-      POSTGRES_PASSWORD: passwd # password for siddhant
-      POSTGRES_DB: hasura_db
-  hasura:
-    image: hasura/graphql-engine:latest
+      POSTGRES_PASSWORD: postgrespassword
+  graphql-engine:
+    image: hasura/graphql-engine:v2.0.0-alpha.7.cli-migrations-v3
     ports:
-      - "8080:8080" # default port expected by hasura cli
+    - "8080:8080"
     depends_on:
-      - "db"
+    - "postgres"
     restart: always
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: postgres://siddhant:passwd@db:5432/hasura_db
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
       ## enable the console served by server
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
       ## enable debugging mode. It is recommended to disable this in production
       HASURA_GRAPHQL_DEV_MODE: "true"
-      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
-      ## uncomment next line to set an admin secret
-      # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
-  pgadmin:
-    image: dpage/pgadmin4
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: test@test.com
-      PGADMIN_DEFAULT_PASSWORD: passwd
-    ports:
-      - "9090:80"
-    volumes:
-      - pgadmin_volume:/var/lib/pgadmin
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: http-log, webhook-log, websocket-log, query-log
+      HASURA_GRAPHQL_ADMIN_SECRET: '*hV@?*xh0)aL,@1+Tza>Kj[zC(5akn'
+      HASURA_GRAPHQL_MIGRATIONS_DIR: ./migrations
+      HASURA_GRAPHQL_METADATA_DIR: /metadata
+      HASURA_GRAPHQL_JWT_SECRET: '{"type": "HS256","key": "gDPZqDtqX88gLwAL6eJbGsL4vGCS7yud"}'
 volumes:
-  db_volume:
-  pgadmin_volume:
+  db_data:
+

@@ -32,5 +32,5 @@ class DevConfig extends Config {
   bool get httpIsSecure => false;
 
   @override
-  String get gqlUrl => 'https://club-app-db.herokuapp.com/v1/graphql';
+  String get gqlUrl => 'http://127.0.0.1:8080/v1/graphql';
 }

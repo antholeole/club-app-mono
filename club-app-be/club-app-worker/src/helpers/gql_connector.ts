@@ -1,5 +1,5 @@
 import { HASURA_ENDPOINT } from '../constants'
-import { Thunder } from '../../generated/zeus'
+import { Thunder } from '../generated/zeus'
 
 export const thunder = Thunder(async (query) => {
     const response = await fetch(HASURA_ENDPOINT, {

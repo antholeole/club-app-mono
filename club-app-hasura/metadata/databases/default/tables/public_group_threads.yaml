@@ -1,0 +1,3 @@
+table:
+  name: group_threads
+  schema: public
