@@ -1,11 +1,11 @@
 import { ThrowableRouter, StatusError, json } from 'itty-router-extras'
 import { readJsonBody } from '../../helpers/read_json_body'
 import { discrimiateAccessToken, discriminateRefresh } from './discriminators'
-import { generateAccessToken, hash, verifyHash, verifyIdTokenWithGoogle } from './helpers'
+import { generateAccessToken, verifyIdTokenWithGoogle } from './helpers'
 import { addUser, getUserBySub } from './gql_queries'
-import cryptoRandomString from 'crypto-random-string'
-import { scryptSync } from 'crypto'
-
+import { cryptoRandomString } from '../../helpers/crypto'
+import { getDecryptedKV, putEncryptedKV } from 'encrypt-workers-kv'
+import { R_TOKEN_PUBLIC_KEY_KEY } from '../../constants'
 
 export const authRouter = ThrowableRouter({
   base: '/api/auth'
@@ -14,13 +14,13 @@ export const authRouter = ThrowableRouter({
 authRouter.post('/refresh', async (req: Request) => {
   const body = discriminateRefresh(await readJsonBody(req))
 
-  const hash = await PUBLIC_KEYS.get(body.userId)
+  const decryptedHash = await getDecryptedKV(PUBLIC_KEYS, R_TOKEN_PUBLIC_KEY_KEY, SECRET)
 
-  if (hash === null) {
+  if (decryptedHash === null) {
     throw new StatusError(404, `user with id ${body.userId} not found`)
   }
 
-  if (await verifyHash(body.refreshToken, hash)) {
+  if (new TextDecoder().decode(decryptedHash) === body.refreshToken) {
     return new Response(generateAccessToken(body.userId))
   } else {
     throw new StatusError(402, `invalid refresh token ${body.refreshToken}`) //returns 402 to avoid loop
@@ -29,7 +29,6 @@ authRouter.post('/refresh', async (req: Request) => {
 
 authRouter.post('/', async (req: Request) => {
   const body = discrimiateAccessToken(await readJsonBody(req))
-
   let sub
   switch (body.from) {
     case 'Google':
@@ -42,9 +41,9 @@ authRouter.post('/', async (req: Request) => {
     user = await addUser(sub, body.name, body.email)
   }
 
+  const refreshUnhashed = cryptoRandomString(20)
 
-  const refreshUnhashed = cryptoRandomString({ length: 20 })
-  REFRESH_TOKENS.put(user.id, await hash(refreshUnhashed))
+  await putEncryptedKV(PUBLIC_KEYS, R_TOKEN_PUBLIC_KEY_KEY, refreshUnhashed, SECRET)
 
   const aToken = generateAccessToken(user.id)
   return json({

@@ -4,8 +4,8 @@
   "description": "Cloudflare worker TypeScript template",
   "main": "index.js",
   "scripts": {
-    "build": "webpack",
-    "dev": "wrangler dev -p 8787",
+    "build": "NODE_ENV=development webpack --display none",
+    "dev": "nodemon --watch src --exec \"npm run build && cloudworker -d -p 8787 --kv-set PUBLIC_KEYS.key=value --kv-set REFRESH_TOKENS.key=value ./dist/worker.js\" -e ts",
     "deploy": "wrangler publish",
     "test:clean": "rimraf ./transpiled/src ./transpiled/test",
     "test": "npm run test:clean && npm run transpile && mocha --require source-map-support/register --recursive transpiled/test",
@@ -25,6 +25,7 @@
     "chai": "^4.2.0",
     "eslint": "^7.22.0",
     "mocha": "^8.0.1",
+    "nodemon": "^2.0.7",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
     "service-worker-mock": "^2.0.5",
@@ -36,7 +37,7 @@
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.1.1",
     "concurrently": "^6.0.0",
-    "crypto-random-string": "^3.3.1",
+    "encrypt-workers-kv": "^0.0.3",
     "graphql": "^15.5.0",
     "itty-router": "^2.1.9",
     "itty-router-extras": "^0.2.3",

@@ -66,7 +66,8 @@ class LocalUser {
   }
 
   Future<void> serializeSelf() async {
-    await LocalFileStore().serialize(LocalStorageType.LocalUser, toJson());
+    await getIt<LocalFileStore>()
+        .serialize(LocalStorageType.LocalUser, toJson());
   }
 
   factory LocalUser.fromJson(String jsonString) =>

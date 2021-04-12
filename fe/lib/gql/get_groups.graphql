@@ -1,11 +1,28 @@
-query GetSelfGroups($self_id: uuid!) {
- 	 user_to_groups(where: {
+query InitalGroupPull($self_id: uuid!) {
+ 	 user_to_group(where: {
     user_id: {
     	_eq: $self_id
     }
   }) {
    	group {
-      group_name
+      group_name,
+      id,
+      group_threads {
+        id,
+        name,
+        messages {
+          user_sent,
+          id,
+          message
+        }
+      },
+      user_to_groups {
+        user {
+          id,
+          profile_picture,
+          name
+        }
+      }, 
     }
   }
 }

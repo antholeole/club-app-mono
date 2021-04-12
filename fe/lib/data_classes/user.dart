@@ -3,15 +3,13 @@ import 'dart:convert';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'local_user.dart';
-
 part 'user.g.dart';
 
 @JsonSerializable()
 @CustomUuidConverter()
 class User {
   final String name;
-  final String pfpUrl;
+  final String? pfpUrl;
   final UuidType uuid;
 
   User({required this.name, required this.uuid, required this.pfpUrl});

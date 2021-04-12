@@ -5,6 +5,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fe/pages/main/cubit/hive_cubit.dart';
 import 'package:fe/pages/main/cubit/scaffold_update_cubit.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
+import 'package:fe/stdlib/local_data/local_file_store.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:fe/stdlib/theme/bottom_nav/bottom_nav.dart';
 import 'package:fe/stdlib/theme/logo.dart';
@@ -15,8 +16,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 
-import 'bottom_sheet/channels_bottom_sheet.dart';
-import 'drawers/club_drawer.dart';
+import 'main_helpers/bottom_sheet/channels_bottom_sheet.dart';
+import 'main_helpers/drawers/club_drawer.dart';
 
 class MainWrapper extends StatefulWidget {
   late final LocalUser _user;
@@ -39,8 +40,7 @@ class _MainWrapperState extends State<MainWrapper> {
 
   @override
   void initState() {
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _scaffoldKeySetup());
-    Hive.openBox('main').then(_hiveCubit.addBox);
+    _beginLoadingChats();
     super.initState();
   }
 
@@ -51,7 +51,7 @@ class _MainWrapperState extends State<MainWrapper> {
         BlocProvider(
           create: (_) => _scaffoldUpdateCubit,
         ),
-        BlocProvider(
+        BlocProvider<HiveCubit>(
           create: (_) => _hiveCubit,
         ),
       ],
@@ -99,7 +99,7 @@ class _MainWrapperState extends State<MainWrapper> {
                   ],
                   child: AutoTabsRouter(
                     routes: [
-                      EventsRoute(), //ChatRoute(chat: selectedChat!)
+                      EventsRoute(),
                       EventsRoute(),
                     ],
                   )),
@@ -140,11 +140,6 @@ class _MainWrapperState extends State<MainWrapper> {
     }
 
     //sideeffect: rebuilds bottomNav with new value
-    setState(() {});
-  }
-
-  void _scaffoldKeySetup() {
-    //side effect: menu button gets updated to have scaffold key's real current state
     setState(() {});
   }
 }

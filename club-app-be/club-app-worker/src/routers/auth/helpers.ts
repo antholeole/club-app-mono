@@ -1,8 +1,6 @@
 import { GOOGLE_CERTS, GOOGLE_PEM_SRC, GOOGLE_VALID_AUDS, GOOGLE_VALID_ISSUER } from '../../constants'
 import { StatusError } from 'itty-router-extras'
-import { randomBytes, scrypt } from 'crypto'
 import { encodeJwt } from '../../helpers/jwt'
-import type { IUser } from './gql_queries'
 import jwt from 'jsonwebtoken'
 
 
@@ -16,9 +14,12 @@ export const verifyIdTokenWithGoogle = async (idToken: string): Promise<string> 
     if (parts.length < 3) {
         throw new StatusError(400, 'invalid idToken JWT')
     } else {
+        try {
         kid = JSON.parse(atob(parts[0]))['kid']
+        } catch (_) {
+            throw new StatusError(400, 'malformed JWT input; no KID in header')
+        }
     }
-
 
     let googleCertsJson = await PUBLIC_KEYS.get(GOOGLE_CERTS)
 
@@ -36,17 +37,17 @@ export const verifyIdTokenWithGoogle = async (idToken: string): Promise<string> 
         })
     }
 
-    let jwtBody: any
+    let jwtBody: unknown
     try {
         jwtBody = (jwt.verify(idToken, JSON.parse(googleCertsJson)[kid], {
             audience: GOOGLE_VALID_AUDS,
             issuer: GOOGLE_VALID_ISSUER
-        }) as any)
+        }) as unknown)
     } catch {
         throwInvalid()
     }
 
-    return jwtBody['sub']
+    return (jwtBody as { sub: string })['sub']
 }
 
 export const generateAccessToken = (id: string): string => {
@@ -57,26 +58,5 @@ export const generateAccessToken = (id: string): string => {
             'x-hasura-user-id': id,
             'x-hasura-default-role': 'user'
         }
-    })
-}
-
-export const hash = (toHash: string): Promise<string> => {
-    return new Promise((resolve, reject) => {
-        const salt = randomBytes(16).toString('hex')
-
-        scrypt(toHash, salt, 64, (err, derivedKey) => {
-            if (err) reject(err)
-            resolve(salt + ':' + derivedKey.toString('hex'))
-        })
-    })
-}
-
-export const verifyHash = (plaintext: string, hash: string): Promise<boolean> => {
-    return new Promise((resolve, reject) => {
-        const [salt, key] = hash.split(':')
-        scrypt(plaintext, salt, 64, (err, derivedKey) => {
-            if (err) reject(err)
-            resolve(key == derivedKey.toString('hex'))
-        })
     })
 }

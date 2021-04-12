@@ -1,3 +1,18 @@
 table:
   name: group_threads
   schema: public
+array_relationships:
+- name: messages
+  using:
+    foreign_key_constraint_on:
+      column: thread_id
+      table:
+        name: messages
+        schema: public
+- name: user_to_threads
+  using:
+    foreign_key_constraint_on:
+      column: thread_id
+      table:
+        name: user_to_thread
+        schema: public

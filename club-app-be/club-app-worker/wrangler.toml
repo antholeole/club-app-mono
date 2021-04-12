@@ -4,7 +4,6 @@ account_id = "e0d74c227439ece29e62209d109ae43e"
 route = "getclub.app/*"
 zone_id = "835cc77a0715a00ad22e11584f6065a7"
 webpack_config = "webpack.config.js"
-vars = { ENVIRONMENT = "dev" }
 
 kv_namespaces = [
     { binding = "PUBLIC_KEYS", id = "8275e93c0b994521b30d957f72d0029f", preview_id = "c6d84f0ea05c4001aecf7090933974f0" },

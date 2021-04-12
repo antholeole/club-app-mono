@@ -3,7 +3,7 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
-import 'package:fe/gql/serializers.gql.dart' as _i1;
+import 'package:fe/serializers.gql.dart' as _i1;
 import 'package:fe/stdlib/helpers/uuid_type.dart' as _i2;
 
 part 'schema.schema.gql.g.dart';

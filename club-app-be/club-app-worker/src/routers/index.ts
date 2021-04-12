@@ -3,6 +3,7 @@ import { cors } from '../helpers/cors'
 import { feRouter } from '../routers/frontend'
 import { authRouter } from '../routers/auth/auth'
 import { gatewayRouter } from '../routers/gateway/gateway'
+import { DEBUG } from '../constants'
 
 const localRouter = ThrowableRouter()
 
@@ -14,6 +15,13 @@ localRouter
     throw new StatusError(404, 'Api route not found')
   })
   .get('/ping', () => new Response('pong'))
-  .all('*', feRouter.handle)
+  
+if (!DEBUG) {
+  localRouter.all('*', feRouter.handle)
+} else {
+  localRouter.all('*', () => { 
+    throw new StatusError(404, 'route not found - pages not availible in dev')
+  })
+}
 
 export const router = localRouter

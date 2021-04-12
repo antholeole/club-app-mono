@@ -1,13 +1,8 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
 import 'package:built_value/standard_json_plugin.dart' show StandardJsonPlugin;
-import 'package:fe/gql/get_groups.data.gql.dart'
-    show
-        GGetSelfGroupsData,
-        GGetSelfGroupsData_user_to_groups,
-        GGetSelfGroupsData_user_to_groups_group;
-import 'package:fe/gql/get_groups.req.gql.dart' show GGetSelfGroupsReq;
-import 'package:fe/gql/get_groups.var.gql.dart' show GGetSelfGroupsVars;
+import 'package:fe/gql/get_groups.req.gql.dart' show GInitalGroupPullReq;
+import 'package:fe/gql/get_groups.var.gql.dart' show GInitalGroupPullVars;
 import 'package:fe/gql/schema.schema.gql.dart'
     show
         GString_comparison_exp,
@@ -73,7 +68,7 @@ import 'package:fe/gql/update_self_name.data.gql.dart'
     show GUpdateSelfNameData, GUpdateSelfNameData_update_users_by_pk;
 import 'package:fe/gql/update_self_name.req.gql.dart' show GUpdateSelfNameReq;
 import 'package:fe/gql/update_self_name.var.gql.dart' show GUpdateSelfNameVars;
-import 'package:fe/helpers/uuid_type.dart' show UuidTypeSerializer;
+import 'package:fe/stdlib/helpers/uuid_type.dart' show UuidTypeSerializer;
 import 'package:gql_code_builder/src/serializers/operation_serializer.dart'
     show OperationSerializer;
 
@@ -84,11 +79,8 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   ..add(UuidTypeSerializer())
   ..addPlugin(StandardJsonPlugin());
 @SerializersFor([
-  GGetSelfGroupsData,
-  GGetSelfGroupsData_user_to_groups,
-  GGetSelfGroupsData_user_to_groups_group,
-  GGetSelfGroupsReq,
-  GGetSelfGroupsVars,
+  GInitalGroupPullReq,
+  GInitalGroupPullVars,
   GString_comparison_exp,
   GUpdateSelfNameData,
   GUpdateSelfNameData_update_users_by_pk,

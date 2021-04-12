@@ -11,7 +11,7 @@ import '../../data_classes/local_user.dart' as _i8;
 import '../../pages/login/login_page.dart' as _i4;
 import '../../pages/main/chat/chat_page.dart' as _i7;
 import '../../pages/main/events/events_page.dart' as _i6;
-import '../../pages/main/main_helpers/main_wrapper.dart' as _i5;
+import '../../pages/main/main_wrapper.dart' as _i5;
 import '../../pages/splash/splash_screen.dart' as _i2;
 import 'router.dart' as _i3;
 

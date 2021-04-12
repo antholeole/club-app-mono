@@ -1,4 +1,3 @@
-import { refresh_tokens_constraint, refresh_tokens_update_column } from '../../../generated/zeus'
 import { thunder } from '../../helpers/gql_connector'
 
 export interface IUser {
@@ -56,5 +55,5 @@ export const addUser = async (sub: string, name?: string, email?: string): Promi
         }]
     })
 
-    return res.insert_users_one
+    return { ...res.insert_users_one, email: res.insert_users_one.email ?? undefined }
 }

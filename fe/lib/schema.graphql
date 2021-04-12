@@ -1,0 +1,1500 @@
+schema {
+  query: query_root
+  mutation: mutation_root
+  subscription: subscription_root
+}
+
+"""
+columns and relationships of "groups"
+"""
+type groups {
+  group_name: String!
+  id: uuid!
+
+  """An array relationship"""
+  user_to_groups(
+    """distinct select on columns"""
+    distinct_on: [user_to_groups_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_to_groups_order_by!]
+
+    """filter the rows returned"""
+    where: user_to_groups_bool_exp
+  ): [user_to_groups!]!
+
+  """An aggregated array relationship"""
+  user_to_groups_aggregate(
+    """distinct select on columns"""
+    distinct_on: [user_to_groups_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_to_groups_order_by!]
+
+    """filter the rows returned"""
+    where: user_to_groups_bool_exp
+  ): user_to_groups_aggregate!
+}
+
+"""
+aggregated selection of "groups"
+"""
+type groups_aggregate {
+  aggregate: groups_aggregate_fields
+  nodes: [groups!]!
+}
+
+"""
+aggregate fields of "groups"
+"""
+type groups_aggregate_fields {
+  count(columns: [groups_select_column!], distinct: Boolean): Int
+  max: groups_max_fields
+  min: groups_min_fields
+}
+
+"""
+order by aggregate values of table "groups"
+"""
+input groups_aggregate_order_by {
+  count: order_by
+  max: groups_max_order_by
+  min: groups_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "groups"
+"""
+input groups_arr_rel_insert_input {
+  data: [groups_insert_input!]!
+  on_conflict: groups_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "groups". All fields are combined with a logical 'AND'.
+"""
+input groups_bool_exp {
+  _and: [groups_bool_exp]
+  _not: groups_bool_exp
+  _or: [groups_bool_exp]
+  group_name: String_comparison_exp
+  id: uuid_comparison_exp
+  user_to_groups: user_to_groups_bool_exp
+}
+
+"""
+unique or primary key constraints on table "groups"
+"""
+enum groups_constraint {
+  """unique or primary key constraint"""
+  groups_pkey
+}
+
+"""
+input type for inserting data into table "groups"
+"""
+input groups_insert_input {
+  group_name: String
+  id: uuid
+  user_to_groups: user_to_groups_arr_rel_insert_input
+}
+
+"""aggregate max on columns"""
+type groups_max_fields {
+  group_name: String
+  id: uuid
+}
+
+"""
+order by max() on columns of table "groups"
+"""
+input groups_max_order_by {
+  group_name: order_by
+  id: order_by
+}
+
+"""aggregate min on columns"""
+type groups_min_fields {
+  group_name: String
+  id: uuid
+}
+
+"""
+order by min() on columns of table "groups"
+"""
+input groups_min_order_by {
+  group_name: order_by
+  id: order_by
+}
+
+"""
+response of any mutation on the table "groups"
+"""
+type groups_mutation_response {
+  """number of affected rows by the mutation"""
+  affected_rows: Int!
+
+  """data of the affected rows by the mutation"""
+  returning: [groups!]!
+}
+
+"""
+input type for inserting object relation for remote table "groups"
+"""
+input groups_obj_rel_insert_input {
+  data: groups_insert_input!
+  on_conflict: groups_on_conflict
+}
+
+"""
+on conflict condition type for table "groups"
+"""
+input groups_on_conflict {
+  constraint: groups_constraint!
+  update_columns: [groups_update_column!]!
+  where: groups_bool_exp
+}
+
+"""
+ordering options when selecting data from "groups"
+"""
+input groups_order_by {
+  group_name: order_by
+  id: order_by
+  user_to_groups_aggregate: user_to_groups_aggregate_order_by
+}
+
+"""
+primary key columns input for table: "groups"
+"""
+input groups_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "groups"
+"""
+enum groups_select_column {
+  """column name"""
+  group_name
+
+  """column name"""
+  id
+}
+
+"""
+input type for updating data in table "groups"
+"""
+input groups_set_input {
+  group_name: String
+  id: uuid
+}
+
+"""
+update columns of table "groups"
+"""
+enum groups_update_column {
+  """column name"""
+  group_name
+
+  """column name"""
+  id
+}
+
+"""mutation root"""
+type mutation_root {
+  """
+  delete data from the table: "groups"
+  """
+  delete_groups(
+    """filter the rows which have to be deleted"""
+    where: groups_bool_exp!
+  ): groups_mutation_response
+
+  """
+  delete single row from the table: "groups"
+  """
+  delete_groups_by_pk(id: uuid!): groups
+
+  """
+  delete data from the table: "refresh_tokens"
+  """
+  delete_refresh_tokens(
+    """filter the rows which have to be deleted"""
+    where: refresh_tokens_bool_exp!
+  ): refresh_tokens_mutation_response
+
+  """
+  delete single row from the table: "refresh_tokens"
+  """
+  delete_refresh_tokens_by_pk(id: uuid!): refresh_tokens
+
+  """
+  delete data from the table: "user_to_groups"
+  """
+  delete_user_to_groups(
+    """filter the rows which have to be deleted"""
+    where: user_to_groups_bool_exp!
+  ): user_to_groups_mutation_response
+
+  """
+  delete single row from the table: "user_to_groups"
+  """
+  delete_user_to_groups_by_pk(id: uuid!): user_to_groups
+
+  """
+  delete data from the table: "users"
+  """
+  delete_users(
+    """filter the rows which have to be deleted"""
+    where: users_bool_exp!
+  ): users_mutation_response
+
+  """
+  delete single row from the table: "users"
+  """
+  delete_users_by_pk(id: uuid!): users
+
+  """
+  insert data into the table: "groups"
+  """
+  insert_groups(
+    """the rows to be inserted"""
+    objects: [groups_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: groups_on_conflict
+  ): groups_mutation_response
+
+  """
+  insert a single row into the table: "groups"
+  """
+  insert_groups_one(
+    """the row to be inserted"""
+    object: groups_insert_input!
+
+    """on conflict condition"""
+    on_conflict: groups_on_conflict
+  ): groups
+
+  """
+  insert data into the table: "refresh_tokens"
+  """
+  insert_refresh_tokens(
+    """the rows to be inserted"""
+    objects: [refresh_tokens_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: refresh_tokens_on_conflict
+  ): refresh_tokens_mutation_response
+
+  """
+  insert a single row into the table: "refresh_tokens"
+  """
+  insert_refresh_tokens_one(
+    """the row to be inserted"""
+    object: refresh_tokens_insert_input!
+
+    """on conflict condition"""
+    on_conflict: refresh_tokens_on_conflict
+  ): refresh_tokens
+
+  """
+  insert data into the table: "user_to_groups"
+  """
+  insert_user_to_groups(
+    """the rows to be inserted"""
+    objects: [user_to_groups_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: user_to_groups_on_conflict
+  ): user_to_groups_mutation_response
+
+  """
+  insert a single row into the table: "user_to_groups"
+  """
+  insert_user_to_groups_one(
+    """the row to be inserted"""
+    object: user_to_groups_insert_input!
+
+    """on conflict condition"""
+    on_conflict: user_to_groups_on_conflict
+  ): user_to_groups
+
+  """
+  insert data into the table: "users"
+  """
+  insert_users(
+    """the rows to be inserted"""
+    objects: [users_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: users_on_conflict
+  ): users_mutation_response
+
+  """
+  insert a single row into the table: "users"
+  """
+  insert_users_one(
+    """the row to be inserted"""
+    object: users_insert_input!
+
+    """on conflict condition"""
+    on_conflict: users_on_conflict
+  ): users
+
+  """
+  update data of the table: "groups"
+  """
+  update_groups(
+    """sets the columns of the filtered rows to the given values"""
+    _set: groups_set_input
+
+    """filter the rows which have to be updated"""
+    where: groups_bool_exp!
+  ): groups_mutation_response
+
+  """
+  update single row of the table: "groups"
+  """
+  update_groups_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: groups_set_input
+    pk_columns: groups_pk_columns_input!
+  ): groups
+
+  """
+  update data of the table: "refresh_tokens"
+  """
+  update_refresh_tokens(
+    """sets the columns of the filtered rows to the given values"""
+    _set: refresh_tokens_set_input
+
+    """filter the rows which have to be updated"""
+    where: refresh_tokens_bool_exp!
+  ): refresh_tokens_mutation_response
+
+  """
+  update single row of the table: "refresh_tokens"
+  """
+  update_refresh_tokens_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: refresh_tokens_set_input
+    pk_columns: refresh_tokens_pk_columns_input!
+  ): refresh_tokens
+
+  """
+  update data of the table: "user_to_groups"
+  """
+  update_user_to_groups(
+    """sets the columns of the filtered rows to the given values"""
+    _set: user_to_groups_set_input
+
+    """filter the rows which have to be updated"""
+    where: user_to_groups_bool_exp!
+  ): user_to_groups_mutation_response
+
+  """
+  update single row of the table: "user_to_groups"
+  """
+  update_user_to_groups_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: user_to_groups_set_input
+    pk_columns: user_to_groups_pk_columns_input!
+  ): user_to_groups
+
+  """
+  update data of the table: "users"
+  """
+  update_users(
+    """sets the columns of the filtered rows to the given values"""
+    _set: users_set_input
+
+    """filter the rows which have to be updated"""
+    where: users_bool_exp!
+  ): users_mutation_response
+
+  """
+  update single row of the table: "users"
+  """
+  update_users_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: users_set_input
+    pk_columns: users_pk_columns_input!
+  ): users
+}
+
+"""column ordering options"""
+enum order_by {
+  """in the ascending order, nulls last"""
+  asc
+
+  """in the ascending order, nulls first"""
+  asc_nulls_first
+
+  """in the ascending order, nulls last"""
+  asc_nulls_last
+
+  """in the descending order, nulls first"""
+  desc
+
+  """in the descending order, nulls first"""
+  desc_nulls_first
+
+  """in the descending order, nulls last"""
+  desc_nulls_last
+}
+
+"""query root"""
+type query_root {
+  """
+  fetch data from the table: "groups"
+  """
+  groups(
+    """distinct select on columns"""
+    distinct_on: [groups_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [groups_order_by!]
+
+    """filter the rows returned"""
+    where: groups_bool_exp
+  ): [groups!]!
+
+  """
+  fetch aggregated fields from the table: "groups"
+  """
+  groups_aggregate(
+    """distinct select on columns"""
+    distinct_on: [groups_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [groups_order_by!]
+
+    """filter the rows returned"""
+    where: groups_bool_exp
+  ): groups_aggregate!
+
+  """fetch data from the table: "groups" using primary key columns"""
+  groups_by_pk(id: uuid!): groups
+
+  """
+  fetch data from the table: "refresh_tokens"
+  """
+  refresh_tokens(
+    """distinct select on columns"""
+    distinct_on: [refresh_tokens_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [refresh_tokens_order_by!]
+
+    """filter the rows returned"""
+    where: refresh_tokens_bool_exp
+  ): [refresh_tokens!]!
+
+  """
+  fetch aggregated fields from the table: "refresh_tokens"
+  """
+  refresh_tokens_aggregate(
+    """distinct select on columns"""
+    distinct_on: [refresh_tokens_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [refresh_tokens_order_by!]
+
+    """filter the rows returned"""
+    where: refresh_tokens_bool_exp
+  ): refresh_tokens_aggregate!
+
+  """fetch data from the table: "refresh_tokens" using primary key columns"""
+  refresh_tokens_by_pk(id: uuid!): refresh_tokens
+
+  """
+  fetch data from the table: "user_to_groups"
+  """
+  user_to_groups(
+    """distinct select on columns"""
+    distinct_on: [user_to_groups_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_to_groups_order_by!]
+
+    """filter the rows returned"""
+    where: user_to_groups_bool_exp
+  ): [user_to_groups!]!
+
+  """
+  fetch aggregated fields from the table: "user_to_groups"
+  """
+  user_to_groups_aggregate(
+    """distinct select on columns"""
+    distinct_on: [user_to_groups_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_to_groups_order_by!]
+
+    """filter the rows returned"""
+    where: user_to_groups_bool_exp
+  ): user_to_groups_aggregate!
+
+  """fetch data from the table: "user_to_groups" using primary key columns"""
+  user_to_groups_by_pk(id: uuid!): user_to_groups
+
+  """
+  fetch data from the table: "users"
+  """
+  users(
+    """distinct select on columns"""
+    distinct_on: [users_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [users_order_by!]
+
+    """filter the rows returned"""
+    where: users_bool_exp
+  ): [users!]!
+
+  """
+  fetch aggregated fields from the table: "users"
+  """
+  users_aggregate(
+    """distinct select on columns"""
+    distinct_on: [users_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [users_order_by!]
+
+    """filter the rows returned"""
+    where: users_bool_exp
+  ): users_aggregate!
+
+  """fetch data from the table: "users" using primary key columns"""
+  users_by_pk(id: uuid!): users
+}
+
+"""
+columns and relationships of "refresh_tokens"
+"""
+type refresh_tokens {
+  id: uuid!
+  refresh_token: String!
+
+  """An object relationship"""
+  user: users!
+  user_id: uuid!
+}
+
+"""
+aggregated selection of "refresh_tokens"
+"""
+type refresh_tokens_aggregate {
+  aggregate: refresh_tokens_aggregate_fields
+  nodes: [refresh_tokens!]!
+}
+
+"""
+aggregate fields of "refresh_tokens"
+"""
+type refresh_tokens_aggregate_fields {
+  count(columns: [refresh_tokens_select_column!], distinct: Boolean): Int
+  max: refresh_tokens_max_fields
+  min: refresh_tokens_min_fields
+}
+
+"""
+order by aggregate values of table "refresh_tokens"
+"""
+input refresh_tokens_aggregate_order_by {
+  count: order_by
+  max: refresh_tokens_max_order_by
+  min: refresh_tokens_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "refresh_tokens"
+"""
+input refresh_tokens_arr_rel_insert_input {
+  data: [refresh_tokens_insert_input!]!
+  on_conflict: refresh_tokens_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "refresh_tokens". All fields are combined with a logical 'AND'.
+"""
+input refresh_tokens_bool_exp {
+  _and: [refresh_tokens_bool_exp]
+  _not: refresh_tokens_bool_exp
+  _or: [refresh_tokens_bool_exp]
+  id: uuid_comparison_exp
+  refresh_token: String_comparison_exp
+  user: users_bool_exp
+  user_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "refresh_tokens"
+"""
+enum refresh_tokens_constraint {
+  """unique or primary key constraint"""
+  refresh_tokens_pkey
+
+  """unique or primary key constraint"""
+  refresh_tokens_user_id_key
+}
+
+"""
+input type for inserting data into table "refresh_tokens"
+"""
+input refresh_tokens_insert_input {
+  id: uuid
+  refresh_token: String
+  user: users_obj_rel_insert_input
+  user_id: uuid
+}
+
+"""aggregate max on columns"""
+type refresh_tokens_max_fields {
+  id: uuid
+  refresh_token: String
+  user_id: uuid
+}
+
+"""
+order by max() on columns of table "refresh_tokens"
+"""
+input refresh_tokens_max_order_by {
+  id: order_by
+  refresh_token: order_by
+  user_id: order_by
+}
+
+"""aggregate min on columns"""
+type refresh_tokens_min_fields {
+  id: uuid
+  refresh_token: String
+  user_id: uuid
+}
+
+"""
+order by min() on columns of table "refresh_tokens"
+"""
+input refresh_tokens_min_order_by {
+  id: order_by
+  refresh_token: order_by
+  user_id: order_by
+}
+
+"""
+response of any mutation on the table "refresh_tokens"
+"""
+type refresh_tokens_mutation_response {
+  """number of affected rows by the mutation"""
+  affected_rows: Int!
+
+  """data of the affected rows by the mutation"""
+  returning: [refresh_tokens!]!
+}
+
+"""
+input type for inserting object relation for remote table "refresh_tokens"
+"""
+input refresh_tokens_obj_rel_insert_input {
+  data: refresh_tokens_insert_input!
+  on_conflict: refresh_tokens_on_conflict
+}
+
+"""
+on conflict condition type for table "refresh_tokens"
+"""
+input refresh_tokens_on_conflict {
+  constraint: refresh_tokens_constraint!
+  update_columns: [refresh_tokens_update_column!]!
+  where: refresh_tokens_bool_exp
+}
+
+"""
+ordering options when selecting data from "refresh_tokens"
+"""
+input refresh_tokens_order_by {
+  id: order_by
+  refresh_token: order_by
+  user: users_order_by
+  user_id: order_by
+}
+
+"""
+primary key columns input for table: "refresh_tokens"
+"""
+input refresh_tokens_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "refresh_tokens"
+"""
+enum refresh_tokens_select_column {
+  """column name"""
+  id
+
+  """column name"""
+  refresh_token
+
+  """column name"""
+  user_id
+}
+
+"""
+input type for updating data in table "refresh_tokens"
+"""
+input refresh_tokens_set_input {
+  id: uuid
+  refresh_token: String
+  user_id: uuid
+}
+
+"""
+update columns of table "refresh_tokens"
+"""
+enum refresh_tokens_update_column {
+  """column name"""
+  id
+
+  """column name"""
+  refresh_token
+
+  """column name"""
+  user_id
+}
+
+"""
+expression to compare columns of type String. All fields are combined with logical 'AND'.
+"""
+input String_comparison_exp {
+  _eq: String
+  _gt: String
+  _gte: String
+  _ilike: String
+  _in: [String!]
+  _is_null: Boolean
+  _like: String
+  _lt: String
+  _lte: String
+  _neq: String
+  _nilike: String
+  _nin: [String!]
+  _nlike: String
+  _nsimilar: String
+  _similar: String
+}
+
+"""subscription root"""
+type subscription_root {
+  """
+  fetch data from the table: "groups"
+  """
+  groups(
+    """distinct select on columns"""
+    distinct_on: [groups_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [groups_order_by!]
+
+    """filter the rows returned"""
+    where: groups_bool_exp
+  ): [groups!]!
+
+  """
+  fetch aggregated fields from the table: "groups"
+  """
+  groups_aggregate(
+    """distinct select on columns"""
+    distinct_on: [groups_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [groups_order_by!]
+
+    """filter the rows returned"""
+    where: groups_bool_exp
+  ): groups_aggregate!
+
+  """fetch data from the table: "groups" using primary key columns"""
+  groups_by_pk(id: uuid!): groups
+
+  """
+  fetch data from the table: "refresh_tokens"
+  """
+  refresh_tokens(
+    """distinct select on columns"""
+    distinct_on: [refresh_tokens_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [refresh_tokens_order_by!]
+
+    """filter the rows returned"""
+    where: refresh_tokens_bool_exp
+  ): [refresh_tokens!]!
+
+  """
+  fetch aggregated fields from the table: "refresh_tokens"
+  """
+  refresh_tokens_aggregate(
+    """distinct select on columns"""
+    distinct_on: [refresh_tokens_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [refresh_tokens_order_by!]
+
+    """filter the rows returned"""
+    where: refresh_tokens_bool_exp
+  ): refresh_tokens_aggregate!
+
+  """fetch data from the table: "refresh_tokens" using primary key columns"""
+  refresh_tokens_by_pk(id: uuid!): refresh_tokens
+
+  """
+  fetch data from the table: "user_to_groups"
+  """
+  user_to_groups(
+    """distinct select on columns"""
+    distinct_on: [user_to_groups_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_to_groups_order_by!]
+
+    """filter the rows returned"""
+    where: user_to_groups_bool_exp
+  ): [user_to_groups!]!
+
+  """
+  fetch aggregated fields from the table: "user_to_groups"
+  """
+  user_to_groups_aggregate(
+    """distinct select on columns"""
+    distinct_on: [user_to_groups_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_to_groups_order_by!]
+
+    """filter the rows returned"""
+    where: user_to_groups_bool_exp
+  ): user_to_groups_aggregate!
+
+  """fetch data from the table: "user_to_groups" using primary key columns"""
+  user_to_groups_by_pk(id: uuid!): user_to_groups
+
+  """
+  fetch data from the table: "users"
+  """
+  users(
+    """distinct select on columns"""
+    distinct_on: [users_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [users_order_by!]
+
+    """filter the rows returned"""
+    where: users_bool_exp
+  ): [users!]!
+
+  """
+  fetch aggregated fields from the table: "users"
+  """
+  users_aggregate(
+    """distinct select on columns"""
+    distinct_on: [users_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [users_order_by!]
+
+    """filter the rows returned"""
+    where: users_bool_exp
+  ): users_aggregate!
+
+  """fetch data from the table: "users" using primary key columns"""
+  users_by_pk(id: uuid!): users
+}
+
+"""
+columns and relationships of "user_to_groups"
+"""
+type user_to_groups {
+  """An object relationship"""
+  group: groups!
+  group_id: uuid!
+  id: uuid!
+
+  """An object relationship"""
+  user: users!
+  user_id: uuid!
+}
+
+"""
+aggregated selection of "user_to_groups"
+"""
+type user_to_groups_aggregate {
+  aggregate: user_to_groups_aggregate_fields
+  nodes: [user_to_groups!]!
+}
+
+"""
+aggregate fields of "user_to_groups"
+"""
+type user_to_groups_aggregate_fields {
+  count(columns: [user_to_groups_select_column!], distinct: Boolean): Int
+  max: user_to_groups_max_fields
+  min: user_to_groups_min_fields
+}
+
+"""
+order by aggregate values of table "user_to_groups"
+"""
+input user_to_groups_aggregate_order_by {
+  count: order_by
+  max: user_to_groups_max_order_by
+  min: user_to_groups_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "user_to_groups"
+"""
+input user_to_groups_arr_rel_insert_input {
+  data: [user_to_groups_insert_input!]!
+  on_conflict: user_to_groups_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "user_to_groups". All fields are combined with a logical 'AND'.
+"""
+input user_to_groups_bool_exp {
+  _and: [user_to_groups_bool_exp]
+  _not: user_to_groups_bool_exp
+  _or: [user_to_groups_bool_exp]
+  group: groups_bool_exp
+  group_id: uuid_comparison_exp
+  id: uuid_comparison_exp
+  user: users_bool_exp
+  user_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "user_to_groups"
+"""
+enum user_to_groups_constraint {
+  """unique or primary key constraint"""
+  user_to_groups_pkey
+}
+
+"""
+input type for inserting data into table "user_to_groups"
+"""
+input user_to_groups_insert_input {
+  group: groups_obj_rel_insert_input
+  group_id: uuid
+  id: uuid
+  user: users_obj_rel_insert_input
+  user_id: uuid
+}
+
+"""aggregate max on columns"""
+type user_to_groups_max_fields {
+  group_id: uuid
+  id: uuid
+  user_id: uuid
+}
+
+"""
+order by max() on columns of table "user_to_groups"
+"""
+input user_to_groups_max_order_by {
+  group_id: order_by
+  id: order_by
+  user_id: order_by
+}
+
+"""aggregate min on columns"""
+type user_to_groups_min_fields {
+  group_id: uuid
+  id: uuid
+  user_id: uuid
+}
+
+"""
+order by min() on columns of table "user_to_groups"
+"""
+input user_to_groups_min_order_by {
+  group_id: order_by
+  id: order_by
+  user_id: order_by
+}
+
+"""
+response of any mutation on the table "user_to_groups"
+"""
+type user_to_groups_mutation_response {
+  """number of affected rows by the mutation"""
+  affected_rows: Int!
+
+  """data of the affected rows by the mutation"""
+  returning: [user_to_groups!]!
+}
+
+"""
+input type for inserting object relation for remote table "user_to_groups"
+"""
+input user_to_groups_obj_rel_insert_input {
+  data: user_to_groups_insert_input!
+  on_conflict: user_to_groups_on_conflict
+}
+
+"""
+on conflict condition type for table "user_to_groups"
+"""
+input user_to_groups_on_conflict {
+  constraint: user_to_groups_constraint!
+  update_columns: [user_to_groups_update_column!]!
+  where: user_to_groups_bool_exp
+}
+
+"""
+ordering options when selecting data from "user_to_groups"
+"""
+input user_to_groups_order_by {
+  group: groups_order_by
+  group_id: order_by
+  id: order_by
+  user: users_order_by
+  user_id: order_by
+}
+
+"""
+primary key columns input for table: "user_to_groups"
+"""
+input user_to_groups_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "user_to_groups"
+"""
+enum user_to_groups_select_column {
+  """column name"""
+  group_id
+
+  """column name"""
+  id
+
+  """column name"""
+  user_id
+}
+
+"""
+input type for updating data in table "user_to_groups"
+"""
+input user_to_groups_set_input {
+  group_id: uuid
+  id: uuid
+  user_id: uuid
+}
+
+"""
+update columns of table "user_to_groups"
+"""
+enum user_to_groups_update_column {
+  """column name"""
+  group_id
+
+  """column name"""
+  id
+
+  """column name"""
+  user_id
+}
+
+"""
+columns and relationships of "users"
+"""
+type users {
+  email: String
+  id: uuid!
+  is_online: String
+  name: String!
+
+  """An object relationship"""
+  refresh_token: refresh_tokens
+  sub: String!
+
+  """An array relationship"""
+  user_to_groups(
+    """distinct select on columns"""
+    distinct_on: [user_to_groups_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_to_groups_order_by!]
+
+    """filter the rows returned"""
+    where: user_to_groups_bool_exp
+  ): [user_to_groups!]!
+
+  """An aggregated array relationship"""
+  user_to_groups_aggregate(
+    """distinct select on columns"""
+    distinct_on: [user_to_groups_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_to_groups_order_by!]
+
+    """filter the rows returned"""
+    where: user_to_groups_bool_exp
+  ): user_to_groups_aggregate!
+}
+
+"""
+aggregated selection of "users"
+"""
+type users_aggregate {
+  aggregate: users_aggregate_fields
+  nodes: [users!]!
+}
+
+"""
+aggregate fields of "users"
+"""
+type users_aggregate_fields {
+  count(columns: [users_select_column!], distinct: Boolean): Int
+  max: users_max_fields
+  min: users_min_fields
+}
+
+"""
+order by aggregate values of table "users"
+"""
+input users_aggregate_order_by {
+  count: order_by
+  max: users_max_order_by
+  min: users_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "users"
+"""
+input users_arr_rel_insert_input {
+  data: [users_insert_input!]!
+  on_conflict: users_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "users". All fields are combined with a logical 'AND'.
+"""
+input users_bool_exp {
+  _and: [users_bool_exp]
+  _not: users_bool_exp
+  _or: [users_bool_exp]
+  email: String_comparison_exp
+  id: uuid_comparison_exp
+  is_online: String_comparison_exp
+  name: String_comparison_exp
+  refresh_token: refresh_tokens_bool_exp
+  sub: String_comparison_exp
+  user_to_groups: user_to_groups_bool_exp
+}
+
+"""
+unique or primary key constraints on table "users"
+"""
+enum users_constraint {
+  """unique or primary key constraint"""
+  users_pkey
+
+  """unique or primary key constraint"""
+  users_sub_key
+}
+
+"""
+input type for inserting data into table "users"
+"""
+input users_insert_input {
+  email: String
+  id: uuid
+  is_online: String
+  name: String
+  refresh_token: refresh_tokens_obj_rel_insert_input
+  sub: String
+  user_to_groups: user_to_groups_arr_rel_insert_input
+}
+
+"""aggregate max on columns"""
+type users_max_fields {
+  email: String
+  id: uuid
+  is_online: String
+  name: String
+  sub: String
+}
+
+"""
+order by max() on columns of table "users"
+"""
+input users_max_order_by {
+  email: order_by
+  id: order_by
+  is_online: order_by
+  name: order_by
+  sub: order_by
+}
+
+"""aggregate min on columns"""
+type users_min_fields {
+  email: String
+  id: uuid
+  is_online: String
+  name: String
+  sub: String
+}
+
+"""
+order by min() on columns of table "users"
+"""
+input users_min_order_by {
+  email: order_by
+  id: order_by
+  is_online: order_by
+  name: order_by
+  sub: order_by
+}
+
+"""
+response of any mutation on the table "users"
+"""
+type users_mutation_response {
+  """number of affected rows by the mutation"""
+  affected_rows: Int!
+
+  """data of the affected rows by the mutation"""
+  returning: [users!]!
+}
+
+"""
+input type for inserting object relation for remote table "users"
+"""
+input users_obj_rel_insert_input {
+  data: users_insert_input!
+  on_conflict: users_on_conflict
+}
+
+"""
+on conflict condition type for table "users"
+"""
+input users_on_conflict {
+  constraint: users_constraint!
+  update_columns: [users_update_column!]!
+  where: users_bool_exp
+}
+
+"""
+ordering options when selecting data from "users"
+"""
+input users_order_by {
+  email: order_by
+  id: order_by
+  is_online: order_by
+  name: order_by
+  refresh_token: refresh_tokens_order_by
+  sub: order_by
+  user_to_groups_aggregate: user_to_groups_aggregate_order_by
+}
+
+"""
+primary key columns input for table: "users"
+"""
+input users_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "users"
+"""
+enum users_select_column {
+  """column name"""
+  email
+
+  """column name"""
+  id
+
+  """column name"""
+  is_online
+
+  """column name"""
+  name
+
+  """column name"""
+  sub
+}
+
+"""
+input type for updating data in table "users"
+"""
+input users_set_input {
+  email: String
+  id: uuid
+  is_online: String
+  name: String
+  sub: String
+}
+
+"""
+update columns of table "users"
+"""
+enum users_update_column {
+  """column name"""
+  email
+
+  """column name"""
+  id
+
+  """column name"""
+  is_online
+
+  """column name"""
+  name
+
+  """column name"""
+  sub
+}
+
+scalar uuid
+
+"""
+expression to compare columns of type uuid. All fields are combined with logical 'AND'.
+"""
+input uuid_comparison_exp {
+  _eq: uuid
+  _gt: uuid
+  _gte: uuid
+  _in: [uuid!]
+  _is_null: Boolean
+  _lt: uuid
+  _lte: uuid
+  _neq: uuid
+  _nin: [uuid!]
+}
+

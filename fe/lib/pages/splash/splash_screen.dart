@@ -1,14 +1,15 @@
 import 'package:fe/data_classes/local_user.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:fe/data_classes/user.dart';
-import 'package:fe/pages/main/main_helpers/main_wrapper.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:fe/stdlib/theme/logo.dart';
 import 'package:flutter/material.dart';
 
+import '../../service_locator.dart';
+
 class SplashScreen extends StatefulWidget {
-  final LocalFileStore _localFileStore = LocalFileStore();
+  final LocalFileStore _localFileStore = getIt<LocalFileStore>();
 
   SplashScreen();
 

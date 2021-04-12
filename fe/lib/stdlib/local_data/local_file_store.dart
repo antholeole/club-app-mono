@@ -3,11 +3,11 @@ import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
 
-enum LocalStorageType { LocalUser }
+enum LocalStorageType { LocalUser, GroupIds }
 
 extension FileName on LocalStorageType {
   String get fileName {
-    return ['local_user'][index];
+    return ['local_user', 'groups'][index];
   }
 }
 
