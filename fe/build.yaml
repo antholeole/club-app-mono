@@ -40,5 +40,6 @@ targets:
         options:
           schema: fe|lib/gql/schema.graphql
           type_overrides:
-            Date:
-              name: DateTime
+            uuid:
+              name: UuidType
+              import: 'package:fe/stdlib/helpers/uuid_type.dart'

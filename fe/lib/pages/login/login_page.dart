@@ -90,10 +90,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _proceedToApp(LocalUser localUser) async {
-    await AutoRouter.of(context).popAndPush(Main(user: localUser));
-  }
-
-  void _testToast() {
-    Toaster.of(context).errorToast('hi');
+    await AutoRouter.of(context).navigate(Main(user: localUser));
   }
 }

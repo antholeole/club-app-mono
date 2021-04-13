@@ -5,16 +5,330 @@ schema {
 }
 
 """
+Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
+"""
+input Boolean_comparison_exp {
+  _eq: Boolean
+  _gt: Boolean
+  _gte: Boolean
+  _in: [Boolean!]
+  _is_null: Boolean
+  _lt: Boolean
+  _lte: Boolean
+  _neq: Boolean
+  _nin: [Boolean!]
+}
+
+"""
+columns and relationships of "group_threads"
+"""
+type group_threads {
+  group_id: uuid!
+  id: uuid!
+
+  """An array relationship"""
+  messages(
+    """distinct select on columns"""
+    distinct_on: [messages_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [messages_order_by!]
+
+    """filter the rows returned"""
+    where: messages_bool_exp
+  ): [messages!]!
+
+  """An aggregate relationship"""
+  messages_aggregate(
+    """distinct select on columns"""
+    distinct_on: [messages_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [messages_order_by!]
+
+    """filter the rows returned"""
+    where: messages_bool_exp
+  ): messages_aggregate!
+  name: String!
+
+  """An array relationship"""
+  user_to_threads(
+    """distinct select on columns"""
+    distinct_on: [user_to_thread_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_to_thread_order_by!]
+
+    """filter the rows returned"""
+    where: user_to_thread_bool_exp
+  ): [user_to_thread!]!
+
+  """An aggregate relationship"""
+  user_to_threads_aggregate(
+    """distinct select on columns"""
+    distinct_on: [user_to_thread_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_to_thread_order_by!]
+
+    """filter the rows returned"""
+    where: user_to_thread_bool_exp
+  ): user_to_thread_aggregate!
+}
+
+"""
+aggregated selection of "group_threads"
+"""
+type group_threads_aggregate {
+  aggregate: group_threads_aggregate_fields
+  nodes: [group_threads!]!
+}
+
+"""
+aggregate fields of "group_threads"
+"""
+type group_threads_aggregate_fields {
+  count(columns: [group_threads_select_column!], distinct: Boolean): Int!
+  max: group_threads_max_fields
+  min: group_threads_min_fields
+}
+
+"""
+order by aggregate values of table "group_threads"
+"""
+input group_threads_aggregate_order_by {
+  count: order_by
+  max: group_threads_max_order_by
+  min: group_threads_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "group_threads"
+"""
+input group_threads_arr_rel_insert_input {
+  data: [group_threads_insert_input!]!
+
+  """on conflict condition"""
+  on_conflict: group_threads_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "group_threads". All fields are combined with a logical 'AND'.
+"""
+input group_threads_bool_exp {
+  _and: [group_threads_bool_exp!]
+  _not: group_threads_bool_exp
+  _or: [group_threads_bool_exp!]
+  group_id: uuid_comparison_exp
+  id: uuid_comparison_exp
+  messages: messages_bool_exp
+  name: String_comparison_exp
+  user_to_threads: user_to_thread_bool_exp
+}
+
+"""
+unique or primary key constraints on table "group_threads"
+"""
+enum group_threads_constraint {
+  """unique or primary key constraint"""
+  group_threads_pkey
+}
+
+"""
+input type for inserting data into table "group_threads"
+"""
+input group_threads_insert_input {
+  group_id: uuid
+  id: uuid
+  messages: messages_arr_rel_insert_input
+  name: String
+  user_to_threads: user_to_thread_arr_rel_insert_input
+}
+
+"""aggregate max on columns"""
+type group_threads_max_fields {
+  group_id: uuid
+  id: uuid
+  name: String
+}
+
+"""
+order by max() on columns of table "group_threads"
+"""
+input group_threads_max_order_by {
+  group_id: order_by
+  id: order_by
+  name: order_by
+}
+
+"""aggregate min on columns"""
+type group_threads_min_fields {
+  group_id: uuid
+  id: uuid
+  name: String
+}
+
+"""
+order by min() on columns of table "group_threads"
+"""
+input group_threads_min_order_by {
+  group_id: order_by
+  id: order_by
+  name: order_by
+}
+
+"""
+response of any mutation on the table "group_threads"
+"""
+type group_threads_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [group_threads!]!
+}
+
+"""
+input type for inserting object relation for remote table "group_threads"
+"""
+input group_threads_obj_rel_insert_input {
+  data: group_threads_insert_input!
+
+  """on conflict condition"""
+  on_conflict: group_threads_on_conflict
+}
+
+"""
+on conflict condition type for table "group_threads"
+"""
+input group_threads_on_conflict {
+  constraint: group_threads_constraint!
+  update_columns: [group_threads_update_column!]!
+  where: group_threads_bool_exp
+}
+
+"""Ordering options when selecting data from "group_threads"."""
+input group_threads_order_by {
+  group_id: order_by
+  id: order_by
+  messages_aggregate: messages_aggregate_order_by
+  name: order_by
+  user_to_threads_aggregate: user_to_thread_aggregate_order_by
+}
+
+"""primary key columns input for table: group_threads"""
+input group_threads_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "group_threads"
+"""
+enum group_threads_select_column {
+  """column name"""
+  group_id
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+}
+
+"""
+input type for updating data in table "group_threads"
+"""
+input group_threads_set_input {
+  group_id: uuid
+  id: uuid
+  name: String
+}
+
+"""
+update columns of table "group_threads"
+"""
+enum group_threads_update_column {
+  """column name"""
+  group_id
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+}
+
+"""
 columns and relationships of "groups"
 """
 type groups {
   group_name: String!
+
+  """An array relationship"""
+  group_threads(
+    """distinct select on columns"""
+    distinct_on: [group_threads_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [group_threads_order_by!]
+
+    """filter the rows returned"""
+    where: group_threads_bool_exp
+  ): [group_threads!]!
+
+  """An aggregate relationship"""
+  group_threads_aggregate(
+    """distinct select on columns"""
+    distinct_on: [group_threads_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [group_threads_order_by!]
+
+    """filter the rows returned"""
+    where: group_threads_bool_exp
+  ): group_threads_aggregate!
   id: uuid!
 
   """An array relationship"""
   user_to_groups(
     """distinct select on columns"""
-    distinct_on: [user_to_groups_select_column!]
+    distinct_on: [user_to_group_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -23,16 +337,16 @@ type groups {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [user_to_groups_order_by!]
+    order_by: [user_to_group_order_by!]
 
     """filter the rows returned"""
-    where: user_to_groups_bool_exp
-  ): [user_to_groups!]!
+    where: user_to_group_bool_exp
+  ): [user_to_group!]!
 
-  """An aggregated array relationship"""
+  """An aggregate relationship"""
   user_to_groups_aggregate(
     """distinct select on columns"""
-    distinct_on: [user_to_groups_select_column!]
+    distinct_on: [user_to_group_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -41,11 +355,11 @@ type groups {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [user_to_groups_order_by!]
+    order_by: [user_to_group_order_by!]
 
     """filter the rows returned"""
-    where: user_to_groups_bool_exp
-  ): user_to_groups_aggregate!
+    where: user_to_group_bool_exp
+  ): user_to_group_aggregate!
 }
 
 """
@@ -60,38 +374,22 @@ type groups_aggregate {
 aggregate fields of "groups"
 """
 type groups_aggregate_fields {
-  count(columns: [groups_select_column!], distinct: Boolean): Int
+  count(columns: [groups_select_column!], distinct: Boolean): Int!
   max: groups_max_fields
   min: groups_min_fields
-}
-
-"""
-order by aggregate values of table "groups"
-"""
-input groups_aggregate_order_by {
-  count: order_by
-  max: groups_max_order_by
-  min: groups_min_order_by
-}
-
-"""
-input type for inserting array relation for remote table "groups"
-"""
-input groups_arr_rel_insert_input {
-  data: [groups_insert_input!]!
-  on_conflict: groups_on_conflict
 }
 
 """
 Boolean expression to filter rows from the table "groups". All fields are combined with a logical 'AND'.
 """
 input groups_bool_exp {
-  _and: [groups_bool_exp]
+  _and: [groups_bool_exp!]
   _not: groups_bool_exp
-  _or: [groups_bool_exp]
+  _or: [groups_bool_exp!]
   group_name: String_comparison_exp
+  group_threads: group_threads_bool_exp
   id: uuid_comparison_exp
-  user_to_groups: user_to_groups_bool_exp
+  user_to_groups: user_to_group_bool_exp
 }
 
 """
@@ -107,22 +405,15 @@ input type for inserting data into table "groups"
 """
 input groups_insert_input {
   group_name: String
+  group_threads: group_threads_arr_rel_insert_input
   id: uuid
-  user_to_groups: user_to_groups_arr_rel_insert_input
+  user_to_groups: user_to_group_arr_rel_insert_input
 }
 
 """aggregate max on columns"""
 type groups_max_fields {
   group_name: String
   id: uuid
-}
-
-"""
-order by max() on columns of table "groups"
-"""
-input groups_max_order_by {
-  group_name: order_by
-  id: order_by
 }
 
 """aggregate min on columns"""
@@ -132,21 +423,13 @@ type groups_min_fields {
 }
 
 """
-order by min() on columns of table "groups"
-"""
-input groups_min_order_by {
-  group_name: order_by
-  id: order_by
-}
-
-"""
 response of any mutation on the table "groups"
 """
 type groups_mutation_response {
-  """number of affected rows by the mutation"""
+  """number of rows affected by the mutation"""
   affected_rows: Int!
 
-  """data of the affected rows by the mutation"""
+  """data from the rows affected by the mutation"""
   returning: [groups!]!
 }
 
@@ -155,6 +438,8 @@ input type for inserting object relation for remote table "groups"
 """
 input groups_obj_rel_insert_input {
   data: groups_insert_input!
+
+  """on conflict condition"""
   on_conflict: groups_on_conflict
 }
 
@@ -167,18 +452,15 @@ input groups_on_conflict {
   where: groups_bool_exp
 }
 
-"""
-ordering options when selecting data from "groups"
-"""
+"""Ordering options when selecting data from "groups"."""
 input groups_order_by {
   group_name: order_by
+  group_threads_aggregate: group_threads_aggregate_order_by
   id: order_by
-  user_to_groups_aggregate: user_to_groups_aggregate_order_by
+  user_to_groups_aggregate: user_to_group_aggregate_order_by
 }
 
-"""
-primary key columns input for table: "groups"
-"""
+"""primary key columns input for table: groups"""
 input groups_pk_columns_input {
   id: uuid!
 }
@@ -213,8 +495,271 @@ enum groups_update_column {
   id
 }
 
+"""
+columns and relationships of "messages"
+"""
+type messages {
+  created_at: timestamptz!
+  deleted: Boolean!
+  edited: Boolean!
+
+  """An object relationship"""
+  group_thread: group_threads!
+  id: uuid!
+  is_image: Boolean!
+  message: String!
+  thread_id: uuid!
+
+  """An object relationship"""
+  user: users!
+  user_sent: uuid!
+}
+
+"""
+aggregated selection of "messages"
+"""
+type messages_aggregate {
+  aggregate: messages_aggregate_fields
+  nodes: [messages!]!
+}
+
+"""
+aggregate fields of "messages"
+"""
+type messages_aggregate_fields {
+  count(columns: [messages_select_column!], distinct: Boolean): Int!
+  max: messages_max_fields
+  min: messages_min_fields
+}
+
+"""
+order by aggregate values of table "messages"
+"""
+input messages_aggregate_order_by {
+  count: order_by
+  max: messages_max_order_by
+  min: messages_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "messages"
+"""
+input messages_arr_rel_insert_input {
+  data: [messages_insert_input!]!
+
+  """on conflict condition"""
+  on_conflict: messages_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "messages". All fields are combined with a logical 'AND'.
+"""
+input messages_bool_exp {
+  _and: [messages_bool_exp!]
+  _not: messages_bool_exp
+  _or: [messages_bool_exp!]
+  created_at: timestamptz_comparison_exp
+  deleted: Boolean_comparison_exp
+  edited: Boolean_comparison_exp
+  group_thread: group_threads_bool_exp
+  id: uuid_comparison_exp
+  is_image: Boolean_comparison_exp
+  message: String_comparison_exp
+  thread_id: uuid_comparison_exp
+  user: users_bool_exp
+  user_sent: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "messages"
+"""
+enum messages_constraint {
+  """unique or primary key constraint"""
+  messages_pkey
+}
+
+"""
+input type for inserting data into table "messages"
+"""
+input messages_insert_input {
+  created_at: timestamptz
+  deleted: Boolean
+  edited: Boolean
+  group_thread: group_threads_obj_rel_insert_input
+  id: uuid
+  is_image: Boolean
+  message: String
+  thread_id: uuid
+  user: users_obj_rel_insert_input
+  user_sent: uuid
+}
+
+"""aggregate max on columns"""
+type messages_max_fields {
+  created_at: timestamptz
+  id: uuid
+  message: String
+  thread_id: uuid
+  user_sent: uuid
+}
+
+"""
+order by max() on columns of table "messages"
+"""
+input messages_max_order_by {
+  created_at: order_by
+  id: order_by
+  message: order_by
+  thread_id: order_by
+  user_sent: order_by
+}
+
+"""aggregate min on columns"""
+type messages_min_fields {
+  created_at: timestamptz
+  id: uuid
+  message: String
+  thread_id: uuid
+  user_sent: uuid
+}
+
+"""
+order by min() on columns of table "messages"
+"""
+input messages_min_order_by {
+  created_at: order_by
+  id: order_by
+  message: order_by
+  thread_id: order_by
+  user_sent: order_by
+}
+
+"""
+response of any mutation on the table "messages"
+"""
+type messages_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [messages!]!
+}
+
+"""
+on conflict condition type for table "messages"
+"""
+input messages_on_conflict {
+  constraint: messages_constraint!
+  update_columns: [messages_update_column!]!
+  where: messages_bool_exp
+}
+
+"""Ordering options when selecting data from "messages"."""
+input messages_order_by {
+  created_at: order_by
+  deleted: order_by
+  edited: order_by
+  group_thread: group_threads_order_by
+  id: order_by
+  is_image: order_by
+  message: order_by
+  thread_id: order_by
+  user: users_order_by
+  user_sent: order_by
+}
+
+"""primary key columns input for table: messages"""
+input messages_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "messages"
+"""
+enum messages_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  deleted
+
+  """column name"""
+  edited
+
+  """column name"""
+  id
+
+  """column name"""
+  is_image
+
+  """column name"""
+  message
+
+  """column name"""
+  thread_id
+
+  """column name"""
+  user_sent
+}
+
+"""
+input type for updating data in table "messages"
+"""
+input messages_set_input {
+  created_at: timestamptz
+  deleted: Boolean
+  edited: Boolean
+  id: uuid
+  is_image: Boolean
+  message: String
+  thread_id: uuid
+  user_sent: uuid
+}
+
+"""
+update columns of table "messages"
+"""
+enum messages_update_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  deleted
+
+  """column name"""
+  edited
+
+  """column name"""
+  id
+
+  """column name"""
+  is_image
+
+  """column name"""
+  message
+
+  """column name"""
+  thread_id
+
+  """column name"""
+  user_sent
+}
+
 """mutation root"""
 type mutation_root {
+  """
+  delete data from the table: "group_threads"
+  """
+  delete_group_threads(
+    """filter the rows which have to be deleted"""
+    where: group_threads_bool_exp!
+  ): group_threads_mutation_response
+
+  """
+  delete single row from the table: "group_threads"
+  """
+  delete_group_threads_by_pk(id: uuid!): group_threads
+
   """
   delete data from the table: "groups"
   """
@@ -229,30 +774,43 @@ type mutation_root {
   delete_groups_by_pk(id: uuid!): groups
 
   """
-  delete data from the table: "refresh_tokens"
+  delete data from the table: "messages"
   """
-  delete_refresh_tokens(
+  delete_messages(
     """filter the rows which have to be deleted"""
-    where: refresh_tokens_bool_exp!
-  ): refresh_tokens_mutation_response
+    where: messages_bool_exp!
+  ): messages_mutation_response
 
   """
-  delete single row from the table: "refresh_tokens"
+  delete single row from the table: "messages"
   """
-  delete_refresh_tokens_by_pk(id: uuid!): refresh_tokens
+  delete_messages_by_pk(id: uuid!): messages
 
   """
-  delete data from the table: "user_to_groups"
+  delete data from the table: "user_to_group"
   """
-  delete_user_to_groups(
+  delete_user_to_group(
     """filter the rows which have to be deleted"""
-    where: user_to_groups_bool_exp!
-  ): user_to_groups_mutation_response
+    where: user_to_group_bool_exp!
+  ): user_to_group_mutation_response
 
   """
-  delete single row from the table: "user_to_groups"
+  delete single row from the table: "user_to_group"
   """
-  delete_user_to_groups_by_pk(id: uuid!): user_to_groups
+  delete_user_to_group_by_pk(id: uuid!): user_to_group
+
+  """
+  delete data from the table: "user_to_thread"
+  """
+  delete_user_to_thread(
+    """filter the rows which have to be deleted"""
+    where: user_to_thread_bool_exp!
+  ): user_to_thread_mutation_response
+
+  """
+  delete single row from the table: "user_to_thread"
+  """
+  delete_user_to_thread_by_pk(id: uuid!): user_to_thread
 
   """
   delete data from the table: "users"
@@ -266,6 +824,28 @@ type mutation_root {
   delete single row from the table: "users"
   """
   delete_users_by_pk(id: uuid!): users
+
+  """
+  insert data into the table: "group_threads"
+  """
+  insert_group_threads(
+    """the rows to be inserted"""
+    objects: [group_threads_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: group_threads_on_conflict
+  ): group_threads_mutation_response
+
+  """
+  insert a single row into the table: "group_threads"
+  """
+  insert_group_threads_one(
+    """the row to be inserted"""
+    object: group_threads_insert_input!
+
+    """on conflict condition"""
+    on_conflict: group_threads_on_conflict
+  ): group_threads
 
   """
   insert data into the table: "groups"
@@ -290,48 +870,70 @@ type mutation_root {
   ): groups
 
   """
-  insert data into the table: "refresh_tokens"
+  insert data into the table: "messages"
   """
-  insert_refresh_tokens(
+  insert_messages(
     """the rows to be inserted"""
-    objects: [refresh_tokens_insert_input!]!
+    objects: [messages_insert_input!]!
 
     """on conflict condition"""
-    on_conflict: refresh_tokens_on_conflict
-  ): refresh_tokens_mutation_response
+    on_conflict: messages_on_conflict
+  ): messages_mutation_response
 
   """
-  insert a single row into the table: "refresh_tokens"
+  insert a single row into the table: "messages"
   """
-  insert_refresh_tokens_one(
+  insert_messages_one(
     """the row to be inserted"""
-    object: refresh_tokens_insert_input!
+    object: messages_insert_input!
 
     """on conflict condition"""
-    on_conflict: refresh_tokens_on_conflict
-  ): refresh_tokens
+    on_conflict: messages_on_conflict
+  ): messages
 
   """
-  insert data into the table: "user_to_groups"
+  insert data into the table: "user_to_group"
   """
-  insert_user_to_groups(
+  insert_user_to_group(
     """the rows to be inserted"""
-    objects: [user_to_groups_insert_input!]!
+    objects: [user_to_group_insert_input!]!
 
     """on conflict condition"""
-    on_conflict: user_to_groups_on_conflict
-  ): user_to_groups_mutation_response
+    on_conflict: user_to_group_on_conflict
+  ): user_to_group_mutation_response
 
   """
-  insert a single row into the table: "user_to_groups"
+  insert a single row into the table: "user_to_group"
   """
-  insert_user_to_groups_one(
+  insert_user_to_group_one(
     """the row to be inserted"""
-    object: user_to_groups_insert_input!
+    object: user_to_group_insert_input!
 
     """on conflict condition"""
-    on_conflict: user_to_groups_on_conflict
-  ): user_to_groups
+    on_conflict: user_to_group_on_conflict
+  ): user_to_group
+
+  """
+  insert data into the table: "user_to_thread"
+  """
+  insert_user_to_thread(
+    """the rows to be inserted"""
+    objects: [user_to_thread_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: user_to_thread_on_conflict
+  ): user_to_thread_mutation_response
+
+  """
+  insert a single row into the table: "user_to_thread"
+  """
+  insert_user_to_thread_one(
+    """the row to be inserted"""
+    object: user_to_thread_insert_input!
+
+    """on conflict condition"""
+    on_conflict: user_to_thread_on_conflict
+  ): user_to_thread
 
   """
   insert data into the table: "users"
@@ -356,6 +958,26 @@ type mutation_root {
   ): users
 
   """
+  update data of the table: "group_threads"
+  """
+  update_group_threads(
+    """sets the columns of the filtered rows to the given values"""
+    _set: group_threads_set_input
+
+    """filter the rows which have to be updated"""
+    where: group_threads_bool_exp!
+  ): group_threads_mutation_response
+
+  """
+  update single row of the table: "group_threads"
+  """
+  update_group_threads_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: group_threads_set_input
+    pk_columns: group_threads_pk_columns_input!
+  ): group_threads
+
+  """
   update data of the table: "groups"
   """
   update_groups(
@@ -376,44 +998,64 @@ type mutation_root {
   ): groups
 
   """
-  update data of the table: "refresh_tokens"
+  update data of the table: "messages"
   """
-  update_refresh_tokens(
+  update_messages(
     """sets the columns of the filtered rows to the given values"""
-    _set: refresh_tokens_set_input
+    _set: messages_set_input
 
     """filter the rows which have to be updated"""
-    where: refresh_tokens_bool_exp!
-  ): refresh_tokens_mutation_response
+    where: messages_bool_exp!
+  ): messages_mutation_response
 
   """
-  update single row of the table: "refresh_tokens"
+  update single row of the table: "messages"
   """
-  update_refresh_tokens_by_pk(
+  update_messages_by_pk(
     """sets the columns of the filtered rows to the given values"""
-    _set: refresh_tokens_set_input
-    pk_columns: refresh_tokens_pk_columns_input!
-  ): refresh_tokens
+    _set: messages_set_input
+    pk_columns: messages_pk_columns_input!
+  ): messages
 
   """
-  update data of the table: "user_to_groups"
+  update data of the table: "user_to_group"
   """
-  update_user_to_groups(
+  update_user_to_group(
     """sets the columns of the filtered rows to the given values"""
-    _set: user_to_groups_set_input
+    _set: user_to_group_set_input
 
     """filter the rows which have to be updated"""
-    where: user_to_groups_bool_exp!
-  ): user_to_groups_mutation_response
+    where: user_to_group_bool_exp!
+  ): user_to_group_mutation_response
 
   """
-  update single row of the table: "user_to_groups"
+  update single row of the table: "user_to_group"
   """
-  update_user_to_groups_by_pk(
+  update_user_to_group_by_pk(
     """sets the columns of the filtered rows to the given values"""
-    _set: user_to_groups_set_input
-    pk_columns: user_to_groups_pk_columns_input!
-  ): user_to_groups
+    _set: user_to_group_set_input
+    pk_columns: user_to_group_pk_columns_input!
+  ): user_to_group
+
+  """
+  update data of the table: "user_to_thread"
+  """
+  update_user_to_thread(
+    """sets the columns of the filtered rows to the given values"""
+    _set: user_to_thread_set_input
+
+    """filter the rows which have to be updated"""
+    where: user_to_thread_bool_exp!
+  ): user_to_thread_mutation_response
+
+  """
+  update single row of the table: "user_to_thread"
+  """
+  update_user_to_thread_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: user_to_thread_set_input
+    pk_columns: user_to_thread_pk_columns_input!
+  ): user_to_thread
 
   """
   update data of the table: "users"
@@ -438,27 +1080,65 @@ type mutation_root {
 
 """column ordering options"""
 enum order_by {
-  """in the ascending order, nulls last"""
+  """in ascending order, nulls last"""
   asc
 
-  """in the ascending order, nulls first"""
+  """in ascending order, nulls first"""
   asc_nulls_first
 
-  """in the ascending order, nulls last"""
+  """in ascending order, nulls last"""
   asc_nulls_last
 
-  """in the descending order, nulls first"""
+  """in descending order, nulls first"""
   desc
 
-  """in the descending order, nulls first"""
+  """in descending order, nulls first"""
   desc_nulls_first
 
-  """in the descending order, nulls last"""
+  """in descending order, nulls last"""
   desc_nulls_last
 }
 
-"""query root"""
 type query_root {
+  """An array relationship"""
+  group_threads(
+    """distinct select on columns"""
+    distinct_on: [group_threads_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [group_threads_order_by!]
+
+    """filter the rows returned"""
+    where: group_threads_bool_exp
+  ): [group_threads!]!
+
+  """An aggregate relationship"""
+  group_threads_aggregate(
+    """distinct select on columns"""
+    distinct_on: [group_threads_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [group_threads_order_by!]
+
+    """filter the rows returned"""
+    where: group_threads_bool_exp
+  ): group_threads_aggregate!
+
+  """fetch data from the table: "group_threads" using primary key columns"""
+  group_threads_by_pk(id: uuid!): group_threads
+
   """
   fetch data from the table: "groups"
   """
@@ -502,12 +1182,10 @@ type query_root {
   """fetch data from the table: "groups" using primary key columns"""
   groups_by_pk(id: uuid!): groups
 
-  """
-  fetch data from the table: "refresh_tokens"
-  """
-  refresh_tokens(
+  """An array relationship"""
+  messages(
     """distinct select on columns"""
-    distinct_on: [refresh_tokens_select_column!]
+    distinct_on: [messages_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -516,18 +1194,16 @@ type query_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [refresh_tokens_order_by!]
+    order_by: [messages_order_by!]
 
     """filter the rows returned"""
-    where: refresh_tokens_bool_exp
-  ): [refresh_tokens!]!
+    where: messages_bool_exp
+  ): [messages!]!
 
-  """
-  fetch aggregated fields from the table: "refresh_tokens"
-  """
-  refresh_tokens_aggregate(
+  """An aggregate relationship"""
+  messages_aggregate(
     """distinct select on columns"""
-    distinct_on: [refresh_tokens_select_column!]
+    distinct_on: [messages_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -536,21 +1212,21 @@ type query_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [refresh_tokens_order_by!]
+    order_by: [messages_order_by!]
 
     """filter the rows returned"""
-    where: refresh_tokens_bool_exp
-  ): refresh_tokens_aggregate!
+    where: messages_bool_exp
+  ): messages_aggregate!
 
-  """fetch data from the table: "refresh_tokens" using primary key columns"""
-  refresh_tokens_by_pk(id: uuid!): refresh_tokens
+  """fetch data from the table: "messages" using primary key columns"""
+  messages_by_pk(id: uuid!): messages
 
   """
-  fetch data from the table: "user_to_groups"
+  fetch data from the table: "user_to_group"
   """
-  user_to_groups(
+  user_to_group(
     """distinct select on columns"""
-    distinct_on: [user_to_groups_select_column!]
+    distinct_on: [user_to_group_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -559,18 +1235,18 @@ type query_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [user_to_groups_order_by!]
+    order_by: [user_to_group_order_by!]
 
     """filter the rows returned"""
-    where: user_to_groups_bool_exp
-  ): [user_to_groups!]!
+    where: user_to_group_bool_exp
+  ): [user_to_group!]!
 
   """
-  fetch aggregated fields from the table: "user_to_groups"
+  fetch aggregated fields from the table: "user_to_group"
   """
-  user_to_groups_aggregate(
+  user_to_group_aggregate(
     """distinct select on columns"""
-    distinct_on: [user_to_groups_select_column!]
+    distinct_on: [user_to_group_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -579,14 +1255,57 @@ type query_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [user_to_groups_order_by!]
+    order_by: [user_to_group_order_by!]
 
     """filter the rows returned"""
-    where: user_to_groups_bool_exp
-  ): user_to_groups_aggregate!
+    where: user_to_group_bool_exp
+  ): user_to_group_aggregate!
 
-  """fetch data from the table: "user_to_groups" using primary key columns"""
-  user_to_groups_by_pk(id: uuid!): user_to_groups
+  """fetch data from the table: "user_to_group" using primary key columns"""
+  user_to_group_by_pk(id: uuid!): user_to_group
+
+  """
+  fetch data from the table: "user_to_thread"
+  """
+  user_to_thread(
+    """distinct select on columns"""
+    distinct_on: [user_to_thread_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_to_thread_order_by!]
+
+    """filter the rows returned"""
+    where: user_to_thread_bool_exp
+  ): [user_to_thread!]!
+
+  """
+  fetch aggregated fields from the table: "user_to_thread"
+  """
+  user_to_thread_aggregate(
+    """distinct select on columns"""
+    distinct_on: [user_to_thread_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_to_thread_order_by!]
+
+    """filter the rows returned"""
+    where: user_to_thread_bool_exp
+  ): user_to_thread_aggregate!
+
+  """fetch data from the table: "user_to_thread" using primary key columns"""
+  user_to_thread_by_pk(id: uuid!): user_to_thread
 
   """
   fetch data from the table: "users"
@@ -633,222 +1352,98 @@ type query_root {
 }
 
 """
-columns and relationships of "refresh_tokens"
-"""
-type refresh_tokens {
-  id: uuid!
-  refresh_token: String!
-
-  """An object relationship"""
-  user: users!
-  user_id: uuid!
-}
-
-"""
-aggregated selection of "refresh_tokens"
-"""
-type refresh_tokens_aggregate {
-  aggregate: refresh_tokens_aggregate_fields
-  nodes: [refresh_tokens!]!
-}
-
-"""
-aggregate fields of "refresh_tokens"
-"""
-type refresh_tokens_aggregate_fields {
-  count(columns: [refresh_tokens_select_column!], distinct: Boolean): Int
-  max: refresh_tokens_max_fields
-  min: refresh_tokens_min_fields
-}
-
-"""
-order by aggregate values of table "refresh_tokens"
-"""
-input refresh_tokens_aggregate_order_by {
-  count: order_by
-  max: refresh_tokens_max_order_by
-  min: refresh_tokens_min_order_by
-}
-
-"""
-input type for inserting array relation for remote table "refresh_tokens"
-"""
-input refresh_tokens_arr_rel_insert_input {
-  data: [refresh_tokens_insert_input!]!
-  on_conflict: refresh_tokens_on_conflict
-}
-
-"""
-Boolean expression to filter rows from the table "refresh_tokens". All fields are combined with a logical 'AND'.
-"""
-input refresh_tokens_bool_exp {
-  _and: [refresh_tokens_bool_exp]
-  _not: refresh_tokens_bool_exp
-  _or: [refresh_tokens_bool_exp]
-  id: uuid_comparison_exp
-  refresh_token: String_comparison_exp
-  user: users_bool_exp
-  user_id: uuid_comparison_exp
-}
-
-"""
-unique or primary key constraints on table "refresh_tokens"
-"""
-enum refresh_tokens_constraint {
-  """unique or primary key constraint"""
-  refresh_tokens_pkey
-
-  """unique or primary key constraint"""
-  refresh_tokens_user_id_key
-}
-
-"""
-input type for inserting data into table "refresh_tokens"
-"""
-input refresh_tokens_insert_input {
-  id: uuid
-  refresh_token: String
-  user: users_obj_rel_insert_input
-  user_id: uuid
-}
-
-"""aggregate max on columns"""
-type refresh_tokens_max_fields {
-  id: uuid
-  refresh_token: String
-  user_id: uuid
-}
-
-"""
-order by max() on columns of table "refresh_tokens"
-"""
-input refresh_tokens_max_order_by {
-  id: order_by
-  refresh_token: order_by
-  user_id: order_by
-}
-
-"""aggregate min on columns"""
-type refresh_tokens_min_fields {
-  id: uuid
-  refresh_token: String
-  user_id: uuid
-}
-
-"""
-order by min() on columns of table "refresh_tokens"
-"""
-input refresh_tokens_min_order_by {
-  id: order_by
-  refresh_token: order_by
-  user_id: order_by
-}
-
-"""
-response of any mutation on the table "refresh_tokens"
-"""
-type refresh_tokens_mutation_response {
-  """number of affected rows by the mutation"""
-  affected_rows: Int!
-
-  """data of the affected rows by the mutation"""
-  returning: [refresh_tokens!]!
-}
-
-"""
-input type for inserting object relation for remote table "refresh_tokens"
-"""
-input refresh_tokens_obj_rel_insert_input {
-  data: refresh_tokens_insert_input!
-  on_conflict: refresh_tokens_on_conflict
-}
-
-"""
-on conflict condition type for table "refresh_tokens"
-"""
-input refresh_tokens_on_conflict {
-  constraint: refresh_tokens_constraint!
-  update_columns: [refresh_tokens_update_column!]!
-  where: refresh_tokens_bool_exp
-}
-
-"""
-ordering options when selecting data from "refresh_tokens"
-"""
-input refresh_tokens_order_by {
-  id: order_by
-  refresh_token: order_by
-  user: users_order_by
-  user_id: order_by
-}
-
-"""
-primary key columns input for table: "refresh_tokens"
-"""
-input refresh_tokens_pk_columns_input {
-  id: uuid!
-}
-
-"""
-select columns of table "refresh_tokens"
-"""
-enum refresh_tokens_select_column {
-  """column name"""
-  id
-
-  """column name"""
-  refresh_token
-
-  """column name"""
-  user_id
-}
-
-"""
-input type for updating data in table "refresh_tokens"
-"""
-input refresh_tokens_set_input {
-  id: uuid
-  refresh_token: String
-  user_id: uuid
-}
-
-"""
-update columns of table "refresh_tokens"
-"""
-enum refresh_tokens_update_column {
-  """column name"""
-  id
-
-  """column name"""
-  refresh_token
-
-  """column name"""
-  user_id
-}
-
-"""
-expression to compare columns of type String. All fields are combined with logical 'AND'.
+Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'.
 """
 input String_comparison_exp {
   _eq: String
   _gt: String
   _gte: String
+
+  """does the column match the given case-insensitive pattern"""
   _ilike: String
   _in: [String!]
+
+  """
+  does the column match the given POSIX regular expression, case insensitive
+  """
+  _iregex: String
   _is_null: Boolean
+
+  """does the column match the given pattern"""
   _like: String
   _lt: String
   _lte: String
   _neq: String
+
+  """does the column NOT match the given case-insensitive pattern"""
   _nilike: String
   _nin: [String!]
+
+  """
+  does the column NOT match the given POSIX regular expression, case insensitive
+  """
+  _niregex: String
+
+  """does the column NOT match the given pattern"""
   _nlike: String
+
+  """
+  does the column NOT match the given POSIX regular expression, case sensitive
+  """
+  _nregex: String
+
+  """does the column NOT match the given SQL regular expression"""
   _nsimilar: String
+
+  """
+  does the column match the given POSIX regular expression, case sensitive
+  """
+  _regex: String
+
+  """does the column match the given SQL regular expression"""
   _similar: String
 }
 
-"""subscription root"""
 type subscription_root {
+  """An array relationship"""
+  group_threads(
+    """distinct select on columns"""
+    distinct_on: [group_threads_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [group_threads_order_by!]
+
+    """filter the rows returned"""
+    where: group_threads_bool_exp
+  ): [group_threads!]!
+
+  """An aggregate relationship"""
+  group_threads_aggregate(
+    """distinct select on columns"""
+    distinct_on: [group_threads_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [group_threads_order_by!]
+
+    """filter the rows returned"""
+    where: group_threads_bool_exp
+  ): group_threads_aggregate!
+
+  """fetch data from the table: "group_threads" using primary key columns"""
+  group_threads_by_pk(id: uuid!): group_threads
+
   """
   fetch data from the table: "groups"
   """
@@ -892,12 +1487,10 @@ type subscription_root {
   """fetch data from the table: "groups" using primary key columns"""
   groups_by_pk(id: uuid!): groups
 
-  """
-  fetch data from the table: "refresh_tokens"
-  """
-  refresh_tokens(
+  """An array relationship"""
+  messages(
     """distinct select on columns"""
-    distinct_on: [refresh_tokens_select_column!]
+    distinct_on: [messages_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -906,18 +1499,16 @@ type subscription_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [refresh_tokens_order_by!]
+    order_by: [messages_order_by!]
 
     """filter the rows returned"""
-    where: refresh_tokens_bool_exp
-  ): [refresh_tokens!]!
+    where: messages_bool_exp
+  ): [messages!]!
 
-  """
-  fetch aggregated fields from the table: "refresh_tokens"
-  """
-  refresh_tokens_aggregate(
+  """An aggregate relationship"""
+  messages_aggregate(
     """distinct select on columns"""
-    distinct_on: [refresh_tokens_select_column!]
+    distinct_on: [messages_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -926,21 +1517,21 @@ type subscription_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [refresh_tokens_order_by!]
+    order_by: [messages_order_by!]
 
     """filter the rows returned"""
-    where: refresh_tokens_bool_exp
-  ): refresh_tokens_aggregate!
+    where: messages_bool_exp
+  ): messages_aggregate!
 
-  """fetch data from the table: "refresh_tokens" using primary key columns"""
-  refresh_tokens_by_pk(id: uuid!): refresh_tokens
+  """fetch data from the table: "messages" using primary key columns"""
+  messages_by_pk(id: uuid!): messages
 
   """
-  fetch data from the table: "user_to_groups"
+  fetch data from the table: "user_to_group"
   """
-  user_to_groups(
+  user_to_group(
     """distinct select on columns"""
-    distinct_on: [user_to_groups_select_column!]
+    distinct_on: [user_to_group_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -949,18 +1540,18 @@ type subscription_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [user_to_groups_order_by!]
+    order_by: [user_to_group_order_by!]
 
     """filter the rows returned"""
-    where: user_to_groups_bool_exp
-  ): [user_to_groups!]!
+    where: user_to_group_bool_exp
+  ): [user_to_group!]!
 
   """
-  fetch aggregated fields from the table: "user_to_groups"
+  fetch aggregated fields from the table: "user_to_group"
   """
-  user_to_groups_aggregate(
+  user_to_group_aggregate(
     """distinct select on columns"""
-    distinct_on: [user_to_groups_select_column!]
+    distinct_on: [user_to_group_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -969,14 +1560,57 @@ type subscription_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [user_to_groups_order_by!]
+    order_by: [user_to_group_order_by!]
 
     """filter the rows returned"""
-    where: user_to_groups_bool_exp
-  ): user_to_groups_aggregate!
+    where: user_to_group_bool_exp
+  ): user_to_group_aggregate!
 
-  """fetch data from the table: "user_to_groups" using primary key columns"""
-  user_to_groups_by_pk(id: uuid!): user_to_groups
+  """fetch data from the table: "user_to_group" using primary key columns"""
+  user_to_group_by_pk(id: uuid!): user_to_group
+
+  """
+  fetch data from the table: "user_to_thread"
+  """
+  user_to_thread(
+    """distinct select on columns"""
+    distinct_on: [user_to_thread_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_to_thread_order_by!]
+
+    """filter the rows returned"""
+    where: user_to_thread_bool_exp
+  ): [user_to_thread!]!
+
+  """
+  fetch aggregated fields from the table: "user_to_thread"
+  """
+  user_to_thread_aggregate(
+    """distinct select on columns"""
+    distinct_on: [user_to_thread_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_to_thread_order_by!]
+
+    """filter the rows returned"""
+    where: user_to_thread_bool_exp
+  ): user_to_thread_aggregate!
+
+  """fetch data from the table: "user_to_thread" using primary key columns"""
+  user_to_thread_by_pk(id: uuid!): user_to_thread
 
   """
   fetch data from the table: "users"
@@ -1022,10 +1656,29 @@ type subscription_root {
   users_by_pk(id: uuid!): users
 }
 
+scalar timestamptz
+
 """
-columns and relationships of "user_to_groups"
+Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'.
 """
-type user_to_groups {
+input timestamptz_comparison_exp {
+  _eq: timestamptz
+  _gt: timestamptz
+  _gte: timestamptz
+  _in: [timestamptz!]
+  _is_null: Boolean
+  _lt: timestamptz
+  _lte: timestamptz
+  _neq: timestamptz
+  _nin: [timestamptz!]
+}
+
+"""
+columns and relationships of "user_to_group"
+"""
+type user_to_group {
+  admin: Boolean!
+
   """An object relationship"""
   group: groups!
   group_id: uuid!
@@ -1037,46 +1690,49 @@ type user_to_groups {
 }
 
 """
-aggregated selection of "user_to_groups"
+aggregated selection of "user_to_group"
 """
-type user_to_groups_aggregate {
-  aggregate: user_to_groups_aggregate_fields
-  nodes: [user_to_groups!]!
+type user_to_group_aggregate {
+  aggregate: user_to_group_aggregate_fields
+  nodes: [user_to_group!]!
 }
 
 """
-aggregate fields of "user_to_groups"
+aggregate fields of "user_to_group"
 """
-type user_to_groups_aggregate_fields {
-  count(columns: [user_to_groups_select_column!], distinct: Boolean): Int
-  max: user_to_groups_max_fields
-  min: user_to_groups_min_fields
+type user_to_group_aggregate_fields {
+  count(columns: [user_to_group_select_column!], distinct: Boolean): Int!
+  max: user_to_group_max_fields
+  min: user_to_group_min_fields
 }
 
 """
-order by aggregate values of table "user_to_groups"
+order by aggregate values of table "user_to_group"
 """
-input user_to_groups_aggregate_order_by {
+input user_to_group_aggregate_order_by {
   count: order_by
-  max: user_to_groups_max_order_by
-  min: user_to_groups_min_order_by
+  max: user_to_group_max_order_by
+  min: user_to_group_min_order_by
 }
 
 """
-input type for inserting array relation for remote table "user_to_groups"
+input type for inserting array relation for remote table "user_to_group"
 """
-input user_to_groups_arr_rel_insert_input {
-  data: [user_to_groups_insert_input!]!
-  on_conflict: user_to_groups_on_conflict
+input user_to_group_arr_rel_insert_input {
+  data: [user_to_group_insert_input!]!
+
+  """on conflict condition"""
+  on_conflict: user_to_group_on_conflict
 }
 
 """
-Boolean expression to filter rows from the table "user_to_groups". All fields are combined with a logical 'AND'.
+Boolean expression to filter rows from the table "user_to_group". All fields are combined with a logical 'AND'.
 """
-input user_to_groups_bool_exp {
-  _and: [user_to_groups_bool_exp]
-  _not: user_to_groups_bool_exp
-  _or: [user_to_groups_bool_exp]
+input user_to_group_bool_exp {
+  _and: [user_to_group_bool_exp!]
+  _not: user_to_group_bool_exp
+  _or: [user_to_group_bool_exp!]
+  admin: Boolean_comparison_exp
   group: groups_bool_exp
   group_id: uuid_comparison_exp
   id: uuid_comparison_exp
@@ -1085,17 +1741,18 @@ input user_to_groups_bool_exp {
 }
 
 """
-unique or primary key constraints on table "user_to_groups"
+unique or primary key constraints on table "user_to_group"
 """
-enum user_to_groups_constraint {
+enum user_to_group_constraint {
   """unique or primary key constraint"""
-  user_to_groups_pkey
+  user_to_group_pkey
 }
 
 """
-input type for inserting data into table "user_to_groups"
+input type for inserting data into table "user_to_group"
 """
-input user_to_groups_insert_input {
+input user_to_group_insert_input {
+  admin: Boolean
   group: groups_obj_rel_insert_input
   group_id: uuid
   id: uuid
@@ -1104,69 +1761,60 @@ input user_to_groups_insert_input {
 }
 
 """aggregate max on columns"""
-type user_to_groups_max_fields {
+type user_to_group_max_fields {
   group_id: uuid
   id: uuid
   user_id: uuid
 }
 
 """
-order by max() on columns of table "user_to_groups"
+order by max() on columns of table "user_to_group"
 """
-input user_to_groups_max_order_by {
+input user_to_group_max_order_by {
   group_id: order_by
   id: order_by
   user_id: order_by
 }
 
 """aggregate min on columns"""
-type user_to_groups_min_fields {
+type user_to_group_min_fields {
   group_id: uuid
   id: uuid
   user_id: uuid
 }
 
 """
-order by min() on columns of table "user_to_groups"
+order by min() on columns of table "user_to_group"
 """
-input user_to_groups_min_order_by {
+input user_to_group_min_order_by {
   group_id: order_by
   id: order_by
   user_id: order_by
 }
 
 """
-response of any mutation on the table "user_to_groups"
+response of any mutation on the table "user_to_group"
 """
-type user_to_groups_mutation_response {
-  """number of affected rows by the mutation"""
+type user_to_group_mutation_response {
+  """number of rows affected by the mutation"""
   affected_rows: Int!
 
-  """data of the affected rows by the mutation"""
-  returning: [user_to_groups!]!
+  """data from the rows affected by the mutation"""
+  returning: [user_to_group!]!
 }
 
 """
-input type for inserting object relation for remote table "user_to_groups"
+on conflict condition type for table "user_to_group"
 """
-input user_to_groups_obj_rel_insert_input {
-  data: user_to_groups_insert_input!
-  on_conflict: user_to_groups_on_conflict
+input user_to_group_on_conflict {
+  constraint: user_to_group_constraint!
+  update_columns: [user_to_group_update_column!]!
+  where: user_to_group_bool_exp
 }
 
-"""
-on conflict condition type for table "user_to_groups"
-"""
-input user_to_groups_on_conflict {
-  constraint: user_to_groups_constraint!
-  update_columns: [user_to_groups_update_column!]!
-  where: user_to_groups_bool_exp
-}
-
-"""
-ordering options when selecting data from "user_to_groups"
-"""
-input user_to_groups_order_by {
+"""Ordering options when selecting data from "user_to_group"."""
+input user_to_group_order_by {
+  admin: order_by
   group: groups_order_by
   group_id: order_by
   id: order_by
@@ -1174,17 +1822,18 @@ input user_to_groups_order_by {
   user_id: order_by
 }
 
-"""
-primary key columns input for table: "user_to_groups"
-"""
-input user_to_groups_pk_columns_input {
+"""primary key columns input for table: user_to_group"""
+input user_to_group_pk_columns_input {
   id: uuid!
 }
 
 """
-select columns of table "user_to_groups"
+select columns of table "user_to_group"
 """
-enum user_to_groups_select_column {
+enum user_to_group_select_column {
+  """column name"""
+  admin
+
   """column name"""
   group_id
 
@@ -1196,23 +1845,213 @@ enum user_to_groups_select_column {
 }
 
 """
-input type for updating data in table "user_to_groups"
+input type for updating data in table "user_to_group"
 """
-input user_to_groups_set_input {
+input user_to_group_set_input {
+  admin: Boolean
   group_id: uuid
   id: uuid
   user_id: uuid
 }
 
 """
-update columns of table "user_to_groups"
+update columns of table "user_to_group"
 """
-enum user_to_groups_update_column {
+enum user_to_group_update_column {
+  """column name"""
+  admin
+
   """column name"""
   group_id
 
   """column name"""
   id
+
+  """column name"""
+  user_id
+}
+
+"""
+columns and relationships of "user_to_thread"
+"""
+type user_to_thread {
+  """An object relationship"""
+  group_thread: group_threads!
+  id: uuid!
+  thread_id: uuid!
+
+  """An object relationship"""
+  user: users!
+  user_id: uuid!
+}
+
+"""
+aggregated selection of "user_to_thread"
+"""
+type user_to_thread_aggregate {
+  aggregate: user_to_thread_aggregate_fields
+  nodes: [user_to_thread!]!
+}
+
+"""
+aggregate fields of "user_to_thread"
+"""
+type user_to_thread_aggregate_fields {
+  count(columns: [user_to_thread_select_column!], distinct: Boolean): Int!
+  max: user_to_thread_max_fields
+  min: user_to_thread_min_fields
+}
+
+"""
+order by aggregate values of table "user_to_thread"
+"""
+input user_to_thread_aggregate_order_by {
+  count: order_by
+  max: user_to_thread_max_order_by
+  min: user_to_thread_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "user_to_thread"
+"""
+input user_to_thread_arr_rel_insert_input {
+  data: [user_to_thread_insert_input!]!
+
+  """on conflict condition"""
+  on_conflict: user_to_thread_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "user_to_thread". All fields are combined with a logical 'AND'.
+"""
+input user_to_thread_bool_exp {
+  _and: [user_to_thread_bool_exp!]
+  _not: user_to_thread_bool_exp
+  _or: [user_to_thread_bool_exp!]
+  group_thread: group_threads_bool_exp
+  id: uuid_comparison_exp
+  thread_id: uuid_comparison_exp
+  user: users_bool_exp
+  user_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "user_to_thread"
+"""
+enum user_to_thread_constraint {
+  """unique or primary key constraint"""
+  user_to_thread_pkey
+}
+
+"""
+input type for inserting data into table "user_to_thread"
+"""
+input user_to_thread_insert_input {
+  group_thread: group_threads_obj_rel_insert_input
+  id: uuid
+  thread_id: uuid
+  user: users_obj_rel_insert_input
+  user_id: uuid
+}
+
+"""aggregate max on columns"""
+type user_to_thread_max_fields {
+  id: uuid
+  thread_id: uuid
+  user_id: uuid
+}
+
+"""
+order by max() on columns of table "user_to_thread"
+"""
+input user_to_thread_max_order_by {
+  id: order_by
+  thread_id: order_by
+  user_id: order_by
+}
+
+"""aggregate min on columns"""
+type user_to_thread_min_fields {
+  id: uuid
+  thread_id: uuid
+  user_id: uuid
+}
+
+"""
+order by min() on columns of table "user_to_thread"
+"""
+input user_to_thread_min_order_by {
+  id: order_by
+  thread_id: order_by
+  user_id: order_by
+}
+
+"""
+response of any mutation on the table "user_to_thread"
+"""
+type user_to_thread_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [user_to_thread!]!
+}
+
+"""
+on conflict condition type for table "user_to_thread"
+"""
+input user_to_thread_on_conflict {
+  constraint: user_to_thread_constraint!
+  update_columns: [user_to_thread_update_column!]!
+  where: user_to_thread_bool_exp
+}
+
+"""Ordering options when selecting data from "user_to_thread"."""
+input user_to_thread_order_by {
+  group_thread: group_threads_order_by
+  id: order_by
+  thread_id: order_by
+  user: users_order_by
+  user_id: order_by
+}
+
+"""primary key columns input for table: user_to_thread"""
+input user_to_thread_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "user_to_thread"
+"""
+enum user_to_thread_select_column {
+  """column name"""
+  id
+
+  """column name"""
+  thread_id
+
+  """column name"""
+  user_id
+}
+
+"""
+input type for updating data in table "user_to_thread"
+"""
+input user_to_thread_set_input {
+  id: uuid
+  thread_id: uuid
+  user_id: uuid
+}
+
+"""
+update columns of table "user_to_thread"
+"""
+enum user_to_thread_update_column {
+  """column name"""
+  id
+
+  """column name"""
+  thread_id
 
   """column name"""
   user_id
@@ -1224,17 +2063,51 @@ columns and relationships of "users"
 type users {
   email: String
   id: uuid!
-  is_online: String
-  name: String!
 
-  """An object relationship"""
-  refresh_token: refresh_tokens
+  """An array relationship"""
+  messages(
+    """distinct select on columns"""
+    distinct_on: [messages_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [messages_order_by!]
+
+    """filter the rows returned"""
+    where: messages_bool_exp
+  ): [messages!]!
+
+  """An aggregate relationship"""
+  messages_aggregate(
+    """distinct select on columns"""
+    distinct_on: [messages_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [messages_order_by!]
+
+    """filter the rows returned"""
+    where: messages_bool_exp
+  ): messages_aggregate!
+  name: String!
+  profile_picture: String
+  socket_id: String
   sub: String!
 
   """An array relationship"""
   user_to_groups(
     """distinct select on columns"""
-    distinct_on: [user_to_groups_select_column!]
+    distinct_on: [user_to_group_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -1243,16 +2116,16 @@ type users {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [user_to_groups_order_by!]
+    order_by: [user_to_group_order_by!]
 
     """filter the rows returned"""
-    where: user_to_groups_bool_exp
-  ): [user_to_groups!]!
+    where: user_to_group_bool_exp
+  ): [user_to_group!]!
 
-  """An aggregated array relationship"""
+  """An aggregate relationship"""
   user_to_groups_aggregate(
     """distinct select on columns"""
-    distinct_on: [user_to_groups_select_column!]
+    distinct_on: [user_to_group_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -1261,11 +2134,47 @@ type users {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [user_to_groups_order_by!]
+    order_by: [user_to_group_order_by!]
 
     """filter the rows returned"""
-    where: user_to_groups_bool_exp
-  ): user_to_groups_aggregate!
+    where: user_to_group_bool_exp
+  ): user_to_group_aggregate!
+
+  """An array relationship"""
+  user_to_threads(
+    """distinct select on columns"""
+    distinct_on: [user_to_thread_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_to_thread_order_by!]
+
+    """filter the rows returned"""
+    where: user_to_thread_bool_exp
+  ): [user_to_thread!]!
+
+  """An aggregate relationship"""
+  user_to_threads_aggregate(
+    """distinct select on columns"""
+    distinct_on: [user_to_thread_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_to_thread_order_by!]
+
+    """filter the rows returned"""
+    where: user_to_thread_bool_exp
+  ): user_to_thread_aggregate!
 }
 
 """
@@ -1280,42 +2189,27 @@ type users_aggregate {
 aggregate fields of "users"
 """
 type users_aggregate_fields {
-  count(columns: [users_select_column!], distinct: Boolean): Int
+  count(columns: [users_select_column!], distinct: Boolean): Int!
   max: users_max_fields
   min: users_min_fields
-}
-
-"""
-order by aggregate values of table "users"
-"""
-input users_aggregate_order_by {
-  count: order_by
-  max: users_max_order_by
-  min: users_min_order_by
-}
-
-"""
-input type for inserting array relation for remote table "users"
-"""
-input users_arr_rel_insert_input {
-  data: [users_insert_input!]!
-  on_conflict: users_on_conflict
 }
 
 """
 Boolean expression to filter rows from the table "users". All fields are combined with a logical 'AND'.
 """
 input users_bool_exp {
-  _and: [users_bool_exp]
+  _and: [users_bool_exp!]
   _not: users_bool_exp
-  _or: [users_bool_exp]
+  _or: [users_bool_exp!]
   email: String_comparison_exp
   id: uuid_comparison_exp
-  is_online: String_comparison_exp
+  messages: messages_bool_exp
   name: String_comparison_exp
-  refresh_token: refresh_tokens_bool_exp
+  profile_picture: String_comparison_exp
+  socket_id: String_comparison_exp
   sub: String_comparison_exp
-  user_to_groups: user_to_groups_bool_exp
+  user_to_groups: user_to_group_bool_exp
+  user_to_threads: user_to_thread_bool_exp
 }
 
 """
@@ -1335,61 +2229,43 @@ input type for inserting data into table "users"
 input users_insert_input {
   email: String
   id: uuid
-  is_online: String
+  messages: messages_arr_rel_insert_input
   name: String
-  refresh_token: refresh_tokens_obj_rel_insert_input
+  profile_picture: String
+  socket_id: String
   sub: String
-  user_to_groups: user_to_groups_arr_rel_insert_input
+  user_to_groups: user_to_group_arr_rel_insert_input
+  user_to_threads: user_to_thread_arr_rel_insert_input
 }
 
 """aggregate max on columns"""
 type users_max_fields {
   email: String
   id: uuid
-  is_online: String
   name: String
+  profile_picture: String
+  socket_id: String
   sub: String
-}
-
-"""
-order by max() on columns of table "users"
-"""
-input users_max_order_by {
-  email: order_by
-  id: order_by
-  is_online: order_by
-  name: order_by
-  sub: order_by
 }
 
 """aggregate min on columns"""
 type users_min_fields {
   email: String
   id: uuid
-  is_online: String
   name: String
+  profile_picture: String
+  socket_id: String
   sub: String
-}
-
-"""
-order by min() on columns of table "users"
-"""
-input users_min_order_by {
-  email: order_by
-  id: order_by
-  is_online: order_by
-  name: order_by
-  sub: order_by
 }
 
 """
 response of any mutation on the table "users"
 """
 type users_mutation_response {
-  """number of affected rows by the mutation"""
+  """number of rows affected by the mutation"""
   affected_rows: Int!
 
-  """data of the affected rows by the mutation"""
+  """data from the rows affected by the mutation"""
   returning: [users!]!
 }
 
@@ -1398,6 +2274,8 @@ input type for inserting object relation for remote table "users"
 """
 input users_obj_rel_insert_input {
   data: users_insert_input!
+
+  """on conflict condition"""
   on_conflict: users_on_conflict
 }
 
@@ -1410,22 +2288,20 @@ input users_on_conflict {
   where: users_bool_exp
 }
 
-"""
-ordering options when selecting data from "users"
-"""
+"""Ordering options when selecting data from "users"."""
 input users_order_by {
   email: order_by
   id: order_by
-  is_online: order_by
+  messages_aggregate: messages_aggregate_order_by
   name: order_by
-  refresh_token: refresh_tokens_order_by
+  profile_picture: order_by
+  socket_id: order_by
   sub: order_by
-  user_to_groups_aggregate: user_to_groups_aggregate_order_by
+  user_to_groups_aggregate: user_to_group_aggregate_order_by
+  user_to_threads_aggregate: user_to_thread_aggregate_order_by
 }
 
-"""
-primary key columns input for table: "users"
-"""
+"""primary key columns input for table: users"""
 input users_pk_columns_input {
   id: uuid!
 }
@@ -1441,10 +2317,13 @@ enum users_select_column {
   id
 
   """column name"""
-  is_online
+  name
 
   """column name"""
-  name
+  profile_picture
+
+  """column name"""
+  socket_id
 
   """column name"""
   sub
@@ -1456,8 +2335,9 @@ input type for updating data in table "users"
 input users_set_input {
   email: String
   id: uuid
-  is_online: String
   name: String
+  profile_picture: String
+  socket_id: String
   sub: String
 }
 
@@ -1472,10 +2352,13 @@ enum users_update_column {
   id
 
   """column name"""
-  is_online
+  name
 
   """column name"""
-  name
+  profile_picture
+
+  """column name"""
+  socket_id
 
   """column name"""
   sub
@@ -1484,7 +2367,7 @@ enum users_update_column {
 scalar uuid
 
 """
-expression to compare columns of type uuid. All fields are combined with logical 'AND'.
+Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'.
 """
 input uuid_comparison_exp {
   _eq: uuid

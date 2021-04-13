@@ -56,6 +56,10 @@ class LocalUser {
     await _secureStorage.write(key: REFRESH_TOKEN_KEY, value: t.refreshToken);
   }
 
+  Future<void> logOut() async {
+    await _secureStorage.containsKey(key: REFRESH_TOKEN_KEY);
+  }
+
   Future<void> refreshAccessToken() async {
     final resp = await getIt<HttpClient>().postReq(
         '/auth/refresh',
