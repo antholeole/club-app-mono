@@ -6,8 +6,7 @@
 
 import 'package:auto_route/auto_route.dart' as _i1;
 
-import '../../data_classes/chat.dart' as _i9;
-import '../../data_classes/local_user.dart' as _i8;
+import '../../data_classes/chat.dart' as _i8;
 import '../../pages/login/login_page.dart' as _i4;
 import '../../pages/main/chat/chat_page.dart' as _i7;
 import '../../pages/main/events/events_page.dart' as _i6;
@@ -41,10 +40,9 @@ class AppRouter extends _i1.RootStackRouter {
           barrierDismissible: false);
     },
     Main.name: (entry) {
-      var args = entry.routeData.argsAs<MainArgs>();
       return _i1.CustomPage(
           entry: entry,
-          child: _i5.MainWrapper(user: args.user),
+          child: _i5.MainWrapper(),
           transitionsBuilder: _i3.NoAnimationRoute.invisAnimation,
           durationInMilliseconds: 0,
           reverseDurationInMilliseconds: 0,
@@ -100,20 +98,11 @@ class LoginRoute extends _i1.PageRouteInfo {
   static const String name = 'LoginRoute';
 }
 
-class Main extends _i1.PageRouteInfo<MainArgs> {
-  Main({required _i8.LocalUser user, List<_i1.PageRouteInfo>? children})
-      : super(name,
-            path: '/main',
-            args: MainArgs(user: user),
-            initialChildren: children);
+class Main extends _i1.PageRouteInfo {
+  const Main({List<_i1.PageRouteInfo>? children})
+      : super(name, path: '/main', initialChildren: children);
 
   static const String name = 'Main';
-}
-
-class MainArgs {
-  const MainArgs({required this.user});
-
-  final _i8.LocalUser user;
 }
 
 class EventsRoute extends _i1.PageRouteInfo {
@@ -123,7 +112,7 @@ class EventsRoute extends _i1.PageRouteInfo {
 }
 
 class ChatRoute extends _i1.PageRouteInfo<ChatRouteArgs> {
-  ChatRoute({required _i9.Chat chat})
+  ChatRoute({required _i8.Chat chat})
       : super(name, path: 'chat', args: ChatRouteArgs(chat: chat));
 
   static const String name = 'ChatRoute';
@@ -132,5 +121,5 @@ class ChatRoute extends _i1.PageRouteInfo<ChatRouteArgs> {
 class ChatRouteArgs {
   const ChatRouteArgs({required this.chat});
 
-  final _i9.Chat chat;
+  final _i8.Chat chat;
 }

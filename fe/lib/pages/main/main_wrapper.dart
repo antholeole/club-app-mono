@@ -5,6 +5,7 @@ import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:fe/stdlib/theme/bottom_nav/bottom_nav.dart';
+import 'package:fe/stdlib/toaster.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../service_locator.dart';
@@ -20,12 +21,10 @@ class MainWrapper extends StatefulWidget {
 }
 
 class _MainWrapperState extends State<MainWrapper> {
-  final LocalUser _localUser = getIt<LocalUser>();
   final MainService _mainService = getIt<MainService>();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final MainPageActionsCubit _mainPageActionsCubit = MainPageActionsCubit();
-  final LocalFileStore _localFileStore = getIt<LocalFileStore>();
   UuidType? selectedChat;
 
   @override
@@ -121,7 +120,8 @@ class _MainWrapperState extends State<MainWrapper> {
   }
 
   Future<void> _logout() async {
-    await Future.wait([_localFileStore.clear(), _localUser.logOut()]);
+    await _mainService.logOut();
     await AutoRouter.of(context).navigate(LoginRoute());
+    Toaster.of(context).warningToast('Logged Out.');
   }
 }

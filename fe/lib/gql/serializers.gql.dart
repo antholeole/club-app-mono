@@ -93,7 +93,8 @@ import 'package:fe/gql/update_self_name.data.gql.dart'
 import 'package:fe/gql/update_self_name.req.gql.dart' show Gupdate_self_nameReq;
 import 'package:fe/gql/update_self_name.var.gql.dart'
     show Gupdate_self_nameVars;
-import 'package:fe/stdlib/helpers/uuid_type.dart' show UuidTypeSerializer;
+import 'package:fe/stdlib/helpers/uuid_type.dart'
+    show UuidType, UuidTypeSerializer;
 import 'package:gql_code_builder/src/serializers/operation_serializer.dart'
     show OperationSerializer;
 

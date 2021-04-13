@@ -42,8 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (localUserString == null) {
       await AutoRouter.of(context).popAndPush(LoginRoute());
     } else {
-      await AutoRouter.of(context)
-          .popAndPush(Main(user: LocalUser.fromJson(localUserString)));
+      await AutoRouter.of(context).popAndPush(Main());
     }
   }
 }
