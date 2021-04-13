@@ -9,4 +9,12 @@
     "**/*.gql.dart": true,
     "node_modules/**": true
   },
+  "[dart]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll": true,
+      "source.organizeImports": true,
+      "source.sortMembers": true
+    },
+    "editor.formatOnSave": true
+  }
 }

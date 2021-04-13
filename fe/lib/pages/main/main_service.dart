@@ -1,12 +1,9 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:fe/data_classes/group.dart';
 import 'package:fe/data_classes/local_user.dart';
 import 'package:fe/gql/query_self_group_ids.req.gql.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
-import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:ferry/ferry.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../service_locator.dart';
@@ -22,7 +19,7 @@ class MainService {
         _gqlClient = gqlClient;
 
   Future<List<Group>> loadGroups() async {
-    _getAllGroupIds();
+    await _getAllGroupIds();
     return [];
   }
 
@@ -34,6 +31,11 @@ class MainService {
   Future<List<Group>> _loadRemoteGroups() async {}
   */
 
+  Future<void> logOut() async {
+    await Future.wait(
+        [_localFileStore.clear(), _user.logOut(), _secureStorage.deleteAll()]);
+  }
+
   Future<List<UuidType>> _getAllGroupIds() async {
     final req = GQuerySelfGroupIdsReq((b) => b..vars.self_id = _user.uuid);
 
@@ -42,10 +44,5 @@ class MainService {
         .user_to_group
         .map((v) => v.id)
         .toList();
-  }
-
-  Future<void> logOut() async {
-    await Future.wait(
-        [_localFileStore.clear(), _user.logOut(), _secureStorage.deleteAll()]);
   }
 }

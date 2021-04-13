@@ -9,7 +9,7 @@ class ChatPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text("chat"),
+      child: Text('chat'),
     );
   }
 }
