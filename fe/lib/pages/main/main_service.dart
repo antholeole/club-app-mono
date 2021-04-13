@@ -1,4 +1,3 @@
-import 'package:fe/data_classes/chat.dart';
 import 'package:fe/data_classes/group.dart';
 import 'package:fe/data_classes/local_user.dart';
 import 'package:fe/gql/query_self_group_ids.req.gql.dart';

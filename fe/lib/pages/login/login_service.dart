@@ -1,7 +1,7 @@
 import 'package:fe/data_classes/backend_access_tokens.dart';
 import 'package:fe/data_classes/local_user.dart';
 import 'package:fe/data_classes/provider_access_token.dart';
-import 'package:fe/stdlib/clients/http_client.dart';
+import 'package:fe/stdlib/clients/http/unauth_http_client.dart';
 import 'package:fe/stdlib/helpers/tuple.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -12,19 +12,19 @@ import 'login_exception.dart';
 //962929179530-utmni9p2cmd2uuhvrthf7dp4kdnku1vc.apps.googleusercontent.com <- ADRIOD
 
 class LoginService {
-  final _client = getIt<HttpClient>();
+  final _client = getIt<UnauthHttpClient>();
 
   Future<void> logout() async {}
 
   //Returns localUser, idToken
-  Future<Tuple<LocalUser, String>> login(LoginType loginType) async {
+  Future<String> login(LoginType loginType, LocalUser user) async {
     switch (loginType) {
       case LoginType.Google:
-        return _googleLogin();
+        return _googleLogin(user);
     }
   }
 
-  Future<Tuple<LocalUser, String>> _googleLogin() async {
+  Future<String> _googleLogin(LocalUser user) async {
     final _googleSignIn = GoogleSignIn(
       scopes: [],
     );
@@ -35,12 +35,11 @@ class LoginService {
       throw UserDeniedException();
     }
 
-    final localUser = LocalUser.fromProviderLogin(LoginType.Google, acc.email,
-        name: acc.displayName);
+    user.providerLogin(LoginType.Google, acc.email, name: acc.displayName);
 
     final auth = await acc.authentication;
 
-    return Tuple(item1: localUser, item2: auth.idToken!);
+    return auth.idToken!;
   }
 
   Future<BackendAccessTokens> getGqlAuth(ProviderIdToken providerAccess) async {

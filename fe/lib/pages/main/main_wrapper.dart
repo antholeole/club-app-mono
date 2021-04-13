@@ -5,29 +5,24 @@ import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:fe/stdlib/theme/bottom_nav/bottom_nav.dart';
-import 'package:ferry/ferry.dart';
 import 'package:flutter/material.dart';
-import 'package:fe/stdlib/clients/gql_client.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 import '../../service_locator.dart';
 import 'main_helpers/bottom_sheet/channels_bottom_sheet.dart';
 import 'main_helpers/drawers/club_drawer.dart';
+import 'main_service.dart';
 
 class MainWrapper extends StatefulWidget {
-  late final LocalUser _user;
-  late final Client _gqlClient;
-
-  MainWrapper({required LocalUser user}) {
-    _user = user;
-    _gqlClient = buildGqlClient(user);
-  }
+  MainWrapper() : assert(getIt<LocalUser>().isLoggedIn());
 
   @override
   _MainWrapperState createState() => _MainWrapperState();
 }
 
 class _MainWrapperState extends State<MainWrapper> {
+  final LocalUser _localUser = getIt<LocalUser>();
+  final MainService _mainService = getIt<MainService>();
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final MainPageActionsCubit _mainPageActionsCubit = MainPageActionsCubit();
   final LocalFileStore _localFileStore = getIt<LocalFileStore>();
@@ -82,19 +77,12 @@ class _MainWrapperState extends State<MainWrapper> {
             ),
             drawer: ClubDrawer(),
             backgroundColor: Colors.white,
-            body: MultiProvider(
-                providers: [
-                  Provider<LocalUser>(create: (_) => widget._user),
-                  Provider<Client>(
-                    create: (_) => widget._gqlClient,
-                  )
-                ],
-                child: AutoTabsRouter(
-                  routes: [
-                    EventsRoute(),
-                    EventsRoute(),
-                  ],
-                )),
+            body: AutoTabsRouter(
+              routes: [
+                EventsRoute(),
+                EventsRoute(),
+              ],
+            ),
             bottomNavigationBar: BottomNav(
                 onClickTab: _changeTab,
                 icons: [Icons.chat_bubble_outline, Icons.event]),
@@ -133,7 +121,7 @@ class _MainWrapperState extends State<MainWrapper> {
   }
 
   Future<void> _logout() async {
-    await Future.wait([_localFileStore.clear(), widget._user.logOut()]);
+    await Future.wait([_localFileStore.clear(), _localUser.logOut()]);
     await AutoRouter.of(context).navigate(LoginRoute());
   }
 }

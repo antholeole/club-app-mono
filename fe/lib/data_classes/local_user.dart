@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:fe/stdlib/clients/http_client.dart';
+import 'package:fe/stdlib/clients/http/unauth_http_client.dart';
 import 'package:fe/constants.dart';
 import 'package:fe/data_classes/backend_access_tokens.dart';
 import 'package:fe/data_classes/refresh_carrier.dart';
@@ -24,11 +24,12 @@ class LocalUser {
 
   String name;
   late UuidType uuid;
-  LoginType loggedInWith;
+  late LoginType loggedInWith;
   late String accessToken;
 
   String? email;
 
+  //need default constructor for to and from json
   LocalUser(
       {required this.name,
       required this.uuid,
@@ -36,13 +37,18 @@ class LocalUser {
       required this.accessToken,
       this.email});
 
+  LocalUser.empty() : name = DEFAULT_USERNAME;
+
+  void providerLogin(LoginType loggedInWith, String email,
+      {String? name = DEFAULT_USERNAME}) {
+    this.loggedInWith = loggedInWith;
+    this.email = email;
+    this.name = name!;
+  }
+
   Future<String> get _refreshToken async {
     return (await _secureStorage.read(key: REFRESH_TOKEN_KEY))!;
   }
-
-  LocalUser.fromProviderLogin(this.loggedInWith, this.email,
-      {String? name = DEFAULT_USERNAME})
-      : name = name!;
 
   bool isLoggedIn() {
     // ignore: unnecessary_null_comparison
@@ -61,7 +67,7 @@ class LocalUser {
   }
 
   Future<void> refreshAccessToken() async {
-    final resp = await getIt<HttpClient>().postReq(
+    final resp = await getIt<UnauthHttpClient>().postReq(
         '/auth/refresh',
         RefreshCarrier(refreshToken: await _refreshToken, userId: uuid)
             .toJson());
