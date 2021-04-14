@@ -16,7 +16,6 @@ to run, `npm run dev`. first run will take a minute so grab a drink :)
 ## Todo
 
 Everything, but currently:
-- Migrate to Schema as code in `club-app-hasura`
 - Finish UI
 - Event subscriptions
-- Persist Data
+- use ISAR to Persist Data

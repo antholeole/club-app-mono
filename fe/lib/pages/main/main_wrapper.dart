@@ -1,5 +1,5 @@
-import 'package:fe/data_classes/local_user.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:fe/data_classes/local_user.dart';
 import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
@@ -7,6 +7,7 @@ import 'package:fe/stdlib/theme/bottom_nav/bottom_nav.dart';
 import 'package:fe/stdlib/toaster.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../service_locator.dart';
 import 'main_helpers/bottom_sheet/channels_bottom_sheet.dart';
 import 'main_helpers/drawers/club_drawer.dart';
@@ -25,11 +26,6 @@ class _MainWrapperState extends State<MainWrapper> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final MainPageActionsCubit _mainPageActionsCubit = MainPageActionsCubit();
   UuidType? selectedChat;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +82,14 @@ class _MainWrapperState extends State<MainWrapper> {
                 icons: [Icons.chat_bubble_outline, Icons.event]),
           ),
         ));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    //rebuilds so that we can use the scaoffold state in the scaffold.
+    WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {}));
   }
 
   List<Widget> _buildTitle(BuildContext context) {

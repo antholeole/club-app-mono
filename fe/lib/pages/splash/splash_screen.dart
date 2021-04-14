@@ -1,6 +1,5 @@
-import 'package:fe/data_classes/local_user.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:fe/data_classes/user.dart';
+import 'package:fe/data_classes/local_user.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:fe/stdlib/theme/logo.dart';
@@ -19,12 +18,6 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
-  void initState() {
-    _beginLoadingFromMemory();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
@@ -36,12 +29,19 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
+  @override
+  void initState() {
+    _beginLoadingFromMemory();
+    super.initState();
+  }
+
   Future<void> _beginLoadingFromMemory() async {
     final localUserString =
         await widget._localFileStore.deserialize(LocalStorageType.LocalUser);
     if (localUserString == null) {
       await AutoRouter.of(context).popAndPush(LoginRoute());
     } else {
+      getIt<LocalUser>().fromUser(LocalUser.fromJson(localUserString));
       await AutoRouter.of(context).popAndPush(Main());
     }
   }
