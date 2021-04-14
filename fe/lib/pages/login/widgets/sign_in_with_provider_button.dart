@@ -27,7 +27,7 @@ class SignInWithProviderButton extends StatelessWidget {
             ColorFiltered(
               colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcATop),
               child: Image.asset(
-                'assets/icons/identities/google_logo.png',
+                _loginType.imageLocation,
                 height: 40,
               ),
             ),
@@ -68,5 +68,11 @@ class SignInWithProviderButton extends StatelessWidget {
       case LoginType.Google:
         return 'Google';
     }
+  }
+}
+
+extension AssetLocation on LoginType {
+  String get imageLocation {
+    return ['assets/icons/identities/google_logo.png'][index];
   }
 }

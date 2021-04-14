@@ -1,10 +1,9 @@
 part of 'main_page_actions_cubit.dart';
 
-abstract class MainPageActionsState {
-  Widget? endDrawer;
-  String? subtitle;
+class Logout extends MainPageActionsState {
+  bool withError;
 
-  MainPageActionsState({this.endDrawer, this.subtitle});
+  Logout({required this.withError});
 }
 
 class MainPageActionsInitial extends MainPageActionsState {
@@ -14,9 +13,14 @@ class MainPageActionsInitial extends MainPageActionsState {
   Widget? endDrawer;
 }
 
+abstract class MainPageActionsState {
+  Widget? endDrawer;
+  String? subtitle;
+
+  MainPageActionsState({this.endDrawer, this.subtitle});
+}
+
 class ScaffoldUpdate extends MainPageActionsState {
   ScaffoldUpdate({Widget? endDrawer, String? subtitle})
       : super(endDrawer: endDrawer, subtitle: subtitle);
 }
-
-class Logout extends MainPageActionsState {}

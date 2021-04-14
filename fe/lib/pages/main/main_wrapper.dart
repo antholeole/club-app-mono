@@ -10,7 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../service_locator.dart';
 import 'main_helpers/bottom_sheet/channels_bottom_sheet.dart';
-import 'main_helpers/drawers/club_drawer.dart';
+import 'main_helpers/drawers/left_drawer/club_drawer.dart';
 import 'main_service.dart';
 
 class MainWrapper extends StatefulWidget {
@@ -39,7 +39,7 @@ class _MainWrapperState extends State<MainWrapper> {
           bloc: _mainPageActionsCubit,
           listener: (context, state) {
             if (state is Logout) {
-              _logout();
+              _logout(state.withError);
             } else if (state is ScaffoldUpdate) {
               //rebuild with new scaffold parts
               setState(() {});
@@ -122,9 +122,16 @@ class _MainWrapperState extends State<MainWrapper> {
     setState(() {});
   }
 
-  Future<void> _logout() async {
+  Future<void> _logout(bool withError) async {
     await _mainService.logOut();
-    await AutoRouter.of(context).navigate(LoginRoute());
-    Toaster.of(context).warningToast('Logged Out.');
+    AutoRouter.of(context).popUntilRouteWithName(Main.name);
+    await AutoRouter.of(context).popAndPush(LoginRoute());
+
+    if (withError) {
+      Toaster.of(context)
+          .errorToast("Sorry you've been logged out due to an error.");
+    } else {
+      Toaster.of(context).warningToast('Logged Out.');
+    }
   }
 }
