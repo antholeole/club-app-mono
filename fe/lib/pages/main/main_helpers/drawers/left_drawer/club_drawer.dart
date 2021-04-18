@@ -1,4 +1,4 @@
-import 'package:fe/pages/main/main_helpers/drawers/left_drawer/profile_page.dart';
+import 'package:fe/pages/main/main_helpers/drawers/left_drawer/profile_page/profile_page.dart';
 import 'package:fe/stdlib/theme/option_pill.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +24,7 @@ class _ClubDrawerState extends State<ClubDrawer> {
   Widget build(BuildContext context) {
     return Drawer(
         child: Container(
+      color: Colors.grey.shade50,
       child: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.max,

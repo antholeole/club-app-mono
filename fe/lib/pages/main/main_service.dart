@@ -9,14 +9,12 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../service_locator.dart';
 
 class MainService {
-  final LocalUser _user;
-  final Client _gqlClient;
+  final LocalUser _user = getIt<LocalUser>();
+  final Client _gqlClient = getIt<Client>();
   final LocalFileStore _localFileStore = LocalFileStore();
   final FlutterSecureStorage _secureStorage = getIt<FlutterSecureStorage>();
 
-  MainService({required LocalUser user, required Client gqlClient})
-      : _user = user,
-        _gqlClient = gqlClient;
+  MainService();
 
   Future<List<Group>> loadGroups() async {
     await _getAllGroupIds();

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "club-app monorepo.",
   "scripts": {
-    "dev-be": "concurrently -c \"#800080.bold,#ffa500.bold\" -n \"BACKEND,HASURA\" --handle-input \"cd club-app-be && npm run dev\" \"cd club-app-hasura && docker-compose --log-level ERROR up\""
+    "dev-be": "kill $(lsof -ti:8787) ; concurrently -c \"#800080.bold,#ffa500.bold\" -n \"BACKEND,HASURA\" --handle-input \"cd club-app-be && npm run dev\" \"cd club-app-hasura && docker-compose --log-level ERROR up\""
   },
   "repository": {
     "type": "git",

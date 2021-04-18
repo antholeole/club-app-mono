@@ -1,36 +1,36 @@
 abstract class Config {
   //if an animation is generally taxing in debug mode,
   //this bool can toggle it off.
-  bool get playTaxingAnimations;
   String get connectionUrl;
-  bool get httpIsSecure;
   String get gqlUrl;
-}
-
-class ProdConfig extends Config {
-  @override
-  bool get playTaxingAnimations => true;
-
-  @override
-  String get connectionUrl => throw UnimplementedError('bruh');
-
-  @override
-  bool get httpIsSecure => true;
-
-  @override
-  String get gqlUrl => throw UnimplementedError('bruh');
+  bool get httpIsSecure;
+  bool get playTaxingAnimations;
 }
 
 class DevConfig extends Config {
   @override
-  bool get playTaxingAnimations => false;
+  String get connectionUrl => '127.0.0.1:8787';
 
   @override
-  String get connectionUrl => '127.0.0.1:8787';
+  String get gqlUrl => 'http://127.0.0.1:8080/v1/graphql';
 
   @override
   bool get httpIsSecure => false;
 
   @override
-  String get gqlUrl => 'http://127.0.0.1:8080/v1/graphql';
+  bool get playTaxingAnimations => true;
+}
+
+class ProdConfig extends Config {
+  @override
+  String get connectionUrl => throw UnimplementedError('bruh');
+
+  @override
+  String get gqlUrl => throw UnimplementedError('bruh');
+
+  @override
+  bool get httpIsSecure => true;
+
+  @override
+  bool get playTaxingAnimations => true;
 }

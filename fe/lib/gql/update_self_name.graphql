@@ -1,4 +1,4 @@
-mutation update_self_name($id: uuid!, $name: String) {
+mutation UpdateSelfName($id: uuid!, $name: String) {
   update_users_by_pk(
     pk_columns: { id: $id }
   	_set: { name: $name }

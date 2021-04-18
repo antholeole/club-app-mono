@@ -6,7 +6,7 @@
     "**/*.var.gql.dart": true,
     "**/*.gql.g.dart": true,
     "**/*.g.dart": true,
-    "**/*.gql.dart": true,
+    "**/schema.schema.gql.dart": true,
     "node_modules/**": true
   },
   "[dart]": {

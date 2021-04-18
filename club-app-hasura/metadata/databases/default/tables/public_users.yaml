@@ -23,3 +23,15 @@ array_relationships:
       table:
         name: user_to_thread
         schema: public
+update_permissions:
+- permission:
+    check: null
+    columns:
+    - name
+    filter:
+      _and:
+      - id:
+          _eq: X-Hasura-User-Id
+      - name:
+          _regex: "^[^±!@£$%^&*_+§¡€#¢§¶•ªº«\\\\/<>?:;|=.,\n]{3,}$"
+  role: user

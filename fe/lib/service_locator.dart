@@ -1,10 +1,11 @@
 import 'package:fe/config.dart';
 import 'package:fe/data_classes/local_user.dart';
+import 'package:fe/pages/login/login_service.dart';
+import 'package:fe/pages/main/main_helpers/drawers/left_drawer/profile_page/profile_page_service.dart';
 import 'package:fe/pages/main/main_service.dart';
 import 'package:fe/stdlib/clients/gql_client.dart';
 import 'package:fe/stdlib/clients/http/auth_http_client.dart';
 import 'package:fe/stdlib/clients/http/unauth_http_client.dart';
-import 'package:fe/pages/login/login_service.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -36,6 +37,6 @@ void setupLocator({required bool isProd}) {
       () => AuthHttpClient(getIt<LocalUser>()));
 
   //logged in services
-  getIt.registerLazySingleton(
-      () => MainService(user: getIt<LocalUser>(), gqlClient: getIt<Client>()));
+  getIt.registerLazySingleton(() => MainService());
+  getIt.registerLazySingleton(() => ProfilePageService());
 }

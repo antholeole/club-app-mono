@@ -2,8 +2,10 @@ import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:fe/stdlib/theme/colors.dart';
 import 'package:fe/stdlib/toaster.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as dot_env;
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -31,7 +33,11 @@ class MyApp extends StatelessWidget {
               backgroundColor: Colors.black.withOpacity(0))),
       routerDelegate: _appRouter.delegate(),
       routeInformationParser: _appRouter.defaultRouteParser(),
-      builder: (_, router) => RefreshContextHack(router!),
+      builder: (_, router) => PlatformWidgetBuilder(
+          cupertino: (_, child, __) => CupertinoTheme(
+              data: CupertinoThemeData(primaryColor: primaryColor),
+              child: child!),
+          child: RefreshContextHack(router!)),
     );
   }
 }

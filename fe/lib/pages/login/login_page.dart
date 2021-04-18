@@ -8,6 +8,7 @@ import 'package:fe/stdlib/theme/loader.dart';
 import 'package:fe/stdlib/theme/logo.dart';
 import 'package:fe/stdlib/toaster.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import '../../service_locator.dart';
 import 'login_exception.dart';
@@ -28,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Toaster(
       context: context,
-      child: Scaffold(
+      child: PlatformScaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
             child: Center(

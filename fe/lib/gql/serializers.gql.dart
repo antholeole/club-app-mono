@@ -89,10 +89,9 @@ import 'package:fe/gql/schema.schema.gql.dart'
         Gusers_update_column,
         Guuid_comparison_exp;
 import 'package:fe/gql/update_self_name.data.gql.dart'
-    show Gupdate_self_nameData, Gupdate_self_nameData_update_users_by_pk;
-import 'package:fe/gql/update_self_name.req.gql.dart' show Gupdate_self_nameReq;
-import 'package:fe/gql/update_self_name.var.gql.dart'
-    show Gupdate_self_nameVars;
+    show GUpdateSelfNameData, GUpdateSelfNameData_update_users_by_pk;
+import 'package:fe/gql/update_self_name.req.gql.dart' show GUpdateSelfNameReq;
+import 'package:fe/gql/update_self_name.var.gql.dart' show GUpdateSelfNameVars;
 import 'package:fe/stdlib/helpers/uuid_type.dart'
     show UuidType, UuidTypeSerializer;
 import 'package:gql_code_builder/src/serializers/operation_serializer.dart'
@@ -100,10 +99,6 @@ import 'package:gql_code_builder/src/serializers/operation_serializer.dart'
 
 part 'serializers.gql.g.dart';
 
-final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
-  ..add(OperationSerializer())
-  ..add(UuidTypeSerializer())
-  ..addPlugin(StandardJsonPlugin());
 @SerializersFor([
   GBoolean_comparison_exp,
   GQuerySelfGroupIdsData,
@@ -111,6 +106,10 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GQuerySelfGroupIdsReq,
   GQuerySelfGroupIdsVars,
   GString_comparison_exp,
+  GUpdateSelfNameData,
+  GUpdateSelfNameData_update_users_by_pk,
+  GUpdateSelfNameReq,
+  GUpdateSelfNameVars,
   Ggroup_threads_aggregate_order_by,
   Ggroup_threads_arr_rel_insert_input,
   Ggroup_threads_bool_exp,
@@ -151,10 +150,6 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   Gorder_by,
   Gtimestamptz,
   Gtimestamptz_comparison_exp,
-  Gupdate_self_nameData,
-  Gupdate_self_nameData_update_users_by_pk,
-  Gupdate_self_nameReq,
-  Gupdate_self_nameVars,
   Guser_to_group_aggregate_order_by,
   Guser_to_group_arr_rel_insert_input,
   Guser_to_group_bool_exp,
@@ -194,3 +189,7 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   Guuid_comparison_exp
 ])
 final Serializers serializers = _serializersBuilder.build();
+final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
+  ..add(OperationSerializer())
+  ..add(UuidTypeSerializer())
+  ..addPlugin(StandardJsonPlugin());
