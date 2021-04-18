@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-enum ToastType { Info, Error, Success }
-
 class Toaster extends InheritedWidget {
   final BuildContext context;
   final _fToast = FToast();
@@ -13,10 +11,52 @@ class Toaster extends InheritedWidget {
     _fToast.init(context);
   }
 
-  static Toaster of(BuildContext context) {
-    final result = context.dependOnInheritedWidgetOfExactType<Toaster>();
-    assert(result != null, 'No Toaster found in context');
-    return result!;
+  void errorToast(String message,
+      {void Function()? action, String? actionText}) {
+    _toast(
+        message,
+        Icon(
+          Icons.report,
+          color: Colors.red,
+          size: 36,
+        ),
+        Colors.red.shade50,
+        action: action,
+        actionColor: Colors.red.shade900,
+        actionText: actionText);
+  }
+
+  void successToast(String message,
+      {void Function()? action, String? actionText}) {
+    _toast(
+        message,
+        Icon(
+          Icons.done,
+          color: Colors.green,
+          size: 36,
+        ),
+        Colors.green.shade50,
+        action: action,
+        actionColor: Colors.green.shade900,
+        actionText: actionText);
+  }
+
+  @override
+  bool updateShouldNotify(Toaster old) => false;
+
+  void warningToast(String message,
+      {void Function()? action, String? actionText}) {
+    _toast(
+        message,
+        Icon(
+          Icons.warning_rounded,
+          color: Colors.amber,
+          size: 36,
+        ),
+        Colors.amber.shade50,
+        action: action,
+        actionColor: Colors.amber.shade900,
+        actionText: actionText);
   }
 
   Widget _baseToast(Icon icon, Color iconBgColor, Widget inner) {
@@ -118,51 +158,11 @@ class Toaster extends InheritedWidget {
     _showToast(_baseToast(icon, behindIconColor, inner));
   }
 
-  void errorToast(String message,
-      {void Function()? action, String? actionText}) {
-    _toast(
-        message,
-        Icon(
-          Icons.report,
-          color: Colors.red,
-          size: 36,
-        ),
-        Colors.red.shade50,
-        action: action,
-        actionColor: Colors.red.shade900,
-        actionText: actionText);
+  static Toaster of(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<Toaster>();
+    assert(result != null, 'No Toaster found in context');
+    return result!;
   }
-
-  void successToast(String message,
-      {void Function()? action, String? actionText}) {
-    _toast(
-        message,
-        Icon(
-          Icons.done,
-          color: Colors.green,
-          size: 36,
-        ),
-        Colors.green.shade50,
-        action: action,
-        actionColor: Colors.green.shade900,
-        actionText: actionText);
-  }
-
-  void warningToast(String message,
-      {void Function()? action, String? actionText}) {
-    _toast(
-        message,
-        Icon(
-          Icons.warning_rounded,
-          color: Colors.amber,
-          size: 36,
-        ),
-        Colors.amber.shade50,
-        action: action,
-        actionColor: Colors.amber.shade900,
-        actionText: actionText);
-  }
-
-  @override
-  bool updateShouldNotify(Toaster old) => false;
 }
+
+enum ToastType { Info, Error, Success }

@@ -22,66 +22,75 @@ class MainWrapper extends StatefulWidget {
 
 class _MainWrapperState extends State<MainWrapper> {
   final MainService _mainService = getIt<MainService>();
-
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final MainPageActionsCubit _mainPageActionsCubit = MainPageActionsCubit();
+  late BuildContext _toastableContext;
   UuidType? selectedChat;
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (_) => _mainPageActionsCubit,
-          ),
-        ],
-        child: BlocListener(
-          bloc: _mainPageActionsCubit,
-          listener: (context, state) {
-            if (state is Logout) {
-              _logout(state.withError);
-            } else if (state is ScaffoldUpdate) {
-              //rebuild with new scaffold parts
-              setState(() {});
-            }
-          },
-          child: Scaffold(
-            key: _scaffoldKey,
-            endDrawer: _mainPageActionsCubit.state.endDrawer,
-            appBar: AppBar(
-              backwardsCompatibility: false,
-              backgroundColor: Color(0xffFBFBFB),
-              foregroundColor: Colors.grey[900],
-              automaticallyImplyLeading: false,
-              title: Column(
-                children: _buildTitle(context),
-              ),
-              leading: IconButton(
-                icon: Icon(Icons.menu),
-                onPressed: _scaffoldKey.currentState?.openDrawer,
-              ),
-              actions: _mainPageActionsCubit.state.endDrawer != null
-                  ? [
-                      IconButton(
-                        icon: Icon(Icons.more_vert),
-                        onPressed: _scaffoldKey.currentState?.openEndDrawer,
-                      )
-                    ]
-                  : [],
-            ),
-            drawer: ClubDrawer(),
-            backgroundColor: Colors.white,
-            body: AutoTabsRouter(
-              routes: [
-                EventsRoute(),
-                EventsRoute(),
+    return Toaster(
+      context: context,
+      child: Builder(
+        builder: (toastableContext) {
+          _toastableContext = toastableContext;
+          return MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (_) => _mainPageActionsCubit,
+                ),
               ],
-            ),
-            bottomNavigationBar: BottomNav(
-                onClickTab: _changeTab,
-                icons: [Icons.chat_bubble_outline, Icons.event]),
-          ),
-        ));
+              child: BlocListener(
+                bloc: _mainPageActionsCubit,
+                listener: (context, state) {
+                  if (state is Logout) {
+                    _logout(state.withError);
+                  } else if (state is ScaffoldUpdate) {
+                    //rebuild with new scaffold parts
+                    setState(() {});
+                  }
+                },
+                child: Scaffold(
+                  key: _scaffoldKey,
+                  endDrawer: _mainPageActionsCubit.state.endDrawer,
+                  appBar: AppBar(
+                    backwardsCompatibility: false,
+                    backgroundColor: Color(0xffFBFBFB),
+                    foregroundColor: Colors.grey[900],
+                    automaticallyImplyLeading: false,
+                    title: Column(
+                      children: _buildTitle(context),
+                    ),
+                    leading: IconButton(
+                      icon: Icon(Icons.menu),
+                      onPressed: _scaffoldKey.currentState?.openDrawer,
+                    ),
+                    actions: _mainPageActionsCubit.state.endDrawer != null
+                        ? [
+                            IconButton(
+                              icon: Icon(Icons.more_vert),
+                              onPressed:
+                                  _scaffoldKey.currentState?.openEndDrawer,
+                            )
+                          ]
+                        : [],
+                  ),
+                  drawer: ClubDrawer(),
+                  backgroundColor: Colors.white,
+                  body: AutoTabsRouter(
+                    routes: [
+                      EventsRoute(),
+                      EventsRoute(),
+                    ],
+                  ),
+                  bottomNavigationBar: BottomNav(
+                      onClickTab: _changeTab,
+                      icons: [Icons.chat_bubble_outline, Icons.event]),
+                ),
+              ));
+        },
+      ),
+    );
   }
 
   @override
@@ -128,10 +137,10 @@ class _MainWrapperState extends State<MainWrapper> {
     await AutoRouter.of(context).popAndPush(LoginRoute());
 
     if (withError) {
-      Toaster.of(context)
+      Toaster.of(_toastableContext)
           .errorToast("Sorry you've been logged out due to an error.");
     } else {
-      Toaster.of(context).warningToast('Logged Out.');
+      Toaster.of(_toastableContext).warningToast('Logged Out.');
     }
   }
 }

@@ -28,27 +28,26 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Toaster(
-      context: context,
-      child: PlatformScaffold(
-          backgroundColor: Colors.white,
-          body: SafeArea(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 36.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Logo(
-                      filled: true,
-                    ),
-                    loading ? Loader() : _buildInitLoginButton(),
-                    Container(),
-                  ],
+        context: context,
+        child: PlatformScaffold(
+            backgroundColor: Colors.white,
+            body: SafeArea(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 36.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Logo(
+                        filled: true,
+                      ),
+                      loading ? Loader() : _buildInitLoginButton(),
+                      Container(),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          )),
-    );
+            )));
   }
 
   Widget _buildInitLoginButton() {
