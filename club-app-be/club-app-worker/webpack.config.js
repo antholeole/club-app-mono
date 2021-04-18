@@ -20,7 +20,7 @@ if (process.env.NODE_ENV === 'development') {
     new webpack.DefinePlugin({
       ENVIRONMENT: JSON.stringify('dev'),
       HASURA_PASSWORD: hasura_password,
-      SECRET: JSON.stringify('LOL NOT REAL SECRET')
+      SECRET: JSON.stringify('LOL NOT REAL SECRET XOXO GOSSIP GIRL')
     })
   )
 }

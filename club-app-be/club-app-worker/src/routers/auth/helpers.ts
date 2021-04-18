@@ -4,10 +4,16 @@ import { encodeJwt } from '../../helpers/jwt'
 import jwt from 'jsonwebtoken'
 
 
+export interface IIdentifier {
+    sub: string,
+    email?: string,
+    name: string
+}   
+
 const throwInvalid = () => {
     throw new StatusError(402, 'Invalid id token.') 
 }
-export const verifyIdTokenWithGoogle = async (idToken: string): Promise<string> => {
+export const verifyIdTokenWithGoogle = async (idToken: string): Promise<IIdentifier> => {
     const parts = idToken.split('.')
 
     let kid
@@ -37,7 +43,7 @@ export const verifyIdTokenWithGoogle = async (idToken: string): Promise<string> 
         })
     }
 
-    let jwtBody: unknown
+    let jwtBody: any
     try {
         jwtBody = (jwt.verify(idToken, JSON.parse(googleCertsJson)[kid], {
             audience: GOOGLE_VALID_AUDS,
@@ -47,7 +53,28 @@ export const verifyIdTokenWithGoogle = async (idToken: string): Promise<string> 
         throwInvalid()
     }
 
-    return (jwtBody as { sub: string })['sub']
+
+    const returnedIdentfier: Partial<IIdentifier> = {}
+    returnedIdentfier.sub = 'google:' + jwtBody['sub']
+
+    if (jwtBody['given_name'] && jwtBody['family_name']) {
+        returnedIdentfier.name =
+         `${jwtBody['given_name']} ${jwtBody['family_name']}`
+    }
+
+    if (jwtBody['email']) {
+        returnedIdentfier.email = jwtBody['email']
+
+        if (!returnedIdentfier.name) {
+            returnedIdentfier.name = jwtBody['email'].split('@')[0]
+        }
+    }
+
+    if (!returnedIdentfier.name) {
+        returnedIdentfier.name = 'Club App User'
+    }
+
+    return returnedIdentfier as IIdentifier
 }
 
 export const generateAccessToken = (id: string): string => {

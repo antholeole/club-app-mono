@@ -1,7 +1,9 @@
 import 'package:fe/data_classes/local_user.dart';
+import 'package:fe/gql/update_self_name.req.gql.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:ferry/ferry.dart';
+import 'package:flutter/cupertino.dart';
 
 class ProfilePageService {
   final _user = getIt<LocalUser>();
@@ -18,6 +20,19 @@ class ProfilePageService {
       throw Failure(
           message:
               'Please make sure new name does not contain any special characters and is 3 or more letters.');
+    }
+
+    final query = GUpdateSelfNameReq((b) => b
+      ..vars.id = _user.uuid
+      ..vars.name = newName);
+
+    final resp = await _gqlClient.request(query).first;
+
+    if (resp.hasErrors) {
+      resp.graphqlErrors?.forEach((e) => debugPrint(e.message));
+      throw Failure(message: 'we done fucked up');
+    } else {
+      _user.name = resp.data!.update_users_by_pk!.name;
     }
   }
 }

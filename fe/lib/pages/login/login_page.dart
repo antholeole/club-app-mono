@@ -22,6 +22,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final LoginService _loginService = LoginService();
   final LocalUser _user = getIt<LocalUser>();
+  late BuildContext _toastableContext;
 
   bool loading = false;
 
@@ -29,25 +30,28 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Toaster(
         context: context,
-        child: PlatformScaffold(
-            backgroundColor: Colors.white,
-            body: SafeArea(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 36.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Logo(
-                        filled: true,
-                      ),
-                      loading ? Loader() : _buildInitLoginButton(),
-                      Container(),
-                    ],
+        child: Builder(builder: (toastableContext) {
+          _toastableContext = toastableContext;
+          return PlatformScaffold(
+              backgroundColor: Colors.white,
+              body: SafeArea(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 36.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Logo(
+                          filled: true,
+                        ),
+                        loading ? Loader() : _buildInitLoginButton(),
+                        Container(),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            )));
+              ));
+        }));
   }
 
   Widget _buildInitLoginButton() {
@@ -79,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
       await _proceedToApp();
     } on UserDeniedException catch (_) {} on HttpException catch (e) {
       final f = await HttpClient.basicErrorHandler(e, {});
-      Toaster.of(context).errorToast(f.message);
+      Toaster.of(_toastableContext).errorToast(f.message);
     } finally {
       setState(() {
         loading = false;

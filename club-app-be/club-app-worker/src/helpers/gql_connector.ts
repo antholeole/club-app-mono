@@ -1,9 +1,8 @@
 import { HASURA_ENDPOINT } from '../constants'
-import { Thunder } from '../generated/zeus'
 
-export const thunder = Thunder(async (query) => {
+export const gqlReq = async <T>(req: string): Promise<T> => {
     const response = await fetch(HASURA_ENDPOINT, {
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ query: req }),
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -28,4 +27,4 @@ export const thunder = Thunder(async (query) => {
 
     const json = await response.json()
     return json.data
-}, () => null)
+}

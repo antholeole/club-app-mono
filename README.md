@@ -16,6 +16,5 @@ to run, `npm run dev`. first run will take a minute so grab a drink :)
 ## Todo
 
 Everything, but currently:
-- Finish UI
-- Event subscriptions
+- Event subscriptions!!!
 - use ISAR to Persist Data

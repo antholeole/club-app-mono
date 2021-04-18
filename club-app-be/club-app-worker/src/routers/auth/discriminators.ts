@@ -6,9 +6,7 @@ const validProviders = <const>[
 
 export interface IAccessToken {
     idToken: string
-    from: typeof validProviders[number],
-    name?: string,
-    email?: string
+    from: typeof validProviders[number]
 }
 
 export const discrimiateAccessToken = (input: unknown): IAccessToken => {

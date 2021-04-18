@@ -24,7 +24,7 @@ services:
       HASURA_GRAPHQL_ADMIN_SECRET: '*hV@?*xh0)aL,@1+Tza>Kj[zC(5akn'
       HASURA_GRAPHQL_MIGRATIONS_DIR: ./migrations
       HASURA_GRAPHQL_METADATA_DIR: /metadata
-      HASURA_GRAPHQL_JWT_SECRET: '{"type": "HS256","key": "gDPZqDtqX88gLwAL6eJbGsL4vGCS7yud"}'
+      HASURA_GRAPHQL_JWT_SECRET: '{"type": "HS256","key": "LOL NOT REAL SECRET XOXO GOSSIP GIRL"}'
 volumes:
   db_data:
 

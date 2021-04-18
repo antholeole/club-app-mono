@@ -9,6 +9,7 @@
     "**/schema.schema.gql.dart": true,
     "node_modules/**": true
   },
+  "files.enableTrash": true,
   "[dart]": {
     "editor.codeActionsOnSave": {
       "source.fixAll": true,

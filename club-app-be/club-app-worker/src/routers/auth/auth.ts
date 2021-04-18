@@ -1,7 +1,7 @@
 import { ThrowableRouter, StatusError, json } from 'itty-router-extras'
 import { readJsonBody } from '../../helpers/read_json_body'
 import { discrimiateAccessToken, discriminateRefresh } from './discriminators'
-import { generateAccessToken, verifyIdTokenWithGoogle } from './helpers'
+import { generateAccessToken, IIdentifier, verifyIdTokenWithGoogle } from './helpers'
 import { addUser, getUserBySub } from './gql_queries'
 import { cryptoRandomString } from '../../helpers/crypto'
 import { getDecryptedKV, putEncryptedKV } from 'encrypt-workers-kv'
@@ -29,16 +29,18 @@ authRouter.post('/refresh', async (req: Request) => {
 
 authRouter.post('/', async (req: Request) => {
   const body = discrimiateAccessToken(await readJsonBody(req))
-  let sub
+
+  let identifier: IIdentifier
   switch (body.from) {
     case 'Google':
-      sub = 'google:' + (await verifyIdTokenWithGoogle(body.idToken))
+      identifier = await verifyIdTokenWithGoogle(body.idToken)
+
   }
 
-  let user = await getUserBySub(sub)
+  let user = await getUserBySub(identifier.sub)
 
   if (user == null) {
-    user = await addUser(sub, body.name, body.email)
+    user = await addUser(identifier.sub, identifier.name, identifier.email)
   }
 
   const refreshUnhashed = cryptoRandomString(20)

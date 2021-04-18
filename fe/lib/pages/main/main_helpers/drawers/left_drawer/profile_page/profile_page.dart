@@ -17,6 +17,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final ProfilePageService _profilePageService = getIt<ProfilePageService>();
   bool _changingName = false;
+  bool _loggingOut = false;
   final LocalUser _localUser = getIt<LocalUser>();
 
   @override
@@ -44,9 +45,15 @@ class _ProfilePageState extends State<ProfilePage> {
             ]),
             ButtonGroup(buttons: [
               ButtonData(
-                  onClick: () => context.read<MainPageActionsCubit>().logout(),
+                  onClick: () {
+                    setState(() {
+                      _loggingOut = false;
+                    });
+                    context.read<MainPageActionsCubit>().logout();
+                  },
                   color: Colors.red,
-                  text: 'Log Out'),
+                  text: 'Log Out',
+                  loading: _loggingOut),
             ]),
           ],
         )
@@ -64,6 +71,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
       try {
         await _profilePageService.changeName(textEditingController.text);
+        Toaster.of(context).successToast('Name changed successfully!');
       } on Failure catch (f) {
         Toaster.of(context).errorToast("Couldn't change name: ${f.message}");
       } finally {
@@ -94,7 +102,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           PlatformDialogAction(
             onPressed: _tryUpdateName,
-            child: Text('hi2'),
+            child: Text('update'),
           ),
         ],
       ),

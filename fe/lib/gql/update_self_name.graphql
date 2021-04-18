@@ -3,7 +3,6 @@ mutation UpdateSelfName($id: uuid!, $name: String) {
     pk_columns: { id: $id }
   	_set: { name: $name }
   ) {
-    id,
     name
   }
 }
