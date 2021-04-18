@@ -2,14 +2,14 @@ import 'package:fe/data_classes/local_user.dart';
 import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
 import 'package:fe/pages/main/main_helpers/drawers/left_drawer/profile_page/profile_page_service.dart';
 import 'package:fe/service_locator.dart';
+import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/theme/button_group.dart';
+import 'package:fe/stdlib/toaster.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class ProfilePage extends StatefulWidget {
-  final LocalUser _localUser = getIt<LocalUser>();
-
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
@@ -17,6 +17,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final ProfilePageService _profilePageService = getIt<ProfilePageService>();
   bool _changingName = false;
+  final LocalUser _localUser = getIt<LocalUser>();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Text('AO'),
         ),
         Text(
-          widget._localUser.name,
+          _localUser.name,
           style: Theme.of(context).textTheme.headline5,
         ),
         Column(
@@ -56,10 +57,24 @@ class _ProfilePageState extends State<ProfilePage> {
   void _changeName() {
     TextEditingController textEditingController = TextEditingController();
 
-    void _tryUpdateName() {
+    void _tryUpdateName() async {
       setState(() {
         _changingName = true;
       });
+
+      try {
+        await _profilePageService.changeName(textEditingController.text);
+      } on Failure catch (f) {
+        Toaster.of(context).errorToast("Couldn't change name: ${f.message}");
+      } finally {
+        Navigator.of(context).pop();
+
+        //side effect: If name trigger succeeded, will reload localUser
+        //to display the new name
+        setState(() {
+          _changingName = false;
+        });
+      }
     }
 
     showPlatformDialog(

@@ -1,5 +1,6 @@
 import 'package:fe/data_classes/local_user.dart';
 import 'package:fe/service_locator.dart';
+import 'package:fe/stdlib/errors/failure.dart';
 import 'package:ferry/ferry.dart';
 
 class ProfilePageService {
@@ -14,9 +15,9 @@ class ProfilePageService {
     );
 
     if (!regex.hasMatch(newName)) {
-      print('not good');
-    } else {
-      print('good ');
+      throw Failure(
+          message:
+              'Please make sure new name does not contain any special characters and is 3 or more letters.');
     }
   }
 }

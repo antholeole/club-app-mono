@@ -6,6 +6,10 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../service_locator.dart';
 
 class Loader extends StatefulWidget {
+  final double _size;
+
+  Loader({double size = 32}) : _size = size;
+
   @override
   _LoaderState createState() => _LoaderState();
 }
@@ -13,16 +17,6 @@ class Loader extends StatefulWidget {
 class _LoaderState extends State<Loader> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late bool _showFiller;
-
-  @override
-  void initState() {
-    _animationController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 1200));
-
-    _showFiller = !getIt<Config>().playTaxingAnimations;
-
-    super.initState();
-  }
 
   @override
   @override
@@ -35,8 +29,19 @@ class _LoaderState extends State<Loader> with SingleTickerProviderStateMixin {
             ),
           )
         : SpinKitThreeBounce(
+            size: widget._size,
             color: Theme.of(context).primaryColor,
             controller: _animationController,
           );
+  }
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+        vsync: this, duration: Duration(milliseconds: 1200));
+
+    _showFiller = !getIt<Config>().playTaxingAnimations;
+
+    super.initState();
   }
 }

@@ -18,7 +18,7 @@ class DevConfig extends Config {
   bool get httpIsSecure => false;
 
   @override
-  bool get playTaxingAnimations => true;
+  bool get playTaxingAnimations => false;
 }
 
 class ProdConfig extends Config {

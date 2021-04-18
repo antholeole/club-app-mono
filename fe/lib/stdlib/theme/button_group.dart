@@ -47,7 +47,7 @@ class ButtonGroup extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: e.loading
-                      ? Loader()
+                      ? Loader(size: 12)
                       : Text(
                           e.text,
                           style: TextStyle(color: e.color),
