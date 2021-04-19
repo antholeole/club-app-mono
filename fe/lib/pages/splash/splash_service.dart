@@ -23,10 +23,15 @@ class SplashService {
   Future<bool> loadPreExistingUserFromMemory() async {
     final localUserString =
         await _localFileStore.deserialize(LocalStorageType.LocalUser);
+
     if (localUserString != null) {
-      getIt<LocalUser>().fromUser(LocalUser.fromJson(localUserString));
+      final localUser = LocalUser.fromJson(localUserString);
+      if (localUser.isLoggedIn()) {
+        getIt<LocalUser>().fromUser(localUser);
+        return true;
+      }
     }
 
-    return localUserString != null;
+    return false;
   }
 }
