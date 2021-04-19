@@ -16,5 +16,7 @@ to run, `npm run dev`. first run will take a minute so grab a drink :)
 ## Todo
 
 Everything, but currently:
-- Event subscriptions!!!
+- Need to create seed data
+- Pull seed data on load in
+- Event subscriptions
 - use ISAR to Persist Data
