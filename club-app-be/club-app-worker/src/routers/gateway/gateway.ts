@@ -1,6 +1,7 @@
-import { ThrowableRouter, json } from 'itty-router-extras'
+import { json } from 'itty-router-extras'
+import { Router } from 'itty-router'
 
-export const gatewayRouter = ThrowableRouter({
+export const gatewayRouter = Router({
   base: '/api/gateway'
 })
 

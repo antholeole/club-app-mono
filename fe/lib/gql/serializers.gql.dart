@@ -92,13 +92,16 @@ import 'package:fe/gql/update_self_name.data.gql.dart'
     show GUpdateSelfNameData, GUpdateSelfNameData_update_users_by_pk;
 import 'package:fe/gql/update_self_name.req.gql.dart' show GUpdateSelfNameReq;
 import 'package:fe/gql/update_self_name.var.gql.dart' show GUpdateSelfNameVars;
-import 'package:fe/stdlib/helpers/uuid_type.dart'
-    show UuidType, UuidTypeSerializer;
+import 'package:fe/stdlib/helpers/uuid_type.dart' show UuidTypeSerializer;
 import 'package:gql_code_builder/src/serializers/operation_serializer.dart'
     show OperationSerializer;
 
 part 'serializers.gql.g.dart';
 
+final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
+  ..add(OperationSerializer())
+  ..add(UuidTypeSerializer())
+  ..addPlugin(StandardJsonPlugin());
 @SerializersFor([
   GBoolean_comparison_exp,
   GQuerySelfGroupIdsData,
@@ -189,7 +192,3 @@ part 'serializers.gql.g.dart';
   Guuid_comparison_exp
 ])
 final Serializers serializers = _serializersBuilder.build();
-final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
-  ..add(OperationSerializer())
-  ..add(UuidTypeSerializer())
-  ..addPlugin(StandardJsonPlugin());

@@ -1,11 +1,12 @@
-import { ThrowableRouter, StatusError } from 'itty-router-extras'
+import { StatusError } from 'itty-router-extras'
+import { Router } from 'itty-router'
 import { cors } from '../helpers/cors'
 import { feRouter } from '../routers/frontend'
 import { authRouter } from '../routers/auth/auth'
 import { gatewayRouter } from '../routers/gateway/gateway'
 import { DEBUG } from '../constants'
 
-const localRouter = ThrowableRouter()
+const localRouter = Router()
 
 localRouter
   .options('*', cors)

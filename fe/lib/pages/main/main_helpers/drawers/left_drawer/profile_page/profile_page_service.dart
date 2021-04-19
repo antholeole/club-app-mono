@@ -30,7 +30,8 @@ class ProfilePageService {
 
     if (resp.hasErrors) {
       resp.graphqlErrors?.forEach((e) => debugPrint(e.message));
-      throw Failure(message: 'we done fucked up');
+      throw Failure(
+          message: 'Sorry, there was an error: couldn\'t update name.');
     } else {
       _user.name = resp.data!.update_users_by_pk!.name;
     }

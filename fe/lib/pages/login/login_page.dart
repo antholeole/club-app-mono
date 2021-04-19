@@ -72,11 +72,8 @@ class _LoginPageState extends State<LoginPage> {
     try {
       final aToken = await _loginService.login(loginType, _user);
 
-      final providerAccessToken = ProviderIdToken(
-          from: loginType,
-          idToken: aToken,
-          name: _user.name,
-          email: _user.email);
+      final providerAccessToken =
+          ProviderIdToken(from: loginType, idToken: aToken);
       final t = await _loginService.getGqlAuth(providerAccessToken);
       await _user.backendLogin(t);
       await _user.serializeSelf();

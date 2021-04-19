@@ -1,5 +1,6 @@
-import { ThrowableRouter, StatusError, json } from 'itty-router-extras'
+import { StatusError, json } from 'itty-router-extras'
 import { readJsonBody } from '../../helpers/read_json_body'
+import { Router } from 'itty-router'
 import { discrimiateAccessToken, discriminateRefresh } from './discriminators'
 import { generateAccessToken, IIdentifier, verifyIdTokenWithGoogle } from './helpers'
 import { addUser, getUserBySub } from './gql_queries'
@@ -7,7 +8,7 @@ import { cryptoRandomString } from '../../helpers/crypto'
 import { getDecryptedKV, putEncryptedKV } from 'encrypt-workers-kv'
 import { R_TOKEN_PUBLIC_KEY_KEY } from '../../constants'
 
-export const authRouter = ThrowableRouter({
+export const authRouter = Router({
   base: '/api/auth'
 })
 

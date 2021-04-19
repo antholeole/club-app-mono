@@ -23,7 +23,8 @@ input Boolean_comparison_exp {
 columns and relationships of "group_threads"
 """
 type group_threads {
-  group_id: uuid!
+  """If group_id null, then this is a dm/groupchat not tied to a group."""
+  group_id: uuid
   id: uuid!
 
   """An array relationship"""
@@ -162,6 +163,7 @@ enum group_threads_constraint {
 input type for inserting data into table "group_threads"
 """
 input group_threads_insert_input {
+  """If group_id null, then this is a dm/groupchat not tied to a group."""
   group_id: uuid
   id: uuid
   messages: messages_arr_rel_insert_input
@@ -171,6 +173,7 @@ input group_threads_insert_input {
 
 """aggregate max on columns"""
 type group_threads_max_fields {
+  """If group_id null, then this is a dm/groupchat not tied to a group."""
   group_id: uuid
   id: uuid
   name: String
@@ -180,6 +183,7 @@ type group_threads_max_fields {
 order by max() on columns of table "group_threads"
 """
 input group_threads_max_order_by {
+  """If group_id null, then this is a dm/groupchat not tied to a group."""
   group_id: order_by
   id: order_by
   name: order_by
@@ -187,6 +191,7 @@ input group_threads_max_order_by {
 
 """aggregate min on columns"""
 type group_threads_min_fields {
+  """If group_id null, then this is a dm/groupchat not tied to a group."""
   group_id: uuid
   id: uuid
   name: String
@@ -196,6 +201,7 @@ type group_threads_min_fields {
 order by min() on columns of table "group_threads"
 """
 input group_threads_min_order_by {
+  """If group_id null, then this is a dm/groupchat not tied to a group."""
   group_id: order_by
   id: order_by
   name: order_by
@@ -263,6 +269,7 @@ enum group_threads_select_column {
 input type for updating data in table "group_threads"
 """
 input group_threads_set_input {
+  """If group_id null, then this is a dm/groupchat not tied to a group."""
   group_id: uuid
   id: uuid
   name: String
