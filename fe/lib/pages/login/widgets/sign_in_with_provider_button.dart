@@ -1,4 +1,5 @@
 import 'package:fe/data_classes/local_user.dart';
+import 'package:fe/pages/login/login_service.dart';
 import 'package:flutter/material.dart';
 
 class SignInWithProviderButton extends StatelessWidget {
@@ -68,11 +69,5 @@ class SignInWithProviderButton extends StatelessWidget {
       case LoginType.Google:
         return 'Google';
     }
-  }
-}
-
-extension AssetLocation on LoginType {
-  String get imageLocation {
-    return ['assets/icons/identities/google_logo.png'][index];
   }
 }

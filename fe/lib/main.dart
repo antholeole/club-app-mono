@@ -5,8 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as dot_env;
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   await startup();
@@ -16,7 +14,6 @@ void main() async {
 
 Future<void> startup() async {
   await dot_env.load();
-  await Hive.initFlutter();
 }
 
 class MyApp extends StatelessWidget {

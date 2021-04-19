@@ -2,7 +2,6 @@ import 'package:fe/data_classes/backend_access_tokens.dart';
 import 'package:fe/data_classes/local_user.dart';
 import 'package:fe/data_classes/provider_access_token.dart';
 import 'package:fe/stdlib/clients/http/unauth_http_client.dart';
-import 'package:fe/stdlib/helpers/tuple.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../service_locator.dart';
@@ -14,7 +13,11 @@ import 'login_exception.dart';
 class LoginService {
   final _client = getIt<UnauthHttpClient>();
 
-  Future<void> logout() async {}
+  Future<BackendAccessTokens> getGqlAuth(ProviderIdToken providerAccess) async {
+    final tokens = await _client.postReq('/auth', providerAccess.toJson());
+
+    return BackendAccessTokens.fromJson(tokens.body);
+  }
 
   //Returns localUser, idToken
   Future<String> login(LoginType loginType, LocalUser user) async {
@@ -23,6 +26,8 @@ class LoginService {
         return _googleLogin(user);
     }
   }
+
+  Future<void> logout() async {}
 
   Future<String> _googleLogin(LocalUser user) async {
     final _googleSignIn = GoogleSignIn(
@@ -41,10 +46,10 @@ class LoginService {
 
     return auth.idToken!;
   }
+}
 
-  Future<BackendAccessTokens> getGqlAuth(ProviderIdToken providerAccess) async {
-    final tokens = await _client.postReq('/auth', providerAccess.toJson());
-
-    return BackendAccessTokens.fromJson(tokens.body);
+extension AssetLocation on LoginType {
+  String get imageLocation {
+    return ['assets/icons/identities/google_logo.png'][index];
   }
 }
