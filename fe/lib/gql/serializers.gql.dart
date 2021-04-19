@@ -99,10 +99,6 @@ import 'package:gql_code_builder/src/serializers/operation_serializer.dart'
 
 part 'serializers.gql.g.dart';
 
-final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
-  ..add(OperationSerializer())
-  ..add(UuidTypeSerializer())
-  ..addPlugin(StandardJsonPlugin());
 @SerializersFor([
   GBoolean_comparison_exp,
   GQuerySelfGroupIdsData,
@@ -193,3 +189,7 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   Guuid_comparison_exp
 ])
 final Serializers serializers = _serializersBuilder.build();
+final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
+  ..add(OperationSerializer())
+  ..add(UuidTypeSerializer())
+  ..addPlugin(StandardJsonPlugin());

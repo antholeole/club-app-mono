@@ -1,7 +1,8 @@
 import 'dart:convert';
 
-import 'package:fe/data_classes/local_user.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import 'local_user.dart';
 
 part 'provider_access_token.g.dart';
 

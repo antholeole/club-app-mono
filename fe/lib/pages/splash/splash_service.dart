@@ -1,4 +1,4 @@
-import 'package:fe/data_classes/local_user.dart';
+import 'package:fe/data_classes/json/local_user.dart';
 import 'package:fe/pages/login/login_service.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
 import 'package:flutter/material.dart';

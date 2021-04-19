@@ -1,5 +1,4 @@
 import 'package:fe/config.dart';
-import 'package:fe/data_classes/local_user.dart';
 import 'package:fe/pages/login/login_service.dart';
 import 'package:fe/pages/main/main_helpers/drawers/left_drawer/profile_page/profile_page_service.dart';
 import 'package:fe/pages/main/main_service.dart';
@@ -11,6 +10,8 @@ import 'package:fe/stdlib/local_data/local_file_store.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+
+import 'data_classes/json/local_user.dart';
 
 final getIt = GetIt.instance;
 

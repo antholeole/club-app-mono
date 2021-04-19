@@ -1,6 +1,6 @@
-import 'package:fe/data_classes/backend_access_tokens.dart';
-import 'package:fe/data_classes/local_user.dart';
-import 'package:fe/data_classes/provider_access_token.dart';
+import 'package:fe/data_classes/json/backend_access_tokens.dart';
+import 'package:fe/data_classes/json/local_user.dart';
+import 'package:fe/data_classes/json/provider_access_token.dart';
 import 'package:fe/stdlib/clients/http/unauth_http_client.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 

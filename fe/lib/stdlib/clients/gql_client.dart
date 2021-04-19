@@ -1,4 +1,4 @@
-import 'package:fe/data_classes/local_user.dart';
+import 'package:fe/data_classes/json/local_user.dart';
 import 'package:ferry/ferry.dart';
 import 'package:gql_error_link/gql_error_link.dart';
 import 'package:gql_exec/gql_exec.dart';
@@ -30,9 +30,16 @@ class _HttpAuthLink extends Link {
     );
   }
 
-  Future<void> updateToken() async {
-    await localUser.refreshAccessToken();
-  }
+  Request addHeaders(Request request) =>
+      request.updateContextEntry<HttpLinkHeaders>(
+        (headers) => HttpLinkHeaders(
+          headers: <String, String>{
+            ...headers?.headers ?? <String, String>{},
+            'Authorization': 'Bearer ${localUser.accessToken}',
+            'x-hasura-role': 'user'
+          },
+        ),
+      );
 
   Stream<Response> handleException(Request request,
       Stream<Response> Function(Request) forward, Response resp) async* {
@@ -50,20 +57,13 @@ class _HttpAuthLink extends Link {
     throw Exception('gql errored with $buildErrorString');
   }
 
-  Request addHeaders(Request request) =>
-      request.updateContextEntry<HttpLinkHeaders>(
-        (headers) => HttpLinkHeaders(
-          headers: <String, String>{
-            ...headers?.headers ?? <String, String>{},
-            'Authorization': 'Bearer ${localUser.accessToken}',
-            'x-hasura-role': 'user'
-          },
-        ),
-      );
-
   @override
   Stream<Response> request(Request request,
       [Stream<Response> Function(Request)? forward]) async* {
     yield* _link.request(request, forward);
+  }
+
+  Future<void> updateToken() async {
+    await localUser.refreshAccessToken();
   }
 }

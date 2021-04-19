@@ -1,4 +1,4 @@
-import 'package:fe/data_classes/local_user.dart';
+import 'package:fe/data_classes/json/local_user.dart';
 import 'package:fe/stdlib/clients/http/http_client.dart';
 import 'package:http/src/response.dart';
 

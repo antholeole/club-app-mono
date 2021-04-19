@@ -1,4 +1,4 @@
-import 'package:fe/data_classes/local_user.dart';
+import 'package:fe/data_classes/json/local_user.dart';
 import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
 import 'package:fe/pages/main/main_helpers/drawers/left_drawer/profile_page/profile_page_service.dart';
 import 'package:fe/service_locator.dart';

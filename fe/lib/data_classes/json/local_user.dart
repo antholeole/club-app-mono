@@ -1,8 +1,7 @@
 import 'dart:convert';
 
 import 'package:fe/constants.dart';
-import 'package:fe/data_classes/backend_access_tokens.dart';
-import 'package:fe/data_classes/refresh_carrier.dart';
+import 'package:fe/data_classes/json/refresh_carrier.dart';
 import 'package:fe/stdlib/clients/http/unauth_http_client.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
@@ -10,7 +9,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import '../service_locator.dart';
+import '../../service_locator.dart';
+import 'backend_access_tokens.dart';
 
 part 'local_user.g.dart';
 

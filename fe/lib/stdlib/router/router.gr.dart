@@ -6,7 +6,6 @@
 
 import 'package:auto_route/auto_route.dart' as _i1;
 
-import '../../data_classes/chat.dart' as _i8;
 import '../../pages/login/login_page.dart' as _i4;
 import '../../pages/main/chat/chat_page.dart' as _i7;
 import '../../pages/main/events/events_page.dart' as _i6;
@@ -60,10 +59,9 @@ class AppRouter extends _i1.RootStackRouter {
           barrierDismissible: false);
     },
     ChatRoute.name: (entry) {
-      var args = entry.routeData.argsAs<ChatRouteArgs>();
       return _i1.CustomPage(
           entry: entry,
-          child: _i7.ChatPage(chat: args.chat),
+          child: _i7.ChatPage(),
           transitionsBuilder: _i3.NoAnimationRoute.invisAnimation,
           durationInMilliseconds: 0,
           reverseDurationInMilliseconds: 0,
@@ -111,15 +109,8 @@ class EventsRoute extends _i1.PageRouteInfo {
   static const String name = 'EventsRoute';
 }
 
-class ChatRoute extends _i1.PageRouteInfo<ChatRouteArgs> {
-  ChatRoute({required _i8.Chat chat})
-      : super(name, path: 'chat', args: ChatRouteArgs(chat: chat));
+class ChatRoute extends _i1.PageRouteInfo {
+  const ChatRoute() : super(name, path: 'chat');
 
   static const String name = 'ChatRoute';
-}
-
-class ChatRouteArgs {
-  const ChatRouteArgs({required this.chat});
-
-  final _i8.Chat chat;
 }

@@ -1,5 +1,4 @@
-import 'package:fe/data_classes/group.dart';
-import 'package:fe/data_classes/local_user.dart';
+import 'package:fe/data_classes/json/local_user.dart';
 import 'package:fe/gql/query_self_group_ids.req.gql.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
@@ -15,19 +14,6 @@ class MainService {
   final FlutterSecureStorage _secureStorage = getIt<FlutterSecureStorage>();
 
   MainService();
-
-  Future<List<Group>> loadGroups() async {
-    await _getAllGroupIds();
-    return [];
-  }
-
-/*
-  Future<List<Group>> _loadLocalGroups() async {
-    final groups = await _localFileStore.deserialize(LocalStorageType.GroupIds);
-  }
-
-  Future<List<Group>> _loadRemoteGroups() async {}
-  */
 
   Future<void> logOut() async {
     await Future.wait(
