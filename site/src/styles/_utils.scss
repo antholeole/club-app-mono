@@ -1,0 +1,15 @@
+//centers content inside
+@mixin center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+//evenly distributes children elements along self row axis
+@mixin evenChildren {
+  display: flex;
+
+  & > * {
+    flex: 1 1 0px;
+  }
+}

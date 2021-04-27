@@ -8,6 +8,6 @@ export const gatewayRouter = Router({
 gatewayRouter.post('/connect', () => {
     console.log('hi')
     return json({
-        'hi': 'hi'
+        'hi': 'hi tehre kiddo'
     })
 })

@@ -10,6 +10,7 @@ const mode = 'production'
 let plugins = []
 
 if (process.env.NODE_ENV === 'development') {
+
   //naieve .env lookup
   const hasura_password = JSON.stringify(
     fs.readFileSync('.env', 'utf-8').split('\n')

@@ -1,8 +1,3 @@
-if (process.env.ENVIRONMENT === 'development') {
-    (global as any).ENVIRONMENT = 'dev'
-}
-
-
 export const GOOGLE_PEM_SRC = 'https://www.googleapis.com/oauth2/v1/certs'
 export const R_TOKEN_PUBLIC_KEY_KEY = 'refresh_token_kv_key'
 export const GOOGLE_VALID_AUDS = ['962929179530-dhdrlhef0davumm1aegfhnjhrkkcdd4s.apps.googleusercontent.com']

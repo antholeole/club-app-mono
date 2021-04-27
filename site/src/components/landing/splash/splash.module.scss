@@ -1,28 +1,38 @@
-@import '../../../styles/vars';
-
-.lead {
-  font-size: 1.25rem;
-  font-weight: 300;
-}
+@import '../../../styles/_utils';
+@import '../../../styles/_vars';
 
 .splash {
-  width: 100vw;
-  padding: 0% 30px;
-  height: 75vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
+  @include evenChildren;
+  height: 80vh;
 
-  &__copy {
-    &__cards {
-      display: flex;
-      flex-direction: row;
+  & .image {
+    @include center;
+
+    & .phone {
+      object-fit: contain;
     }
   }
 
-  h1 {
-    color: $primary-color;
-    font-size: 3.5rem;
+  & .copy {
+    margin-top: 10%;
+    padding: 0 40px;
+
+
+    & > * {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+
+    & > p {
+      font-size: 1.5rem;
+    }
+
+    & > h1 {
+      font-size: 3.5rem;
+      color: $primary-color;
+      font-weight: bold;
+    }
   }
 }
