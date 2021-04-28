@@ -25,6 +25,8 @@
     ]
   },
   "dependencies": {
+    "@styled-icons/ionicons-outline": "^10.28.0",
+    "@styled-icons/ionicons-solid": "^10.28.0",
     "bootstrap": "^5.0.0-beta3",
     "next": "10.1.3",
     "react": "17.0.2",
