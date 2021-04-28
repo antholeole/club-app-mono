@@ -58,6 +58,7 @@
           2,
           "never"
       ],
+      "no-plusplus": "off",
       "quotes": [
           "error",
           "single"

@@ -1,55 +1,147 @@
 import Image from 'next/image'
-import { group } from 'node:console'
-import { useEffect, useState } from 'react'
+import {
+  createRef, RefObject, useEffect, useState,
+} from 'react'
+import { multiclass } from '../../../utils/class'
 import { useInterval } from '../../../utils/use_interval'
 import SplashStyles from './splash.module.scss'
 
-
-enum TextState {
-  Deleting,
-  Typing,
-  Showing
+// eslint-disable-next-line no-shadow
+enum LetterState {
+  Out = 1,
+  In,
+  Behind,
+  None
 }
 
+interface ILetter {
+  ref: RefObject<HTMLSpanElement>,
+  state: LetterState
+}
+interface IWord {
+  word: string,
+  ref: RefObject<HTMLSpanElement>,
+  visible: boolean,
+  letters: ILetter[]
+}
+
+const spacing = 340 // how long to wait before dropping in the new word
+const letterTime = 80 // how long each letter waits for the last
+const rotationSpeed = 10000 // how long a word is shown before rotating
+
+// the words to put in the rotation
+const words = [
+  'Work Team.',
+  'School Club.',
+  'Sports Team.',
+  'Extracurricular.',
+]
+
 export const Splash = (): JSX.Element => {
-  const [currText, setCurrText] = useState(0)
-  const [currLetter, setCurrLetter] = useState(0)
-  const [textState, setTextState] = useState(TextState.Typing)
-  const [currShowTick, setCurrShowTick] = useState(0)
+  const [currWordIndex, setCurrWordIndex] = useState(0)
+  const [wordRefs, setWordRefs] = useState<IWord[]>(
+    Array(words.length).fill(undefined).map((_, i) => ({
+      word: words[i],
+      ref: createRef<HTMLSpanElement>(),
+      visible: false,
+      letters: Array(words[i].length).fill(undefined).map(() => ({
+        state: LetterState.None,
+        ref: createRef<HTMLSpanElement>(),
+      })),
+    })),
+  )
 
-  const groups = ['Work Team.', 'School Club.', 'Sports Team.', 'Extracurricular.']
-
-  const showTicks = 70
-
-  const progressType = () => {
-    if (textState === TextState.Showing) {
-      if (currShowTick > showTicks) {
-        setCurrShowTick(0)
-        setTextState(TextState.Deleting)
-      } else {
-        setCurrShowTick(currShowTick + 1)
-      }
-    } else if (textState === TextState.Typing) {
-      if (currLetter > groups[currText].length) {
-        setTextState(TextState.Showing)
-      } else {
-        setCurrLetter(currLetter + 1)
-      }
-    } else if (textState === TextState.Deleting) {
-      if (currLetter <= 0) {
-        if (currText + 1 >= groups.length) {
-          setCurrText(0)
-        } else {
-          setCurrText(currText + 1)
-        }
-        setTextState(TextState.Typing)
-      } else {
-        setCurrLetter(currLetter - 1)
-      }
-    }
+  const updateWordRef = (index: number, word: Partial<IWord>) => {
+    setWordRefs((oldWordRefs) => [
+      ...oldWordRefs.slice(0, index),
+      {
+        ...oldWordRefs[index],
+        ...word,
+      },
+      ...oldWordRefs.slice(index + 1),
+    ])
   }
 
-  useInterval(progressType, 40)
+  const updateLetterRef = (wordIndex: number, letterIndex: number, letter: Partial<ILetter>) => {
+    setWordRefs((oldWordRefs) => [
+      ...oldWordRefs.slice(0, wordIndex),
+      {
+        ...oldWordRefs[wordIndex],
+        letters: [
+          ...oldWordRefs[wordIndex].letters.slice(0, letterIndex),
+          {
+            ...oldWordRefs[wordIndex].letters[letterIndex],
+            ...letter,
+          },
+          ...oldWordRefs[wordIndex].letters.slice(letterIndex + 1),
+        ],
+      },
+      ...oldWordRefs.slice(wordIndex + 1),
+    ])
+  }
+
+  const animateLetterOut = (wordIndex: number, letterIndex: number) => {
+    setTimeout(() => {
+      updateLetterRef(wordIndex, letterIndex, {
+        state: LetterState.Out,
+      })
+    }, letterIndex * letterTime)
+  }
+
+  const animateLetterIn = (wordIndex: number, letterIndex: number) => {
+    setTimeout(() => {
+      updateLetterRef(wordIndex, letterIndex, {
+        state: LetterState.In,
+      })
+    }, spacing + (letterIndex * letterTime))
+  }
+
+  const determineLetterClass = (state: LetterState, letter: string): string => {
+    const classes = ['letter']
+
+    if (letter === ' ') {
+      classes.push('space')
+    }
+
+    switch (state) {
+      case LetterState.Behind:
+        classes.push('behind')
+        break
+      case LetterState.In:
+        classes.push('in')
+        break
+      case LetterState.Out:
+        classes.push('out')
+        break
+      default:
+        break
+    }
+
+    return multiclass(SplashStyles, ...classes)
+  }
+
+  const changeWord = () => {
+    const currWord = wordRefs[currWordIndex]
+    const nextWordIndex = currWordIndex === words.length - 1 ? 0 : currWordIndex + 1
+    const nextWord = wordRefs[nextWordIndex]
+
+    currWord.letters.forEach((_, letterIndex) => animateLetterOut(currWordIndex, letterIndex))
+
+    updateWordRef(nextWordIndex, { visible: true })
+    nextWord.letters.forEach((_, letterIndex) => {
+      updateLetterRef(nextWordIndex, letterIndex, {
+        state: LetterState.Behind,
+      })
+
+      animateLetterIn(nextWordIndex, letterIndex)
+    })
+
+    setCurrWordIndex((currWordIndex === words.length - 1) ? 0 : currWordIndex + 1)
+  }
+
+  // set the interval too
+  useEffect(changeWord, [])
+  useInterval(changeWord, rotationSpeed)
 
   return (
     <section className={SplashStyles.splash}>
@@ -57,7 +149,28 @@ export const Splash = (): JSX.Element => {
         <p>
           The Best Way to Manage a
         </p>
-        <h1>{groups[currText].substr(0, currLetter)}</h1>
+        <h1>
+          {wordRefs.map((word, wordIndex) => (
+            <span
+              key={word.word}
+              className={SplashStyles.word}
+              style={{ opacity: word.visible ? 1 : 0 }}
+            >
+              {word.letters.map((letter, letterIndex) => (
+                <span
+                // optimized: letter indicies never changes
+                // eslint-disable-next-line react/no-array-index-key
+                  key={`${word.word}-${letterIndex}`}
+                  className={
+                    determineLetterClass(letter.state, wordRefs[wordIndex].word[letterIndex])
+                    }
+                >
+                  {wordRefs[wordIndex].word[letterIndex]}
+                </span>
+              ))}
+            </span>
+          ))}
+        </h1>
       </div>
       <div className={SplashStyles.image}>
         <Image
