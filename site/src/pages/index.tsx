@@ -4,7 +4,7 @@ import { Navbar } from '../components/global/navbar/navbar'
 
 export default function Home() {
   return (
-    <div style={{ minHeight: '1000vh' }}>
+    <div>
       <Navbar />
       <Splash />
       <main />

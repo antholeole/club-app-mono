@@ -1,0 +1,30 @@
+@import '../../../../../styles/vars';
+
+.shapes {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  z-index: -2;
+
+  & .square {
+    width: 1000px;
+    height: 1000px;
+
+
+    $bg-color: $primary-color;
+    $dot-color: lighten($primary-color, 25%);
+
+    // Dimensions
+    $dot-size: 2px;
+    $dot-space: 30px;
+
+    background: linear-gradient(90deg, $bg-color ($dot-space - $dot-size), transparent 1%) center,
+		linear-gradient($bg-color ($dot-space - $dot-size), transparent 1%) center,
+		$dot-color;
+	background-size: $dot-space $dot-space;
+
+    transform-origin: center;
+    transform: translate(70%, -45%) rotate(-80deg);
+    border-radius: 20px;
+  }
+}

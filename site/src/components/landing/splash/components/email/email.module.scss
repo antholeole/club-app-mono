@@ -1,0 +1,59 @@
+@import '../../../../../styles/_vars';
+@import '../../../../../styles/_utils';
+
+.email {
+  @include evenChildren;
+  display: flex;
+  flex-direction: column;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 20px;
+  padding: 15px 10px;
+  margin: 30px 10%;
+  border-radius: 10px;
+  background-color: white;
+  grid-area: email;
+
+  & label {
+    font-weight: bold;
+    margin: 3px;
+    text-align: center;
+    font-size: 1.25rem;
+  }
+
+  & > .input {
+    $border-radius: 15px;
+    $text-box-border: 1px solid rgba(36, 74, 117, 0.1);
+    $outside-margin: 20px;
+
+
+    @include center;
+    width: 100%;
+    margin-bottom: 15px;
+
+    & > * {
+      padding: 15px;
+      border: none;
+      font-size: 1rem;
+    }
+
+    & > input {
+      border-top-left-radius: $border-radius;
+      border-bottom-left-radius: $border-radius;
+      border-top: $text-box-border;
+      border-bottom: $text-box-border;
+      border-left: $text-box-border;
+      margin-left: $outside-margin;
+
+      flex-grow: 1;
+    }
+
+    & > button {
+      margin-right: $outside-margin;
+      border-top-right-radius: $border-radius;
+      border-bottom-right-radius: $border-radius;
+      background-color: $primary-color;
+      color: white;
+    }
+  }
+
+
+}

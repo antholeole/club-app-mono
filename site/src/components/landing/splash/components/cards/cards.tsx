@@ -1,5 +1,6 @@
 import { Calendar } from '@styled-icons/ionicons-outline/Calendar'
 import { ChatbubbleEllipses } from '@styled-icons/ionicons-outline/ChatbubbleEllipses'
+import { Checkmark } from '@styled-icons/ionicons-outline/Checkmark'
 import CardStyles from './cards.module.scss'
 
 interface CardProps {
@@ -27,13 +28,18 @@ export const Cards = () => {
     <div className={CardStyles.trifold}>
       <Card
         header="Schedule Events"
-        body="Schedule Reoccuring or one-time events. Then, RSVP & send reminders by email or notification."
+        body="Schedule reoccuring or one-time events. Then, RSVP & send reminders by email or notification."
         icon={<Calendar />}
       />
       <Card
         header="Keep Constant Communication"
         body="Create chatrooms with as many people as you need."
         icon={<ChatbubbleEllipses />}
+      />
+      <Card
+        header="All the Other Features you Expect."
+        body="Send images, tag members, and react to messages."
+        icon={<Checkmark />}
       />
     </div>
   )

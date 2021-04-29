@@ -25,6 +25,7 @@ ex. test that a user CAN change his own name BUT not anyone elses.
 ## Todo
 
 Everything, but currently:
+- https://mockuphone.com/device/iphone12blue for site
 - Need to create seed data
 - Event subscriptions
 - Pull seed data on load in
