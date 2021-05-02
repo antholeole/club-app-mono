@@ -1,51 +1,21 @@
-inital schema:
+Check out the makefile for scripts.
 
-<UTD / NUTD (Up to date / not up to date)>
-<TABLE NAME>:
-    <FIELD TYPE> <FIELD NAME><* if required>: <desc>,
-
-    
-<UTD>
-User:
-    uuid id*,
-    Text email UNIQUE,
-    Text name*,
-    Text profile_picture,
-    Text ws_id: The ID of the websocket connection in WS API Gateway. NULL if not online,
-
-<UTD>
-Groups:
-    uuid id*,
-    Text group_name,
-
-<UTD>
-User_to_group:
-    uuid id*,
-    uuid user_id*,
-    uuid group_id*,
-    bool admin DEFAULT FALSE
-
-<UTD>
-group_threads:
-    uuid id*,
-    uuid group_id*,
-    Text name*,
-
-<UTD>
-User_to_thread:
-    uuid id*,
-    uuid user_id*,
-    uuid thread_id*,
-
-messages:
-    uuid id*,
-    uuid user_sent*,
-    uuid thread_id
-    bool edited DEFAULT FALSE,
-    bool deleted DEFAULT FALSE,
-    datetime created DEFAULT NOW,
-    bool is_image*,
-    Text message,
+Make sure to squash changes if we're pre-launch so that we don't have a bunch of garbage.
 
 
+## Adding Access
 
+By default, no one can do anything! Anything that can be accessed must be specificially allowed. If you are adding access,
+write tests! This is the most critical part of the application and if we accidently open up too much permission there are
+potential security holes. 
+
+In the case of needing fine grained access, follow ]this tutorial](https://hasura.io/docs/latest/graphql/core/auth/authorization/role-multiple-rules.html).
+
+## Testing
+
+Because ACLs are often finniky and making a change opens up a security hole, test around each ACL making sure that
+you didn't accidently open up too much access. For instance, if adding "User should be able to change name" make sure to
+test that other users cannot change the name.
+
+
+A single docker instance is spun up ot test aginst. After each test the instance is cleared.

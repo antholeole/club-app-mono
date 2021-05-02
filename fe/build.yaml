@@ -35,9 +35,9 @@ targets:
           - import: 'package:fe/stdlib/helpers/uuid_type.dart'
             name: UuidTypeSerializer
           type_overrides:
-          - import: 'package:fe/stdlib/helpers/uuid_type.dart'
-            name: UuidType
-
+            uuid:
+              import: 'package:fe/stdlib/helpers/uuid_type.dart'
+              name: UuidType
       ferry_generator|req_builder:
         enabled: true
         options:

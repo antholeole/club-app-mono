@@ -9,19 +9,25 @@ const mode = 'production'
 
 let plugins = []
 
-if (process.env.NODE_ENV === 'development') {
 
-  //naieve .env lookup
-  const hasura_password = JSON.stringify(
-    fs.readFileSync('.env', 'utf-8').split('\n')
-    .find((v) => v.includes('HASURA_PASSWORD='))
-    .split('HASURA_PASSWORD=')[1])
+function getDotEnvVariable(variable) {
+  let read = JSON.stringify(
+    fs.readFileSync('../../.env', 'utf-8').split('\n')
+    .find((v) => v.includes(`${variable}=`))
+    .split(`${variable}=`)[1])
+
+    return read
+}
+
+if (process.env.NODE_ENV === 'development') {
+  const hasuraPassword = getDotEnvVariable('ADMIN_SECRET')
+  const jwtSecret = getDotEnvVariable('JWT_SECRET')
 
   plugins.push(
     new webpack.DefinePlugin({
       ENVIRONMENT: JSON.stringify('dev'),
-      HASURA_PASSWORD: hasura_password,
-      SECRET: JSON.stringify('LOL NOT REAL SECRET XOXO GOSSIP GIRL')
+      HASURA_PASSWORD: hasuraPassword,
+      SECRET: jwtSecret
     })
   )
 }

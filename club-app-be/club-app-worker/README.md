@@ -1,16 +1,2 @@
-To run codegen:
-
-```
-zeus GQLENDPOINT ./src/generated --header=x-hasura-admin-secret:"SECRET" --ts
-```
-
-
-Current stack:
-- Hasura graphql on heroku free teir 
-- cloudflare workers for BE
-- backblaze for images
-
-
-At scale (Will never get here, just for fun!) 
-- Hasura cloud
-- Redis for managing current connections
+env variables in production are set by `wrangler secret`. In cloudworker are set by
+webpack replace in `./webpack.config.js`.
