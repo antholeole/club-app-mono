@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-class DrawerGroup extends StatefulWidget {
+class ToggleableGroup extends StatefulWidget {
   final String _name;
 
-  DrawerGroup({required String name}) : _name = name;
+  ToggleableGroup({required String name}) : _name = name;
 
   @override
-  _DrawerGroupState createState() => _DrawerGroupState();
+  _ToggleableGroupState createState() => _ToggleableGroupState();
 }
 
-class _DrawerGroupState extends State<DrawerGroup>
+class _ToggleableGroupState extends State<ToggleableGroup>
     with SingleTickerProviderStateMixin {
   late Animation<double> _animation;
   late AnimationController _controller;

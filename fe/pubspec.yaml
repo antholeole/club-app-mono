@@ -32,6 +32,7 @@ dependencies:
   flutter_spinkit: ^5.0.0
   fluttertoast: ^8.0.3
   flutter_platform_widgets: ^1.2.0
+  badges: ^2.0.0-nullsafety.1
 
   #gql
   ferry: ^0.10.1-0.1.nullsafety.0
@@ -80,4 +81,5 @@ flutter:
     - assets/icons/identities/google_logo.png
     - assets/icons/identities/facebook_logo.png
     - assets/icons/identities/apple_logo.png
+    - assets/mock_icons/mock_club_icon.png
     - .env

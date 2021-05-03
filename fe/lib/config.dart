@@ -5,6 +5,7 @@ abstract class Config {
   String get gqlUrl;
   bool get httpIsSecure;
   bool get playTaxingAnimations;
+  bool get debug;
 }
 
 class DevConfig extends Config {
@@ -19,6 +20,9 @@ class DevConfig extends Config {
 
   @override
   bool get playTaxingAnimations => false;
+
+  @override
+  bool get debug => true;
 }
 
 class ProdConfig extends Config {
@@ -33,4 +37,7 @@ class ProdConfig extends Config {
 
   @override
   bool get playTaxingAnimations => true;
+
+  @override
+  bool get debug => false;
 }

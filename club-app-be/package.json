@@ -14,7 +14,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "concurrently": "^6.0.0",
-    "sinon": "^10.0.0"
+    "concurrently": "^6.0.0"
   }
 }

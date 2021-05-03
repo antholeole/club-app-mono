@@ -16,3 +16,13 @@ array_relationships:
       table:
         name: user_to_group
         schema: public
+select_permissions:
+- permission:
+    columns:
+    - group_name
+    - id
+    filter:
+      user_to_groups:
+        user_id:
+          _eq: X-Hasura-User-Id
+  role: user

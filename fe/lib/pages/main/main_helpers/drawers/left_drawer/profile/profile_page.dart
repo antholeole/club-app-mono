@@ -1,8 +1,10 @@
+import 'package:fe/config.dart';
 import 'package:fe/data_classes/json/local_user.dart';
 import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
-import 'package:fe/pages/main/main_helpers/drawers/left_drawer/profile_page/profile_page_service.dart';
+import 'package:fe/pages/main/main_helpers/drawers/left_drawer/profile/profile_page_service.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/helpers/DEBUG_print.dart';
 import 'package:fe/stdlib/theme/button_group.dart';
 import 'package:fe/stdlib/toaster.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +21,7 @@ class _ProfilePageState extends State<ProfilePage> {
   bool _changingName = false;
   bool _loggingOut = false;
   final LocalUser _localUser = getIt<LocalUser>();
+  final Config _config = getIt<Config>();
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +58,14 @@ class _ProfilePageState extends State<ProfilePage> {
                   text: 'Log Out',
                   loading: _loggingOut),
             ]),
+            _config.debug
+                ? ButtonGroup(name: 'Debug', buttons: [
+                    ButtonData(
+                        onClick: () => printWrapped(_localUser.accessToken),
+                        text: 'Print Access Token',
+                        loading: false),
+                  ])
+                : Container(),
           ],
         )
       ],

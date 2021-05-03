@@ -1,0 +1,12 @@
+query QuerySelfGroupsPreview($self_id: uuid!) {
+ 	 user_to_group(where: {
+    user_id: {
+    	_eq: $self_id
+    }
+  }) {
+   		group {
+        id,
+        group_name
+      }
+    }
+}

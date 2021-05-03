@@ -1,3 +1,4 @@
+import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:built_value/serializer.dart';
@@ -19,6 +20,23 @@ class UuidType {
     } on FormatException catch (_) {
       return false;
     }
+  }
+
+  @override
+  bool operator ==(covariant UuidType other) => other.uuid == uuid;
+}
+
+class IsarUuidConverter extends TypeConverter<UuidType, String> {
+  const IsarUuidConverter();
+
+  @override
+  UuidType fromIsar(String uuidStr) {
+    return UuidType(uuidStr);
+  }
+
+  @override
+  String toIsar(UuidType uuid) {
+    return uuid.uuid;
   }
 }
 

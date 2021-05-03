@@ -96,6 +96,7 @@ class _MainWrapperState extends State<MainWrapper> {
   @override
   void initState() {
     super.initState();
+    _mainService.initalLoad();
 
     //rebuilds so that we can use the scaoffold state in the scaffold.
     WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {}));

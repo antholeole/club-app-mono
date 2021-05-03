@@ -1,4 +1,5 @@
-import 'package:fe/pages/main/main_helpers/drawers/left_drawer/profile_page/profile_page.dart';
+import 'package:fe/pages/main/main_helpers/drawers/left_drawer/groups/groups_page.dart';
+import 'package:fe/pages/main/main_helpers/drawers/left_drawer/profile/profile_page.dart';
 import 'package:fe/stdlib/theme/option_pill.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +8,7 @@ import 'package:flutter/material.dart';
 //pins and other options in v2
 class ClubDrawer extends StatefulWidget {
   final List<Widget> _pages = [
-    Container(color: Colors.red),
+    GroupsPage(),
     ProfilePage(),
     Container(color: Colors.green)
   ];

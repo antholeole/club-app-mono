@@ -68,34 +68,8 @@ class _ChannelsBottomSheetState extends State<ChannelsBottomSheet>
               Expanded(
                   child: ListView(
                 children: [
-                  _buildSection('Channels', [
-                    _buildChannelTile(
-                        selected: true, unreadMessages: 0, title: 'Blah'),
-                    _buildChannelTile(
-                        selected: false, unreadMessages: 3, title: 'Blah'),
-                  ]),
-                  _buildSection('Direct Messages', [
-                    _buildDmTile(
-                        selected: true,
-                        unreadMessages: 0,
-                        isOnline: false,
-                        title: 'Blah'),
-                    _buildDmTile(
-                        selected: false,
-                        unreadMessages: 3,
-                        isOnline: true,
-                        title: 'Blah'),
-                    _buildDmTile(
-                        selected: false,
-                        unreadMessages: 3,
-                        isOnline: true,
-                        title: 'Blah'),
-                    _buildDmTile(
-                        selected: false,
-                        unreadMessages: 3,
-                        isOnline: true,
-                        title: 'Blah')
-                  ]),
+                  _buildSection('Channels', []),
+                  _buildSection('Direct Messages', []),
                 ],
               ))
             ],
@@ -105,7 +79,6 @@ class _ChannelsBottomSheetState extends State<ChannelsBottomSheet>
     );
   }
 
-  //TODO change this dookie font...
   Widget _buildSection(String sectionName, List<Widget> elements) {
     return Column(
       children: [

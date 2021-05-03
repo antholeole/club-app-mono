@@ -1,9 +1,0 @@
-query QuerySelfGroupIds($self_id: uuid!) {
- 	 user_to_group(where: {
-    user_id: {
-    	_eq: $self_id
-    }
-  }) {
-   		id
-    }
-}

@@ -1,6 +1,7 @@
 import 'package:fe/config.dart';
+import 'package:fe/data_classes/isar/group_repository.dart';
 import 'package:fe/pages/login/login_service.dart';
-import 'package:fe/pages/main/main_helpers/drawers/left_drawer/profile_page/profile_page_service.dart';
+import 'package:fe/pages/main/main_helpers/drawers/left_drawer/profile/profile_page_service.dart';
 import 'package:fe/pages/main/main_service.dart';
 import 'package:fe/pages/splash/splash_service.dart';
 import 'package:fe/stdlib/clients/gql_client.dart';
@@ -10,8 +11,10 @@ import 'package:fe/stdlib/local_data/local_file_store.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:isar/isar.dart';
 
 import 'data_classes/json/local_user.dart';
+import 'isar.g.dart';
 
 final getIt = GetIt.instance;
 
@@ -29,7 +32,12 @@ void setupLocator({required bool isProd}) {
   getIt.registerSingleton<LocalUser>(LocalUser.empty());
 
   //async general dep
-  //getIt.registerSingletonAsync<Isar>(() async => openIsar());
+  getIt.registerSingletonAsync<Isar>(() => openIsar());
+
+  //repositories
+  getIt.registerSingletonWithDependencies<GroupRepository>(
+      () => GroupRepository(),
+      dependsOn: [Isar]);
 
   //only services that can be registered pre-login
   //(does not dep on localUserAuth)

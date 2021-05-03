@@ -1,12 +1,15 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
 import 'package:built_value/standard_json_plugin.dart' show StandardJsonPlugin;
-import 'package:fe/gql/query_self_group_ids.data.gql.dart'
-    show GQuerySelfGroupIdsData, GQuerySelfGroupIdsData_user_to_group;
-import 'package:fe/gql/query_self_group_ids.req.gql.dart'
-    show GQuerySelfGroupIdsReq;
-import 'package:fe/gql/query_self_group_ids.var.gql.dart'
-    show GQuerySelfGroupIdsVars;
+import 'package:fe/gql/query_self_group_preview.data.gql.dart'
+    show
+        GQuerySelfGroupsPreviewData,
+        GQuerySelfGroupsPreviewData_user_to_group,
+        GQuerySelfGroupsPreviewData_user_to_group_group;
+import 'package:fe/gql/query_self_group_preview.req.gql.dart'
+    show GQuerySelfGroupsPreviewReq;
+import 'package:fe/gql/query_self_group_preview.var.gql.dart'
+    show GQuerySelfGroupsPreviewVars;
 import 'package:fe/gql/schema.schema.gql.dart'
     show
         GBoolean_comparison_exp,
@@ -104,10 +107,11 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   ..addPlugin(StandardJsonPlugin());
 @SerializersFor([
   GBoolean_comparison_exp,
-  GQuerySelfGroupIdsData,
-  GQuerySelfGroupIdsData_user_to_group,
-  GQuerySelfGroupIdsReq,
-  GQuerySelfGroupIdsVars,
+  GQuerySelfGroupsPreviewData,
+  GQuerySelfGroupsPreviewData_user_to_group,
+  GQuerySelfGroupsPreviewData_user_to_group_group,
+  GQuerySelfGroupsPreviewReq,
+  GQuerySelfGroupsPreviewVars,
   GString_comparison_exp,
   GUpdateSelfNameData,
   GUpdateSelfNameData_update_users_by_pk,
