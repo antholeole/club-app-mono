@@ -1,5 +1,7 @@
 import 'package:fe/data_classes/json/local_user.dart';
+import 'package:fe/stdlib/clients/http/http_client.dart';
 import 'package:ferry/ferry.dart';
+import 'package:flutter/foundation.dart';
 import 'package:gql_error_link/gql_error_link.dart';
 import 'package:gql_exec/gql_exec.dart';
 import 'package:gql_http_link/gql_http_link.dart';
@@ -51,10 +53,11 @@ class _HttpAuthLink extends Link {
       yield* forward(addHeaders(request));
     }
 
-    final buildErrorString =
-        resp.errors!.map((error) => error.message).join('", and "');
+    debugPrint(
+        'gql errored with ${resp.errors!.map((error) => error.message).join('", and "')}');
 
-    throw Exception('gql errored with $buildErrorString');
+    throw await HttpClient.basicErrorHandler(
+        HttpException(statusCode: 999, message: ''), {});
   }
 
   @override
