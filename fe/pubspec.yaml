@@ -52,13 +52,18 @@ dependencies:
 
 
 dev_dependencies:
+  #prefs
   pedantic: ^1.11.0
+
+  #builders
   build_runner: ^1.12.2
   json_serializable: ^4.1.0
   auto_route_generator: ^1.0.2
   ferry_generator: ^0.4.1-0.1.nullsafety.0
   isar_generator: ^0.4.0
 
+  #cicd
+  dependency_validator: ^3.0.0
 
   flutter_test:
     sdk: flutter

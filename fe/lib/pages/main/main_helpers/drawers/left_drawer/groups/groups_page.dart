@@ -4,23 +4,31 @@ import 'package:fe/data_classes/isar/group_repository.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
 
-class GroupsPage extends StatelessWidget {
+class GroupsPage extends StatefulWidget {
+  @override
+  _GroupsPageState createState() => _GroupsPageState();
+}
+
+class _GroupsPageState extends State<GroupsPage> {
   final _groupRepository = getIt<GroupRepository>();
+  List<Group> cachedGroups = <Group>[];
 
   @override
   Widget build(BuildContext context) {
     return SizedBox.expand(
       child: FutureBuilder<List<Group>>(
         future: _fetchGroups(),
+        initialData: [],
         builder: (ctx, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.active:
             case ConnectionState.waiting:
-              return Loader();
             case ConnectionState.done:
-              return _buildGroups(snapshot.data ?? [], ctx);
-            default:
+              return _buildGroups(snapshot.data ?? []);
+            case ConnectionState.none:
               return _buildError();
           }
         },
@@ -29,14 +37,19 @@ class GroupsPage extends StatelessWidget {
   }
 
   Future<List<Group>> _fetchGroups() async {
-    return _groupRepository.findAll();
+    final groups = await _groupRepository.findAll();
+    setState(() {
+      cachedGroups = groups;
+    });
+
+    return groups;
   }
 
   Widget _buildError() {
     return Text("sorry, couldn't load your groups.");
   }
 
-  Widget _buildGroups(List<Group> groups, BuildContext context) {
+  Widget _buildGroups(List<Group> groups) {
     final List<Widget> widgets = [
       Padding(
         padding: const EdgeInsets.all(8.0),
@@ -48,8 +61,7 @@ class GroupsPage extends StatelessWidget {
       ),
       ListView(
         shrinkWrap: true,
-        children:
-            groups.map((v) => _buildGroupTab(v, true, true, context)).toList(),
+        children: groups.map((v) => _buildGroupTab(v, false)).toList(),
       )
     ];
 
@@ -72,15 +84,15 @@ class GroupsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildGroupTab(
-      Group group, bool active, bool notification, BuildContext context) {
+  Widget _buildGroupTab(Group group, bool notification) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
           border: Border(
               bottom: BorderSide(color: Colors.grey.shade200, width: 1))),
       child: TextButton(
-        onPressed: () {},
+        onPressed: () =>
+            context.read<MainPageActionsCubit>().selectGroup(group),
         style: TextButton.styleFrom(backgroundColor: Colors.white),
         child: Row(
           children: [
@@ -89,7 +101,14 @@ class GroupsPage extends StatelessWidget {
               child: Container(
                 width: 4,
                 height: 40,
-                color: active ? Colors.redAccent.shade100 : Colors.white,
+                color: context
+                            .read<MainPageActionsCubit>()
+                            .state
+                            .selectedGroup
+                            ?.id ==
+                        group.id
+                    ? Colors.redAccent.shade100
+                    : Colors.transparent,
               ),
             ),
             Badge(

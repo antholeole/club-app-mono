@@ -9,6 +9,9 @@ to build generated files (GQL, serialized data): `flutter pub run build_runner b
 If adding tables, you *must* make sure that when GroupRepository remove group is
 called, all the related tables get cleaned up.
 
+To run dependency validation, do `pub run dependency_validator`.
+This is handled by CI
+
 TODO; 
 in main wrapper, we need to check if there is local groups and if not THEN
 network groups. 

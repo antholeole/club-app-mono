@@ -4,6 +4,7 @@ import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:fe/stdlib/theme/bottom_nav/bottom_nav.dart';
+import 'package:fe/stdlib/theme/loader.dart';
 import 'package:fe/stdlib/toaster.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,7 +26,7 @@ class _MainWrapperState extends State<MainWrapper> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final MainPageActionsCubit _mainPageActionsCubit = MainPageActionsCubit();
   late BuildContext _toastableContext;
-  UuidType? selectedChat;
+  bool _initalLoadComplete = false;
 
   @override
   Widget build(BuildContext context) {
@@ -45,35 +46,33 @@ class _MainWrapperState extends State<MainWrapper> {
                 listener: (context, state) {
                   if (state is Logout) {
                     _logout(state.withError);
-                  } else if (state is ScaffoldUpdate) {
-                    //rebuild with new scaffold parts
+                  } else if (state is SelectGroup) {
+                    //rebuild with new group
+                    debugPrint(
+                        'switched group to ${state.selectedGroup?.name}');
                     setState(() {});
                   }
                 },
                 child: Scaffold(
                   key: _scaffoldKey,
-                  endDrawer: _mainPageActionsCubit.state.endDrawer,
                   appBar: AppBar(
                     backwardsCompatibility: false,
                     backgroundColor: Color(0xffFBFBFB),
                     foregroundColor: Colors.grey[900],
                     automaticallyImplyLeading: false,
                     title: Column(
-                      children: _buildTitle(context),
+                      children: _buildTitle(),
                     ),
                     leading: IconButton(
                       icon: Icon(Icons.menu),
                       onPressed: _scaffoldKey.currentState?.openDrawer,
                     ),
-                    actions: _mainPageActionsCubit.state.endDrawer != null
-                        ? [
-                            IconButton(
-                              icon: Icon(Icons.more_vert),
-                              onPressed:
-                                  _scaffoldKey.currentState?.openEndDrawer,
-                            )
-                          ]
-                        : [],
+                    actions: [
+                      IconButton(
+                        icon: Icon(Icons.more_vert),
+                        onPressed: _scaffoldKey.currentState?.openEndDrawer,
+                      )
+                    ],
                   ),
                   drawer: ClubDrawer(),
                   backgroundColor: Colors.white,
@@ -96,22 +95,30 @@ class _MainWrapperState extends State<MainWrapper> {
   @override
   void initState() {
     super.initState();
-    _mainService.initalLoad();
-
-    //rebuilds so that we can use the scaoffold state in the scaffold.
-    WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {}));
+    _mainService.initalLoad().then((v) => setState(() {
+          _initalLoadComplete = true;
+        }));
   }
 
-  List<Widget> _buildTitle(BuildContext context) {
-    final titleElements = <Widget>[Text('#Defense')];
+  List<Widget> _buildTitle() {
+    final titleElements = <Widget>[];
 
-    if (_mainPageActionsCubit.state.subtitle != null) {
+    const subheaderStyle = TextStyle(
+      color: Colors.grey,
+      fontSize: 14,
+    );
+
+    if (!_initalLoadComplete) {
+      titleElements.add(Loader(
+        size: 18,
+      ));
+    } else if (_initalLoadComplete &&
+        _mainPageActionsCubit.state.selectedGroup == null) {
+      titleElements.add(Text('No Club Selected', style: subheaderStyle));
+    } else {
       titleElements.add(Text(
-        _mainPageActionsCubit.state.subtitle!,
-        style: TextStyle(
-          color: Colors.grey,
-          fontSize: 14,
-        ),
+        _mainPageActionsCubit.state.selectedGroup!.name,
+        style: subheaderStyle,
       ));
     }
 
