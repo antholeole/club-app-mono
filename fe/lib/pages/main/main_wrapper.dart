@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fe/data_classes/isar/group_repository.dart';
 import 'package:fe/data_classes/json/local_user.dart';
 import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
+import 'package:fe/pages/main/main_helpers/drawers/right_drawer/group_drawer.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:fe/stdlib/shared_widgets/join_group_button.dart';
@@ -73,14 +74,18 @@ class _MainWrapperState extends State<MainWrapper> {
                       icon: Icon(Icons.menu),
                       onPressed: _scaffoldKey.currentState?.openDrawer,
                     ),
-                    actions: [
-                      IconButton(
-                        icon: Icon(Icons.more_vert),
-                        onPressed: _scaffoldKey.currentState?.openEndDrawer,
-                      )
-                    ],
+                    actions: _mainPageActionsCubit.state.selectedGroup != null
+                        ? [
+                            IconButton(
+                              icon: Icon(Icons.group),
+                              onPressed:
+                                  _scaffoldKey.currentState!.openEndDrawer,
+                            )
+                          ]
+                        : [],
                   ),
                   drawer: ClubDrawer(),
+                  endDrawer: GroupDrawer(),
                   backgroundColor: Colors.white,
                   body: Builder(
                     builder: (bContext) {
