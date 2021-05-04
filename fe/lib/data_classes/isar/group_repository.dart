@@ -1,7 +1,8 @@
 import 'package:fe/data_classes/json/local_user.dart';
+import 'package:fe/gql/query_self_group_preview.data.gql.dart';
 import 'package:fe/gql/query_self_group_preview.req.gql.dart';
 import 'package:fe/stdlib/clients/gql_client.dart';
-import 'package:fe/stdlib/clients/http/http_client.dart';
+import 'package:fe/stdlib/helpers/remote_sync.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter/foundation.dart';
@@ -13,7 +14,6 @@ import 'group.dart';
 
 class GroupRepository {
   final _isar = getIt<Isar>();
-  final _gqlClient = getIt<Client>();
   final _user = getIt<LocalUser>();
 
   GroupRepository();
@@ -25,25 +25,17 @@ class GroupRepository {
       return localGroups;
     }
 
-    final req = GQuerySelfGroupsPreviewReq((b) => b..vars.self_id = _user.uuid);
+    final remoteGroups = await fetchRemote(
+        GQuerySelfGroupsPreviewReq((b) => b..vars.self_id = _user.uuid),
+        (GQuerySelfGroupsPreviewData data) => data.user_to_group
+            .map((v) => Group()
+              ..id = v.group.id
+              ..name = v.group.group_name)
+            .toList());
 
-    final resp = await _gqlClient.request(req).first;
+    await remoteSync(localGroups, remoteGroups, addOne,
+        (Group g) => removeById(g.id), (Group g) => g.name);
 
-    if (resp.data == null) {
-      throw await basicGqlErrorHandler(errors: resp.graphqlErrors);
-    }
-
-    final data = resp.data!;
-
-    final remoteGroups = data.user_to_group
-        .map((v) => Group()
-          ..id = v.group.id
-          ..name = v.group.group_name)
-        .toList();
-
-    await _remoteSync(localGroups, remoteGroups);
-
-    //TODO: can refactor so remote sync returns the updated list
     //regrab new data
     return findAll();
   }
@@ -58,28 +50,5 @@ class GroupRepository {
     return await _isar.writeTxn((isar) async {
       return await isar.groups.where().filter().idEqualTo(id).deleteFirst();
     });
-  }
-
-  //verifies that remote data is the same as local.
-  //treats local as a cache -> prioritize remote
-  Future<void> _remoteSync(List<Group> local, List<Group> remote) {
-    List<Future<void>> groupChanges = [];
-    for (Group remoteGroup in remote) {
-      if (local.indexWhere((localGroup) => localGroup.id == remoteGroup.id) <
-          0) {
-        debugPrint('adding group ${remoteGroup.name} locally');
-        groupChanges.add(addOne(remoteGroup));
-      }
-    }
-
-    for (Group localGroup in local) {
-      if (remote.indexWhere((remoteGroup) => localGroup.id == remoteGroup.id) <
-          0) {
-        debugPrint('removing group ${localGroup.name} locally');
-        groupChanges.add(removeById(localGroup.id));
-      }
-    }
-
-    return Future.wait(groupChanges);
   }
 }

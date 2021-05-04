@@ -32,7 +32,7 @@ void setupLocator({required bool isProd}) {
   getIt.registerSingleton<LocalUser>(LocalUser.empty());
 
   //async general dep
-  getIt.registerSingletonAsync<Isar>(() => openIsar());
+  getIt.registerSingletonAsync<Isar>(() => openIsar(name: 'a'));
 
   //repositories
   getIt.registerSingletonWithDependencies<GroupRepository>(

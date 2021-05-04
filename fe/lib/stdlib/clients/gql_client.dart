@@ -90,6 +90,13 @@ Future<Failure> basicGqlErrorHandler({List<GraphQLError>? errors}) async {
       debugPrint('got GQL error: ${error.message}');
     });
     return Failure(message: 'Unknown GraphQL error.');
+  } else if (getIt<Config>().debug) {
+    debugPrint('entered GQL error handler with errors = null');
+    try {
+      throw Error();
+    } on Error catch (e) {
+      print(e.stackTrace);
+    }
   }
 
   return Failure(message: 'Unknown error.');
