@@ -79,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
       await _user.serializeSelf();
       await _proceedToApp();
     } on UserDeniedException catch (_) {} on HttpException catch (e) {
-      final f = await HttpClient.basicErrorHandler(e, {});
+      final f = await HttpClient.basicHttpErrorHandler(e, {});
       Toaster.of(_toastableContext).errorToast(f.message);
     } finally {
       setState(() {

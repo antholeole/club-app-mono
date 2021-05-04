@@ -13,5 +13,6 @@ To run dependency validation, do `pub run dependency_validator`.
 This is handled by CI
 
 TODO; 
-in main wrapper, we need to check if there is local groups and if not THEN
-network groups. 
+Right drawer -> show users in group
+Chat screen -> fetch and display chats.
+should save last screen to userprefs and be able to route accordingly

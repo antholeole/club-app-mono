@@ -12,10 +12,10 @@ localRouter
   .options('*', cors)
   .all('/api/auth/*', authRouter.handle)
   .all('/api/gateway/*', gatewayRouter.handle)
+  .get('/api/ping', () => new Response('pong'))
   .all('/api/*', () => {
     throw new StatusError(404, 'Api route not found')
   })
-  .get('/ping', () => new Response('pong'))
   
 if (!DEBUG) {
   localRouter.all('*', feRouter.handle)

@@ -2,7 +2,6 @@ import 'package:badges/badges.dart';
 import 'package:fe/data_classes/isar/group.dart';
 import 'package:fe/data_classes/isar/group_repository.dart';
 import 'package:fe/service_locator.dart';
-import 'package:fe/stdlib/theme/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';

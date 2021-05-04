@@ -9,6 +9,5 @@ class Group {
   @Index(unique: true, indexType: IndexType.hash)
   @IsarUuidConverter()
   late UuidType id;
-
   late String name;
 }

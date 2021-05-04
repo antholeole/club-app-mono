@@ -2,10 +2,12 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fe/data_classes/isar/group_repository.dart';
 import 'package:fe/data_classes/json/local_user.dart';
 import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
+import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:fe/stdlib/shared_widgets/join_group_button.dart';
 import 'package:fe/stdlib/theme/bottom_nav/bottom_nav.dart';
 import 'package:fe/stdlib/theme/loader.dart';
+import 'package:fe/stdlib/theme/pill_button.dart';
 import 'package:fe/stdlib/toaster.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +17,7 @@ import 'main_helpers/bottom_sheet/channels_bottom_sheet.dart';
 import 'main_helpers/drawers/left_drawer/club_drawer.dart';
 import 'main_service.dart';
 
-enum _InitalLoadState { Loading, NoGroups, WithGroups }
+enum _InitalLoadState { Loading, NoGroups, WithGroups, Error }
 
 class MainWrapper extends StatefulWidget {
   MainWrapper() : assert(getIt<LocalUser>().isLoggedIn());
@@ -93,6 +95,28 @@ class _MainWrapperState extends State<MainWrapper> {
                             EventsRoute(),
                           ],
                         );
+                      } else if (_initalLoadState == _InitalLoadState.Error) {
+                        return Center(
+                            child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: SizedBox(
+                                width: 250,
+                                child: Text(
+                                  'Sorry, there seems to be an error. Retry?',
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                            PillButton(
+                              text: 'retry',
+                              onClick: _initalLoad,
+                              icon: Icons.refresh,
+                            ),
+                          ],
+                        ));
                       } else if (_initalLoadState == _InitalLoadState.Loading) {
                         return Container();
                       } else {
@@ -128,11 +152,23 @@ class _MainWrapperState extends State<MainWrapper> {
 
   @override
   void initState() {
+    _initalLoad();
     super.initState();
-    _mainService.initalLoad().then((v) => _completeInitalLoad());
   }
 
-  void _completeInitalLoad() async {
+  Future<void> _initalLoad() async {
+    try {
+      await _mainService.initalLoad();
+    } on Failure catch (e) {
+      Toaster.of(_toastableContext).errorToast(e.message);
+
+      setState(() {
+        _initalLoadState = _InitalLoadState.Error;
+      });
+
+      return;
+    }
+
     if (_mainPageActionsCubit.state.selectedGroup == null) {
       final groups = await _groupRepository.findAll();
       if (groups.isEmpty) {
@@ -152,18 +188,23 @@ class _MainWrapperState extends State<MainWrapper> {
   List<Widget> _buildTitle() {
     final titleElements = <Widget>[];
 
-    if (_initalLoadState == _InitalLoadState.Loading) {
+    if (_mainPageActionsCubit.state.selectedGroup != null) {
+      {
+        titleElements.add(Text(
+          _mainPageActionsCubit.state.selectedGroup!.name,
+          style: Theme.of(context).textTheme.caption,
+        ));
+      }
+    } else if (_initalLoadState == _InitalLoadState.Error) {
+      titleElements.add(
+          Text('An Error Occured', style: Theme.of(context).textTheme.caption));
+    } else if (_initalLoadState == _InitalLoadState.Loading) {
       titleElements.add(Loader(
         size: 18,
       ));
-    } else if (_mainPageActionsCubit.state.selectedGroup == null) {
+    } else {
       titleElements.add(
           Text('No Club Selected', style: Theme.of(context).textTheme.caption));
-    } else {
-      titleElements.add(Text(
-        _mainPageActionsCubit.state.selectedGroup!.name,
-        style: Theme.of(context).textTheme.caption,
-      ));
     }
 
     return titleElements;

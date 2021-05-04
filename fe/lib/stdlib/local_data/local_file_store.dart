@@ -46,11 +46,11 @@ class LocalFileStore {
   }
 }
 
-enum LocalStorageType { LocalUser, GroupIds }
+enum LocalStorageType { LocalUser }
 
 //serde singleton like objects.
 extension FileName on LocalStorageType {
   String get fileName {
-    return ['local_user', 'groups'][index];
+    return ['local_user'][index];
   }
 }

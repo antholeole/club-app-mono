@@ -31,7 +31,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_spinkit: ^5.0.0
   fluttertoast: ^8.0.3
-  flutter_platform_widgets: ^1.2.0
+  flutter_platform_widgets: ^1.6.1
   badges: ^2.0.0-nullsafety.1
 
   #gql

@@ -40,7 +40,7 @@ class SearchBar extends AnimatedWidget {
 
   static final _opacityTween = Tween(begin: 1.0, end: 0.0);
   static final _paddingTween = Tween(begin: 0.0, end: 60.0);
-  static final _kFontSize = 13.0;
+  static const _kFontSize = 13.0;
 
   @override
   Widget build(BuildContext context) {

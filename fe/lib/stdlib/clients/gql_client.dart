@@ -1,5 +1,7 @@
 import 'package:fe/data_classes/json/local_user.dart';
 import 'package:fe/stdlib/clients/http/http_client.dart';
+import 'package:fe/stdlib/clients/http/unauth_http_client.dart';
+import 'package:fe/stdlib/errors/failure.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter/foundation.dart';
 import 'package:gql_error_link/gql_error_link.dart';
@@ -12,6 +14,7 @@ import '../../config.dart';
 import '../../constants.dart';
 import '../../service_locator.dart';
 
+//TODO: typedef GqlClient = Client;
 Client buildGqlClient(LocalUser localUser) {
   final link = Link.from([
     _HttpAuthLink(localUser),
@@ -53,11 +56,7 @@ class _HttpAuthLink extends Link {
       yield* forward(addHeaders(request));
     }
 
-    debugPrint(
-        'gql errored with ${resp.errors!.map((error) => error.message).join('", and "')}');
-
-    throw await HttpClient.basicErrorHandler(
-        HttpException(statusCode: 999, message: ''), {});
+    throw await basicGqlErrorHandler(errors: resp.errors);
   }
 
   @override
@@ -69,4 +68,29 @@ class _HttpAuthLink extends Link {
   Future<void> updateToken() async {
     await localUser.refreshAccessToken();
   }
+}
+
+Future<Failure> basicGqlErrorHandler({List<GraphQLError>? errors}) async {
+  if (!(await HttpClient.isConnected())) {
+    return Failure(message: "Couldn't connect to internet.");
+  }
+
+  try {
+    await getIt<UnauthHttpClient>().getReq('/ping');
+  } on HttpException catch (e) {
+    if (e.socketException) {
+      return Failure(
+          message:
+              "Sorry, looks like our servers are down - we're working on it!");
+    }
+  }
+
+  if (errors != null) {
+    errors.forEach((error) {
+      debugPrint('got GQL error: ${error.message}');
+    });
+    return Failure(message: 'Unknown GraphQL error.');
+  }
+
+  return Failure(message: 'Unknown error.');
 }
