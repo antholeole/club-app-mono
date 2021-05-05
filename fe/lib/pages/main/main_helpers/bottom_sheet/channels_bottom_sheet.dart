@@ -15,6 +15,11 @@ class _ChannelsBottomSheetState extends State<ChannelsBottomSheet>
 
   @override
   void initState() {
+    _prepareAnimations();
+    super.initState();
+  }
+
+  void _prepareAnimations() {
     _animationController = AnimationController(
       duration: Duration(milliseconds: 200),
       vsync: this,
@@ -29,7 +34,6 @@ class _ChannelsBottomSheetState extends State<ChannelsBottomSheet>
         _animationController.forward();
       }
     });
-    super.initState();
   }
 
   @override

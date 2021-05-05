@@ -2,72 +2,51 @@ import 'package:fe/data_classes/json/local_user.dart';
 import 'package:fe/stdlib/clients/http/http_client.dart';
 import 'package:fe/stdlib/clients/http/unauth_http_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/local_data/token_manager.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter/foundation.dart';
+import 'package:fresh_graphql/fresh_graphql.dart';
 import 'package:gql_error_link/gql_error_link.dart';
 import 'package:gql_exec/gql_exec.dart';
 import 'package:gql_http_link/gql_http_link.dart';
 import 'package:gql_link/gql_link.dart';
-import 'package:gql_transform_link/gql_transform_link.dart';
-
 import '../../config.dart';
 import '../../constants.dart';
 import '../../service_locator.dart';
 
-//TODO: typedef GqlClient = Client;
-Client buildGqlClient(LocalUser localUser) {
+//todo: typedef GqlClient = Client;
+Future<Client> buildGqlClient() async {
+  final tokenManager = getIt<TokenManager>();
+
+  //This is getting called before the refresh tokens are getting
+  //inited due to dependency web :(
+  final tokens = await tokenManager.read();
+
+  final refreshLink = FreshLink.oAuth2(
+    tokenHeader: (token) => {
+      'Authorization': 'Bearer ${token?.accessToken}',
+      'x-hasura-role': 'user'
+    },
+    shouldRefresh: (Response resp) => (resp.errors
+            ?.firstWhere((element) => element.message.contains(JWT_EXPIRED)) !=
+        null),
+    tokenStorage: InMemoryTokenStorage(),
+    refreshToken: (_, __) => tokenManager.refresh(),
+  );
+
+  await refreshLink.setToken(tokens);
+
   final link = Link.from([
-    _HttpAuthLink(localUser),
+    refreshLink,
     HttpLink(getIt<Config>().gqlUrl),
   ]);
 
   return Client(link: link);
 }
 
-class _HttpAuthLink extends Link {
-  late Link _link;
-  LocalUser localUser;
-
-  _HttpAuthLink(this.localUser) {
-    _link = Link.concat(
-      ErrorLink(onGraphQLError: handleException),
-      TransformLink(requestTransformer: addHeaders),
-    );
-  }
-
-  Request addHeaders(Request request) =>
-      request.updateContextEntry<HttpLinkHeaders>(
-        (headers) => HttpLinkHeaders(
-          headers: <String, String>{
-            ...headers?.headers ?? <String, String>{},
-            'Authorization': 'Bearer ${localUser.accessToken}',
-            'x-hasura-role': 'user'
-          },
-        ),
-      );
-
-  Stream<Response> handleException(Request request,
-      Stream<Response> Function(Request) forward, Response resp) async* {
-    if (resp.errors
-            ?.firstWhere((element) => element.message.contains(JWT_EXPIRED)) !=
-        null) {
-      await updateToken();
-
-      yield* forward(addHeaders(request));
-    }
-
-    throw await basicGqlErrorHandler(errors: resp.errors);
-  }
-
-  @override
-  Stream<Response> request(Request request,
-      [Stream<Response> Function(Request)? forward]) async* {
-    yield* _link.request(request, forward);
-  }
-
-  Future<void> updateToken() async {
-    await localUser.refreshAccessToken();
-  }
+Stream<Response> handleException(Request req,
+    Stream<Response> Function(Request) next, Response response) async* {
+  throw await basicGqlErrorHandler(errors: response.errors);
 }
 
 Future<Failure> basicGqlErrorHandler({List<GraphQLError>? errors}) async {
@@ -86,10 +65,12 @@ Future<Failure> basicGqlErrorHandler({List<GraphQLError>? errors}) async {
   }
 
   if (errors != null) {
+    StringBuffer errorBuff = StringBuffer();
     errors.forEach((error) {
+      errorBuff.write(error.message);
       debugPrint('got GQL error: ${error.message}');
     });
-    return Failure(message: 'Unknown GraphQL error.');
+    return Failure(message: errorBuff.toString());
   } else if (getIt<Config>().debug) {
     debugPrint('entered GQL error handler with errors = null');
     try {

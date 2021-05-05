@@ -37,11 +37,14 @@ class _LoaderState extends State<Loader> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
+    _prepareAnimations();
+    super.initState();
+  }
+
+  void _prepareAnimations() {
     _animationController = AnimationController(
         vsync: this, duration: Duration(milliseconds: 1200));
 
     _showFiller = !getIt<Config>().playTaxingAnimations;
-
-    super.initState();
   }
 }

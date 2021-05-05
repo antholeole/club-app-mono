@@ -12,6 +12,8 @@ class User {
   late UuidType id;
 
   late String name;
+  late String? profilePicture;
+  bool hasDm = false;
 
   IsarLinks<Group> groups = IsarLinks<Group>();
 

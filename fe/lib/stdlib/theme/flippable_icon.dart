@@ -21,15 +21,20 @@ class _FlippableIconState extends State<FlippableIcon>
 
   @override
   void initState() {
-    _controller = AnimationController(duration: FLIP_DURATION, vsync: this);
+    _prepareAnimations();
+    super.initState();
+  }
+
+  void _prepareAnimations() {
+        _controller = AnimationController(duration: FLIP_DURATION, vsync: this);
 
     _animation = Tween<double>(begin: 0.5, end: 1.0).animate(_controller)
       ..addListener(() {
         setState(() {});
       });
-
-    super.initState();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +44,7 @@ class _FlippableIconState extends State<FlippableIcon>
           angle: (90 * 3) * (pi / 180),
           child: RotationTransition(
             turns: _animation,
-            child: Icon(
-              Icons.chevron_left,
-              size: 30,
-            ),
+            child: widget.icon,
           ),
         ));
   }

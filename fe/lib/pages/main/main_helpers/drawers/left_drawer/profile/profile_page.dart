@@ -5,6 +5,7 @@ import 'package:fe/pages/main/main_helpers/drawers/left_drawer/profile/profile_p
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/helpers/DEBUG_print.dart';
+import 'package:fe/stdlib/local_data/token_manager.dart';
 import 'package:fe/stdlib/theme/button_group.dart';
 import 'package:fe/stdlib/toaster.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final ProfilePageService _profilePageService = getIt<ProfilePageService>();
+  final TokenManager _tokenManager = getIt<TokenManager>();
   bool _changingName = false;
   bool _loggingOut = false;
   final LocalUser _localUser = getIt<LocalUser>();
@@ -61,7 +63,9 @@ class _ProfilePageState extends State<ProfilePage> {
             _config.debug
                 ? ButtonGroup(name: 'Debug', buttons: [
                     ButtonData(
-                        onClick: () => printWrapped(_localUser.accessToken),
+                        onClick: () => _tokenManager
+                            .read()
+                            .then((tokens) => printWrapped(tokens.accessToken)),
                         text: 'Print Access Token',
                         loading: false),
                   ])

@@ -7,6 +7,9 @@ import '../../service_locator.dart';
 
 class SplashService {
   final LocalFileStore _localFileStore = getIt<LocalFileStore>();
+  final LocalUser _localUser;
+
+  SplashService(this._localUser);
 
   //so we don't have ugly asset loads infront of the user
   Future<void> beginLoadingImagesFromLoginPage(BuildContext context) async {
@@ -27,7 +30,7 @@ class SplashService {
     if (localUserString != null) {
       final localUser = LocalUser.fromJson(localUserString);
       if (localUser.isLoggedIn()) {
-        getIt<LocalUser>().fromUser(localUser);
+        _localUser.fromUser(localUser);
         return true;
       }
     }

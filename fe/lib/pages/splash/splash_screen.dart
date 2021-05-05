@@ -43,7 +43,6 @@ class _SplashScreenState extends State<SplashScreen> {
   void _beginLoadingUserFromMemory() async {
     final userExists = await _splashService.loadPreExistingUserFromMemory();
 
-    await getIt.allReady();
     if (userExists) {
       await AutoRouter.of(context).popAndPush(Main());
     } else {

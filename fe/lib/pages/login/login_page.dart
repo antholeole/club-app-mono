@@ -20,8 +20,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final LoginService _loginService = LoginService();
-  final LocalUser _user = getIt<LocalUser>();
+  final LoginService _loginService = getIt<LoginService>();
   late BuildContext _toastableContext;
 
   bool loading = false;
@@ -70,13 +69,7 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     try {
-      final aToken = await _loginService.login(loginType, _user);
-
-      final providerAccessToken =
-          ProviderIdToken(from: loginType, idToken: aToken);
-      final t = await _loginService.getGqlAuth(providerAccessToken);
-      await _user.backendLogin(t);
-      await _user.serializeSelf();
+      await _loginService.login(loginType);
       await _proceedToApp();
     } on UserDeniedException catch (_) {} on HttpException catch (e) {
       final f = await HttpClient.basicHttpErrorHandler(e, {});

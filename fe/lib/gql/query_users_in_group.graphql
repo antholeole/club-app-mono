@@ -1,0 +1,13 @@
+query QueryUsersInGroup($groupId: uuid!) {
+  user_to_group(where: {
+    groupId: {
+      _eq: $groupId
+    }
+  }) {
+    user {
+      name,
+      profile_picture,
+      id
+    }
+  }
+}

@@ -1,17 +1,18 @@
 club-app monorepo.
 
-initalized as an NPM directory because NPM makes things easy!
-
 ## Dev
 
 Note: Can run each individually. No need to run all if not required
 
 ### Presequites
 - Docker (docker-compose)
-- npm i in all subdirectories (club-app-be ws and worker)
-- npm run dev
+- concurrently (`npm i -g concurrently`)
 
-to run, `npm run dev`. first run will take a minute so grab a drink :)
+to run, `make run`. first run will take a minute so grab a drink :)
+This will boot up:
+- Cloudflare worker
+- API Gateway
+- Hasura Docker Container
 
 ## TESTS
 
@@ -30,3 +31,19 @@ Everything, but currently:
 - Event subscriptions
 - Pull seed data on load in
 - use ISAR to Persist Data
+
+## CICD
+worker:
+- test
+
+Hasura:
+- test
+
+flutter:
+- pub run dependency_validator
+- take queries and add them to the allow list in hasura
+- lint
+- test
+
+next:
+- build, put in worker pages deploy and deploy

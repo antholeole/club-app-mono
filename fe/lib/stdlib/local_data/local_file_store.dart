@@ -4,17 +4,34 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 class LocalFileStore {
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
+  Future<String> _localPath(LocalStorageType localStorageType) async {
+    Future<Directory> dir;
+    switch (localStorageType.documentType) {
+      case _DocumentType.Document:
+        dir = getApplicationDocumentsDirectory();
+        break;
+      case _DocumentType.Support:
+        dir = getApplicationSupportDirectory();
+        break;
+    }
+    final directory = await dir;
     return directory.path;
+  }
+
+  Future<void> delete(LocalStorageType lst) async {
+    final path = await _localPath(lst);
+    final file = File('$path/${lst.fileName}.json');
+
+    if (await file.exists()) {
+      await file.delete();
+    }
   }
 
   Future<void> clear() async {
     final List<Future<FileSystemEntity>> futures = [];
 
-    final path = (await getApplicationDocumentsDirectory()).path;
-
     for (final lst in LocalStorageType.values) {
+      final path = await _localPath(lst);
       final file = File('$path/${lst.fileName}.json');
 
       futures.add(file.exists().then((doesExist) {
@@ -35,22 +52,35 @@ class LocalFileStore {
   }
 
   Future<void> serialize(
-      LocalStorageType localStorageType, Map<String, dynamic> jsonObj) async {
+      LocalStorageType localStorageType, String objEncoding) async {
     final file = await _buildFile(localStorageType);
-    await file.writeAsString(json.encode(jsonObj));
+    await file.writeAsString(objEncoding);
   }
 
   Future<File> _buildFile(LocalStorageType lst) async {
-    final fileName = '${await _localPath}/${lst.fileName}.json';
+    final fileName = '${await _localPath(lst)}/${lst.fileName}.json';
     return File(fileName);
   }
 }
 
-enum LocalStorageType { LocalUser }
+enum LocalStorageType { LocalUser, AccessTokens }
+enum _DocumentType {
+  Document,
+  Support,
+  /*Temporary*/
+}
 
-//serde singleton like objects.
 extension FileName on LocalStorageType {
   String get fileName {
-    return ['local_user'][index];
+    return ['local_user', 'access_tokens'][index];
+  }
+
+  _DocumentType get documentType {
+    switch (this) {
+      case LocalStorageType.LocalUser:
+        return _DocumentType.Document;
+      case LocalStorageType.AccessTokens:
+        return _DocumentType.Support;
+    }
   }
 }

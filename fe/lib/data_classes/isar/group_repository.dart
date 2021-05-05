@@ -15,6 +15,7 @@ import 'group.dart';
 class GroupRepository {
   final _isar = getIt<Isar>();
   final _user = getIt<LocalUser>();
+  final _isarSyncer = getIt<IsarSyncer>();
 
   GroupRepository();
 
@@ -25,7 +26,7 @@ class GroupRepository {
       return localGroups;
     }
 
-    final remoteGroups = await fetchRemote(
+    final remoteGroups = await _isarSyncer.fetchRemote(
         GQuerySelfGroupsPreviewReq((b) => b..vars.self_id = _user.uuid),
         (GQuerySelfGroupsPreviewData data) => data.user_to_group
             .map((v) => Group()
@@ -33,7 +34,7 @@ class GroupRepository {
               ..name = v.group.group_name)
             .toList());
 
-    await remoteSync(localGroups, remoteGroups, addOne,
+    await _isarSyncer.remoteSync(localGroups, remoteGroups, addOne,
         (Group g) => removeById(g.id), (Group g) => g.name);
 
     //regrab new data

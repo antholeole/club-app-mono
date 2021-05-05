@@ -1,4 +1,6 @@
 import 'package:fe/stdlib/theme/loader.dart';
+import 'package:fe/stdlib/theme/tile.dart';
+import 'package:fe/stdlib/theme/tile_header.dart';
 import 'package:flutter/material.dart';
 
 class ButtonData {
@@ -27,55 +29,33 @@ class ButtonGroup extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      children: [_buildHeader(), ..._buildButtons()],
+      children: [
+        TileHeader(
+          text: _name,
+        ),
+        ..._buildButtons()
+      ],
     );
   }
 
   List<Widget> _buildButtons() {
     return _buttons
-        .map((e) => Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  border: Border(
-                      bottom:
-                          BorderSide(color: Colors.grey.shade200, width: 1))),
-              child: TextButton(
-                onPressed: e.loading ? () {} : e.onClick,
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.white,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: e.loading
-                      ? Loader(size: 12)
-                      : Text(
-                          e.text,
-                          style: TextStyle(color: e.color),
-                        ),
-                ),
+        .map((e) => Tile(
+                child: TextButton(
+              onPressed: e.loading ? () {} : e.onClick,
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.white,
               ),
-            ))
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: e.loading
+                    ? Loader(size: 12)
+                    : Text(
+                        e.text,
+                        style: TextStyle(color: e.color),
+                      ),
+              ),
+            )))
         .toList();
-  }
-
-  Widget _buildHeader() {
-    if (_name != null) {
-      return Padding(
-        padding: const EdgeInsets.only(left: 8.0, top: 8.0, bottom: 8.0),
-        child: Container(
-          width: double.infinity,
-          child: Text(
-            _name!.toUpperCase(),
-            textAlign: TextAlign.left,
-            style: TextStyle(
-                fontFamily: 'IBM Plex Mono', color: Colors.grey.shade700),
-          ),
-        ),
-      );
-    } else {
-      return Container(
-        height: 20,
-      );
-    }
   }
 }

@@ -42,6 +42,8 @@ dependencies:
   gql_transform_link: ^0.2.0-nullsafety.1 
   gql_http_link: ^0.4.0-nullsafety.1
 
+  fresh_graphql: ^0.5.1
+
   #http
   http: ^0.13.1
 

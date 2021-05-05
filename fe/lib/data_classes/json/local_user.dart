@@ -24,8 +24,6 @@ class LocalUser {
   String name;
   late UuidType uuid;
   late LoginType loggedInWith;
-  late String accessToken;
-
   String? email;
 
   //need default constructor for to and from json
@@ -33,7 +31,6 @@ class LocalUser {
       {required this.name,
       required this.uuid,
       required this.loggedInWith,
-      required this.accessToken,
       this.email});
 
   LocalUser.empty() : name = DEFAULT_USERNAME;
@@ -41,24 +38,19 @@ class LocalUser {
   factory LocalUser.fromJson(String jsonString) =>
       _$LocalUserFromJson(json.decode(jsonString));
 
-  Future<String> get _refreshToken async {
-    return (await _secureStorage.read(key: REFRESH_TOKEN_KEY))!;
-  }
-
-  Future<void> backendLogin(BackendAccessTokens t) async {
-    debugPrint('Backend login triggered, uuid ${t.id}');
-    uuid = UuidType(t.id);
-    accessToken = t.accessToken;
-    name = t.name;
-    await _secureStorage.write(key: REFRESH_TOKEN_KEY, value: t.refreshToken);
+  factory LocalUser.fromBackendLogin(
+      BackendAccessTokens t, LoginType loggedInWith) {
+    return LocalUser(
+        name: t.name, loggedInWith: loggedInWith, uuid: UuidType(t.id));
   }
 
   void fromUser(LocalUser user) {
     user.name;
     uuid = user.uuid;
     loggedInWith = user.loggedInWith;
-    accessToken = user.accessToken;
     email = user.email;
+    debugPrint('localUser is ready');
+    getIt.signalReady(this);
   }
 
   bool isLoggedIn() {
@@ -77,18 +69,9 @@ class LocalUser {
     this.name = name!;
   }
 
-  Future<void> refreshAccessToken() async {
-    final resp = await getIt<UnauthHttpClient>().postReq(
-        '/auth/refresh',
-        RefreshCarrier(refreshToken: await _refreshToken, userId: uuid)
-            .toJson());
-
-    accessToken = resp.body;
-  }
-
   Future<void> serializeSelf() async {
     await getIt<LocalFileStore>()
-        .serialize(LocalStorageType.LocalUser, toJson());
+        .serialize(LocalStorageType.LocalUser, json.encode(toJson()));
   }
 
   Map<String, dynamic> toJson() => _$LocalUserToJson(this);

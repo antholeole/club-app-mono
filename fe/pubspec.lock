@@ -373,6 +373,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.14.1"
+  fresh:
+    dependency: transitive
+    description:
+      name: fresh
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.0"
+  fresh_graphql:
+    dependency: "direct main"
+    description:
+      name: fresh_graphql
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.1"
   get_it:
     dependency: "direct main"
     description:
@@ -429,6 +443,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.0-nullsafety.0"
+  gql_dedupe_link:
+    dependency: transitive
+    description:
+      name: gql_dedupe_link
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0-nullsafety.1"
   gql_error_link:
     dependency: "direct main"
     description:
@@ -464,6 +485,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.0-nullsafety.1"
+  graphql:
+    dependency: transitive
+    description:
+      name: graphql
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.0.0-nullsafety.4"
   graphs:
     dependency: transitive
     description:
