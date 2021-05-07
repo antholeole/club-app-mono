@@ -1,15 +1,17 @@
+import 'package:fe/data_classes/isar/base_respository.dart';
 import 'package:fe/data_classes/isar/user.dart';
 import 'package:fe/gql/query_users_in_group.data.gql.dart';
 import 'package:fe/gql/query_users_in_group.req.gql.dart';
 import 'package:fe/stdlib/helpers/remote_sync.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
+import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 import 'package:fe/isar.g.dart';
 
 import '../../service_locator.dart';
 import 'isar_exceptions.dart';
 
-class UserRepository {
+class UserRepository extends BaseRepository<User> {
   final _isar = getIt<Isar>();
   final _isarSyncer = getIt<IsarSyncer>();
 
@@ -20,6 +22,8 @@ class UserRepository {
         .filter()
         .group((g) => g.idEqualTo(groupId))
         .findAll();
+
+    debugPrint('found ${localUsers.length} users in group');
 
     if (!remote) {
       return localUsers;
@@ -35,6 +39,7 @@ class UserRepository {
             .toList());
 
     await _isarSyncer.remoteSync(
+        this,
         localUsers,
         remoteUsers,
         (User u) => addUserWithGroup(user: u, groupId: groupId),
@@ -51,7 +56,7 @@ class UserRepository {
         await _isar.users.where().filter().idEqualTo(userId).findFirst();
 
     if (user == null) {
-      throw DeleteNonexistantException();
+      throw DeleteNonexistantError();
     }
 
     await _isar.writeTxn((isar) async {
@@ -71,7 +76,41 @@ class UserRepository {
 
   Future<void> addUserWithGroup(
       {required User user, required UuidType groupId}) async {
-    user.groups
-        .add((await _isar.groups.where().idEqualTo(groupId).findFirst())!);
+    await _isar.writeTxn((isar) async {
+      user.groups
+          .add((await isar.groups.where().idEqualTo(groupId).findFirst())!);
+
+      await isar.users.put(user);
+    });
+  }
+
+  @override
+  Future<void> addOne(User t) async {
+    await _isar.writeTxn((isar) async {
+      await isar.users.put(t);
+    });
+  }
+
+  @override
+  Future<User?> findOne(UuidType id) async {
+    await _isar.users.where().idEqualTo(id).findFirst();
+  }
+
+  @override
+  Future<void> removeOne(UuidType id) async {
+    final user = await _isar.users.where().idEqualTo(id).findFirst();
+
+    if (user == null) {
+      throw DeleteNonexistantError();
+    }
+
+    await _isar.writeTxn((isar) async {
+      await isar.users.delete(user.isar_id!);
+    });
+  }
+
+  @override
+  Future<void> updateLocal(User other) async {
+    await putLocal(other, _isar.users, _isar);
   }
 }

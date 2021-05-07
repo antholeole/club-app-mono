@@ -1,3 +1,5 @@
 abstract class IsarException implements Exception {}
 
-class DeleteNonexistantException extends IsarException {}
+class DeleteNonexistantError extends IsarException {}
+
+class OverrideNonexistantError extends IsarException {}

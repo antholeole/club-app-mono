@@ -1,6 +1,6 @@
 query QueryUsersInGroup($groupId: uuid!) {
   user_to_group(where: {
-    groupId: {
+    group_id: {
       _eq: $groupId
     }
   }) {

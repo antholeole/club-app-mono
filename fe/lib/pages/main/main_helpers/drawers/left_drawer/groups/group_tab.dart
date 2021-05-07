@@ -104,7 +104,6 @@ class _GroupTabState extends State<GroupTab>
   }
 
   void _displaySettings(bool display) {
-    print(display);
     if (display) {
       expandController.forward();
       setState(() {
@@ -138,7 +137,7 @@ class _GroupTabState extends State<GroupTab>
                     case ConnectionState.done:
                       return Column(
                           children: snapshot.data!.map((user) {
-                        return Tile(child: Text(user.name));
+                        return _buildUserTile(user);
                       }).toList());
                     case ConnectionState.none:
                       return Text('sorry, error');
@@ -146,5 +145,10 @@ class _GroupTabState extends State<GroupTab>
                 })
           ],
         ));
+  }
+
+  Widget _buildUserTile(User user) {
+    print('building 1');
+    return Tile(child: Text(user.name));
   }
 }

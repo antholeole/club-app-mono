@@ -42,7 +42,7 @@ class TokenManager extends TokenStorage<OAuth2Token> {
   }
 
   @override
-  Future<OAuth2Token> read() async {
+  Future<OAuth2Token?> read() async {
     hasTokens = true;
     if (_tokenCache != null) {
       return _tokenCache!;
@@ -51,13 +51,9 @@ class TokenManager extends TokenStorage<OAuth2Token> {
     final serializedToken =
         await _localFileStore.deserialize(LocalStorageType.AccessTokens);
 
-    if (serializedToken == null) {
-      final gottenToken = await refresh();
-      await write(gottenToken);
-      return gottenToken;
-    } else {
-      return OAuth2Token(accessToken: serializedToken);
-    }
+    return serializedToken == null
+        ? null
+        : OAuth2Token(accessToken: serializedToken);
   }
 
   @override

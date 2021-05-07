@@ -1,18 +1,16 @@
+import 'package:fe/data_classes/isar/base_respository.dart';
 import 'package:fe/data_classes/json/local_user.dart';
 import 'package:fe/gql/query_self_group_preview.data.gql.dart';
 import 'package:fe/gql/query_self_group_preview.req.gql.dart';
-import 'package:fe/stdlib/clients/gql_client.dart';
 import 'package:fe/stdlib/helpers/remote_sync.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
-import 'package:ferry/ferry.dart';
-import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 import 'package:fe/isar.g.dart';
 
 import '../../service_locator.dart';
 import 'group.dart';
 
-class GroupRepository {
+class GroupRepository extends BaseRepository<Group> {
   final _isar = getIt<Isar>();
   final _user = getIt<LocalUser>();
   final _isarSyncer = getIt<IsarSyncer>();
@@ -34,22 +32,34 @@ class GroupRepository {
               ..name = v.group.group_name)
             .toList());
 
-    await _isarSyncer.remoteSync(localGroups, remoteGroups, addOne,
-        (Group g) => removeById(g.id), (Group g) => g.name);
+    await _isarSyncer.remoteSync(this, localGroups, remoteGroups, addOne,
+        (Group g) => removeOne(g.id), (Group g) => g.name);
 
     //regrab new data
     return findAll();
   }
 
+  @override
   Future<void> addOne(Group group) async {
     await _isar.writeTxn((isar) async {
       await isar.groups.put(group);
     });
   }
 
-  Future<bool> removeById(UuidType id) async {
+  @override
+  Future<bool> removeOne(UuidType id) async {
     return await _isar.writeTxn((isar) async {
       return await isar.groups.where().filter().idEqualTo(id).deleteFirst();
     });
+  }
+
+  @override
+  Future<Group?> findOne(UuidType id) async {
+    return _isar.groups.where().idEqualTo(id).findFirst();
+  }
+
+  @override
+  Future<void> updateLocal(Group other) async {
+    await putLocal(other, _isar.groups, _isar);
   }
 }

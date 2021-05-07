@@ -1,4 +1,3 @@
-import 'package:fe/data_classes/json/local_user.dart';
 import 'package:fe/stdlib/clients/http/http_client.dart';
 import 'package:fe/stdlib/clients/http/unauth_http_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
@@ -6,7 +5,6 @@ import 'package:fe/stdlib/local_data/token_manager.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fresh_graphql/fresh_graphql.dart';
-import 'package:gql_error_link/gql_error_link.dart';
 import 'package:gql_exec/gql_exec.dart';
 import 'package:gql_http_link/gql_http_link.dart';
 import 'package:gql_link/gql_link.dart';
@@ -26,15 +24,15 @@ Future<Client> buildGqlClient() async {
       'x-hasura-role': 'user'
     },
     shouldRefresh: (Response resp) {
-      return !tokenManager
-              .hasTokens || //idk if this will work! shouldRefresh may never get called
-          (resp.errors?.firstWhere(
-                  (element) => element.message.contains(JWT_EXPIRED)) !=
-              null);
+      return (resp.errors?.firstWhere(
+              (element) => element.message.contains(JWT_EXPIRED)) !=
+          null);
     },
     tokenStorage: InMemoryTokenStorage(),
     refreshToken: (_, __) => tokenManager.refresh(),
   );
+
+  await refreshLink.setToken(tokens);
 
   final link = Link.from([
     refreshLink,

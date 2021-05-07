@@ -33,25 +33,17 @@ void setupLocator({required bool isProd}) {
   getIt.registerSingleton<FlutterSecureStorage>(FlutterSecureStorage());
   getIt.registerSingleton<UnauthHttpClient>(UnauthHttpClient());
   getIt.registerSingleton<LocalFileStore>(LocalFileStore());
+  getIt.registerSingleton<LocalUser>(LocalUser.empty());
 
   //pre-local user
   getIt.registerSingleton<LoginService>(LoginService());
   getIt.registerSingleton<SplashService>(SplashService());
 
-  //NOTE: everything after here looks like a tangled web of dependencies;
-  //in short, almost everything depends on localUser, which only signals
-  //ready when the user logs in OR on app boot up from memory.
-  //This means that directly after login / boot up, all the dependencies get created.
-  getIt.registerSingletonAsync<LocalUser>(() async => LocalUser.empty(),
-      signalsReady: true);
-
-  getIt.registerSingletonWithDependencies<TokenManager>(() => TokenManager(),
-      dependsOn: [LocalUser]);
-  getIt.registerSingletonAsync<Client>(() => buildGqlClient(),
-      dependsOn: [LocalUser, TokenManager]);
+  getIt.registerSingleton<TokenManager>(TokenManager());
+  getIt.registerSingletonAsync<Client>(() => buildGqlClient());
 
   //isar
-  getIt.registerSingletonAsync<Isar>(() => openIsar(name: 'a'));
+  getIt.registerSingletonAsync<Isar>(() => openIsar(name: 'aa'));
   getIt.registerSingletonWithDependencies<IsarSyncer>(() => IsarSyncer(),
       dependsOn: [Isar, Client]);
 
@@ -64,12 +56,11 @@ void setupLocator({required bool isProd}) {
       dependsOn: [IsarSyncer]);
 
   //logged in services
-  getIt.registerSingletonWithDependencies(() => AuthHttpClient(),
-      dependsOn: [LocalUser]);
+  getIt.registerSingleton(AuthHttpClient());
   getIt.registerSingletonWithDependencies(() => MainService(),
-      dependsOn: [LocalUser, GroupRepository]);
+      dependsOn: [GroupRepository]);
   getIt.registerSingletonWithDependencies(() => ProfilePageService(),
-      dependsOn: [LocalUser, Client]);
+      dependsOn: [Client]);
   getIt.registerSingletonWithDependencies(() => GroupsService(),
-      dependsOn: [LocalUser, GroupRepository, UserRepository]);
+      dependsOn: [GroupRepository, UserRepository]);
 }

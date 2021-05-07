@@ -1,6 +1,0 @@
-- "!include public_group_threads.yaml"
-- "!include public_groups.yaml"
-- "!include public_messages.yaml"
-- "!include public_user_to_group.yaml"
-- "!include public_user_to_thread.yaml"
-- "!include public_users.yaml"

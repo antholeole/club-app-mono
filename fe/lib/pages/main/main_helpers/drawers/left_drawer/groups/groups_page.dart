@@ -1,5 +1,4 @@
 import 'package:fe/data_classes/isar/group.dart';
-import 'package:fe/data_classes/isar/group_repository.dart';
 import 'package:fe/service_locator.dart';
 import 'package:flutter/material.dart';
 

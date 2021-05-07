@@ -7,6 +7,7 @@ import '../../service_locator.dart';
 
 class SplashService {
   final LocalFileStore _localFileStore = getIt<LocalFileStore>();
+  final LocalUser _localUser = getIt<LocalUser>();
 
   SplashService();
 
@@ -28,8 +29,8 @@ class SplashService {
 
     if (localUserString != null) {
       final localUser = LocalUser.fromJson(localUserString);
+      _localUser.login(localUser);
       if (localUser.isLoggedIn()) {
-        LocalUser.register(localUser);
         await getIt.allReady();
         return true;
       }

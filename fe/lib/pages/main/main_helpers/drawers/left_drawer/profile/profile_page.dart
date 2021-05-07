@@ -63,9 +63,9 @@ class _ProfilePageState extends State<ProfilePage> {
             _config.debug
                 ? ButtonGroup(name: 'Debug', buttons: [
                     ButtonData(
-                        onClick: () => _tokenManager
-                            .read()
-                            .then((tokens) => printWrapped(tokens.accessToken)),
+                        onClick: () => _tokenManager.read().then((tokens) =>
+                            printWrapped(
+                                tokens?.accessToken ?? 'No Access Tokens')),
                         text: 'Print Access Token',
                         loading: false),
                   ])

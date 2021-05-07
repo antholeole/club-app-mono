@@ -1,7 +1,9 @@
+import 'package:fe/constants.dart';
 import 'package:fe/data_classes/json/backend_access_tokens.dart';
 import 'package:fe/data_classes/json/local_user.dart';
 import 'package:fe/data_classes/json/provider_access_token.dart';
 import 'package:fe/stdlib/clients/http/unauth_http_client.dart';
+import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/local_data/token_manager.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -13,6 +15,7 @@ import 'login_exception.dart';
 
 class LoginService {
   final _client = getIt<UnauthHttpClient>();
+  final _localUser = getIt<LocalUser>();
 
   LoginService();
 
@@ -30,13 +33,12 @@ class LoginService {
 
     await TokenManager.setTokens(backendAccessTokens);
 
-    final localUser =
-        LocalUser.fromBackendLogin(backendAccessTokens, loginType);
+    final localUser = LocalUser(
+        name: providerLoginDetails.displayName,
+        email: providerLoginDetails.email,
+        uuid: UuidType(backendAccessTokens.id));
 
-    localUser.providerLogin(LoginType.Google, providerLoginDetails.email,
-        name: providerLoginDetails.displayName);
-
-    LocalUser.register(localUser);
+    _localUser.login(localUser);
 
     await localUser.serializeSelf();
   }
