@@ -33,6 +33,8 @@ class LocalUser {
       required this.loggedInWith,
       this.email});
 
+  //compliance consturctor for getIt. will never signal ready;
+  //will only signal ready in reregister
   LocalUser.empty() : name = DEFAULT_USERNAME;
 
   factory LocalUser.fromJson(String jsonString) =>
@@ -44,15 +46,6 @@ class LocalUser {
         name: t.name, loggedInWith: loggedInWith, uuid: UuidType(t.id));
   }
 
-  void fromUser(LocalUser user) {
-    user.name;
-    uuid = user.uuid;
-    loggedInWith = user.loggedInWith;
-    email = user.email;
-    debugPrint('localUser is ready');
-    getIt.signalReady(this);
-  }
-
   bool isLoggedIn() {
     // ignore: unnecessary_null_comparison
     return (uuid != null && loggedInWith != null);
@@ -60,6 +53,7 @@ class LocalUser {
 
   Future<void> logOut() async {
     await _secureStorage.containsKey(key: REFRESH_TOKEN_KEY);
+    getIt.unregister();
   }
 
   void providerLogin(LoginType loggedInWith, String email,
@@ -75,6 +69,21 @@ class LocalUser {
   }
 
   Map<String, dynamic> toJson() => _$LocalUserToJson(this);
+
+  static void register(LocalUser localUser) {
+    try {
+      getIt.unregister(instance: LocalUser);
+    } catch (_) {
+      //IGNORED. get_it has bug that
+      //if an element is not ready, but registered,
+      //it is not detected but we cannot register over it.
+      //this means the only way to unregister is to unregister and pray.
+      //i.e. getIt.isReady(LocalUser) does not work.
+    }
+
+    getIt.registerSingleton(localUser);
+    getIt.signalReady(LocalUser);
+  }
 }
 
 enum LoginType { Google }

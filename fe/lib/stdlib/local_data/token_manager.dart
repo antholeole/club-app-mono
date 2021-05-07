@@ -14,16 +14,21 @@ class TokenManager extends TokenStorage<OAuth2Token> {
   final _localFileStore = getIt<LocalFileStore>();
   final _unauthClient = getIt<UnauthHttpClient>();
   final _localUser = getIt<LocalUser>();
+  bool hasTokens = false;
 
   OAuth2Token? _tokenCache;
 
-  Future<void> initalizeTokens(BackendAccessTokens backendAccessTokens) async {
-    await _localFileStore.serialize(
+  static Future<void> setTokens(BackendAccessTokens backendAccessTokens) async {
+    await getIt<LocalFileStore>().serialize(
         LocalStorageType.AccessTokens, backendAccessTokens.accessToken);
-    await _secureStorage.write(
-        key: REFRESH_TOKEN_KEY, value: backendAccessTokens.refreshToken);
+    await getIt<FlutterSecureStorage>()
+        .write(key: REFRESH_TOKEN_KEY, value: backendAccessTokens.refreshToken);
+  }
 
+  Future<void> initalizeTokens(BackendAccessTokens backendAccessTokens) async {
+    await setTokens(backendAccessTokens);
     _tokenCache = OAuth2Token(accessToken: backendAccessTokens.accessToken);
+    hasTokens = true;
   }
 
   Future<String?> get _refreshToken =>
@@ -31,12 +36,14 @@ class TokenManager extends TokenStorage<OAuth2Token> {
 
   @override
   Future<void> delete() async {
+    hasTokens = false;
     await _localFileStore.delete(LocalStorageType.AccessTokens);
     _tokenCache = null;
   }
 
   @override
   Future<OAuth2Token> read() async {
+    hasTokens = true;
     if (_tokenCache != null) {
       return _tokenCache!;
     }
@@ -61,6 +68,7 @@ class TokenManager extends TokenStorage<OAuth2Token> {
   }
 
   Future<OAuth2Token> refresh() async {
+    hasTokens = true;
     final refreshToken = await _refreshToken;
     final userId = _localUser.uuid;
 

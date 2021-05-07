@@ -22,11 +22,6 @@ import 'isar.g.dart';
 
 final getIt = GetIt.instance;
 
-//thisLocalUser is empty, and passed to login and splash service.
-//this is also registered in get_it, so we can access it's properties
-//without it being registered as "ready" to the other dependencies.
-final _allDepLocalUser = LocalUser.empty();
-
 void setupLocator({required bool isProd}) {
   if (isProd) {
     getIt.registerSingleton<Config>(ProdConfig());
@@ -40,20 +35,20 @@ void setupLocator({required bool isProd}) {
   getIt.registerSingleton<LocalFileStore>(LocalFileStore());
 
   //pre-local user
-  getIt.registerSingleton<LoginService>(LoginService(_allDepLocalUser));
-  getIt.registerSingleton<SplashService>(SplashService(_allDepLocalUser));
+  getIt.registerSingleton<LoginService>(LoginService());
+  getIt.registerSingleton<SplashService>(SplashService());
 
   //NOTE: everything after here looks like a tangled web of dependencies;
   //in short, almost everything depends on localUser, which only signals
   //ready when the user logs in OR on app boot up from memory.
   //This means that directly after login / boot up, all the dependencies get created.
-  getIt.registerSingletonAsync<LocalUser>(() async => _allDepLocalUser,
+  getIt.registerSingletonAsync<LocalUser>(() async => LocalUser.empty(),
       signalsReady: true);
 
   getIt.registerSingletonWithDependencies<TokenManager>(() => TokenManager(),
       dependsOn: [LocalUser]);
   getIt.registerSingletonAsync<Client>(() => buildGqlClient(),
-      dependsOn: [LocalUser]);
+      dependsOn: [LocalUser, TokenManager]);
 
   //isar
   getIt.registerSingletonAsync<Isar>(() => openIsar(name: 'a'));

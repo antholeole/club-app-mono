@@ -13,27 +13,32 @@ import 'login_exception.dart';
 
 class LoginService {
   final _client = getIt<UnauthHttpClient>();
-  final LocalUser _localUser;
 
-  LoginService(this._localUser);
+  LoginService();
 
   Future<void> login(LoginType loginType) async {
-    String accessToken;
+    _ProviderLoginDetails providerLoginDetails;
     switch (loginType) {
       case LoginType.Google:
-        accessToken = await _googleLogin();
+        providerLoginDetails = await _googleLogin();
         break;
     }
 
     final providerAccessToken =
-        ProviderIdToken(from: loginType, idToken: accessToken);
+        ProviderIdToken(from: loginType, idToken: providerLoginDetails.idToken);
     final backendAccessTokens = await _getGqlAuth(providerAccessToken);
 
-    _localUser
-        .fromUser(LocalUser.fromBackendLogin(backendAccessTokens, loginType));
+    await TokenManager.setTokens(backendAccessTokens);
 
-    await getIt<TokenManager>().initalizeTokens(backendAccessTokens);
-    await getIt<LocalUser>().serializeSelf();
+    final localUser =
+        LocalUser.fromBackendLogin(backendAccessTokens, loginType);
+
+    localUser.providerLogin(LoginType.Google, providerLoginDetails.email,
+        name: providerLoginDetails.displayName);
+
+    LocalUser.register(localUser);
+
+    await localUser.serializeSelf();
   }
 
   Future<BackendAccessTokens> _getGqlAuth(
@@ -43,7 +48,7 @@ class LoginService {
     return BackendAccessTokens.fromJson(tokens.body);
   }
 
-  Future<String> _googleLogin() async {
+  Future<_ProviderLoginDetails> _googleLogin() async {
     final _googleSignIn = GoogleSignIn(
       scopes: [],
     );
@@ -54,17 +59,26 @@ class LoginService {
       throw UserDeniedException();
     }
 
-    _localUser.providerLogin(LoginType.Google, acc.email,
-        name: acc.displayName);
-
     final auth = await acc.authentication;
 
-    return auth.idToken!;
+    return _ProviderLoginDetails(
+        email: acc.email, idToken: auth.idToken!, displayName: acc.displayName);
   }
 }
 
+//TODO move me
 extension AssetLocation on LoginType {
   String get imageLocation {
     return ['assets/icons/identities/google_logo.png'][index];
   }
+}
+
+//helper class
+class _ProviderLoginDetails {
+  final String email;
+  final String? displayName;
+  final String idToken;
+
+  const _ProviderLoginDetails(
+      {required this.email, this.displayName, required this.idToken});
 }

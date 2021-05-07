@@ -18,8 +18,6 @@ import '../../service_locator.dart';
 Future<Client> buildGqlClient() async {
   final tokenManager = getIt<TokenManager>();
 
-  //This is getting called before the refresh tokens are getting
-  //inited due to dependency web :(
   final tokens = await tokenManager.read();
 
   final refreshLink = FreshLink.oAuth2(
@@ -27,14 +25,16 @@ Future<Client> buildGqlClient() async {
       'Authorization': 'Bearer ${token?.accessToken}',
       'x-hasura-role': 'user'
     },
-    shouldRefresh: (Response resp) => (resp.errors
-            ?.firstWhere((element) => element.message.contains(JWT_EXPIRED)) !=
-        null),
+    shouldRefresh: (Response resp) {
+      return !tokenManager
+              .hasTokens || //idk if this will work! shouldRefresh may never get called
+          (resp.errors?.firstWhere(
+                  (element) => element.message.contains(JWT_EXPIRED)) !=
+              null);
+    },
     tokenStorage: InMemoryTokenStorage(),
     refreshToken: (_, __) => tokenManager.refresh(),
   );
-
-  await refreshLink.setToken(tokens);
 
   final link = Link.from([
     refreshLink,
