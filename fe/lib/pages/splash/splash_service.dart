@@ -1,6 +1,6 @@
-import 'package:fe/data_classes/json/local_user.dart';
-import 'package:fe/pages/login/login_service.dart';
+import 'package:fe/pages/login/widgets/sign_in_with_provider_button.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
+import 'package:fe/stdlib/local_user.dart';
 import 'package:flutter/material.dart';
 
 import '../../service_locator.dart';
@@ -16,7 +16,7 @@ class SplashService {
     List<Future<dynamic>> futures = [];
 
     for (final provider in LoginType.values) {
-      futures.add(precacheImage(AssetImage(provider.imageLocation), context));
+      futures.add(SignInWithProviderButton.preCache(context, provider));
     }
 
     await Future.wait(futures);

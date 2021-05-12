@@ -1,10 +1,8 @@
 import 'package:badges/badges.dart';
-import 'package:fe/data_classes/isar/group.dart';
-import 'package:fe/data_classes/isar/user.dart';
 import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
 import 'package:fe/pages/main/main_helpers/drawers/left_drawer/groups/groups_service.dart';
 import 'package:fe/service_locator.dart';
-import 'package:fe/stdlib/theme/button_group.dart';
+import 'package:fe/stdlib/database/db_manager.dart';
 import 'package:fe/stdlib/theme/flippable_icon.dart';
 import 'package:fe/stdlib/theme/tile.dart';
 import 'package:fe/stdlib/theme/tile_header.dart';
@@ -22,14 +20,16 @@ class GroupTab extends StatefulWidget {
 
 class _GroupTabState extends State<GroupTab>
     with SingleTickerProviderStateMixin {
-  GroupsService _groupsService = getIt<GroupsService>();
+  final GroupsService _groupsService = getIt<GroupsService>();
 
   bool _tabOpen = false;
+
   late AnimationController expandController;
   late Animation<double> animation;
 
   @override
   void initState() {
+    test();
     _prepareAnimations();
     super.initState();
   }
@@ -101,6 +101,10 @@ class _GroupTabState extends State<GroupTab>
         if (_tabOpen) _buildSettings(),
       ],
     ));
+  }
+
+  Future<void> test() async {
+    await _groupsService.fetchUsersInGroup(widget.group.id);
   }
 
   void _displaySettings(bool display) {

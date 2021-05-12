@@ -1,10 +1,10 @@
-import 'package:fe/data_classes/json/local_user.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/clients/http/http_client.dart';
+import 'package:fe/stdlib/local_user.dart';
 import 'package:http/src/response.dart';
 
 class AuthHttpClient extends HttpClient {
-  LocalUser _localUser = getIt<LocalUser>();
+  final LocalUser _localUser = getIt<LocalUser>();
 
   AuthHttpClient();
 

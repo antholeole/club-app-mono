@@ -1,12 +1,12 @@
 import 'package:fe/constants.dart';
 import 'package:fe/data_classes/json/backend_access_tokens.dart';
-import 'package:fe/data_classes/json/local_user.dart';
 import 'package:fe/data_classes/json/refresh_carrier.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/clients/http/unauth_http_client.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fresh_graphql/fresh_graphql.dart';
 
+import '../local_user.dart';
 import 'local_file_store.dart';
 
 class TokenManager extends TokenStorage<OAuth2Token> {

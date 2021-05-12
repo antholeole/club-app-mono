@@ -1,19 +1,20 @@
-import 'package:fe/data_classes/isar/base_model.dart';
-import 'package:fe/data_classes/isar/base_respository.dart';
+import 'package:fe/data_classes/models/base/base_dao.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/clients/gql_client.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:moor/moor.dart';
 
 //T MUST overload == operator.
 //Treats local as a cache, meaning locals will always be
 //changed to match with remote
 //TODO: can refactor so remote sync returns the updated list rather than needing to requery
 
-class IsarSyncer {
+class RemoteSyncer {
   final _gqlClient = getIt<Client>();
 
-  Future<void> remoteSync<T extends BaseModel, R extends BaseRepository<T>>(
+  Future<void> remoteSync<T extends DataClass, R extends BaseDao<T>>(
       R repository,
       List<T> locals,
       List<T> remotes,
@@ -27,7 +28,7 @@ class IsarSyncer {
             'adding ${T.runtimeType.toString()} ${debugName(remote)} locally');
         changes.add(addOneLocal(remote));
       } else {
-        changes.add(repository.updateLocal(remote));
+        changes.add(repository.overrideLocal(remote));
       }
     }
 
@@ -35,7 +36,7 @@ class IsarSyncer {
       if (remotes.indexWhere((remote) => local == remote) < 0) {
         debugPrint(
             'removing ${T.runtimeType.toString()} ${debugName(local)} locally');
-        changes.add(repository.removeOne(local.id));
+        changes.add(removeOneLocal(local));
       }
     }
 

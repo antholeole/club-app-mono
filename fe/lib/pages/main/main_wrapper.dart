@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:fe/data_classes/isar/group_repository.dart';
-import 'package:fe/data_classes/json/local_user.dart';
 import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
 import 'package:fe/pages/main/main_helpers/drawers/right_drawer/group_drawer.dart';
+import 'package:fe/stdlib/database/db_manager.dart';
 import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/local_user.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:fe/stdlib/shared_widgets/join_group_button.dart';
 import 'package:fe/stdlib/theme/bottom_nav/bottom_nav.dart';
@@ -28,12 +28,19 @@ class MainWrapper extends StatefulWidget {
 }
 
 class _MainWrapperState extends State<MainWrapper> {
+  //TODO enum is bad design. have a local var "groups" or "current group" that is either null, a group or empty list
   final MainService _mainService = getIt<MainService>();
+  final DatabaseManager _databaseManager = getIt<DatabaseManager>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final MainPageActionsCubit _mainPageActionsCubit = MainPageActionsCubit();
-  final GroupRepository _groupRepository = getIt<GroupRepository>();
   late BuildContext _toastableContext;
   _InitalLoadState _initalLoadState = _InitalLoadState.Loading;
+
+  @override
+  void initState() {
+    _initalLoad();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -155,12 +162,6 @@ class _MainWrapperState extends State<MainWrapper> {
     );
   }
 
-  @override
-  void initState() {
-    _initalLoad();
-    super.initState();
-  }
-
   Future<void> _initalLoad() async {
     try {
       await _mainService.initalLoad();
@@ -175,7 +176,7 @@ class _MainWrapperState extends State<MainWrapper> {
     }
 
     if (_mainPageActionsCubit.state.selectedGroup == null) {
-      final groups = await _groupRepository.findAll();
+      final groups = await _databaseManager.groupsDao.findAll();
       if (groups.isEmpty) {
         setState(() {
           _initalLoadState = _InitalLoadState.NoGroups;

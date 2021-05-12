@@ -1,10 +1,20 @@
-import 'package:fe/data_classes/json/local_user.dart';
-import 'package:fe/pages/login/login_service.dart';
+import 'package:fe/stdlib/local_user.dart';
 import 'package:flutter/material.dart';
+
+extension AssetLocation on LoginType {
+  String get imageLocation {
+    return ['assets/icons/identities/google_logo.png'][index];
+  }
+}
 
 class SignInWithProviderButton extends StatelessWidget {
   final void Function() _onClick;
   final LoginType _loginType;
+
+  static Future<void> preCache(
+      BuildContext context, LoginType loginType) async {
+    await precacheImage(AssetImage(loginType.imageLocation), context);
+  }
 
   const SignInWithProviderButton({
     required void Function() onClick,

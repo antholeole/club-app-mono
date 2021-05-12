@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:fe/data_classes/isar/group.dart';
+import 'package:fe/stdlib/database/db_manager.dart';
 
 part 'main_page_actions_state.dart';
 

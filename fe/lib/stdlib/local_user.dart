@@ -6,7 +6,7 @@ import 'package:fe/stdlib/local_data/local_file_store.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../service_locator.dart';
+import '../service_locator.dart';
 
 part 'local_user.g.dart';
 

@@ -1,8 +1,7 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:fe/data_classes/json/local_user.dart';
-import 'package:fe/data_classes/json/provider_access_token.dart';
 import 'package:fe/pages/login/widgets/sign_in_with_provider_button.dart';
 import 'package:fe/stdlib/clients/http/http_client.dart';
+import 'package:fe/stdlib/local_user.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:fe/stdlib/theme/logo.dart';

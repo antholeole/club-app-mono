@@ -1,5 +1,5 @@
-import 'package:fe/data_classes/isar/group.dart';
 import 'package:fe/service_locator.dart';
+import 'package:fe/stdlib/database/db_manager.dart';
 import 'package:flutter/material.dart';
 
 import 'group_tab.dart';

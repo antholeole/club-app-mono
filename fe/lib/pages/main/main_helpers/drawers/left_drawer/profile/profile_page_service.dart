@@ -1,7 +1,7 @@
-import 'package:fe/data_classes/json/local_user.dart';
 import 'package:fe/gql/update_self_name.req.gql.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/local_user.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter/cupertino.dart';
 

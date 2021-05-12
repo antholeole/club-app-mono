@@ -1,4 +1,4 @@
-import 'package:isar/isar.dart';
+import 'package:moor/moor.dart';
 import 'package:uuid/uuid.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:built_value/serializer.dart';
@@ -26,17 +26,24 @@ class UuidType {
   bool operator ==(covariant UuidType other) => other.uuid == uuid;
 }
 
-class IsarUuidConverter extends TypeConverter<UuidType, String> {
-  const IsarUuidConverter();
+class MoorUuidConverter extends TypeConverter<UuidType, String> {
+  const MoorUuidConverter();
 
   @override
-  UuidType fromIsar(String uuidStr) {
-    return UuidType(uuidStr);
+  UuidType? mapToDart(String? fromDb) {
+    if (fromDb == null) {
+      return null;
+    }
+    return UuidType(fromDb);
   }
 
   @override
-  String toIsar(UuidType uuid) {
-    return uuid.uuid;
+  String? mapToSql(UuidType? value) {
+    if (value == null) {
+      return null;
+    }
+
+    return value.uuid;
   }
 }
 

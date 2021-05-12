@@ -1,11 +1,11 @@
 import 'package:fe/config.dart';
-import 'package:fe/data_classes/json/local_user.dart';
 import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
 import 'package:fe/pages/main/main_helpers/drawers/left_drawer/profile/profile_page_service.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/helpers/DEBUG_print.dart';
 import 'package:fe/stdlib/local_data/token_manager.dart';
+import 'package:fe/stdlib/local_user.dart';
 import 'package:fe/stdlib/theme/button_group.dart';
 import 'package:fe/stdlib/toaster.dart';
 import 'package:flutter/material.dart';

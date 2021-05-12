@@ -1,10 +1,9 @@
-import 'package:fe/constants.dart';
 import 'package:fe/data_classes/json/backend_access_tokens.dart';
-import 'package:fe/data_classes/json/local_user.dart';
 import 'package:fe/data_classes/json/provider_access_token.dart';
 import 'package:fe/stdlib/clients/http/unauth_http_client.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/local_data/token_manager.dart';
+import 'package:fe/stdlib/local_user.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../service_locator.dart';
@@ -65,13 +64,6 @@ class LoginService {
 
     return _ProviderLoginDetails(
         email: acc.email, idToken: auth.idToken!, displayName: acc.displayName);
-  }
-}
-
-//TODO move me
-extension AssetLocation on LoginType {
-  String get imageLocation {
-    return ['assets/icons/identities/google_logo.png'][index];
   }
 }
 
