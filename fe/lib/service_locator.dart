@@ -38,19 +38,14 @@ void setupLocator({required bool isProd}) {
   getIt.registerSingleton<TokenManager>(TokenManager());
   getIt.registerSingletonAsync<Client>(() => buildGqlClient());
 
-  //requires localUser due to DAOs fetching remote using uuid
-  getIt.registerSingletonWithDependencies<DatabaseManager>(
-      () => DatabaseManager(),
-      dependsOn: [LocalUser]);
+  getIt.registerSingleton<DatabaseManager>(DatabaseManager());
   getIt.registerSingletonWithDependencies<RemoteSyncer>(() => RemoteSyncer(),
       dependsOn: [Client]);
 
   //logged in services
   getIt.registerSingleton(AuthHttpClient());
-  getIt.registerSingletonWithDependencies(() => MainService(),
-      dependsOn: [DatabaseManager]);
+  getIt.registerSingleton(MainService());
   getIt.registerSingletonWithDependencies(() => ProfilePageService(),
       dependsOn: [Client]);
-  getIt.registerSingletonWithDependencies(() => GroupsService(),
-      dependsOn: [DatabaseManager]);
+  getIt.registerSingleton(GroupsService());
 }

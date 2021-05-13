@@ -1,5 +1,6 @@
 import 'package:fe/stdlib/database/db_manager.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../../../../service_locator.dart';
 
@@ -7,16 +8,14 @@ class GroupsService {
   final _databaseManager = getIt<DatabaseManager>();
   final _cachedGroups = <Group>[];
 
-  final Map<UuidType, List<User>> _cachedUsers = {};
-
-  GroupsService() {
-    _beginCache();
-  }
+  final Map<UuidType, Set<User>> _cachedUsers = {};
 
   List<Group> get cachedGroups => _cachedGroups;
 
-  List<User> getCachedUsersInGroup(UuidType groupId) {
-    return _cachedUsers[groupId] ?? [];
+  bool _cached = false;
+
+  Iterable<User> getCachedUsersInGroup(UuidType groupId) {
+    return _cachedUsers[groupId] ?? <User>{};
   }
 
   Future<List<Group>> fetchGroups() async {
@@ -27,14 +26,19 @@ class GroupsService {
     return allGroups;
   }
 
-  Future<List<User>> fetchUsersInGroup(UuidType groupId) async {
+  Future<Set<User>> fetchUsersInGroup(UuidType groupId) async {
+    debugPrint('Beginning fetching users in group ${groupId.uuid}');
     final usersInGroup =
         await _databaseManager.usersDao.findAllInGroup(groupId, remote: true);
-    _cachedUsers[groupId] = usersInGroup;
-    return usersInGroup;
+    _cachedUsers[groupId] = usersInGroup.toSet();
+    return _cachedUsers[groupId]!;
   }
 
-  Future<void> _beginCache() async {
+  Future<void> cacheIfNecessary() async {
+    if (_cached) {
+      return;
+    }
+
     final knownGroups = await _databaseManager.groupsDao.findAll();
     _cachedGroups.addAll(knownGroups);
     for (final knownGroup in knownGroups) {
@@ -42,11 +46,13 @@ class GroupsService {
           await _databaseManager.usersDao.findAllInGroup(knownGroup.id);
       for (final user in usersInGroup) {
         if (_cachedUsers[knownGroup.id] != null) {
-          _cachedUsers[knownGroup.id] = [user];
-        } else {
           _cachedUsers[knownGroup.id]!.add(user);
+        } else {
+          _cachedUsers[knownGroup.id] = {user};
         }
       }
     }
+    _cached = true;
+    debugPrint('completed cache of groups + users');
   }
 }

@@ -6,6 +6,7 @@ abstract class Config {
   bool get httpIsSecure;
   bool get playTaxingAnimations;
   bool get debug;
+  bool get printMoorLogs;
 }
 
 class DevConfig extends Config {
@@ -23,6 +24,9 @@ class DevConfig extends Config {
 
   @override
   bool get debug => true;
+
+  @override
+  bool get printMoorLogs => false;
 }
 
 class ProdConfig extends Config {
@@ -40,4 +44,7 @@ class ProdConfig extends Config {
 
   @override
   bool get debug => false;
+
+  @override
+  bool get printMoorLogs => false;
 }

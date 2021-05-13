@@ -29,7 +29,6 @@ class _GroupTabState extends State<GroupTab>
 
   @override
   void initState() {
-    test();
     _prepareAnimations();
     super.initState();
   }
@@ -103,10 +102,6 @@ class _GroupTabState extends State<GroupTab>
     ));
   }
 
-  Future<void> test() async {
-    await _groupsService.fetchUsersInGroup(widget.group.id);
-  }
-
   void _displaySettings(bool display) {
     if (display) {
       expandController.forward();
@@ -130,7 +125,7 @@ class _GroupTabState extends State<GroupTab>
           mainAxisSize: MainAxisSize.min,
           children: [
             TileHeader(text: 'Members'),
-            FutureBuilder<List<User>>(
+            FutureBuilder<Iterable<User>>(
                 future: _groupsService.fetchUsersInGroup(widget.group.id),
                 initialData:
                     _groupsService.getCachedUsersInGroup(widget.group.id),
@@ -152,7 +147,6 @@ class _GroupTabState extends State<GroupTab>
   }
 
   Widget _buildUserTile(User user) {
-    print('building 1');
     return Tile(child: Text(user.name));
   }
 }

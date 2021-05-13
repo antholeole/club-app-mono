@@ -8,6 +8,10 @@ import 'groups_service.dart';
 class GroupsPage extends StatelessWidget {
   final GroupsService _groupsService = getIt<GroupsService>();
 
+  GroupsPage() {
+    _groupsService.cacheIfNecessary();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox.expand(

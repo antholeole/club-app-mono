@@ -55,6 +55,9 @@ class LocalUser {
   Map<String, dynamic> toJson() => _$LocalUserToJson(this);
 }
 
-enum LoginType { Google }
+enum LoginType {
+  @JsonValue('Google')
+  Google,
+}
 
 class NotLoggedInError extends Error {}

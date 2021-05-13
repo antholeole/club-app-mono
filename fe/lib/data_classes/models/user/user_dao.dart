@@ -6,6 +6,7 @@ import 'package:fe/stdlib/database/db_manager.dart';
 import 'package:fe/stdlib/database/remote_sync.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/local_user.dart';
+import 'package:flutter/material.dart';
 import 'package:moor/moor.dart';
 
 import '../../../service_locator.dart';
@@ -52,6 +53,8 @@ class UsersDao extends BaseDao<User> with _$UsersDaoMixin {
       return localUsers;
     }
 
+    debugPrint('finding remote users in group ${groupId.uuid}');
+
     final remoteUsers = await _remoteSyncer.fetchRemote(
         GQueryUsersInGroupReq((b) => b..vars.groupId = groupId),
         (GQueryUsersInGroupData data) => data.user_to_group
@@ -62,7 +65,7 @@ class UsersDao extends BaseDao<User> with _$UsersDaoMixin {
         this,
         localUsers,
         remoteUsers,
-        (User g) => addOneWithGroup(g, groupId),
+        (User g) => adddUserToGroup(g, groupId),
         (User g) => removeOne(g.id),
         (User g) => g.name);
 
@@ -74,8 +77,10 @@ class UsersDao extends BaseDao<User> with _$UsersDaoMixin {
     return update(users).replace(other);
   }
 
-  Future<void> addOneWithGroup(User other, UuidType groupId) async {
-    await addOne(other);
+  Future<void> adddUserToGroup(User other, UuidType groupId) async {
+    if (await findOne(other.id) == null) {
+      await addOne(other);
+    }
     await into(db.userToGroup).insert(
         UserToGroupCompanion(groupId: Value(groupId), userId: Value(other.id)));
   }

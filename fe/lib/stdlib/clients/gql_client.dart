@@ -24,8 +24,9 @@ Future<Client> buildGqlClient() async {
       'x-hasura-role': 'user'
     },
     shouldRefresh: (Response resp) {
-      return (resp.errors?.firstWhere(
-              (element) => element.message.contains(JWT_EXPIRED)) !=
+      return (resp.errors?.firstWhere((element) =>
+              element.message.contains(JWT_EXPIRED) ||
+              element.message.contains(MISSING_HEADER)) !=
           null);
     },
     tokenStorage: InMemoryTokenStorage(),
