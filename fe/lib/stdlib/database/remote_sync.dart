@@ -14,30 +14,24 @@ import 'package:moor/moor.dart';
 class RemoteSyncer {
   final _gqlClient = getIt<Client>();
 
-  Future<void> remoteSync<T extends DataClass, R extends BaseDao<T>>(
-      R repository,
-      List<T> locals,
-      List<T> remotes,
-      Future<void> Function(T) addOneLocal,
-      Future<void> Function(T) removeOneLocal,
-      String Function(T) debugName) {
+  Future<void> remoteSync<T extends DataClass, U extends UpdateCompanion<T>>(
+      {required Iterable<U> locals,
+      required Iterable<U> remotes,
+      required Future<void> Function(U) upsert,
+      required Future<void> Function(U) removeOneLocal,
+      required bool Function(U, U) compareEquality}) {
     List<Future<void>> changes = [];
-    for (T remote in remotes) {
-      if (locals.indexWhere((local) => local == remote) < 0) {
-        debugPrint(
-            'adding ${T.runtimeType.toString()} ${debugName(remote)} locally');
-        changes.add(addOneLocal(remote));
-      } else {
-        changes.add(repository.overrideLocal(remote));
-      }
+    Set<U> elementsNotFound = locals.toSet();
+
+    for (U remote in remotes) {
+      changes.add(upsert(remote));
+      elementsNotFound
+          .removeWhere((element) => compareEquality(element, remote));
     }
 
-    for (T local in locals) {
-      if (remotes.indexWhere((remote) => local == remote) < 0) {
-        debugPrint(
-            'removing ${T.runtimeType.toString()} ${debugName(local)} locally');
-        changes.add(removeOneLocal(local));
-      }
+    for (U elementNotFound in elementsNotFound) {
+      changes.add(removeOneLocal(elementNotFound));
+      debugPrint('removing ${elementNotFound.toString()}');
     }
 
     return Future.wait(changes);

@@ -30,8 +30,14 @@ select_permissions:
     - name
     - profile_picture
     filter:
-      id:
-        _eq: X-Hasura-User-Id
+      _or:
+      - id:
+          _eq: X-Hasura-User-Id
+      - user_to_groups:
+          group:
+            user_to_groups:
+              user_id:
+                _eq: X-Hasura-User-Id
   role: user
 update_permissions:
 - permission:

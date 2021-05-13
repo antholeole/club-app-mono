@@ -13,14 +13,14 @@ import '../../../service_locator.dart';
 part 'group_dao.g.dart';
 
 @UseDao(tables: [Groups])
-class GroupsDao extends BaseDao<Group> with _$GroupsDaoMixin {
+class GroupsDao extends BaseDao<Group, GroupsCompanion> with _$GroupsDaoMixin {
   final RemoteSyncer _remoteSyncer = getIt<RemoteSyncer>();
   final LocalUser _localUser = getIt<LocalUser>();
 
   GroupsDao(DatabaseManager db) : super(db);
 
   @override
-  Future<void> addOne(Group entry) {
+  Future<void> addOne(GroupsCompanion entry) {
     return into(groups).insert(entry);
   }
 
@@ -45,17 +45,22 @@ class GroupsDao extends BaseDao<Group> with _$GroupsDaoMixin {
     final remoteGroups = await _remoteSyncer.fetchRemote(
         GQuerySelfGroupsPreviewReq((b) => b..vars.self_id = _localUser.uuid),
         (GQuerySelfGroupsPreviewData data) => data.user_to_group
-            .map((v) => Group(id: v.group.id, name: v.group.group_name))
+            .map((v) => GroupsCompanion(
+                id: Value(v.group.id), name: Value(v.group.group_name)))
             .toList());
 
-    await _remoteSyncer.remoteSync(this, localGroups, remoteGroups, addOne,
-        (Group g) => removeOne(g.id), (Group g) => g.name);
+    await _remoteSyncer.remoteSync<Group, GroupsCompanion>(
+        locals: localGroups.map((g) => g.toCompanion(false)),
+        remotes: remoteGroups,
+        upsert: upsert,
+        removeOneLocal: (GroupsCompanion u) => removeOne(u.id.value),
+        compareEquality: (first, second) => first.id == second.id);
 
     return findAll(remote: false);
   }
 
   @override
-  Future<bool> overrideLocal(Group other) {
-    return update(groups).replace(other);
+  Future<void> upsert(GroupsCompanion other) {
+    return into(groups).insertOnConflictUpdate(other);
   }
 }

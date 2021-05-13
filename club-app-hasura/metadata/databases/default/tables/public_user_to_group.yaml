@@ -15,6 +15,11 @@ select_permissions:
     - group_id
     - user_id
     filter:
-      user_id:
-        _eq: X-Hasura-User-Id
+      _or:
+      - user_id:
+          _eq: X-Hasura-User-Id
+      - group:
+          user_to_groups:
+            user_id:
+              _eq: X-Hasura-User-Id
   role: user

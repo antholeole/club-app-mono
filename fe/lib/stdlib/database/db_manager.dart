@@ -20,7 +20,15 @@ part 'db_manager.g.dart';
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'db.sqlite'));
+
+    File file = File(p.join(dbFolder.path, 'db.sqlite'));
+
+    if (getIt<Config>().refreshLocalCacheOnReload) {
+      debugPrint('clearing DB');
+      await file.delete();
+      file = File(p.join(dbFolder.path, 'db.sqlite'));
+    }
+
     return VmDatabase(file, logStatements: getIt<Config>().printMoorLogs);
   });
 }

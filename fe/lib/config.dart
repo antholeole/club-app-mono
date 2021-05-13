@@ -7,6 +7,7 @@ abstract class Config {
   bool get playTaxingAnimations;
   bool get debug;
   bool get printMoorLogs;
+  bool get refreshLocalCacheOnReload;
 }
 
 class DevConfig extends Config {
@@ -27,6 +28,9 @@ class DevConfig extends Config {
 
   @override
   bool get printMoorLogs => false;
+
+  @override
+  bool get refreshLocalCacheOnReload => true;
 }
 
 class ProdConfig extends Config {
@@ -47,4 +51,7 @@ class ProdConfig extends Config {
 
   @override
   bool get printMoorLogs => false;
+
+  @override
+  bool get refreshLocalCacheOnReload => false;
 }

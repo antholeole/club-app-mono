@@ -27,10 +27,11 @@ class GroupsService {
   }
 
   Future<Set<User>> fetchUsersInGroup(UuidType groupId) async {
-    debugPrint('Beginning fetching users in group ${groupId.uuid}');
     final usersInGroup =
         await _databaseManager.usersDao.findAllInGroup(groupId, remote: true);
+
     _cachedUsers[groupId] = usersInGroup.toSet();
+
     return _cachedUsers[groupId]!;
   }
 
@@ -53,6 +54,5 @@ class GroupsService {
       }
     }
     _cached = true;
-    debugPrint('completed cache of groups + users');
   }
 }

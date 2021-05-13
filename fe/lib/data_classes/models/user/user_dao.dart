@@ -5,7 +5,6 @@ import 'package:fe/gql/query_users_in_group.req.gql.dart';
 import 'package:fe/stdlib/database/db_manager.dart';
 import 'package:fe/stdlib/database/remote_sync.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
-import 'package:fe/stdlib/local_user.dart';
 import 'package:flutter/material.dart';
 import 'package:moor/moor.dart';
 
@@ -14,13 +13,13 @@ import '../../../service_locator.dart';
 part 'user_dao.g.dart';
 
 @UseDao(tables: [Users])
-class UsersDao extends BaseDao<User> with _$UsersDaoMixin {
+class UsersDao extends BaseDao<User, UsersCompanion> with _$UsersDaoMixin {
   final _remoteSyncer = getIt<RemoteSyncer>();
 
   UsersDao(DatabaseManager db) : super(db);
 
   @override
-  Future<void> addOne(User entry) {
+  Future<void> addOne(UsersCompanion entry) {
     return into(users).insert(entry);
   }
 
@@ -53,35 +52,49 @@ class UsersDao extends BaseDao<User> with _$UsersDaoMixin {
       return localUsers;
     }
 
-    debugPrint('finding remote users in group ${groupId.uuid}');
-
     final remoteUsers = await _remoteSyncer.fetchRemote(
         GQueryUsersInGroupReq((b) => b..vars.groupId = groupId),
         (GQueryUsersInGroupData data) => data.user_to_group
-            .map((v) => User(id: v.user.id, name: v.user.name, hasDm: false))
+            .map((v) =>
+                UsersCompanion(id: Value(v.user.id), name: Value(v.user.name)))
             .toList());
 
-    await _remoteSyncer.remoteSync(
-        this,
-        localUsers,
-        remoteUsers,
-        (User g) => adddUserToGroup(g, groupId),
-        (User g) => removeOne(g.id),
-        (User g) => g.name);
+    await _remoteSyncer.remoteSync<User, UsersCompanion>(
+        locals: localUsers.map((user) => user.toCompanion(false)),
+        remotes: remoteUsers,
+        removeOneLocal: (u) => removeOne(u.id.value),
+        upsert: (u) => upsertWithGroup(u, groupId),
+        compareEquality: (first, second) => first.id == second.id);
 
     return findAllInGroup(groupId, remote: false);
   }
 
   @override
-  Future<void> overrideLocal(User other) {
-    return update(users).replace(other);
+  Future<void> upsert(UsersCompanion other) {
+    return into(users).insertOnConflictUpdate(other);
   }
 
-  Future<void> adddUserToGroup(User other, UuidType groupId) async {
-    if (await findOne(other.id) == null) {
+  Future<void> upsertWithGroup(UsersCompanion other, UuidType groupId) async {
+    if (await findOne(other.id.value) == null) {
+      await into(users).insert(other);
+    }
+
+    final relationship = await (select(db.userToGroup)
+          ..where((table) => table.groupId.equals(groupId.uuid))
+          ..where((table) => table.userId.equals(other.id.value.uuid)))
+        .getSingleOrNull();
+
+    if (relationship == null) {
+      await into(db.userToGroup).insert(UserToGroupCompanion(
+          groupId: Value(groupId), userId: Value(other.id.value)));
+    }
+  }
+
+  Future<void> adddUserToGroup(UsersCompanion other, UuidType groupId) async {
+    if (await findOne(other.id.value) == null) {
       await addOne(other);
     }
-    await into(db.userToGroup).insert(
-        UserToGroupCompanion(groupId: Value(groupId), userId: Value(other.id)));
+    await into(db.userToGroup).insert(UserToGroupCompanion(
+        groupId: Value(groupId), userId: Value(other.id.value)));
   }
 }
