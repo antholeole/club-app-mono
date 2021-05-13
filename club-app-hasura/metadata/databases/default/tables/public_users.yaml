@@ -1,0 +1,44 @@
+table:
+  name: users
+  schema: public
+array_relationships:
+- name: messages
+  using:
+    foreign_key_constraint_on:
+      column: user_sent
+      table:
+        name: messages
+        schema: public
+- name: user_to_groups
+  using:
+    foreign_key_constraint_on:
+      column: user_id
+      table:
+        name: user_to_group
+        schema: public
+- name: user_to_threads
+  using:
+    foreign_key_constraint_on:
+      column: user_id
+      table:
+        name: user_to_thread
+        schema: public
+select_permissions:
+- permission:
+    columns:
+    - id
+    - name
+    - profile_picture
+    filter:
+      id:
+        _eq: X-Hasura-User-Id
+  role: user
+update_permissions:
+- permission:
+    check: null
+    columns:
+    - name
+    filter:
+      id:
+        _eq: X-Hasura-User-Id
+  role: user

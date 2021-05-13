@@ -1,0 +1,28 @@
+table:
+  name: groups
+  schema: public
+array_relationships:
+- name: group_threads
+  using:
+    foreign_key_constraint_on:
+      column: group_id
+      table:
+        name: group_threads
+        schema: public
+- name: user_to_groups
+  using:
+    foreign_key_constraint_on:
+      column: group_id
+      table:
+        name: user_to_group
+        schema: public
+select_permissions:
+- permission:
+    columns:
+    - group_name
+    - id
+    filter:
+      user_to_groups:
+        user_id:
+          _eq: X-Hasura-User-Id
+  role: user
