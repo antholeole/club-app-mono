@@ -90,3 +90,4 @@ flutter:
     - assets/icons/identities/apple_logo.png
     - assets/mock_icons/mock_club_icon.png
     - .env
+    - assets/db.db

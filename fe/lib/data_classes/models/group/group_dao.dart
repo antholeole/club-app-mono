@@ -32,6 +32,8 @@ class GroupsDao extends BaseDao<Group, GroupsCompanion> with _$GroupsDaoMixin {
 
   @override
   Future<void> removeOne(UuidType id) async {
+    await (delete(db.userToGroup)..where((tbl) => tbl.groupId.equals(id.uuid)))
+        .go();
     await (delete(groups)..where((tbl) => tbl.id.equals(id.uuid))).go();
   }
 

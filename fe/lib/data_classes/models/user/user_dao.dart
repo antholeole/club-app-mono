@@ -5,7 +5,6 @@ import 'package:fe/gql/query_users_in_group.req.gql.dart';
 import 'package:fe/stdlib/database/db_manager.dart';
 import 'package:fe/stdlib/database/remote_sync.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
-import 'package:flutter/material.dart';
 import 'package:moor/moor.dart';
 
 import '../../../service_locator.dart';

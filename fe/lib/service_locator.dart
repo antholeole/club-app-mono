@@ -47,5 +47,6 @@ void setupLocator({required bool isProd}) {
   getIt.registerSingleton(MainService());
   getIt.registerSingletonWithDependencies(() => ProfilePageService(),
       dependsOn: [Client]);
-  getIt.registerSingleton(GroupsService());
+  getIt.registerSingletonWithDependencies(() => GroupsService(),
+      dependsOn: [Client]);
 }

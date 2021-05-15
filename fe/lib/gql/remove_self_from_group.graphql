@@ -1,0 +1,14 @@
+mutation RemoveSelfFromGroup($groupId: uuid!, $userId: uuid!) {
+  delete_user_to_group(where: {
+    _and: {
+      user_id:{
+        _eq: $userId
+      },
+      group_id: {
+        _eq: $groupId
+      }
+    }
+  }) {
+    affected_rows
+  }
+}

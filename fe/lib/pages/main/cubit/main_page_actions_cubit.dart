@@ -9,4 +9,6 @@ class MainPageActionsCubit extends Cubit<MainPageActionsState> {
   void logout({bool withError = false}) => emit(Logout(withError: withError));
 
   void selectGroup(Group group) => emit(SelectGroup(selectedGroup: group));
+
+  void resetPage() => emit(ResetPage());
 }

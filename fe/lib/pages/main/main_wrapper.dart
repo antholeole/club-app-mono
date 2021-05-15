@@ -18,8 +18,6 @@ import 'main_helpers/bottom_sheet/channels_bottom_sheet.dart';
 import 'main_helpers/drawers/left_drawer/club_drawer.dart';
 import 'main_service.dart';
 
-enum _InitalLoadState { Loading, NoGroups, WithGroups, Error }
-
 class MainWrapper extends StatefulWidget {
   MainWrapper() : assert(getIt<LocalUser>().isLoggedIn());
 
@@ -28,13 +26,12 @@ class MainWrapper extends StatefulWidget {
 }
 
 class _MainWrapperState extends State<MainWrapper> {
-  //TODO enum is bad design. have a local var "groups" or "current group" that is either null, a group or empty list
   final MainService _mainService = getIt<MainService>();
   final DatabaseManager _databaseManager = getIt<DatabaseManager>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final MainPageActionsCubit _mainPageActionsCubit = MainPageActionsCubit();
   late BuildContext _toastableContext;
-  _InitalLoadState _initalLoadState = _InitalLoadState.Loading;
+  MainPageState _pageState = MainPageState.Loading;
 
   @override
   void initState() {
@@ -65,6 +62,8 @@ class _MainWrapperState extends State<MainWrapper> {
                     debugPrint(
                         'switched group to ${state.selectedGroup?.name}');
                     setState(() {});
+                  } else if (state is ResetPage) {
+                    _initalLoad();
                   }
                 },
                 child: Scaffold(
@@ -107,7 +106,7 @@ class _MainWrapperState extends State<MainWrapper> {
                             EventsRoute(),
                           ],
                         );
-                      } else if (_initalLoadState == _InitalLoadState.Error) {
+                      } else if (_pageState == MainPageState.Error) {
                         return Center(
                             child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -129,7 +128,7 @@ class _MainWrapperState extends State<MainWrapper> {
                             ),
                           ],
                         ));
-                      } else if (_initalLoadState == _InitalLoadState.Loading) {
+                      } else if (_pageState == MainPageState.Loading) {
                         return Container();
                       } else {
                         return Center(
@@ -163,32 +162,21 @@ class _MainWrapperState extends State<MainWrapper> {
   }
 
   Future<void> _initalLoad() async {
-    try {
-      await _mainService.initalLoad();
-    } on Failure catch (e) {
-      Toaster.of(_toastableContext).errorToast(e.message);
+    final initalLoadResult = await _mainService.initalLoad();
 
-      setState(() {
-        _initalLoadState = _InitalLoadState.Error;
-      });
+    setState(() {
+      _pageState = initalLoadResult.state;
+    });
 
+    if (initalLoadResult.state == MainPageState.Error) {
+      Toaster.of(_toastableContext)
+          .errorToast(initalLoadResult.failure!.message);
       return;
     }
 
-    if (_mainPageActionsCubit.state.selectedGroup == null) {
-      final groups = await _databaseManager.groupsDao.findAll();
-      if (groups.isEmpty) {
-        setState(() {
-          _initalLoadState = _InitalLoadState.NoGroups;
-        });
-        return;
-      } else {
-        _mainPageActionsCubit.selectGroup(groups[0]);
-      }
+    if (initalLoadResult.group != null) {
+      _mainPageActionsCubit.selectGroup(initalLoadResult.group!);
     }
-    setState(() {
-      _initalLoadState = _InitalLoadState.WithGroups;
-    });
   }
 
   List<Widget> _buildTitle() {
@@ -201,10 +189,10 @@ class _MainWrapperState extends State<MainWrapper> {
           style: Theme.of(context).textTheme.caption,
         ));
       }
-    } else if (_initalLoadState == _InitalLoadState.Error) {
+    } else if (_pageState == MainPageState.Error) {
       titleElements.add(
           Text('An Error Occured', style: Theme.of(context).textTheme.caption));
-    } else if (_initalLoadState == _InitalLoadState.Loading) {
+    } else if (_pageState == MainPageState.Loading) {
       titleElements.add(Loader(
         size: 18,
       ));

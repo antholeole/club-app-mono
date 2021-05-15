@@ -118,7 +118,10 @@ class Toaster extends InheritedWidget {
 
     if (action != null) {
       children.add(GestureDetector(
-        onTap: action,
+        onTap: () {
+          _fToast.removeCustomToast();
+          action();
+        },
         child: Text(
           actionText!,
           style: TextStyle(color: actionTextColor),

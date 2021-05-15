@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'group_tab.dart';
 import 'groups_service.dart';
 
-class GroupsPage extends StatelessWidget {
+class GroupsPage extends StatefulWidget {
   final GroupsService _groupsService = getIt<GroupsService>();
 
   GroupsPage() {
@@ -13,11 +13,23 @@ class GroupsPage extends StatelessWidget {
   }
 
   @override
+  _GroupsPageState createState() => _GroupsPageState();
+}
+
+class _GroupsPageState extends State<GroupsPage> {
+  late Future<List<Group>> groups;
+
+  @override
+  void initState() {
+    groups = widget._groupsService.fetchGroups(remote: true);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox.expand(
       child: FutureBuilder<List<Group>>(
-        future: _groupsService.fetchGroups(),
-        initialData: _groupsService.cachedGroups,
+        future: groups,
         builder: (fbContext, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.active:
@@ -48,7 +60,14 @@ class GroupsPage extends StatelessWidget {
       ),
       ListView(
         shrinkWrap: true,
-        children: groups.map((v) => GroupTab(group: v)).toList(),
+        children: groups
+            .map(
+              (v) => GroupTab(
+                group: v,
+                didUpdateGroups: _didUpdateGroups,
+              ),
+            )
+            .toList(),
       )
     ];
 
@@ -69,5 +88,11 @@ class GroupsPage extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       children: widgets,
     );
+  }
+
+  void _didUpdateGroups() {
+    setState(() {
+      groups = widget._groupsService.fetchGroups(remote: false);
+    });
   }
 }

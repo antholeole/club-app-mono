@@ -4,6 +4,7 @@ import 'package:fe/pages/main/main_helpers/drawers/left_drawer/groups/groups_ser
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/database/db_manager.dart';
 import 'package:fe/stdlib/theme/flippable_icon.dart';
+import 'package:fe/stdlib/theme/loadable_tile_button.dart';
 import 'package:fe/stdlib/theme/tile.dart';
 import 'package:fe/stdlib/theme/tile_header.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +12,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GroupTab extends StatefulWidget {
   final Group group;
+  final Function() didUpdateGroups;
 
-  GroupTab({required this.group});
+  GroupTab({required this.group, required this.didUpdateGroups});
 
   @override
   _GroupTabState createState() => _GroupTabState();
@@ -23,6 +25,7 @@ class _GroupTabState extends State<GroupTab>
   final GroupsService _groupsService = getIt<GroupsService>();
 
   bool _tabOpen = false;
+  bool _isLoadingLeaving = false;
 
   late AnimationController expandController;
   late Animation<double> animation;
@@ -44,8 +47,7 @@ class _GroupTabState extends State<GroupTab>
 
   @override
   Widget build(BuildContext context) {
-    return Tile(
-        child: Column(
+    return Column(
       children: [
         TextButton(
           onPressed: () =>
@@ -97,9 +99,13 @@ class _GroupTabState extends State<GroupTab>
             ],
           ),
         ),
-        if (_tabOpen) _buildSettings(),
+        if (_tabOpen)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Tile(child: _buildSettings()),
+          ),
       ],
-    ));
+    );
   }
 
   void _displaySettings(bool display) {
@@ -141,12 +147,45 @@ class _GroupTabState extends State<GroupTab>
                     case ConnectionState.none:
                       return Text('sorry, error');
                   }
-                })
+                }),
+            LoadableTileButton(
+              text: 'leave group',
+              onClick: () => _groupsService.leaveGroup(
+                  widget.group,
+                  context,
+                  () => setState(() {
+                        _isLoadingLeaving = true;
+                      }),
+                  widget.didUpdateGroups),
+              color: Colors.red,
+              loading: _isLoadingLeaving,
+            ),
           ],
         ));
   }
 
   Widget _buildUserTile(User user) {
-    return Tile(child: Text(user.name));
+    final initals = user.name.split(' ').map((e) {
+      if (e.isNotEmpty) {
+        return e[0];
+      } else {
+        return '';
+      }
+    }).join('');
+
+    return Tile(
+      child: Row(children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: CircleAvatar(
+            foregroundImage: user.profilePicture != null
+                ? NetworkImage(user.profilePicture!)
+                : null,
+            child: user.profilePicture == null ? Text(initals) : null,
+          ),
+        ),
+        Text(user.name)
+      ]),
+    );
   }
 }

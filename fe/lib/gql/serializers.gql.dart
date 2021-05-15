@@ -19,6 +19,14 @@ import 'package:fe/gql/query_users_in_group.req.gql.dart'
     show GQueryUsersInGroupReq;
 import 'package:fe/gql/query_users_in_group.var.gql.dart'
     show GQueryUsersInGroupVars;
+import 'package:fe/gql/remove_self_from_group.data.gql.dart'
+    show
+        GRemoveSelfFromGroupData,
+        GRemoveSelfFromGroupData_delete_user_to_group;
+import 'package:fe/gql/remove_self_from_group.req.gql.dart'
+    show GRemoveSelfFromGroupReq;
+import 'package:fe/gql/remove_self_from_group.var.gql.dart'
+    show GRemoveSelfFromGroupVars;
 import 'package:fe/gql/schema.schema.gql.dart'
     show
         GBoolean_comparison_exp,
@@ -126,6 +134,10 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GQueryUsersInGroupData_user_to_group_user,
   GQueryUsersInGroupReq,
   GQueryUsersInGroupVars,
+  GRemoveSelfFromGroupData,
+  GRemoveSelfFromGroupData_delete_user_to_group,
+  GRemoveSelfFromGroupReq,
+  GRemoveSelfFromGroupVars,
   GString_comparison_exp,
   GUpdateSelfNameData,
   GUpdateSelfNameData_update_users_by_pk,

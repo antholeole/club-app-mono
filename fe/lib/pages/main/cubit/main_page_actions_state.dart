@@ -11,6 +11,8 @@ class Logout extends MainPageActionsState {
   Logout({required this.withError});
 }
 
+class ResetPage extends MainPageActionsState {}
+
 class MainPageActionsInitial extends MainPageActionsState {}
 
 abstract class MainPageActionsState {

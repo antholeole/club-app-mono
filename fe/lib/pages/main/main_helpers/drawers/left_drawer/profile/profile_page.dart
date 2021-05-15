@@ -7,6 +7,7 @@ import 'package:fe/stdlib/helpers/DEBUG_print.dart';
 import 'package:fe/stdlib/local_data/token_manager.dart';
 import 'package:fe/stdlib/local_user.dart';
 import 'package:fe/stdlib/theme/button_group.dart';
+import 'package:fe/stdlib/theme/loadable_tile_button.dart';
 import 'package:fe/stdlib/toaster.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,13 +44,13 @@ class _ProfilePageState extends State<ProfilePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ButtonGroup(name: 'Profile', buttons: [
-              ButtonData(
+              LoadableTileButton(
                   onClick: _changeName,
                   text: 'Change name',
                   loading: _changingName),
             ]),
             ButtonGroup(buttons: [
-              ButtonData(
+              LoadableTileButton(
                   onClick: () {
                     setState(() {
                       _loggingOut = false;
@@ -62,7 +63,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ]),
             _config.debug
                 ? ButtonGroup(name: 'Debug', buttons: [
-                    ButtonData(
+                    LoadableTileButton(
                         onClick: () => _tokenManager.read().then((tokens) =>
                             printWrapped(
                                 tokens?.accessToken ?? 'No Access Tokens')),

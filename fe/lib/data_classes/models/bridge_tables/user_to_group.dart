@@ -7,10 +7,10 @@ class UserToGroup extends BaseTable {
   TextColumn get userId => text()
       .map(const MoorUuidConverter())
       .clientDefault(() => Uuid().v4())
-      .customConstraint('REFERENCES users(id)')();
+      .customConstraint('REFERENCES users(id) ON DELETE CASCADE')();
 
   TextColumn get groupId => text()
       .map(const MoorUuidConverter())
       .clientDefault(() => Uuid().v4())
-      .customConstraint('REFERENCES groups(id)')();
+      .customConstraint('REFERENCES groups(id) ON DELETE CASCADE')();
 }
