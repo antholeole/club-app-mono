@@ -11,4 +11,5 @@ abstract class BaseDao<T extends DataClass, U extends UpdateCompanion<T>>
   Future<T?> findOne(UuidType id);
   Future<void> addOne(U entry);
   Future<void> upsert(U other);
+  Future<void> updateOne(U other);
 }

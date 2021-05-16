@@ -21,7 +21,7 @@ class DevConfig extends Config {
   bool get httpIsSecure => false;
 
   @override
-  bool get playTaxingAnimations => false;
+  bool get playTaxingAnimations => true;
 
   @override
   bool get debug => true;
@@ -30,7 +30,7 @@ class DevConfig extends Config {
   bool get printMoorLogs => false;
 
   @override
-  bool get refreshLocalCacheOnReload => true;
+  bool get refreshLocalCacheOnReload => false;
 }
 
 class ProdConfig extends Config {

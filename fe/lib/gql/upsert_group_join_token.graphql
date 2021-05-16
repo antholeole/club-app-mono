@@ -1,0 +1,14 @@
+mutation UpsertGroupJoinToken($group_id: uuid!, $new_token: String) {
+	insert_group_join_tokens_one(
+        object: {
+          join_token: $new_token,
+          group_id: $group_id,
+        },
+    on_conflict: {
+      update_columns: join_token,
+      constraint: group_join_tokens_group_id_key
+			}
+  ) {
+    join_token
+  }
+}

@@ -6,7 +6,7 @@ targets:
       gql_build|schema_builder:
         enabled: true
         options:
-          schema: fe|lib/gql/schema.graphql
+          schema: fe|lib/schema.graphql
           type_overrides:
               uuid:
                   name: UuidType
@@ -14,7 +14,7 @@ targets:
       gql_build|data_builder:
         enabled: true
         options:
-          schema: fe|lib/gql/schema.graphql
+          schema: fe|lib/schema.graphql
           type_overrides:
               uuid:
                   name: UuidType
@@ -22,7 +22,7 @@ targets:
       gql_build|var_builder:
         enabled: true
         options:
-          schema: fe|lib/gql/schema.graphql
+          schema: fe|lib/schema.graphql
           type_overrides:
               uuid:
                   name: UuidType
@@ -30,7 +30,7 @@ targets:
       gql_build|serializer_builder:
         enabled: true
         options:
-          schema: fe|lib/gql/schema.graphql
+          schema: fe|lib/schema.graphql
           custom_serializers:
           - import: 'package:fe/stdlib/helpers/uuid_type.dart'
             name: UuidTypeSerializer
@@ -41,7 +41,7 @@ targets:
       ferry_generator|req_builder:
         enabled: true
         options:
-          schema: fe|lib/gql/schema.graphql
+          schema: fe|lib/schema.graphql
           type_overrides:
             uuid:
               name: UuidType

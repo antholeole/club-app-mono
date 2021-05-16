@@ -3,6 +3,8 @@ import 'package:fe/data_classes/json/backend_access_tokens.dart';
 import 'package:fe/data_classes/json/refresh_carrier.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/clients/http/unauth_http_client.dart';
+import 'package:fe/stdlib/helpers/DEBUG_print.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fresh_graphql/fresh_graphql.dart';
 
@@ -78,6 +80,7 @@ class TokenManager extends TokenStorage<OAuth2Token> {
     if (resp.statusCode != 200) {
       throw FailedRefresh();
     } else {
+      await _localFileStore.serialize(LocalStorageType.AccessTokens, resp.body);
       return OAuth2Token(accessToken: resp.body);
     }
   }

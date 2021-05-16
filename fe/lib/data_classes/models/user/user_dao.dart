@@ -73,6 +73,11 @@ class UsersDao extends BaseDao<User, UsersCompanion> with _$UsersDaoMixin {
     return into(users).insertOnConflictUpdate(other);
   }
 
+  @override
+  Future<void> updateOne(UsersCompanion other) {
+    return update(users).replace(other);
+  }
+
   Future<void> upsertWithGroup(UsersCompanion other, UuidType groupId) async {
     if (await findOne(other.id.value) == null) {
       await into(users).insert(other);

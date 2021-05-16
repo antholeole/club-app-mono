@@ -6,6 +6,7 @@ import 'package:fe/stdlib/theme/tile_header.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../../../../config.dart';
 import '../../../../../../../service_locator.dart';
 import '../groups_service.dart';
 
@@ -25,7 +26,17 @@ class GroupSettings extends StatefulWidget {
 class _GroupSettingsState extends State<GroupSettings> {
   final GroupsService _groupsService = getIt<GroupsService>();
 
+  late Future<String?> _joinToken;
+
   bool _isLoadingLeaving = false;
+
+  @override
+  void initState() {
+    if (widget._group.isAdmin) {
+      _joinToken = _groupsService.fetchGroupJoinToken(widget._group.id);
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +45,22 @@ class _GroupSettingsState extends State<GroupSettings> {
       children: [
         ..._buildUsers(),
         if (widget._group.isAdmin) ..._buildJoinToken(),
+        LoadableTileButton(
+          text: 'leave group',
+          onClick: () => _groupsService.leaveGroup(
+              widget._group,
+              context,
+              () => setState(() {
+                    _isLoadingLeaving = true;
+                  }), () {
+            setState(() {
+              _isLoadingLeaving = false;
+            });
+            widget._didUpdateGroup();
+          }),
+          color: Colors.red,
+          loading: _isLoadingLeaving,
+        ),
       ],
     );
   }
@@ -57,22 +84,6 @@ class _GroupSettingsState extends State<GroupSettings> {
                 return Text('sorry, error');
             }
           }),
-      LoadableTileButton(
-        text: 'leave group',
-        onClick: () => _groupsService.leaveGroup(
-            widget._group,
-            context,
-            () => setState(() {
-                  _isLoadingLeaving = true;
-                }), () {
-          setState(() {
-            _isLoadingLeaving = false;
-          });
-          widget._didUpdateGroup();
-        }),
-        color: Colors.red,
-        loading: _isLoadingLeaving,
-      ),
     ];
   }
 
@@ -107,18 +118,69 @@ class _GroupSettingsState extends State<GroupSettings> {
         text: 'Join Token',
       ),
       FutureBuilder<String?>(
-          future: _groupsService.updateGroupJoinToken(widget._group.id),
+          future: _joinToken,
+          initialData: widget._group.joinToken,
           builder: (fbContext, snapshot) {
+            if (snapshot.hasError) {
+              if (getIt<Config>().debug) {
+                throw snapshot.error!;
+              }
+
+              return _buildJoinTokenTile(snapshot.error.toString());
+            }
+
             switch (snapshot.connectionState) {
               case ConnectionState.active:
               case ConnectionState.waiting:
-                return Loader();
+                return Loader(
+                  size: 12,
+                );
               case ConnectionState.done:
-                return Text("hi");
+                return _buildJoinTokenTile(snapshot.data);
               case ConnectionState.none:
-                return Text('error loading build token.');
+                return _buildJoinTokenTile(null);
             }
           })
     ];
+  }
+
+  Widget _buildJoinTokenTile(String? joinToken) {
+    return Tile(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(joinToken ?? 'No Join Token.'),
+            Row(
+              children: [
+                GestureDetector(
+                  onTap: () => _updateToken(false),
+                  child: Icon(
+                    Icons.refresh,
+                    color: Colors.blue.shade300,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => _updateToken(true),
+                  child: Icon(
+                    Icons.delete,
+                    color: Colors.red.shade300,
+                  ),
+                )
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _updateToken(bool delete) {
+    setState(() {
+      _joinToken =
+          _groupsService.updateGroupJoinToken(widget._group, delete: delete);
+    });
+    _joinToken.then((_) => widget._didUpdateGroup());
   }
 }

@@ -67,4 +67,9 @@ class GroupsDao extends BaseDao<Group, GroupsCompanion> with _$GroupsDaoMixin {
   Future<void> upsert(GroupsCompanion other) {
     return into(groups).insertOnConflictUpdate(other);
   }
+
+  @override
+  Future<void> updateOne(GroupsCompanion other) {
+    return update(groups).replace(other);
+  }
 }

@@ -1,6 +1,6 @@
-import 'package:fe/gql/remove_self_from_group.ast.gql.dart';
+import 'package:fe/gql/query_group_join_token.req.gql.dart';
 import 'package:fe/gql/remove_self_from_group.req.gql.dart';
-import 'package:fe/gql/update_group_join_token.req.gql.dart';
+import 'package:fe/gql/upsert_group_join_token.req.gql.dart';
 import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
 import 'package:fe/stdlib/database/db_manager.dart';
 import 'package:fe/stdlib/helpers/random_string.dart';
@@ -100,19 +100,32 @@ class GroupsService {
     );
   }
 
-  Future<String> getGroupJoinToken(UuidType groupId) async {
+  Future<String?> fetchGroupJoinToken(UuidType groupId) async {
     final query = GQueryGroupJoinTokenReq((q) => q..vars.group_id = groupId);
+
+    final resp = await _gqlClient.request(query).first;
+
+    if (resp.data!.group_join_tokens.isEmpty) {
+      return null;
+    } else {
+      return resp.data!.group_join_tokens.first.join_token;
+    }
   }
 
-  Future<String> updateGroupJoinToken(UuidType groupId,
+  Future<String?> updateGroupJoinToken(Group group,
       {bool delete = false}) async {
     final token = delete ? null : generateRandomString(10);
 
-    final query = GUpdateGroupJoinTokenReq((q) => q
-      ..vars.group_id = groupId
+    final query = GUpsertGroupJoinTokenReq((q) => q
+      ..vars.group_id = group.id
       ..vars.new_token = token);
 
     await _gqlClient.request(query).first;
+
+    _gqlClient.cache.clear();
+
+    await _databaseManager.groupsDao
+        .updateOne(group.copyWith(joinToken: token).toCompanion(true));
 
     return token;
   }
