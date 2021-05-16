@@ -1,8 +1,8 @@
+import 'package:fe/pages/main/main_helpers/drawers/left_drawer/groups/widgets/group_tab.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/database/db_manager.dart';
 import 'package:flutter/material.dart';
 
-import 'group_tab.dart';
 import 'groups_service.dart';
 
 class GroupsPage extends StatefulWidget {
@@ -58,16 +58,18 @@ class _GroupsPageState extends State<GroupsPage> {
           textAlign: TextAlign.center,
         ),
       ),
-      ListView(
-        shrinkWrap: true,
-        children: groups
-            .map(
-              (v) => GroupTab(
-                group: v,
-                didUpdateGroups: _didUpdateGroups,
-              ),
-            )
-            .toList(),
+      Expanded(
+        child: ListView(
+          shrinkWrap: true,
+          children: groups
+              .map(
+                (v) => GroupTab(
+                  group: v,
+                  didUpdateGroups: _didUpdateGroups,
+                ),
+              )
+              .toList(),
+        ),
       )
     ];
 

@@ -30,7 +30,7 @@ class DevConfig extends Config {
   bool get printMoorLogs => false;
 
   @override
-  bool get refreshLocalCacheOnReload => false;
+  bool get refreshLocalCacheOnReload => true;
 }
 
 class ProdConfig extends Config {

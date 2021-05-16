@@ -1,7 +1,9 @@
 import 'package:fe/gql/remove_self_from_group.ast.gql.dart';
 import 'package:fe/gql/remove_self_from_group.req.gql.dart';
+import 'package:fe/gql/update_group_join_token.req.gql.dart';
 import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
 import 'package:fe/stdlib/database/db_manager.dart';
+import 'package:fe/stdlib/helpers/random_string.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/local_user.dart';
 import 'package:fe/stdlib/toaster.dart';
@@ -96,5 +98,22 @@ class GroupsService {
       action: leftGroup,
       actionText: 'Leave Group',
     );
+  }
+
+  Future<String> getGroupJoinToken(UuidType groupId) async {
+    final query = GQueryGroupJoinTokenReq((q) => q..vars.group_id = groupId);
+  }
+
+  Future<String> updateGroupJoinToken(UuidType groupId,
+      {bool delete = false}) async {
+    final token = delete ? null : generateRandomString(10);
+
+    final query = GUpdateGroupJoinTokenReq((q) => q
+      ..vars.group_id = groupId
+      ..vars.new_token = token);
+
+    await _gqlClient.request(query).first;
+
+    return token;
   }
 }

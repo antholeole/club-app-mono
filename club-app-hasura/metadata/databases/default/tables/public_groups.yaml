@@ -2,6 +2,13 @@ table:
   name: groups
   schema: public
 array_relationships:
+- name: group_join_tokens
+  using:
+    foreign_key_constraint_on:
+      column: group_id
+      table:
+        name: group_join_tokens
+        schema: public
 - name: group_threads
   using:
     foreign_key_constraint_on:
@@ -25,4 +32,17 @@ select_permissions:
       user_to_groups:
         user_id:
           _eq: X-Hasura-User-Id
+  role: user
+update_permissions:
+- permission:
+    check: null
+    columns:
+    - group_name
+    filter:
+      user_to_groups:
+        _and:
+        - user_id:
+            _eq: X-Hasura-User-Id
+        - admin:
+            _eq: true
   role: user

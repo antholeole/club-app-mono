@@ -1,14 +1,12 @@
 import 'package:badges/badges.dart';
 import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
-import 'package:fe/pages/main/main_helpers/drawers/left_drawer/groups/groups_service.dart';
-import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/database/db_manager.dart';
 import 'package:fe/stdlib/theme/flippable_icon.dart';
-import 'package:fe/stdlib/theme/loadable_tile_button.dart';
 import 'package:fe/stdlib/theme/tile.dart';
-import 'package:fe/stdlib/theme/tile_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'goup_settings.dart';
 
 class GroupTab extends StatefulWidget {
   final Group group;
@@ -22,10 +20,7 @@ class GroupTab extends StatefulWidget {
 
 class _GroupTabState extends State<GroupTab>
     with SingleTickerProviderStateMixin {
-  final GroupsService _groupsService = getIt<GroupsService>();
-
   bool _tabOpen = false;
-  bool _isLoadingLeaving = false;
 
   late AnimationController expandController;
   late Animation<double> animation;
@@ -102,7 +97,13 @@ class _GroupTabState extends State<GroupTab>
         if (_tabOpen)
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
-            child: Tile(child: _buildSettings()),
+            child: Tile(
+                child: SizeTransition(
+              axisAlignment: 1.0,
+              sizeFactor: animation,
+              child: GroupSettings(
+                  group: widget.group, didUpdateGroup: widget.didUpdateGroups),
+            )),
           ),
       ],
     );
@@ -121,71 +122,5 @@ class _GroupTabState extends State<GroupTab>
         });
       });
     }
-  }
-
-  Widget _buildSettings() {
-    return SizeTransition(
-        axisAlignment: 1.0,
-        sizeFactor: animation,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TileHeader(text: 'Members'),
-            FutureBuilder<Iterable<User>>(
-                future: _groupsService.fetchUsersInGroup(widget.group.id),
-                initialData:
-                    _groupsService.getCachedUsersInGroup(widget.group.id),
-                builder: (fbContext, snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.active:
-                    case ConnectionState.waiting:
-                    case ConnectionState.done:
-                      return Column(
-                          children: snapshot.data!.map((user) {
-                        return _buildUserTile(user);
-                      }).toList());
-                    case ConnectionState.none:
-                      return Text('sorry, error');
-                  }
-                }),
-            LoadableTileButton(
-              text: 'leave group',
-              onClick: () => _groupsService.leaveGroup(
-                  widget.group,
-                  context,
-                  () => setState(() {
-                        _isLoadingLeaving = true;
-                      }),
-                  widget.didUpdateGroups),
-              color: Colors.red,
-              loading: _isLoadingLeaving,
-            ),
-          ],
-        ));
-  }
-
-  Widget _buildUserTile(User user) {
-    final initals = user.name.split(' ').map((e) {
-      if (e.isNotEmpty) {
-        return e[0];
-      } else {
-        return '';
-      }
-    }).join('');
-
-    return Tile(
-      child: Row(children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: CircleAvatar(
-            foregroundImage: user.profilePicture != null
-                ? NetworkImage(user.profilePicture!)
-                : null,
-            child: user.profilePicture == null ? Text(initals) : null,
-          ),
-        ),
-        Text(user.name)
-      ]),
-    );
   }
 }

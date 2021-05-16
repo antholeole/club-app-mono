@@ -48,7 +48,9 @@ class GroupsDao extends BaseDao<Group, GroupsCompanion> with _$GroupsDaoMixin {
         GQuerySelfGroupsPreviewReq((b) => b..vars.self_id = _localUser.uuid),
         (GQuerySelfGroupsPreviewData data) => data.user_to_group
             .map((v) => GroupsCompanion(
-                id: Value(v.group.id), name: Value(v.group.group_name)))
+                isAdmin: Value(v.admin),
+                id: Value(v.group.id),
+                name: Value(v.group.group_name)))
             .toList());
 
     await _remoteSyncer.remoteSync<Group, GroupsCompanion>(

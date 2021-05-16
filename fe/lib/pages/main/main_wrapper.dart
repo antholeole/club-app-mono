@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
 import 'package:fe/pages/main/main_helpers/drawers/right_drawer/group_drawer.dart';
 import 'package:fe/stdlib/database/db_manager.dart';
-import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/local_user.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:fe/stdlib/shared_widgets/join_group_button.dart';
@@ -11,6 +10,7 @@ import 'package:fe/stdlib/theme/loader.dart';
 import 'package:fe/stdlib/theme/pill_button.dart';
 import 'package:fe/stdlib/toaster.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../service_locator.dart';
@@ -27,7 +27,6 @@ class MainWrapper extends StatefulWidget {
 
 class _MainWrapperState extends State<MainWrapper> {
   final MainService _mainService = getIt<MainService>();
-  final DatabaseManager _databaseManager = getIt<DatabaseManager>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final MainPageActionsCubit _mainPageActionsCubit = MainPageActionsCubit();
   late BuildContext _toastableContext;
@@ -204,8 +203,9 @@ class _MainWrapperState extends State<MainWrapper> {
     return titleElements;
   }
 
-  void _changeTab(int tab) {
-    if (tab == 0) {
+  void _changeTab(int tab, bool held) {
+    if (tab == 0 && held) {
+      HapticFeedback.mediumImpact();
       showModalBottomSheet(
           context: context, builder: (context) => ChannelsBottomSheet());
     } else {

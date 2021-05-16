@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 
 class BottomNav extends StatelessWidget {
   final List<IconData> _icons;
-  final void Function(int) _onClickTab;
+  final void Function(int, bool) _onClickTab;
 
   const BottomNav(
-      {required List<IconData> icons, required void Function(int) onClickTab})
+      {required List<IconData> icons,
+      required void Function(int, bool) onClickTab})
       : _onClickTab = onClickTab,
         _icons = icons;
 
@@ -47,7 +48,8 @@ class BottomNav extends StatelessWidget {
   Widget _buildTab(IconData icon, int index, BuildContext context,
       {bool active = false}) {
     return GestureDetector(
-      onTap: () => _onClickTab(index),
+      onTap: () => _onClickTab(index, false),
+      onLongPress: () => _onClickTab(index, true),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

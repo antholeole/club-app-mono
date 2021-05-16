@@ -7,6 +7,7 @@ query QuerySelfGroupsPreview($self_id: uuid!) {
    		group {
         id,
         group_name
-      }
+      },
+    admin
     }
 }

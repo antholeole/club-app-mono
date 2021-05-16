@@ -1,0 +1,9 @@
+query QueryGroupJoinToken($group_id: uuid!) {
+  group_join_tokens(where: {
+    group_id: {
+      _eq: $group_id
+    }
+  }) {
+    join_token
+  }
+}

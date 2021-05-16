@@ -1,3 +1,4 @@
+- "!include public_group_join_tokens.yaml"
 - "!include public_group_threads.yaml"
 - "!include public_groups.yaml"
 - "!include public_messages.yaml"

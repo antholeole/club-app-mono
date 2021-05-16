@@ -2,7 +2,7 @@ to run in dev mode: `flutter run` (will ONLY work if `club-app-be` running local
 
 to run in prod mode (connect to prod db and be) on mobile (Phyiscal Device, Simulator fails): `flutter run -t lib/prod_main.dart --release`
 
-to schema pull: `get-graphql-schema --header x-hasura-admin-secret="ADMIN SECRET" https://club-app-db.herokuapp.com/v1/graphql > ./lib/schema.graphql`
+to schema pull: `get-graphql-schema --header x-hasura-admin-secret="ADMIN SECRET" https://club-app-db.herokuapp.com/v1/graphql > ./lib/gql/schema.graphql`
 
 to build generated files (GQL, serialized data): `flutter pub run build_runner build --delete-conflicting-outputs` add `--watch` to make it a background process.
 
