@@ -1,6 +1,7 @@
 import 'package:fe/gql/update_self_name.req.gql.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/local_user.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,7 +20,8 @@ class ProfilePageService {
     if (!regex.hasMatch(newName)) {
       throw Failure(
           message:
-              'Please make sure new name does not contain any special characters and is 3 or more letters.');
+              'Please make sure new name does not contain any special characters and is 3 or more letters.',
+          status: FailureStatus.RegexFail);
     }
 
     final query = GUpdateSelfNameReq((b) => b
@@ -28,12 +30,6 @@ class ProfilePageService {
 
     final resp = await _gqlClient.request(query).first;
 
-    if (resp.hasErrors) {
-      resp.graphqlErrors?.forEach((e) => debugPrint(e.message));
-      throw Failure(
-          message: 'Sorry, there was an error: couldn\'t update name.');
-    } else {
-      _user.name = resp.data!.update_users_by_pk!.name;
-    }
+    _user.name = resp.data!.update_users_by_pk!.name;
   }
 }

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:fe/constants.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
+import 'package:ferry/ferry.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -31,8 +32,7 @@ class LocalUser {
     email = user.email;
   }
 
-  //compliance consturctor for getIt. will never signal ready;
-  //will only signal ready in reregister
+  //compliance consturctor for getIt.
   LocalUser.empty() : name = DEFAULT_USERNAME;
 
   factory LocalUser.fromJson(String jsonString) =>

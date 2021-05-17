@@ -1,22 +1,34 @@
 import 'package:fe/stdlib/clients/http/http_client.dart';
 import 'package:fe/stdlib/clients/http/unauth_http_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/local_data/token_manager.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:fresh_graphql/fresh_graphql.dart';
 import 'package:gql_exec/gql_exec.dart';
 import 'package:gql_http_link/gql_http_link.dart';
 import 'package:gql_link/gql_link.dart';
 import '../../config.dart';
 import '../../constants.dart';
+import '../../constants.dart';
+import '../../pages/main/cubit/main_page_actions_cubit.dart';
 import '../../service_locator.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../toaster.dart';
 
 //todo: typedef GqlClient = Client;
 Future<Client> buildGqlClient() async {
   final tokenManager = getIt<TokenManager>();
 
-  final tokens = await tokenManager.read();
+  //HACK: we need to have auth mode on, but it
+  //doesn't activate until it has a token. If no token exists,
+  //try to use a "dummy" one so that it gets rejected with JWS error
+  //and refresh gets triggered.
+  final tokens = await tokenManager.read() ??
+      OAuth2Token(accessToken: 'a.a.a', expiresIn: 0);
 
   final refreshLink = FreshLink.oAuth2(
     tokenHeader: (token) => {
@@ -26,7 +38,7 @@ Future<Client> buildGqlClient() async {
     shouldRefresh: (Response resp) {
       return (resp.errors?.firstWhere((element) =>
               element.message.contains(JWT_EXPIRED) ||
-              element.message.contains(MISSING_HEADER)) !=
+              element.message.contains(JWS_ERROR)) !=
           null);
     },
     tokenStorage: InMemoryTokenStorage(),
@@ -43,14 +55,10 @@ Future<Client> buildGqlClient() async {
   return Client(link: link);
 }
 
-Stream<Response> handleException(Request req,
-    Stream<Response> Function(Request) next, Response response) async* {
-  throw await basicGqlErrorHandler(errors: response.errors);
-}
-
 Future<Failure> basicGqlErrorHandler({List<GraphQLError>? errors}) async {
   if (!(await HttpClient.isConnected())) {
-    return Failure(message: "Couldn't connect to internet.");
+    return Failure(
+        message: "Couldn't connect to internet.", status: FailureStatus.NoConn);
   }
 
   try {
@@ -59,7 +67,8 @@ Future<Failure> basicGqlErrorHandler({List<GraphQLError>? errors}) async {
     if (e.socketException) {
       return Failure(
           message:
-              "Sorry, looks like our servers are down - we're working on it!");
+              "Sorry, looks like our servers are down - we're working on it!",
+          status: FailureStatus.ServersDown);
     }
   }
 
@@ -69,15 +78,12 @@ Future<Failure> basicGqlErrorHandler({List<GraphQLError>? errors}) async {
       errorBuff.write(error.message);
       debugPrint('got GQL error: ${error.message}');
     });
-    return Failure(message: errorBuff.toString());
-  } else if (getIt<Config>().debug) {
-    debugPrint('entered GQL error handler with errors = null');
-    try {
-      throw Error();
-    } on Error catch (e) {
-      print(e.stackTrace);
-    }
+    return Failure(
+        message: errorBuff.toString(), status: FailureStatus.GQLMisc);
+  } else {
+    //HACK: https://github.com/felangel/fresh/issues/48
+    return Failure(
+        message: 'Access token refresh failed.',
+        status: FailureStatus.GQLRefresh);
   }
-
-  return Failure(message: 'Unknown error.');
 }

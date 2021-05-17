@@ -3,7 +3,6 @@ import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:fe/stdlib/theme/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart' as dot_env;
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 void main() async {
@@ -12,9 +11,7 @@ void main() async {
   runApp(MyApp());
 }
 
-Future<void> startup() async {
-  await dot_env.load();
-}
+Future<void> startup() async {}
 
 class MyApp extends StatelessWidget {
   final _appRouter = AppRouter();

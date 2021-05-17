@@ -1,5 +1,6 @@
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity/connectivity.dart';
@@ -19,26 +20,35 @@ abstract class HttpClient {
       HttpException e, Map<int, String> extraErrors) async {
     if (e.socketException) {
       return Failure(
+          status: FailureStatus.ServersDown,
           message: "Couldn't connect to our servers. Please try again soon.");
     }
 
     if (e.message == '') {
       if (!await isConnected()) {
-        return Failure(message: "Couldn't connect to internet.");
+        return Failure(
+          message: "Couldn't connect to internet.",
+          status: FailureStatus.NoConn,
+        );
       }
     }
 
     if (e.statusCode == 500) {
       debugPrint('recieved 500: ${e.message}');
       return Failure(
+          status: FailureStatus.InternalServerError,
           message:
               'Sorry! We had an internal server error performing that action.');
     }
-    var f = Failure(message: 'Unknown Error', resolved: false);
+    var f = Failure(
+        message: 'Unknown Error',
+        status: FailureStatus.Unknown,
+        resolved: false);
 
     extraErrors.forEach((code, error) {
       if (code == e.statusCode) {
-        f = Failure(message: error, resolved: true);
+        f = Failure(
+            message: error, resolved: true, status: FailureStatus.HttpMisc);
       }
     });
 

@@ -8,6 +8,7 @@ Note: Can run each individually. No need to run all if not required
 - Docker (docker-compose)
 - concurrently (`npm i -g concurrently`)
 
+to download deps, run `make i`.  
 to run, `make run`. first run will take a minute so grab a drink :)
 This will boot up:
 - Cloudflare worker

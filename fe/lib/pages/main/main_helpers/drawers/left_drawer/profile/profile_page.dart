@@ -3,6 +3,7 @@ import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
 import 'package:fe/pages/main/main_helpers/drawers/left_drawer/profile/profile_page_service.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/errors/handle_failure.dart';
 import 'package:fe/stdlib/helpers/DEBUG_print.dart';
 import 'package:fe/stdlib/local_data/token_manager.dart';
 import 'package:fe/stdlib/local_user.dart';
@@ -89,7 +90,7 @@ class _ProfilePageState extends State<ProfilePage> {
         await _profilePageService.changeName(textEditingController.text);
         Toaster.of(context).successToast('Name changed successfully!');
       } on Failure catch (f) {
-        Toaster.of(context).errorToast("Couldn't change name: ${f.message}");
+        handleFailure(f, context, withPrefix: "Couldn't change name:");
       } finally {
         Navigator.of(context).pop();
 
