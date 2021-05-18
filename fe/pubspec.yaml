@@ -23,9 +23,6 @@ dependencies:
   flutter_secure_storage: ^4.0.0
   path_provider: ^2.0.1
   json_annotation: ^4.0.0
-  moor: ^4.2.1
-  sqlite3_flutter_libs: ^0.4.1 #for moor
-  path: ^1.8.0 #for moor
   
   #ui
   cupertino_icons: ^1.0.2
@@ -41,7 +38,9 @@ dependencies:
   gql_error_link: ^0.2.0-nullsafety.1
   gql_transform_link: ^0.2.0-nullsafety.1 
   gql_http_link: ^0.4.0-nullsafety.1
-
+  hive: ^2.0.4
+  hive_flutter: ^1.0.0
+  ferry_hive_store: 0.4.1-0.1.nullsafety.0
   fresh_graphql: ^0.5.1
 
   #http
@@ -61,7 +60,6 @@ dev_dependencies:
   json_serializable: ^4.1.0
   auto_route_generator: ^1.0.2
   ferry_generator: ^0.4.1-0.1.nullsafety.0
-  moor_generator: ^4.2.2
 
   #cicd
   dependency_validator: ^3.0.0

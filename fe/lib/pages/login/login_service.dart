@@ -1,5 +1,5 @@
-import 'package:fe/data_classes/json/backend_access_tokens.dart';
-import 'package:fe/data_classes/json/provider_access_token.dart';
+import 'package:fe/data/json/backend_access_tokens.dart';
+import 'package:fe/data/json/provider_access_token.dart';
 import 'package:fe/stdlib/clients/http/unauth_http_client.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/local_data/token_manager.dart';

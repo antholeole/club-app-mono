@@ -1,0 +1,10 @@
+query QueryGroupSingle($groupId: uuid!) {
+	groups(where: {
+    id: {
+      _eq: $groupId
+    }
+  }) {
+    group_name,
+    id
+  }
+}

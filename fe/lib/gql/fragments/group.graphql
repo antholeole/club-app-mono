@@ -1,0 +1,15 @@
+fragment Group on groups {
+  id
+  group_name
+}
+
+fragment GroupWithUsers on groups {
+  id
+  group_name
+  user_to_groups {
+    user {
+      name
+      profile_picture
+    }
+  }
+}

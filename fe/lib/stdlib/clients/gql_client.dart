@@ -1,3 +1,4 @@
+import 'package:fe/gql/fragments/type_policies.dart';
 import 'package:fe/stdlib/clients/http/http_client.dart';
 import 'package:fe/stdlib/clients/http/unauth_http_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
@@ -12,15 +13,20 @@ import 'package:gql_http_link/gql_http_link.dart';
 import 'package:gql_link/gql_link.dart';
 import '../../config.dart';
 import '../../constants.dart';
-import '../../constants.dart';
-import '../../constants.dart';
 import '../../service_locator.dart';
 import '../local_data/token_manager.dart';
-import '../local_data/token_manager.dart';
+import 'package:ferry_hive_store/ferry_hive_store.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 //todo: typedef GqlClient = Client;
 Future<Client> buildGqlClient() async {
   final tokenManager = getIt<TokenManager>();
+
+  await Hive.initFlutter();
+  final box = await Hive.openBox('graphql');
+  final store = HiveStore(box);
+  final cache = Cache(store: store, typePolicies: typePolicies);
 
   //HACK: we need to have auth mode on, but it
   //doesn't activate until it has a token. If no token exists,
@@ -64,7 +70,7 @@ Future<Client> buildGqlClient() async {
     HttpLink(getIt<Config>().gqlUrl),
   ]);
 
-  return Client(link: link);
+  return Client(link: link, cache: cache);
 }
 
 Future<Failure> basicGqlErrorHandler({List<GraphQLError>? errors}) async {

@@ -1,18 +1,21 @@
-import 'package:fe/stdlib/database/db_manager.dart';
+import 'package:fe/gql/fragments/group.data.gql.dart';
+import 'package:fe/gql/fragments/group.req.gql.dart';
+import 'package:fe/gql/remote/query_self_group_preview.data.gql.dart';
+import 'package:fe/gql/remote/query_self_group_preview.req.gql.dart';
 import 'package:fe/stdlib/errors/failure.dart';
-import 'package:fe/stdlib/helpers/tuple.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
 import 'package:fe/stdlib/local_user.dart';
-import 'package:fe/stdlib/toaster.dart';
-import 'package:flutter/material.dart';
+import 'package:ferry/ferry.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../service_locator.dart';
+import '../../stdlib/clients/gql_client.dart';
+import '../../stdlib/helpers/uuid_type.dart';
 
 enum MainPageState { Loading, NoGroups, WithGroups, Error }
 
 class MainPageInitalLoadCarrier {
-  final Group? group;
+  final GQuerySelfGroupsPreviewData_user_to_group? group;
   final MainPageState state;
   final Failure? failure;
 
@@ -26,9 +29,9 @@ class MainPageInitalLoadCarrier {
 
 class MainService {
   final LocalUser _user = getIt<LocalUser>();
-  final DatabaseManager _databaseManager = getIt<DatabaseManager>();
   final LocalFileStore _localFileStore = getIt<LocalFileStore>();
   final FlutterSecureStorage _secureStorage = getIt<FlutterSecureStorage>();
+  final Client _client = getIt<Client>();
 
   MainService();
 
@@ -38,22 +41,30 @@ class MainService {
   }
 
   Future<MainPageInitalLoadCarrier> initalLoad() async {
-    List<Group> groups;
-    try {
-      groups = await _databaseManager.groupsDao.findAll(remote: true);
-    } on Failure catch (e) {
-      return MainPageInitalLoadCarrier(
-        state: MainPageState.Error,
-        failure: e,
-      );
+    final req = GQuerySelfGroupsPreviewReq((q) => q
+      ..fetchPolicy = FetchPolicy.NetworkOnly
+      ..vars.self_id = _user.uuid);
+
+    final resp = await _client.request(req).first;
+
+    if (resp.hasErrors) {
+      final f = await basicGqlErrorHandler(errors: resp.graphqlErrors);
+      return MainPageInitalLoadCarrier(state: MainPageState.Error, failure: f);
     }
-    if (groups.isEmpty) {
+
+    if (resp.data!.user_to_group.isEmpty) {
       return MainPageInitalLoadCarrier(
         state: MainPageState.NoGroups,
       );
     } else {
       return MainPageInitalLoadCarrier(
-          state: MainPageState.WithGroups, group: groups[0]);
+          state: MainPageState.WithGroups, group: resp.data!.user_to_group[0]);
     }
+  }
+
+  GGroup? getGroup(UuidType id) {
+    final groupReq = GGroupReq((b) => b..idFields = {'id': id});
+    final reviewFragmentData = _client.cache.readFragment(groupReq);
+    return reviewFragmentData;
   }
 }

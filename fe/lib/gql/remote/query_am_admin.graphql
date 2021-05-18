@@ -1,0 +1,14 @@
+query QueryAmAdmin($selfId: uuid!, $groupId: uuid!) {
+  user_to_group(where: {
+    _and: {
+      user_id: {
+        _eq: $selfId
+      },
+      group_id: {
+        _eq: $groupId
+      }
+    }
+  }) {
+    admin
+  }
+}

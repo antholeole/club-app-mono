@@ -1,8 +1,15 @@
-import 'package:fe/gql/query_group_join_token.req.gql.dart';
-import 'package:fe/gql/remove_self_from_group.req.gql.dart';
-import 'package:fe/gql/upsert_group_join_token.req.gql.dart';
+import 'package:fe/gql/fragments/group.req.gql.dart';
+import 'package:fe/gql/fragments/join_token.data.gql.dart';
+import 'package:fe/gql/fragments/join_token.req.gql.dart';
+import 'package:fe/gql/remote/query_am_admin.req.gql.dart';
+import 'package:fe/gql/remote/query_group_join_token.req.gql.dart';
+import 'package:fe/gql/remote/query_self_group_preview.data.gql.dart';
+import 'package:fe/gql/remote/query_self_group_preview.req.gql.dart';
+import 'package:fe/gql/remote/query_users_in_group.data.gql.dart';
+import 'package:fe/gql/remote/query_users_in_group.req.gql.dart';
+import 'package:fe/gql/remote/remove_self_from_group.req.gql.dart';
+import 'package:fe/gql/remote/upsert_group_join_token.req.gql.dart';
 import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
-import 'package:fe/stdlib/database/db_manager.dart';
 import 'package:fe/stdlib/helpers/random_string.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/local_user.dart';
@@ -12,89 +19,83 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../service_locator.dart';
+import '../../../../../../stdlib/clients/gql_client.dart';
+import '../../../../../../stdlib/helpers/uuid_type.dart';
 
 class GroupsService {
-  final _databaseManager = getIt<DatabaseManager>();
   final _gqlClient = getIt<Client>();
   final _localUser = getIt<LocalUser>();
-  final _cachedGroups = <Group>[];
 
-  final Map<UuidType, Set<User>> _cachedUsers = {};
+  GQueryUsersInGroupData getCachedUsersInGroup(UuidType groupId) {
+    final usersInGroupReq = GQueryUsersInGroupReq((b) => b
+      ..fetchPolicy = FetchPolicy.NetworkOnly
+      ..vars.groupId = groupId);
 
-  List<Group> get cachedGroups => _cachedGroups;
+    final reviewFragmentData = _gqlClient.cache.readQuery(usersInGroupReq);
 
-  bool _cached = false;
-
-  Iterable<User> getCachedUsersInGroup(UuidType groupId) {
-    return _cachedUsers[groupId] ?? <User>{};
+    return reviewFragmentData!;
   }
 
-  Future<List<Group>> fetchGroups({required bool remote}) async {
-    final allGroups = await _databaseManager.groupsDao.findAll(remote: remote);
-    _cachedGroups.clear();
-    _cachedGroups.addAll(allGroups);
-    return allGroups;
-  }
+  Future<GQuerySelfGroupsPreviewData> fetchGroups(
+      {required bool remote}) async {
+    final groupsReq = GQuerySelfGroupsPreviewReq((b) => b
+      ..fetchPolicy = remote ? FetchPolicy.NetworkOnly : FetchPolicy.CacheOnly
+      ..vars.self_id = _localUser.uuid);
 
-  Future<Set<User>> fetchUsersInGroup(UuidType groupId) async {
-    final usersInGroup =
-        await _databaseManager.usersDao.findAllInGroup(groupId, remote: true);
+    final resp = await _gqlClient.request(groupsReq).first;
 
-    _cachedUsers[groupId] = usersInGroup.toSet();
-
-    return _cachedUsers[groupId]!;
-  }
-
-  Future<void> cacheIfNecessary() async {
-    if (_cached) {
-      return;
+    if (resp.hasErrors) {
+      throw basicGqlErrorHandler(errors: resp.graphqlErrors);
     }
 
-    final knownGroups = await _databaseManager.groupsDao.findAll();
-    _cachedGroups.addAll(knownGroups);
-    for (final knownGroup in knownGroups) {
-      final usersInGroup =
-          await _databaseManager.usersDao.findAllInGroup(knownGroup.id);
-      for (final user in usersInGroup) {
-        if (_cachedUsers[knownGroup.id] != null) {
-          _cachedUsers[knownGroup.id]!.add(user);
-        } else {
-          _cachedUsers[knownGroup.id] = {user};
-        }
-      }
-    }
-    _cached = true;
+    return resp.data!;
   }
 
-  void leaveGroup(Group group, BuildContext context, Function() willLeaveGroup,
-      void Function() didLeaveGroup) {
+  Future<GQueryUsersInGroupData> fetchUsersInGroup(UuidType groupId) async {
+    final usersInGroupReq = GQueryUsersInGroupReq((b) => b
+      ..fetchPolicy = FetchPolicy.NetworkOnly
+      ..vars.groupId = groupId);
+
+    final resp = await _gqlClient.request(usersInGroupReq).first;
+
+    if (resp.hasErrors) {
+      throw basicGqlErrorHandler(errors: resp.graphqlErrors);
+    }
+
+    return resp.data!;
+  }
+
+  void leaveGroup(UuidType groupId, BuildContext context,
+      Function() willLeaveGroup, void Function() didLeaveGroup) {
+    final groupReq = GGroupReq((b) => b..idFields = {'id': groupId});
+    final groupData = _gqlClient.cache.readFragment(groupReq);
+
     Future<void> leftGroup() async {
       willLeaveGroup();
 
       final query = GRemoveSelfFromGroupReq((q) => q
-        ..vars.groupId = group.id
+        ..vars.groupId = groupId
         ..vars.userId = _localUser.uuid);
 
       await _gqlClient.request(query).first;
-      await _databaseManager.groupsDao.removeOne(group.id);
 
-      //TODO: make this more specific; drop only known group, not entire cache
-      _gqlClient.cache.clear();
-      Toaster.of(context).successToast('Left group ${group.name}');
+      _gqlClient.cache.evict(_gqlClient.cache.identify(groupData)!);
+      _gqlClient.cache.gc();
+
+      Toaster.of(context).successToast('Left group ${groupData!.group_name}');
 
       //if the current group we are in in is the selected one, we should reset
       //selected group
-      if (context.read<MainPageActionsCubit>().state.selectedGroup?.id !=
-              null &&
-          context.read<MainPageActionsCubit>().state.selectedGroup!.id ==
-              group.id) {
+      if (context.read<MainPageActionsCubit>().state.selectedGroupId != null &&
+          context.read<MainPageActionsCubit>().state.selectedGroupId ==
+              groupId) {
         context.read<MainPageActionsCubit>().resetPage();
       }
       didLeaveGroup();
     }
 
     Toaster.of(context).warningToast(
-      "Are you sure you'd like to leave ${group.name}?",
+      "Are you sure you'd like to leave ${groupData!.group_name}?",
       action: leftGroup,
       actionText: 'Leave Group',
     );
@@ -112,21 +113,44 @@ class GroupsService {
     }
   }
 
-  Future<String?> updateGroupJoinToken(Group group,
+  Future<String?> updateGroupJoinToken(UuidType groupId,
       {bool delete = false}) async {
     final token = delete ? null : generateRandomString(10);
 
     final query = GUpsertGroupJoinTokenReq((q) => q
-      ..vars.group_id = group.id
+      ..vars.group_id = groupId
       ..vars.new_token = token);
 
     await _gqlClient.request(query).first;
 
-    _gqlClient.cache.clear();
+    final joinTokenReq = GJoinTokenReq(
+      (b) => b..idFields = {'group_id': groupId},
+    );
 
-    await _databaseManager.groupsDao
-        .updateOne(group.copyWith(joinToken: token).toCompanion(true));
+    final joinTokenData = GJoinTokenData(
+      (b) => b..join_token = token,
+    );
+
+    _gqlClient.cache.writeFragment(joinTokenReq, joinTokenData);
 
     return token;
+  }
+
+  Future<bool> isAdmin(UuidType groupId) async {
+    final query = GQueryAmAdminReq((b) => b
+      ..vars.groupId = groupId
+      ..vars.selfId = _localUser.uuid);
+
+    final resp = await _gqlClient.request(query).first;
+
+    if (resp.hasErrors) {
+      throw basicGqlErrorHandler(errors: resp.graphqlErrors);
+    }
+
+    return resp.data!.user_to_group.first.admin;
+  }
+
+  String getCachedJoinToken(UuidType groupId) {
+    return 'NOT REAL';
   }
 }

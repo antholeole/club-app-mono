@@ -7,8 +7,6 @@ import 'package:fe/pages/splash/splash_service.dart';
 import 'package:fe/stdlib/clients/gql_client.dart';
 import 'package:fe/stdlib/clients/http/auth_http_client.dart';
 import 'package:fe/stdlib/clients/http/unauth_http_client.dart';
-import 'package:fe/stdlib/database/db_manager.dart';
-import 'package:fe/stdlib/database/remote_sync.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
 import 'package:fe/stdlib/local_data/token_manager.dart';
 import 'package:fe/stdlib/local_user.dart';
@@ -38,13 +36,10 @@ void setupLocator({required bool isProd}) {
   getIt.registerSingleton<TokenManager>(TokenManager());
   getIt.registerSingletonAsync<Client>(() => buildGqlClient());
 
-  getIt.registerSingleton<DatabaseManager>(DatabaseManager());
-  getIt.registerSingletonWithDependencies<RemoteSyncer>(() => RemoteSyncer(),
-      dependsOn: [Client]);
-
   //logged in services
   getIt.registerSingleton(AuthHttpClient());
-  getIt.registerSingleton(MainService());
+  getIt.registerSingletonWithDependencies(() => MainService(),
+      dependsOn: [Client]);
   getIt.registerSingletonWithDependencies(() => ProfilePageService(),
       dependsOn: [Client]);
   getIt.registerSingletonWithDependencies(() => GroupsService(),

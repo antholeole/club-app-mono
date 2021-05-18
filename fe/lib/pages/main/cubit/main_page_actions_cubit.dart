@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:fe/stdlib/database/db_manager.dart';
+
+import '../../../stdlib/helpers/uuid_type.dart';
 
 part 'main_page_actions_state.dart';
 
@@ -8,7 +9,8 @@ class MainPageActionsCubit extends Cubit<MainPageActionsState> {
 
   void logout({bool withError = false}) => emit(Logout(withError: withError));
 
-  void selectGroup(Group group) => emit(SelectGroup(selectedGroup: group));
+  void selectGroup(UuidType groupId) =>
+      emit(SelectGroup(selectedGroupId: groupId));
 
   void resetPage() => emit(ResetPage());
 }

@@ -1,41 +1,43 @@
+import 'package:fe/gql/fragments/group.data.gql.dart';
+import 'package:fe/gql/remote/query_self_group_preview.data.gql.dart';
 import 'package:fe/pages/main/main_helpers/drawers/left_drawer/groups/widgets/group_tab.dart';
 import 'package:fe/service_locator.dart';
-import 'package:fe/stdlib/database/db_manager.dart';
+import 'package:fe/stdlib/errors/handle_failure.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../../../stdlib/errors/failure.dart';
 import 'groups_service.dart';
 
 class GroupsPage extends StatefulWidget {
-  final GroupsService _groupsService = getIt<GroupsService>();
-
-  GroupsPage() {
-    _groupsService.cacheIfNecessary();
-  }
-
   @override
   _GroupsPageState createState() => _GroupsPageState();
 }
 
 class _GroupsPageState extends State<GroupsPage> {
-  late Future<List<Group>> groups;
+  final GroupsService _groupsService = getIt<GroupsService>();
+  late Future<GQuerySelfGroupsPreviewData> groups;
 
   @override
   void initState() {
-    groups = widget._groupsService.fetchGroups(remote: true);
+    groups = _groupsService.fetchGroups(remote: true);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox.expand(
-      child: FutureBuilder<List<Group>>(
+      child: FutureBuilder<GQuerySelfGroupsPreviewData>(
         future: groups,
         builder: (fbContext, snapshot) {
+          if (snapshot.hasError && snapshot.error is Failure) {
+            handleFailure(snapshot.error as Failure, fbContext);
+          }
+
           switch (snapshot.connectionState) {
             case ConnectionState.active:
             case ConnectionState.waiting:
             case ConnectionState.done:
-              return _buildGroups(snapshot.data ?? [], context);
+              return _buildGroups(snapshot.data!, context);
             case ConnectionState.none:
               return _buildError();
           }
@@ -48,7 +50,8 @@ class _GroupsPageState extends State<GroupsPage> {
     return Text("sorry, couldn't load your groups.");
   }
 
-  Widget _buildGroups(List<Group> groups, BuildContext context) {
+  Widget _buildGroups(
+      GQuerySelfGroupsPreviewData groups, BuildContext context) {
     final List<Widget> widgets = [
       Padding(
         padding: const EdgeInsets.all(8.0),
@@ -61,10 +64,12 @@ class _GroupsPageState extends State<GroupsPage> {
       Expanded(
         child: ListView(
           shrinkWrap: true,
-          children: groups
+          children: groups.user_to_group
               .map(
                 (v) => GroupTab(
-                  group: v,
+                  group: GGroupData().rebuild((b) => b
+                    ..group_name = v.group.group_name
+                    ..id = v.group.id),
                   didUpdateGroups: _didUpdateGroups,
                 ),
               )
@@ -73,7 +78,7 @@ class _GroupsPageState extends State<GroupsPage> {
       )
     ];
 
-    if (groups.isEmpty) {
+    if (groups.user_to_group.isEmpty) {
       widgets.add(Expanded(
           child: Center(
               child: Padding(
@@ -94,7 +99,7 @@ class _GroupsPageState extends State<GroupsPage> {
 
   void _didUpdateGroups() {
     setState(() {
-      groups = widget._groupsService.fetchGroups(remote: false);
+      groups = _groupsService.fetchGroups(remote: false);
     });
   }
 }

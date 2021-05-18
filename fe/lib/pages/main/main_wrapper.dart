@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
 import 'package:fe/pages/main/main_helpers/drawers/right_drawer/group_drawer.dart';
-import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/errors/handle_failure.dart';
 import 'package:fe/stdlib/local_user.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
@@ -55,7 +54,6 @@ class _MainWrapperState extends State<MainWrapper> {
                   _logout(state.withError);
                 } else if (state is SelectGroup) {
                   //rebuild with new group
-                  debugPrint('switched group to ${state.selectedGroup?.name}');
                   setState(() {});
                 } else if (state is ResetPage) {
                   _initalLoad();
@@ -75,7 +73,7 @@ class _MainWrapperState extends State<MainWrapper> {
                     icon: Icon(Icons.menu),
                     onPressed: _scaffoldKey.currentState?.openDrawer,
                   ),
-                  actions: _mainPageActionsCubit.state.selectedGroup != null
+                  actions: _mainPageActionsCubit.state.selectedGroupId != null
                       ? [
                           IconButton(
                             icon: Icon(Icons.group),
@@ -92,7 +90,7 @@ class _MainWrapperState extends State<MainWrapper> {
                     if (bContext
                             .read<MainPageActionsCubit>()
                             .state
-                            .selectedGroup !=
+                            .selectedGroupId !=
                         null) {
                       return AutoTabsRouter(
                         routes: [
@@ -168,17 +166,19 @@ class _MainWrapperState extends State<MainWrapper> {
     }
 
     if (initalLoadResult.group != null) {
-      _mainPageActionsCubit.selectGroup(initalLoadResult.group!);
+      _mainPageActionsCubit.selectGroup(initalLoadResult.group!.group.id);
     }
   }
 
   List<Widget> _buildTitle() {
     final titleElements = <Widget>[];
 
-    if (_mainPageActionsCubit.state.selectedGroup != null) {
+    if (_mainPageActionsCubit.state.selectedGroupId != null) {
       {
         titleElements.add(Text(
-          _mainPageActionsCubit.state.selectedGroup!.name,
+          _mainService
+              .getGroup(_mainPageActionsCubit.state.selectedGroupId!)
+              .group_name,
           style: Theme.of(context).textTheme.caption,
         ));
       }

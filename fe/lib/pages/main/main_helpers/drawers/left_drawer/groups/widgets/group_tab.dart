@@ -1,6 +1,6 @@
 import 'package:badges/badges.dart';
+import 'package:fe/gql/fragments/group.data.gql.dart';
 import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
-import 'package:fe/stdlib/database/db_manager.dart';
 import 'package:fe/stdlib/theme/flippable_icon.dart';
 import 'package:fe/stdlib/theme/tile.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'goup_settings.dart';
 
 class GroupTab extends StatefulWidget {
-  final Group group;
+  final GGroupData group;
   final Function() didUpdateGroups;
 
   GroupTab({required this.group, required this.didUpdateGroups});
@@ -46,7 +46,7 @@ class _GroupTabState extends State<GroupTab>
       children: [
         TextButton(
           onPressed: () =>
-              context.read<MainPageActionsCubit>().selectGroup(widget.group),
+              context.read<MainPageActionsCubit>().selectGroup(widget.group.id),
           style: TextButton.styleFrom(backgroundColor: Colors.white),
           child: Row(
             children: [
@@ -58,8 +58,7 @@ class _GroupTabState extends State<GroupTab>
                   color: context
                               .read<MainPageActionsCubit>()
                               .state
-                              .selectedGroup
-                              ?.id ==
+                              .selectedGroupId ==
                           widget.group.id
                       ? Colors.redAccent.shade100
                       : Colors.transparent,
@@ -85,7 +84,7 @@ class _GroupTabState extends State<GroupTab>
                   child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        widget.group.name,
+                        widget.group.group_name,
                         style: Theme.of(context).textTheme.bodyText2,
                       ))),
               FlippableIcon(
@@ -102,7 +101,8 @@ class _GroupTabState extends State<GroupTab>
               axisAlignment: 1.0,
               sizeFactor: animation,
               child: GroupSettings(
-                  group: widget.group, didUpdateGroup: widget.didUpdateGroups),
+                  groupId: widget.group.id,
+                  didUpdateGroup: widget.didUpdateGroups),
             )),
           ),
       ],

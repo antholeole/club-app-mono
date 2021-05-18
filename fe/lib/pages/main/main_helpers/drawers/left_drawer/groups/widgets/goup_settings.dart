@@ -1,4 +1,4 @@
-import 'package:fe/stdlib/database/db_manager.dart';
+import 'package:fe/gql/remote/query_users_in_group.data.gql.dart';
 import 'package:fe/stdlib/theme/loadable_tile_button.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:fe/stdlib/theme/tile.dart';
@@ -8,15 +8,16 @@ import 'package:flutter/material.dart';
 
 import '../../../../../../../config.dart';
 import '../../../../../../../service_locator.dart';
+import '../../../../../../../stdlib/helpers/uuid_type.dart';
 import '../groups_service.dart';
 
 class GroupSettings extends StatefulWidget {
-  final Group _group;
+  final UuidType _groupId;
   final void Function() _didUpdateGroup;
 
   const GroupSettings(
-      {required Group group, required void Function() didUpdateGroup})
-      : _group = group,
+      {required UuidType groupId, required void Function() didUpdateGroup})
+      : _groupId = groupId,
         _didUpdateGroup = didUpdateGroup;
 
   @override
@@ -29,12 +30,16 @@ class _GroupSettingsState extends State<GroupSettings> {
   late Future<String?> _joinToken;
 
   bool _isLoadingLeaving = false;
+  bool _amAdmin = false;
 
   @override
   void initState() {
-    if (widget._group.isAdmin) {
-      _joinToken = _groupsService.fetchGroupJoinToken(widget._group.id);
-    }
+    _groupsService.isAdmin(widget._groupId).then((value) {
+      setState(() {
+        _amAdmin = true;
+      });
+      _joinToken = _groupsService.fetchGroupJoinToken(widget._groupId);
+    });
     super.initState();
   }
 
@@ -44,11 +49,11 @@ class _GroupSettingsState extends State<GroupSettings> {
       mainAxisSize: MainAxisSize.min,
       children: [
         ..._buildUsers(),
-        if (widget._group.isAdmin) ..._buildJoinToken(),
+        if (_amAdmin) ..._buildJoinToken(),
         LoadableTileButton(
           text: 'leave group',
           onClick: () => _groupsService.leaveGroup(
-              widget._group,
+              widget._groupId,
               context,
               () => setState(() {
                     _isLoadingLeaving = true;
@@ -68,16 +73,16 @@ class _GroupSettingsState extends State<GroupSettings> {
   List<Widget> _buildUsers() {
     return [
       TileHeader(text: 'Members'),
-      FutureBuilder<Iterable<User>>(
-          future: _groupsService.fetchUsersInGroup(widget._group.id),
-          initialData: _groupsService.getCachedUsersInGroup(widget._group.id),
+      FutureBuilder<GQueryUsersInGroupData>(
+          future: _groupsService.fetchUsersInGroup(widget._groupId),
+          initialData: _groupsService.getCachedUsersInGroup(widget._groupId),
           builder: (fbContext, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.active:
               case ConnectionState.waiting:
               case ConnectionState.done:
                 return Column(
-                    children: snapshot.data!.map((user) {
+                    children: snapshot.data!.user_to_group.map((user) {
                   return _buildUserTile(user);
                 }).toList());
               case ConnectionState.none:
@@ -87,8 +92,8 @@ class _GroupSettingsState extends State<GroupSettings> {
     ];
   }
 
-  Widget _buildUserTile(User user) {
-    final initals = user.name.split(' ').map((e) {
+  Widget _buildUserTile(GQueryUsersInGroupData_user_to_group user) {
+    final initals = user.user.name.split(' ').map((e) {
       if (e.isNotEmpty) {
         return e[0];
       } else {
@@ -101,13 +106,13 @@ class _GroupSettingsState extends State<GroupSettings> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: CircleAvatar(
-            foregroundImage: user.profilePicture != null
-                ? NetworkImage(user.profilePicture!)
+            foregroundImage: user.user.profile_picture != null
+                ? NetworkImage(user.user.profile_picture!)
                 : null,
-            child: user.profilePicture == null ? Text(initals) : null,
+            child: user.user.profile_picture == null ? Text(initals) : null,
           ),
         ),
-        Text(user.name)
+        Text(user.user.name)
       ]),
     );
   }
@@ -119,7 +124,7 @@ class _GroupSettingsState extends State<GroupSettings> {
       ),
       FutureBuilder<String?>(
           future: _joinToken,
-          initialData: widget._group.joinToken,
+          initialData: _groupsService.getCachedJoinToken(widget._groupId),
           builder: (fbContext, snapshot) {
             if (snapshot.hasError) {
               if (getIt<Config>().debug) {
@@ -179,7 +184,7 @@ class _GroupSettingsState extends State<GroupSettings> {
   void _updateToken(bool delete) {
     setState(() {
       _joinToken =
-          _groupsService.updateGroupJoinToken(widget._group, delete: delete);
+          _groupsService.updateGroupJoinToken(widget._groupId, delete: delete);
     });
     _joinToken.then((_) => widget._didUpdateGroup());
   }
