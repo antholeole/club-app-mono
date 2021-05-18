@@ -13,11 +13,10 @@ import 'package:gql_link/gql_link.dart';
 import '../../config.dart';
 import '../../constants.dart';
 import '../../constants.dart';
-import '../../pages/main/cubit/main_page_actions_cubit.dart';
+import '../../constants.dart';
 import '../../service_locator.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../toaster.dart';
+import '../local_data/token_manager.dart';
+import '../local_data/token_manager.dart';
 
 //todo: typedef GqlClient = Client;
 Future<Client> buildGqlClient() async {
@@ -28,7 +27,7 @@ Future<Client> buildGqlClient() async {
   //try to use a "dummy" one so that it gets rejected with JWS error
   //and refresh gets triggered.
   final tokens = await tokenManager.read() ??
-      OAuth2Token(accessToken: 'a.a.a', expiresIn: 0);
+      OAuth2Token(accessToken: 'aa.aa.aa', expiresIn: 0);
 
   final refreshLink = FreshLink.oAuth2(
     tokenHeader: (token) => {
@@ -36,13 +35,26 @@ Future<Client> buildGqlClient() async {
       'x-hasura-role': 'user'
     },
     shouldRefresh: (Response resp) {
-      return (resp.errors?.firstWhere((element) =>
-              element.message.contains(JWT_EXPIRED) ||
-              element.message.contains(JWS_ERROR)) !=
-          null);
+      for (final error in resp.errors ?? <GraphQLError>[]) {
+        if (error.message.contains(JWT_EXPIRED)) {
+          return true;
+        } else if (error.message.contains(JWS_ERROR)) {
+          return true;
+        } else {
+          debugPrint('Got gql error: $error');
+        }
+      }
+      return false;
     },
     tokenStorage: InMemoryTokenStorage(),
-    refreshToken: (_, __) => tokenManager.refresh(),
+    refreshToken: (_, __) async {
+      try {
+        return await tokenManager.refresh();
+      } on TokenException catch (e) {
+        debugPrint('caught err $e');
+        throw RevokeTokenException();
+      }
+    },
   );
 
   await refreshLink.setToken(tokens);
@@ -72,7 +84,11 @@ Future<Failure> basicGqlErrorHandler({List<GraphQLError>? errors}) async {
     }
   }
 
-  if (errors != null) {
+  if (errors != null && errors[0] is RevokeTokenException) {
+    return Failure(
+        message: 'Access token refresh failed.',
+        status: FailureStatus.GQLRefresh);
+  } else if (errors != null) {
     StringBuffer errorBuff = StringBuffer();
     errors.forEach((error) {
       errorBuff.write(error.message);
@@ -80,10 +96,8 @@ Future<Failure> basicGqlErrorHandler({List<GraphQLError>? errors}) async {
     });
     return Failure(
         message: errorBuff.toString(), status: FailureStatus.GQLMisc);
-  } else {
-    //HACK: https://github.com/felangel/fresh/issues/48
-    return Failure(
-        message: 'Access token refresh failed.',
-        status: FailureStatus.GQLRefresh);
   }
+
+  debugPrint('entered gql error with errors = null');
+  return Failure(message: 'Unknown error', status: FailureStatus.Unknown);
 }
