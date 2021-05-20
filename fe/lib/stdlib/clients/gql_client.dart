@@ -1,4 +1,3 @@
-import 'package:fe/gql/fragments/type_policies.dart';
 import 'package:fe/stdlib/clients/http/http_client.dart';
 import 'package:fe/stdlib/clients/http/unauth_http_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
@@ -26,7 +25,7 @@ Future<Client> buildGqlClient() async {
   await Hive.initFlutter();
   final box = await Hive.openBox('graphql');
   final store = HiveStore(box);
-  final cache = Cache(store: store, typePolicies: typePolicies);
+  final cache = Cache(store: store);
 
   //HACK: we need to have auth mode on, but it
   //doesn't activate until it has a token. If no token exists,

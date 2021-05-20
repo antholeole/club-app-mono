@@ -1,4 +1,0 @@
-fragment JoinToken on group_join_tokens {
-  group_id
-  join_token
-}

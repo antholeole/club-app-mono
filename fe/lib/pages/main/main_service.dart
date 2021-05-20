@@ -1,7 +1,3 @@
-import 'package:fe/gql/fragments/group.data.gql.dart';
-import 'package:fe/gql/fragments/group.req.gql.dart';
-import 'package:fe/gql/remote/query_self_group_preview.data.gql.dart';
-import 'package:fe/gql/remote/query_self_group_preview.req.gql.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
 import 'package:fe/stdlib/local_user.dart';
@@ -15,7 +11,6 @@ import '../../stdlib/helpers/uuid_type.dart';
 enum MainPageState { Loading, NoGroups, WithGroups, Error }
 
 class MainPageInitalLoadCarrier {
-  final GQuerySelfGroupsPreviewData_user_to_group? group;
   final MainPageState state;
   final Failure? failure;
 
