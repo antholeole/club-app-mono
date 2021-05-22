@@ -1,3 +1,5 @@
+import 'package:fe/data/models/group.dart';
+import 'package:fe/gql/query_self_group_preview.req.gql.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
 import 'package:fe/stdlib/local_user.dart';
@@ -13,6 +15,7 @@ enum MainPageState { Loading, NoGroups, WithGroups, Error }
 class MainPageInitalLoadCarrier {
   final MainPageState state;
   final Failure? failure;
+  final Group? group;
 
   const MainPageInitalLoadCarrier(
       {this.group, required this.state, this.failure})
@@ -53,13 +56,11 @@ class MainService {
       );
     } else {
       return MainPageInitalLoadCarrier(
-          state: MainPageState.WithGroups, group: resp.data!.user_to_group[0]);
+          state: MainPageState.WithGroups,
+          group: Group(
+              id: resp.data!.user_to_group[0].group.id,
+              name: resp.data!.user_to_group[0].group.group_name,
+              admin: resp.data!.user_to_group[0].admin));
     }
-  }
-
-  GGroup? getGroup(UuidType id) {
-    final groupReq = GGroupReq((b) => b..idFields = {'id': id});
-    final reviewFragmentData = _client.cache.readFragment(groupReq);
-    return reviewFragmentData;
   }
 }

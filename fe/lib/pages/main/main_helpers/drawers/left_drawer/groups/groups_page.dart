@@ -1,12 +1,15 @@
-import 'package:fe/gql/fragments/group.data.gql.dart';
-import 'package:fe/gql/remote/query_self_group_preview.data.gql.dart';
+import 'package:fe/data/models/group.dart';
+import 'package:fe/gql/query_self_group_preview.data.gql.dart';
+import 'package:fe/gql/query_self_group_preview.req.gql.dart';
+import 'package:fe/gql/query_self_group_preview.var.gql.dart';
 import 'package:fe/pages/main/main_helpers/drawers/left_drawer/groups/widgets/group_tab.dart';
 import 'package:fe/service_locator.dart';
-import 'package:fe/stdlib/errors/handle_failure.dart';
+import 'package:ferry/ferry.dart';
+import 'package:ferry_flutter/ferry_flutter.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../../stdlib/errors/failure.dart';
-import 'groups_service.dart';
+import '../../../../../../stdlib/local_user.dart';
+import '../../../../../../stdlib/theme/loader.dart';
 
 class GroupsPage extends StatefulWidget {
   @override
@@ -14,45 +17,44 @@ class GroupsPage extends StatefulWidget {
 }
 
 class _GroupsPageState extends State<GroupsPage> {
-  final GroupsService _groupsService = getIt<GroupsService>();
-  late Future<GQuerySelfGroupsPreviewData> groups;
+  final Client _client = getIt<Client>();
+  final LocalUser _localUser = getIt<LocalUser>();
+
+  late GQuerySelfGroupsPreviewReq _groupsReq;
 
   @override
   void initState() {
-    groups = _groupsService.fetchGroups(remote: true);
+    _groupsReq = GQuerySelfGroupsPreviewReq((b) => b
+      ..fetchPolicy = FetchPolicy.CacheAndNetwork
+      ..vars.self_id = _localUser.uuid);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox.expand(
-      child: FutureBuilder<GQuerySelfGroupsPreviewData>(
-        future: groups,
-        builder: (fbContext, snapshot) {
-          if (snapshot.hasError && snapshot.error is Failure) {
-            handleFailure(snapshot.error as Failure, fbContext);
-          }
+      child: Operation(
+          client: _client,
+          operationRequest: _groupsReq,
+          builder: (context,
+              OperationResponse<GQuerySelfGroupsPreviewData,
+                      GQuerySelfGroupsPreviewVars>?
+                  response,
+              error) {
+            if (response!.loading) {
+              return Loader();
+            }
 
-          switch (snapshot.connectionState) {
-            case ConnectionState.active:
-            case ConnectionState.waiting:
-            case ConnectionState.done:
-              return _buildGroups(snapshot.data!, context);
-            case ConnectionState.none:
-              return _buildError();
-          }
-        },
-      ),
+            return _buildGroups(response.data!.user_to_group.map((utg) => Group(
+                admin: utg.admin,
+                id: utg.group.id,
+                name: utg.group.group_name)));
+          }),
     );
   }
 
-  Widget _buildError() {
-    return Text("sorry, couldn't load your groups.");
-  }
-
-  Widget _buildGroups(
-      GQuerySelfGroupsPreviewData groups, BuildContext context) {
-    final List<Widget> widgets = [
+  Widget _buildGroups(Iterable<Group> groups) {
+    return Column(mainAxisSize: MainAxisSize.max, children: [
       Padding(
         padding: const EdgeInsets.all(8.0),
         child: Text(
@@ -61,45 +63,37 @@ class _GroupsPageState extends State<GroupsPage> {
           textAlign: TextAlign.center,
         ),
       ),
-      Expanded(
-        child: ListView(
-          shrinkWrap: true,
-          children: groups.user_to_group
-              .map(
-                (v) => GroupTab(
-                  group: GGroupData().rebuild((b) => b
-                    ..group_name = v.group.group_name
-                    ..id = v.group.id),
-                  didUpdateGroups: _didUpdateGroups,
-                ),
-              )
-              .toList(),
-        ),
-      )
-    ];
-
-    if (groups.user_to_group.isEmpty) {
-      widgets.add(Expanded(
-          child: Center(
-              child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-          'You have no clubs. Go ahead and join some!',
-          style: Theme.of(context).textTheme.bodyText1,
-          textAlign: TextAlign.center,
-        ),
-      ))));
-    }
-
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      children: widgets,
-    );
+      groups.isNotEmpty
+          ? Expanded(
+              child: ListView(
+                  shrinkWrap: true,
+                  children: groups
+                      .map(
+                        (v) => GroupTab(
+                          group: v,
+                          didUpdateGroups: _didUpdateGroups,
+                        ),
+                      )
+                      .toList()),
+            )
+          : Expanded(
+              child: Center(
+                  child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'You have no clubs. Go ahead and join some!',
+                style: Theme.of(context).textTheme.bodyText1,
+                textAlign: TextAlign.center,
+              ),
+            )))
+    ]);
   }
 
   void _didUpdateGroups() {
     setState(() {
-      groups = _groupsService.fetchGroups(remote: false);
+      _groupsReq = GQuerySelfGroupsPreviewReq((b) => b
+        ..fetchPolicy = FetchPolicy.CacheOnly
+        ..vars.self_id = _localUser.uuid);
     });
   }
 }

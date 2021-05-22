@@ -73,7 +73,7 @@ class _MainWrapperState extends State<MainWrapper> {
                     icon: Icon(Icons.menu),
                     onPressed: _scaffoldKey.currentState?.openDrawer,
                   ),
-                  actions: _mainPageActionsCubit.state.selectedGroupId != null
+                  actions: _mainPageActionsCubit.state.selectedGroup != null
                       ? [
                           IconButton(
                             icon: Icon(Icons.group),
@@ -90,7 +90,7 @@ class _MainWrapperState extends State<MainWrapper> {
                     if (bContext
                             .read<MainPageActionsCubit>()
                             .state
-                            .selectedGroupId !=
+                            .selectedGroup !=
                         null) {
                       return AutoTabsRouter(
                         routes: [
@@ -166,19 +166,17 @@ class _MainWrapperState extends State<MainWrapper> {
     }
 
     if (initalLoadResult.group != null) {
-      _mainPageActionsCubit.selectGroup(initalLoadResult.group!.group.id);
+      _mainPageActionsCubit.selectGroup(initalLoadResult.group!);
     }
   }
 
   List<Widget> _buildTitle() {
     final titleElements = <Widget>[];
 
-    if (_mainPageActionsCubit.state.selectedGroupId != null) {
+    if (_mainPageActionsCubit.state.selectedGroup != null) {
       {
         titleElements.add(Text(
-          _mainService
-              .getGroup(_mainPageActionsCubit.state.selectedGroupId!)
-              .group_name,
+          _mainPageActionsCubit.state.selectedGroup!.name,
           style: Theme.of(context).textTheme.caption,
         ));
       }

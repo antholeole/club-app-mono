@@ -1,8 +1,8 @@
 part of 'main_page_actions_cubit.dart';
 
 class SelectGroup extends MainPageActionsState {
-  SelectGroup({required UuidType selectedGroupId})
-      : super(selectedGroupId: selectedGroupId);
+  SelectGroup({required Group selectedGroup})
+      : super(selectedGroup: selectedGroup);
 }
 
 class Logout extends MainPageActionsState {
@@ -16,7 +16,7 @@ class ResetPage extends MainPageActionsState {}
 class MainPageActionsInitial extends MainPageActionsState {}
 
 abstract class MainPageActionsState {
-  UuidType? selectedGroupId;
+  Group? selectedGroup;
 
-  MainPageActionsState({this.selectedGroupId});
+  MainPageActionsState({this.selectedGroup});
 }

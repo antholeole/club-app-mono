@@ -1,5 +1,14 @@
-import 'package:fe/gql/remote/query_users_in_group.data.gql.dart';
+import 'package:built_collection/built_collection.dart';
+import 'package:fe/data/models/group.dart';
+import 'package:fe/gql/query_group_join_token.data.gql.dart';
+import 'package:fe/gql/query_group_join_token.req.gql.dart';
+import 'package:fe/gql/query_group_join_token.var.gql.dart';
+import 'package:fe/gql/query_users_in_group.data.gql.dart';
+import 'package:fe/gql/query_users_in_group.req.gql.dart';
+import 'package:fe/gql/query_users_in_group.var.gql.dart';
 import 'package:fe/stdlib/theme/loadable_tile_button.dart';
+import 'package:ferry/ferry.dart';
+import 'package:ferry_flutter/ferry_flutter.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:fe/stdlib/theme/tile.dart';
 import 'package:fe/stdlib/theme/tile_header.dart';
@@ -9,15 +18,16 @@ import 'package:flutter/material.dart';
 import '../../../../../../../config.dart';
 import '../../../../../../../service_locator.dart';
 import '../../../../../../../stdlib/helpers/uuid_type.dart';
+import '../../../../../../../stdlib/theme/loader.dart';
 import '../groups_service.dart';
 
 class GroupSettings extends StatefulWidget {
-  final UuidType _groupId;
+  final Group _group;
   final void Function() _didUpdateGroup;
 
   const GroupSettings(
-      {required UuidType groupId, required void Function() didUpdateGroup})
-      : _groupId = groupId,
+      {required Group group, required void Function() didUpdateGroup})
+      : _group = group,
         _didUpdateGroup = didUpdateGroup;
 
   @override
@@ -26,6 +36,7 @@ class GroupSettings extends StatefulWidget {
 
 class _GroupSettingsState extends State<GroupSettings> {
   final GroupsService _groupsService = getIt<GroupsService>();
+  final Client _client = getIt<Client>();
 
   late Future<String?> _joinToken;
 
@@ -34,12 +45,10 @@ class _GroupSettingsState extends State<GroupSettings> {
 
   @override
   void initState() {
-    _groupsService.isAdmin(widget._groupId).then((value) {
-      setState(() {
-        _amAdmin = true;
-      });
-      _joinToken = _groupsService.fetchGroupJoinToken(widget._groupId);
-    });
+    if (widget._group.admin) {
+      _amAdmin = true;
+    }
+
     super.initState();
   }
 
@@ -53,7 +62,7 @@ class _GroupSettingsState extends State<GroupSettings> {
         LoadableTileButton(
           text: 'leave group',
           onClick: () => _groupsService.leaveGroup(
-              widget._groupId,
+              widget._group,
               context,
               () => setState(() {
                     _isLoadingLeaving = true;
@@ -73,22 +82,31 @@ class _GroupSettingsState extends State<GroupSettings> {
   List<Widget> _buildUsers() {
     return [
       TileHeader(text: 'Members'),
-      FutureBuilder<GQueryUsersInGroupData>(
-          future: _groupsService.fetchUsersInGroup(widget._groupId),
-          initialData: _groupsService.getCachedUsersInGroup(widget._groupId),
-          builder: (fbContext, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.active:
-              case ConnectionState.waiting:
-              case ConnectionState.done:
-                return Column(
-                    children: snapshot.data!.user_to_group.map((user) {
-                  return _buildUserTile(user);
-                }).toList());
-              case ConnectionState.none:
-                return Text('sorry, error');
-            }
-          }),
+      Operation(
+        client: _client,
+        operationRequest: GQueryUsersInGroupReq(
+          (b) => b
+            ..fetchPolicy = FetchPolicy.NetworkOnly
+            ..vars.groupId = widget._group.id,
+        ),
+        builder: (
+          oContext,
+          OperationResponse<GQueryUsersInGroupData, GQueryUsersInGroupVars>?
+              resp,
+          err,
+        ) {
+          if (resp!.loading) {
+            return Loader();
+          }
+
+          final usersInGroup = resp.data?.user_to_group ?? BuiltList();
+
+          return Column(
+              children: usersInGroup.map((user) {
+            return _buildUserTile(user);
+          }).toList());
+        },
+      ),
     ];
   }
 
@@ -122,30 +140,25 @@ class _GroupSettingsState extends State<GroupSettings> {
       TileHeader(
         text: 'Join Token',
       ),
-      FutureBuilder<String?>(
-          future: _joinToken,
-          initialData: _groupsService.getCachedJoinToken(widget._groupId),
-          builder: (fbContext, snapshot) {
-            if (snapshot.hasError) {
-              if (getIt<Config>().debug) {
-                throw snapshot.error!;
-              }
-
-              return _buildJoinTokenTile(snapshot.error.toString());
+      Operation(
+          operationRequest: GQueryGroupJoinTokenReq((q) => q
+            ..vars.group_id = widget._group.id
+            ..fetchPolicy = FetchPolicy.CacheAndNetwork),
+          builder: (oContext,
+              OperationResponse<GQueryGroupJoinTokenData,
+                      GQueryGroupJoinTokenVars>?
+                  resp,
+              error) {
+            if (resp!.loading) {
+              return Loader(
+                size: 12,
+              );
             }
 
-            switch (snapshot.connectionState) {
-              case ConnectionState.active:
-              case ConnectionState.waiting:
-                return Loader(
-                  size: 12,
-                );
-              case ConnectionState.done:
-                return _buildJoinTokenTile(snapshot.data);
-              case ConnectionState.none:
-                return _buildJoinTokenTile(null);
-            }
-          })
+            return _buildJoinTokenTile(
+                resp.data!.group_join_tokens.first.join_token);
+          },
+          client: _client),
     ];
   }
 
@@ -184,7 +197,7 @@ class _GroupSettingsState extends State<GroupSettings> {
   void _updateToken(bool delete) {
     setState(() {
       _joinToken =
-          _groupsService.updateGroupJoinToken(widget._groupId, delete: delete);
+          _groupsService.updateGroupJoinToken(widget._group.id, delete: delete);
     });
     _joinToken.then((_) => widget._didUpdateGroup());
   }

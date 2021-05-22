@@ -1,79 +1,49 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
 import 'package:built_value/standard_json_plugin.dart' show StandardJsonPlugin;
-import 'package:fe/gql/fragments/group.data.gql.dart'
-    show
-        GGroupData,
-        GGroupWithUsersData,
-        GGroupWithUsersData_user_to_groups,
-        GGroupWithUsersData_user_to_groups_user;
-import 'package:fe/gql/fragments/group.req.gql.dart'
-    show GGroupReq, GGroupWithUsersReq;
-import 'package:fe/gql/fragments/group.var.gql.dart'
-    show GGroupVars, GGroupWithUsersVars;
-import 'package:fe/gql/fragments/join_token.data.gql.dart' show GJoinTokenData;
-import 'package:fe/gql/fragments/join_token.req.gql.dart' show GJoinTokenReq;
-import 'package:fe/gql/fragments/join_token.var.gql.dart' show GJoinTokenVars;
-import 'package:fe/gql/fragments/user.data.gql.dart' show GUserData;
-import 'package:fe/gql/fragments/user.req.gql.dart' show GUserReq;
-import 'package:fe/gql/fragments/user.var.gql.dart' show GUserVars;
-import 'package:fe/gql/local/query_group_single.data.gql.dart'
-    show GQueryGroupSingleData, GQueryGroupSingleData_groups;
-import 'package:fe/gql/local/query_group_single.req.gql.dart'
-    show GQueryGroupSingleReq;
-import 'package:fe/gql/local/query_group_single.var.gql.dart'
-    show GQueryGroupSingleVars;
-import 'package:fe/gql/remote/query_am_admin.data.gql.dart'
-    show GQueryAmAdminData, GQueryAmAdminData_user_to_group;
-import 'package:fe/gql/remote/query_am_admin.req.gql.dart'
-    show GQueryAmAdminReq;
-import 'package:fe/gql/remote/query_am_admin.var.gql.dart'
-    show GQueryAmAdminVars;
-import 'package:fe/gql/remote/query_group_join_token.data.gql.dart'
+import 'package:fe/gql/query_group_join_token.data.gql.dart'
     show GQueryGroupJoinTokenData, GQueryGroupJoinTokenData_group_join_tokens;
-import 'package:fe/gql/remote/query_group_join_token.req.gql.dart'
+import 'package:fe/gql/query_group_join_token.req.gql.dart'
     show GQueryGroupJoinTokenReq;
-import 'package:fe/gql/remote/query_group_join_token.var.gql.dart'
+import 'package:fe/gql/query_group_join_token.var.gql.dart'
     show GQueryGroupJoinTokenVars;
-import 'package:fe/gql/remote/query_self_group_preview.data.gql.dart'
+import 'package:fe/gql/query_self_group_preview.data.gql.dart'
     show
         GQuerySelfGroupsPreviewData,
         GQuerySelfGroupsPreviewData_user_to_group,
         GQuerySelfGroupsPreviewData_user_to_group_group;
-import 'package:fe/gql/remote/query_self_group_preview.req.gql.dart'
+import 'package:fe/gql/query_self_group_preview.req.gql.dart'
     show GQuerySelfGroupsPreviewReq;
-import 'package:fe/gql/remote/query_self_group_preview.var.gql.dart'
+import 'package:fe/gql/query_self_group_preview.var.gql.dart'
     show GQuerySelfGroupsPreviewVars;
-import 'package:fe/gql/remote/query_users_in_group.data.gql.dart'
+import 'package:fe/gql/query_users_in_group.data.gql.dart'
     show
         GQueryUsersInGroupData,
         GQueryUsersInGroupData_user_to_group,
         GQueryUsersInGroupData_user_to_group_user;
-import 'package:fe/gql/remote/query_users_in_group.req.gql.dart'
+import 'package:fe/gql/query_users_in_group.req.gql.dart'
     show GQueryUsersInGroupReq;
-import 'package:fe/gql/remote/query_users_in_group.var.gql.dart'
+import 'package:fe/gql/query_users_in_group.var.gql.dart'
     show GQueryUsersInGroupVars;
-import 'package:fe/gql/remote/remove_self_from_group.data.gql.dart'
+import 'package:fe/gql/remove_self_from_group.data.gql.dart'
     show
         GRemoveSelfFromGroupData,
         GRemoveSelfFromGroupData_delete_user_to_group;
-import 'package:fe/gql/remote/remove_self_from_group.req.gql.dart'
+import 'package:fe/gql/remove_self_from_group.req.gql.dart'
     show GRemoveSelfFromGroupReq;
-import 'package:fe/gql/remote/remove_self_from_group.var.gql.dart'
+import 'package:fe/gql/remove_self_from_group.var.gql.dart'
     show GRemoveSelfFromGroupVars;
-import 'package:fe/gql/remote/update_self_name.data.gql.dart'
+import 'package:fe/gql/update_self_name.data.gql.dart'
     show GUpdateSelfNameData, GUpdateSelfNameData_update_users_by_pk;
-import 'package:fe/gql/remote/update_self_name.req.gql.dart'
-    show GUpdateSelfNameReq;
-import 'package:fe/gql/remote/update_self_name.var.gql.dart'
-    show GUpdateSelfNameVars;
-import 'package:fe/gql/remote/upsert_group_join_token.data.gql.dart'
+import 'package:fe/gql/update_self_name.req.gql.dart' show GUpdateSelfNameReq;
+import 'package:fe/gql/update_self_name.var.gql.dart' show GUpdateSelfNameVars;
+import 'package:fe/gql/upsert_group_join_token.data.gql.dart'
     show
         GUpsertGroupJoinTokenData,
         GUpsertGroupJoinTokenData_insert_group_join_tokens_one;
-import 'package:fe/gql/remote/upsert_group_join_token.req.gql.dart'
+import 'package:fe/gql/upsert_group_join_token.req.gql.dart'
     show GUpsertGroupJoinTokenReq;
-import 'package:fe/gql/remote/upsert_group_join_token.var.gql.dart'
+import 'package:fe/gql/upsert_group_join_token.var.gql.dart'
     show GUpsertGroupJoinTokenVars;
 import 'package:fe/schema.schema.gql.dart'
     show
@@ -181,29 +151,10 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   ..addPlugin(StandardJsonPlugin());
 @SerializersFor([
   GBoolean_comparison_exp,
-  GGroupData,
-  GGroupReq,
-  GGroupVars,
-  GGroupWithUsersData,
-  GGroupWithUsersData_user_to_groups,
-  GGroupWithUsersData_user_to_groups_user,
-  GGroupWithUsersReq,
-  GGroupWithUsersVars,
-  GJoinTokenData,
-  GJoinTokenReq,
-  GJoinTokenVars,
-  GQueryAmAdminData,
-  GQueryAmAdminData_user_to_group,
-  GQueryAmAdminReq,
-  GQueryAmAdminVars,
   GQueryGroupJoinTokenData,
   GQueryGroupJoinTokenData_group_join_tokens,
   GQueryGroupJoinTokenReq,
   GQueryGroupJoinTokenVars,
-  GQueryGroupSingleData,
-  GQueryGroupSingleData_groups,
-  GQueryGroupSingleReq,
-  GQueryGroupSingleVars,
   GQuerySelfGroupsPreviewData,
   GQuerySelfGroupsPreviewData_user_to_group,
   GQuerySelfGroupsPreviewData_user_to_group_group,
@@ -227,9 +178,6 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GUpsertGroupJoinTokenData_insert_group_join_tokens_one,
   GUpsertGroupJoinTokenReq,
   GUpsertGroupJoinTokenVars,
-  GUserData,
-  GUserReq,
-  GUserVars,
   Ggroup_join_tokens_aggregate_order_by,
   Ggroup_join_tokens_arr_rel_insert_input,
   Ggroup_join_tokens_bool_exp,

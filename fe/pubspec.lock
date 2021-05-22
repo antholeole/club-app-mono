@@ -107,7 +107,7 @@ packages:
     source: hosted
     version: "6.1.12"
   built_collection:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: built_collection
       url: "https://pub.dartlang.org"
@@ -119,7 +119,7 @@ packages:
       name: built_value
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "8.0.5"
+    version: "8.0.6"
   built_value_generator:
     dependency: transitive
     description:
@@ -267,6 +267,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.1-0.1.nullsafety.0"
+  ferry_flutter:
+    dependency: "direct main"
+    description:
+      name: ferry_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.1-0.1.nullsafety.1"
   ferry_generator:
     dependency: "direct dev"
     description:

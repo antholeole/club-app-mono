@@ -16,6 +16,7 @@ dependencies:
   flutter_bloc: ^7.0.0
   get_it: ^6.0.0
   auto_route: ^1.0.2
+  built_collection: ^5.0.0
   
 
   #serialization
@@ -42,6 +43,7 @@ dependencies:
   hive_flutter: ^1.0.0
   ferry_hive_store: 0.4.1-0.1.nullsafety.0
   fresh_graphql: ^0.5.1
+  ferry_flutter: ^0.5.1-0.1.nullsafety.1
 
   #http
   http: ^0.13.1
