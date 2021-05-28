@@ -16,6 +16,14 @@ import 'package:fe/gql/query_self_group_preview.req.gql.dart'
     show GQuerySelfGroupsPreviewReq;
 import 'package:fe/gql/query_self_group_preview.var.gql.dart'
     show GQuerySelfGroupsPreviewVars;
+import 'package:fe/gql/query_self_threads_in_group.data.gql.dart'
+    show
+        GQuerySelfThreadsInGroupData,
+        GQuerySelfThreadsInGroupData_group_threads;
+import 'package:fe/gql/query_self_threads_in_group.req.gql.dart'
+    show GQuerySelfThreadsInGroupReq;
+import 'package:fe/gql/query_self_threads_in_group.var.gql.dart'
+    show GQuerySelfThreadsInGroupVars;
 import 'package:fe/gql/query_users_in_group.data.gql.dart'
     show
         GQueryUsersInGroupData,
@@ -160,6 +168,10 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GQuerySelfGroupsPreviewData_user_to_group_group,
   GQuerySelfGroupsPreviewReq,
   GQuerySelfGroupsPreviewVars,
+  GQuerySelfThreadsInGroupData,
+  GQuerySelfThreadsInGroupData_group_threads,
+  GQuerySelfThreadsInGroupReq,
+  GQuerySelfThreadsInGroupVars,
   GQueryUsersInGroupData,
   GQueryUsersInGroupData_user_to_group,
   GQueryUsersInGroupData_user_to_group_user,

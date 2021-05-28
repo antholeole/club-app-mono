@@ -1861,7 +1861,6 @@ abstract class Gusers_bool_exp
   Gmessages_bool_exp? get messages;
   GString_comparison_exp? get name;
   GString_comparison_exp? get profile_picture;
-  GString_comparison_exp? get socket_id;
   GString_comparison_exp? get sub;
   Guser_to_group_bool_exp? get user_to_groups;
   Guser_to_thread_bool_exp? get user_to_threads;
@@ -1901,7 +1900,6 @@ abstract class Gusers_insert_input
   Gmessages_arr_rel_insert_input? get messages;
   String? get name;
   String? get profile_picture;
-  String? get socket_id;
   String? get sub;
   Guser_to_group_arr_rel_insert_input? get user_to_groups;
   Guser_to_thread_arr_rel_insert_input? get user_to_threads;
@@ -1965,7 +1963,6 @@ abstract class Gusers_order_by
   Gmessages_aggregate_order_by? get messages_aggregate;
   Gorder_by? get name;
   Gorder_by? get profile_picture;
-  Gorder_by? get socket_id;
   Gorder_by? get sub;
   Guser_to_group_aggregate_order_by? get user_to_groups_aggregate;
   Guser_to_thread_aggregate_order_by? get user_to_threads_aggregate;
@@ -2009,8 +2006,6 @@ class Gusers_select_column extends EnumClass {
   static const Gusers_select_column profile_picture =
       _$gusersSelectColumnprofile_picture;
 
-  static const Gusers_select_column socket_id = _$gusersSelectColumnsocket_id;
-
   static const Gusers_select_column sub = _$gusersSelectColumnsub;
 
   static Serializer<Gusers_select_column> get serializer =>
@@ -2032,7 +2027,6 @@ abstract class Gusers_set_input
   _i2.UuidType? get id;
   String? get name;
   String? get profile_picture;
-  String? get socket_id;
   String? get sub;
   static Serializer<Gusers_set_input> get serializer =>
       _$gusersSetInputSerializer;
@@ -2055,8 +2049,6 @@ class Gusers_update_column extends EnumClass {
 
   static const Gusers_update_column profile_picture =
       _$gusersUpdateColumnprofile_picture;
-
-  static const Gusers_update_column socket_id = _$gusersUpdateColumnsocket_id;
 
   static const Gusers_update_column sub = _$gusersUpdateColumnsub;
 

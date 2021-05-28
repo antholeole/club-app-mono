@@ -6,8 +6,8 @@
 
 import 'package:auto_route/auto_route.dart' as _i1;
 
+import '../../pages/chat/chat_page.dart' as _i7;
 import '../../pages/login/login_page.dart' as _i4;
-import '../../pages/main/chat/chat_page.dart' as _i7;
 import '../../pages/main/events/events_page.dart' as _i6;
 import '../../pages/main/main_wrapper.dart' as _i5;
 import '../../pages/splash/splash_screen.dart' as _i2;

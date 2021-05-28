@@ -1,8 +1,6 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:fe/data/models/group.dart';
-import 'package:fe/gql/query_group_join_token.data.gql.dart';
 import 'package:fe/gql/query_group_join_token.req.gql.dart';
-import 'package:fe/gql/query_group_join_token.var.gql.dart';
 import 'package:fe/gql/query_users_in_group.data.gql.dart';
 import 'package:fe/gql/query_users_in_group.req.gql.dart';
 import 'package:fe/gql/query_users_in_group.var.gql.dart';
@@ -15,9 +13,7 @@ import 'package:fe/stdlib/theme/tile_header.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../../../config.dart';
 import '../../../../../../../service_locator.dart';
-import '../../../../../../../stdlib/helpers/uuid_type.dart';
 import '../../../../../../../stdlib/theme/loader.dart';
 import '../groups_service.dart';
 
@@ -47,6 +43,7 @@ class _GroupSettingsState extends State<GroupSettings> {
   void initState() {
     if (widget._group.admin) {
       _amAdmin = true;
+      _joinToken = buildJoinTokenRequest();
     }
 
     super.initState();
@@ -140,25 +137,19 @@ class _GroupSettingsState extends State<GroupSettings> {
       TileHeader(
         text: 'Join Token',
       ),
-      Operation(
-          operationRequest: GQueryGroupJoinTokenReq((q) => q
-            ..vars.group_id = widget._group.id
-            ..fetchPolicy = FetchPolicy.CacheAndNetwork),
-          builder: (oContext,
-              OperationResponse<GQueryGroupJoinTokenData,
-                      GQueryGroupJoinTokenVars>?
-                  resp,
-              error) {
-            if (resp!.loading) {
-              return Loader(
-                size: 12,
-              );
+      FutureBuilder<String?>(
+          future: _joinToken,
+          builder: (fbContext, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.done:
+                return _buildJoinTokenTile(snapshot.data);
+              case ConnectionState.none:
+                return _buildJoinTokenTile(null);
+              case ConnectionState.active:
+              case ConnectionState.waiting:
+                return Loader(size: 12);
             }
-
-            return _buildJoinTokenTile(
-                resp.data!.group_join_tokens.first.join_token);
-          },
-          client: _client),
+          }),
     ];
   }
 
@@ -192,6 +183,20 @@ class _GroupSettingsState extends State<GroupSettings> {
         ),
       ),
     );
+  }
+
+  Future<String?> buildJoinTokenRequest() async {
+    final req = GQueryGroupJoinTokenReq((q) => q
+      ..vars.group_id = widget._group.id
+      ..fetchPolicy = FetchPolicy.NetworkOnly);
+
+    final resp = await _client.request(req).first;
+
+    if (resp.data!.group_join_tokens.isEmpty) {
+      return null;
+    }
+
+    return resp.data!.group_join_tokens.first.join_token;
   }
 
   void _updateToken(bool delete) {

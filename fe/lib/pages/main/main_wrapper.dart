@@ -1,4 +1,6 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:fe/pages/chat/cubit/chat_cubit.dart';
+import 'package:fe/pages/chat/helpers/channels_bottom_sheet.dart';
 import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
 import 'package:fe/pages/main/main_helpers/drawers/right_drawer/group_drawer.dart';
 import 'package:fe/stdlib/errors/handle_failure.dart';
@@ -14,7 +16,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../service_locator.dart';
-import 'main_helpers/bottom_sheet/channels_bottom_sheet.dart';
+import '../../stdlib/router/router.gr.dart';
 import 'main_helpers/drawers/left_drawer/club_drawer.dart';
 import 'main_service.dart';
 
@@ -29,6 +31,7 @@ class _MainWrapperState extends State<MainWrapper> {
   final MainService _mainService = getIt<MainService>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final MainPageActionsCubit _mainPageActionsCubit = MainPageActionsCubit();
+  final ChatCubit _chatPageCubit = ChatCubit();
   late BuildContext _toastableContext;
   MainPageState _pageState = MainPageState.Loading;
 
@@ -42,8 +45,11 @@ class _MainWrapperState extends State<MainWrapper> {
   Widget build(BuildContext context) {
     return Toaster(
       context: context,
-      child: BlocProvider(
-        create: (_) => _mainPageActionsCubit,
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => _mainPageActionsCubit),
+          BlocProvider(create: (_) => _chatPageCubit)
+        ],
         child: Builder(
           builder: (toastableContext) {
             _toastableContext = toastableContext;
@@ -94,7 +100,7 @@ class _MainWrapperState extends State<MainWrapper> {
                         null) {
                       return AutoTabsRouter(
                         routes: [
-                          EventsRoute(),
+                          ChatRoute(),
                           EventsRoute(),
                         ],
                       );
@@ -199,7 +205,11 @@ class _MainWrapperState extends State<MainWrapper> {
     if (tab == 0 && held) {
       HapticFeedback.mediumImpact();
       showModalBottomSheet(
-          context: context, builder: (context) => ChannelsBottomSheet());
+          context: context,
+          builder: (context) => ChannelsBottomSheet(
+                selectedGroup: _mainPageActionsCubit.state.selectedGroup,
+                chatCubit: _chatPageCubit,
+              ));
     } else {
       AutoRouter.of(context)
           .innerRouterOf<TabsRouter>(Main.name)!

@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:fe/pages/chat/chat_page.dart';
 import 'package:fe/pages/login/login_page.dart';
-import 'package:fe/pages/main/chat/chat_page.dart';
 import 'package:fe/pages/main/events/events_page.dart';
 import 'package:fe/pages/main/main_wrapper.dart';
 import 'package:fe/pages/splash/splash_screen.dart';

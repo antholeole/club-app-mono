@@ -1,0 +1,17 @@
+query QuerySelfThreadsInGroup($userId: uuid, $groupId: uuid) {
+  group_threads(where: {
+  	_and: {
+      group_id: {
+        _eq: $groupId
+      },
+      user_to_threads: {
+        user_id: {
+          _eq: $userId
+        }
+      }
+    }
+  }) {
+    name,
+    id
+  }
+}
