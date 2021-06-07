@@ -3,13 +3,12 @@ import { StatusError } from 'itty-router-extras'
 
 const ISSUER = 'Club App'
 
-export const decodeJwt = (token: string): Map<string, unknown> => {
+export const decodeJwt = (token: string, ignoreExpiration = false): Record<string, unknown> => {
     try {
-        const payload = jwt.verify(token, SECRET, {
+        return jwt.verify(token, SECRET, {
             issuer: ISSUER,
-        })
-
-        return new Map(Object.entries(payload))
+            ignoreExpiration
+        }) as Record<string, unknown>
     } catch (e) {
         throw new StatusError(401, 'Unauthorized JWT')
     }

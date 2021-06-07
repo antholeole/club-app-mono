@@ -5,9 +5,8 @@ abstract class Config {
   String get gqlUrl;
   bool get httpIsSecure;
   bool get playTaxingAnimations;
-  bool get debug;
-  bool get printMoorLogs;
   bool get refreshLocalCacheOnReload;
+  bool get memoryCache;
 }
 
 class DevConfig extends Config {
@@ -24,13 +23,10 @@ class DevConfig extends Config {
   bool get playTaxingAnimations => false;
 
   @override
-  bool get debug => true;
-
-  @override
-  bool get printMoorLogs => false;
-
-  @override
   bool get refreshLocalCacheOnReload => false;
+
+  @override
+  bool get memoryCache => false;
 }
 
 class ProdConfig extends Config {
@@ -47,11 +43,8 @@ class ProdConfig extends Config {
   bool get playTaxingAnimations => true;
 
   @override
-  bool get debug => false;
-
-  @override
-  bool get printMoorLogs => false;
-
-  @override
   bool get refreshLocalCacheOnReload => false;
+
+  @override
+  bool get memoryCache => false;
 }

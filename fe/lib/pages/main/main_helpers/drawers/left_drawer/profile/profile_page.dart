@@ -62,7 +62,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   text: 'Log Out',
                   loading: _loggingOut),
             ]),
-            _config.debug
+            _config is DevConfig
                 ? ButtonGroup(name: 'Debug', buttons: [
                     LoadableTileButton(
                         onClick: () => _tokenManager.read().then((tokens) =>

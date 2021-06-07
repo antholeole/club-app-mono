@@ -1,14 +1,13 @@
 import 'package:fe/data/models/group.dart';
 import 'package:fe/gql/query_self_group_preview.req.gql.dart';
 import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/errors/handle_gql_error.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
 import 'package:fe/stdlib/local_user.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../service_locator.dart';
-import '../../stdlib/clients/gql_client.dart';
-import '../../stdlib/helpers/uuid_type.dart';
 
 enum MainPageState { Loading, NoGroups, WithGroups, Error }
 

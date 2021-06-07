@@ -11,15 +11,10 @@ import 'package:flutter/material.dart';
   routes: <AutoRoute>[
     NoAnimationRoute(path: '/', page: SplashScreen, initial: true),
     NoAnimationRoute(path: '/login', page: LoginPage),
-    NoAnimationRoute(
-        path: '/main',
-        name: 'main',
-        usesTabsRouter: true,
-        page: MainWrapper,
-        children: [
-          NoAnimationRoute(path: 'events', page: EventsPage),
-          NoAnimationRoute(path: 'chat', page: ChatPage)
-        ])
+    NoAnimationRoute(path: '/main', name: 'main', page: MainWrapper, children: [
+      NoAnimationRoute(path: 'events', page: EventsPage),
+      NoAnimationRoute(path: 'chat', page: ChatPage)
+    ])
   ],
 )
 class $AppRouter {}
@@ -34,7 +29,6 @@ class NoAnimationRoute<T> extends CustomRoute<T> {
     bool fullMatch = false,
     required Type page,
     List<Type>? guards,
-    bool usesTabsRouter = false,
     List<AutoRoute>? children,
   }) : super(
             initial: initial,
@@ -42,7 +36,6 @@ class NoAnimationRoute<T> extends CustomRoute<T> {
             maintainState: maintainState,
             path: path,
             name: name,
-            usesTabsRouter: usesTabsRouter,
             fullMatch: fullMatch,
             page: page,
             durationInMilliseconds: 0,

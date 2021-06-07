@@ -1,10 +1,10 @@
 import { StatusError } from 'itty-router-extras'
 
-export const readJsonBody = async (req: Request): Promise<any> => {
+export const readJsonBody = async (req: Request): Promise<Record<string, unknown>> => {
     try {
         const t = await req.json()
         return t
     } catch {
-        throw new StatusError(400, 'Json body unexpected request body.')
+        throw new StatusError(400, 'unexpected request body: Expected valid json')
     }
 }

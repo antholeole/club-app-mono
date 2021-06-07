@@ -2,7 +2,8 @@ import 'package:fe/constants.dart';
 import 'package:fe/data/json/backend_access_tokens.dart';
 import 'package:fe/data/json/refresh_carrier.dart';
 import 'package:fe/service_locator.dart';
-import 'package:fe/stdlib/clients/http/unauth_http_client.dart';
+import 'package:fe/stdlib/clients/http_client/http_client.dart';
+import 'package:fe/stdlib/clients/http_client/unauth_http_client.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fresh_graphql/fresh_graphql.dart';
 
@@ -72,14 +73,17 @@ class TokenManager extends TokenStorage<OAuth2Token> {
       throw NoRefreshTokenException();
     }
 
-    final resp = await _unauthClient.postReq('/auth/refresh',
-        RefreshCarrier(refreshToken: refreshToken, userId: userId).toJson());
-
-    if (resp.statusCode != 200) {
-      throw FailedRefresh();
-    } else {
+    try {
+      final resp = await _unauthClient.postReq('/auth/refresh',
+          RefreshCarrier(refreshToken: refreshToken, userId: userId).toJson());
       await _localFileStore.serialize(LocalStorageType.AccessTokens, resp.body);
       return OAuth2Token(accessToken: resp.body);
+    } on HttpException catch (e) {
+      if (e.statusCode == 404) {
+        throw FailedRefresh();
+      } else {
+        rethrow;
+      }
     }
   }
 }

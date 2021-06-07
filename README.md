@@ -32,6 +32,7 @@ Everything, but currently:
 - Event subscriptions
 - Pull seed data on load in
 - use ISAR to Persist Data
+- API gateway needs to sign requests and verify them ;/
 
 ## CICD
 worker:
@@ -43,6 +44,7 @@ Hasura:
 flutter:
 - pub run dependency_validator
 - take queries and add them to the allow list in hasura
+- dartanalyzer .
 - lint
 - test
 

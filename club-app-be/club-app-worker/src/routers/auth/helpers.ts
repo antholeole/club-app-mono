@@ -1,4 +1,4 @@
-import { GOOGLE_CERTS, GOOGLE_PEM_SRC, GOOGLE_VALID_AUDS, GOOGLE_VALID_ISSUER } from '../../constants'
+import { DEBUG, GOOGLE_CERTS, GOOGLE_PEM_SRC, GOOGLE_VALID_AUDS, GOOGLE_VALID_ISSUER } from '../../constants'
 import { StatusError } from 'itty-router-extras'
 import { encodeJwt } from '../../helpers/jwt'
 import jwt from 'jsonwebtoken'
@@ -8,11 +8,15 @@ export interface IIdentifier {
     sub: string,
     email?: string,
     name: string
-}   
-
-const throwInvalid = () => {
-    throw new StatusError(402, 'Invalid id token.') 
 }
+
+interface IGoogleAccessToken {
+    family_name: string
+    given_name: string
+    sub: string
+    email?: string
+}
+
 export const verifyIdTokenWithGoogle = async (idToken: string): Promise<IIdentifier> => {
     const parts = idToken.split('.')
 
@@ -21,7 +25,7 @@ export const verifyIdTokenWithGoogle = async (idToken: string): Promise<IIdentif
         throw new StatusError(400, 'invalid idToken JWT')
     } else {
         try {
-        kid = JSON.parse(atob(parts[0]))['kid']
+            kid = JSON.parse(atob(parts[0]))['kid']
         } catch (_) {
             throw new StatusError(400, 'malformed JWT input; no KID in header')
         }
@@ -35,22 +39,22 @@ export const verifyIdTokenWithGoogle = async (idToken: string): Promise<IIdentif
         googleCertsJson = await resp.text()
 
         const maxAge = resp.headers.get('Cache-Control')?.split(', ')
-        .find((v) => v.startsWith('max-age='))
-        ?.split('=')[1] as string
+            .find((v) => v.startsWith('max-age='))
+            ?.split('=')[1] as string
 
         await PUBLIC_KEYS.put(GOOGLE_CERTS, googleCertsJson, {
             expirationTtl: parseInt(maxAge) - 60
         })
     }
 
-    let jwtBody: any
+    let jwtBody: IGoogleAccessToken
     try {
         jwtBody = (jwt.verify(idToken, JSON.parse(googleCertsJson)[kid], {
             audience: GOOGLE_VALID_AUDS,
             issuer: GOOGLE_VALID_ISSUER
-        }) as unknown)
+        }) as IGoogleAccessToken)
     } catch {
-        throwInvalid()
+        throw new StatusError(402, 'Invalid id token.')
     }
 
 
@@ -59,7 +63,7 @@ export const verifyIdTokenWithGoogle = async (idToken: string): Promise<IIdentif
 
     if (jwtBody['given_name'] && jwtBody['family_name']) {
         returnedIdentfier.name =
-         `${jwtBody['given_name']} ${jwtBody['family_name']}`
+            `${jwtBody['given_name']} ${jwtBody['family_name']}`
     }
 
     if (jwtBody['email']) {
@@ -75,6 +79,20 @@ export const verifyIdTokenWithGoogle = async (idToken: string): Promise<IIdentif
     }
 
     return returnedIdentfier as IIdentifier
+}
+
+
+export const getFakeIdentifier = (accessToken: string): IIdentifier => {
+    if (!DEBUG) {
+        throw StatusError('Debug Acess Tokens only allowed in dev.')
+    }
+    const identifier: IIdentifier = JSON.parse(accessToken)
+
+    if (!identifier.name || !identifier.sub) {
+        throw StatusError(300, 'invalid input')
+    }
+
+    return identifier
 }
 
 export const generateAccessToken = (id: string): string => {

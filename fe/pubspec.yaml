@@ -14,8 +14,8 @@ dependencies:
 
   #dev ish dependencies
   flutter_bloc: ^7.0.0
-  get_it: ^6.0.0
-  auto_route: ^1.0.2
+  get_it: ^7.1.3
+  auto_route: ^2.2.0
   built_collection: ^5.0.0
   
 
@@ -41,7 +41,7 @@ dependencies:
   gql_http_link: ^0.4.0-nullsafety.1
   hive: ^2.0.4
   hive_flutter: ^1.0.0
-  ferry_hive_store: 0.4.1-0.1.nullsafety.0
+  ferry_hive_store: ^0.4.2
   fresh_graphql: ^0.5.1
   ferry_flutter: ^0.5.1-0.1.nullsafety.1
 
@@ -58,9 +58,9 @@ dev_dependencies:
   pedantic: ^1.11.0
 
   #builders
-  build_runner: ^1.12.2
+  build_runner: ^2.0.4
   json_serializable: ^4.1.0
-  auto_route_generator: ^1.0.2
+  auto_route_generator: ^2.1.0
   ferry_generator: ^0.4.1-0.1.nullsafety.0
 
   #cicd
@@ -68,6 +68,7 @@ dev_dependencies:
 
   flutter_test:
     sdk: flutter
+  mockito: ^5.0.7
 
 
 flutter:

@@ -7,3 +7,6 @@ export const WS_API_GATEWAY = ENVIRONMENT === 'dev' ? 'localhost:5000' : 'NOT YE
 export const HASURA_ENDPOINT = ENVIRONMENT === 'dev' ? 'http://localhost:8080/v1/graphql' : 'http://localhost:8080/v1/graphql'
 export const DEBUG = ENVIRONMENT === 'dev'
 export const DOMAIN = 'getclub.app'
+
+
+export const NO_V_GET_DECRYPTED_KV = 'Is less than 1'

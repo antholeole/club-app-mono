@@ -1,5 +1,7 @@
 import { expect } from 'chai'
 import { router } from '../../src/routers/index'
+import { StatusError } from 'itty-router-extras'
+
 
 describe('handler returns response with request method', () => {
 
@@ -17,15 +19,18 @@ describe('handler returns response with request method', () => {
   })
 
   it('should respond with 404 on any /api/* request', async () => {
-    const resp: Response = await router.handle(new Request('/api/NOT_A_ROUTE', {
-      method: 'GET'
-    }))
-
-    expect(resp.status).to.equal(404)
+    try {
+      await router.handle(new Request('/api/NOT_A_ROUTE', {
+        method: 'GET'
+      }))
+    } catch (e) {
+      expect(e).to.be.instanceOf(StatusError)
+      expect(e).to.have.property('status', 404)
+    }
   })
 
   it('should respond with pong on /ping', async () => {
-    const resp: Response = await router.handle(new Request('/ping', {
+    const resp: Response = await router.handle(new Request('/api/ping', {
       method: 'GET',
     }))
 

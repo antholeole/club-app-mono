@@ -7,7 +7,8 @@ webpack_config = "webpack.config.js"
 
 kv_namespaces = [
     { binding = "PUBLIC_KEYS", id = "8275e93c0b994521b30d957f72d0029f", preview_id = "c6d84f0ea05c4001aecf7090933974f0" },
-    { binding = "REFRESH_TOKENS", id = "d9eaecb741ca4d9c946890d01e5d5bcf", preview_id = "c3f515508613435aa77ae0c9aa2a408b" }
+    { binding = "REFRESH_TOKENS", id = "d9eaecb741ca4d9c946890d01e5d5bcf", preview_id = "c3f515508613435aa77ae0c9aa2a408b" },
+    { binding = "ONLINE_USERS", id = "6a47a63dfbca496d8d9f23afd274fefc", preview_id = "fa31adad55ec46d4af86dfbad51465c0" }
 ]
 
 [site]

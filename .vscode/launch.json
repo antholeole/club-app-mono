@@ -1,0 +1,25 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "cloudflare t",
+            "request": "launch",
+            "runtimeArgs": [
+                "t"
+            ],
+            "runtimeExecutable": "npm",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node",
+            "cwd": "${workspaceFolder}/club-app-be/club-app-worker/"
+        },
+        {
+            "name": "Dart: Run all Tests",
+            "request": "launch",
+            "type": "dart",
+            "program": "./fe/test/"
+        }
+    ],
+    "compounds": []
+}

@@ -9,7 +9,7 @@ terraform {
 
 # Configure the AWS Provider
 provider "aws" {
-  region = "us-east-1"
+  region     = "us-east-1"
   access_key = var.aws_access_key_id
   secret_key = var.aws_secret_access_key_id
 }
@@ -31,8 +31,15 @@ resource "aws_apigatewayv2_route" "clubappgateway" {
 }
 
 resource "aws_apigatewayv2_integration" "connect" {
-  api_id           = aws_apigatewayv2_api.clubappgateway.id
-  integration_type = "HTTP"
+  api_id             = aws_apigatewayv2_api.clubappgateway.id
+  integration_type   = "HTTP"
   integration_method = "GET"
-  integration_uri = "https://getclub.app/gateway/connect"
+  integration_uri    = "https://getclub.app/api/gateway/connect/"
+}
+
+resource "aws_apigatewayv2_integration" "disconnect" {
+  api_id             = aws_apigatewayv2_api.clubappgateway.id
+  integration_type   = "HTTP"
+  integration_method = "GET"
+  integration_uri    = "https://getclub.app/api/gateway/disconnect/"
 }

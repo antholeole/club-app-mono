@@ -1,6 +1,10 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
 import 'package:built_value/standard_json_plugin.dart' show StandardJsonPlugin;
+import 'package:fe/gql/fake/fake.data.gql.dart'
+    show GFakeGqlData, GFakeGqlData_group_join_tokens;
+import 'package:fe/gql/fake/fake.req.gql.dart' show GFakeGqlReq;
+import 'package:fe/gql/fake/fake.var.gql.dart' show GFakeGqlVars;
 import 'package:fe/gql/query_group_join_token.data.gql.dart'
     show GQueryGroupJoinTokenData, GQueryGroupJoinTokenData_group_join_tokens;
 import 'package:fe/gql/query_group_join_token.req.gql.dart'
@@ -159,6 +163,10 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   ..addPlugin(StandardJsonPlugin());
 @SerializersFor([
   GBoolean_comparison_exp,
+  GFakeGqlData,
+  GFakeGqlData_group_join_tokens,
+  GFakeGqlReq,
+  GFakeGqlVars,
   GQueryGroupJoinTokenData,
   GQueryGroupJoinTokenData_group_join_tokens,
   GQueryGroupJoinTokenReq,

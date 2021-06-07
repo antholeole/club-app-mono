@@ -1,0 +1,5 @@
+query FakeGql {
+  group_join_tokens {
+    join_token
+  }
+}
