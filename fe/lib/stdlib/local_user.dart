@@ -39,12 +39,13 @@ class LocalUser {
       _$LocalUserFromJson(json.decode(jsonString));
 
   bool isLoggedIn() {
+    // could be null, uuid is late
     // ignore: unnecessary_null_comparison
     return (uuid != null);
   }
 
   Future<void> logOut() async {
-    await _secureStorage.containsKey(key: REFRESH_TOKEN_KEY);
+    await _secureStorage.delete(key: REFRESH_TOKEN_KEY);
   }
 
   Future<void> serializeSelf() async {
