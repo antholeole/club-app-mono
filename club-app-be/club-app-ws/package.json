@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "npm run build && TF_CLI_ARGS_apply=\"-auto-approve\" terraform apply",
     "build": "webpack",
-    "dev": "webpack --watch >& /dev/null"
+    "dev": "webpack --watch"
   },
   "author": "",
   "license": "ISC",

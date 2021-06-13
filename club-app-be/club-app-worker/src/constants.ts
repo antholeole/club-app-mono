@@ -10,3 +10,5 @@ export const DOMAIN = 'getclub.app'
 
 
 export const NO_V_GET_DECRYPTED_KV = 'Is less than 1'
+
+export const KV_CONCAT_STRING = ':!#$)@$:'

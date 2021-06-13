@@ -42,7 +42,6 @@ dependencies:
   hive: ^2.0.4
   hive_flutter: ^1.0.0
   ferry_hive_store: ^0.4.2
-  fresh_graphql: ^0.5.1
   ferry_flutter: ^0.5.1-0.1.nullsafety.1
 
   #http

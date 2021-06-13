@@ -45,7 +45,7 @@ class MainService {
     final resp = await _client.request(req).first;
 
     if (resp.hasErrors) {
-      final f = await basicGqlErrorHandler(errors: resp.graphqlErrors);
+      final f = await basicGqlErrorHandler(resp);
       return MainPageInitalLoadCarrier(state: MainPageState.Error, failure: f);
     }
 

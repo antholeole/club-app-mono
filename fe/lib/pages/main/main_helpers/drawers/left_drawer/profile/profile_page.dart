@@ -66,8 +66,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ? ButtonGroup(name: 'Debug', buttons: [
                     LoadableTileButton(
                         onClick: () => _tokenManager.read().then((tokens) =>
-                            printWrapped(
-                                tokens?.accessToken ?? 'No Access Tokens')),
+                            printWrapped(tokens ?? 'No Access Tokens')),
                         text: 'Print Access Token',
                         loading: false),
                   ])

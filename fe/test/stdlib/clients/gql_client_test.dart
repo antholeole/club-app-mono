@@ -5,7 +5,6 @@ import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/clients/gql_client/gql_client.dart';
 import 'package:fe/stdlib/local_data/token_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fresh_graphql/fresh_graphql.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
@@ -33,8 +32,8 @@ void main() {
       getIt.registerSingleton<TokenManager>(mockTokenManager);
       getIt.registerSingleton<http.Client>(mockClient);
 
-      when(mockTokenManager.refresh()).thenAnswer(
-          (_) => Future.value(OAuth2Token(accessToken: 'fake.access.token')));
+      when(mockTokenManager.refresh())
+          .thenAnswer((_) => Future.value('fake.access.token'));
       when(mockTokenManager.read()).thenAnswer((_) => Future.value(null));
       when(mockClient.send(any))
           .thenAnswer((_) => buildFailedGqlResponse([JWS_ERROR]));
@@ -52,7 +51,7 @@ void main() {
       getIt.registerSingleton<TokenManager>(mockTokenManager);
       getIt.registerSingleton<http.Client>(mockClient);
 
-      when(mockTokenManager.refresh()).thenThrow(TokenException());
+      when(mockTokenManager.refresh()).thenThrow(FailedRefresh());
       when(mockTokenManager.read()).thenAnswer((_) => Future.value(null));
       when(mockClient.send(any))
           .thenAnswer((_) => buildFailedGqlResponse([JWS_ERROR]));
@@ -61,7 +60,7 @@ void main() {
 
       final resp = await client.request(GFakeGqlReq()).first;
 
-      expect(resp.graphqlErrors![0], isA<RevokeTokenException>());
+      expect(resp.linkException?.originalException, isA<FailedRefresh>());
     });
 
     //should attempt to read tokens

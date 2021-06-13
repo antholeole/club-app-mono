@@ -1,12 +1,12 @@
 import { StatusError, json } from 'itty-router-extras'
-import { IAccessToken, IRefresh } from './discriminators'
+import { IAccessTokenRequest, IRefresh } from './discriminators'
 import { generateAccessToken, getFakeIdentifier, IIdentifier, verifyIdTokenWithGoogle } from './helpers'
 import { addUser, getUserBySub } from './gql_queries'
 import { cryptoRandomString } from '../../helpers/crypto'
 import { getDecryptedKV, putEncryptedKV } from 'encrypt-workers-kv'
 import { NO_V_GET_DECRYPTED_KV } from '../../constants'
 
-export const registerRoute = async (tokens: IAccessToken): Promise<Response> => {
+export const registerRoute = async (tokens: IAccessTokenRequest): Promise<Response> => {
     let identifier: IIdentifier
     switch (tokens.from) {
         case 'Google':

@@ -1,6 +1,6 @@
 import { DiscriminatorError } from '../../helpers/discriminator_error'
 import { isUUID } from '../../helpers/uuid_validator'
-import { MessageType } from './messages'
+import { MessageType } from './message_handlers'
 
 
 interface IWsMessageShape {
@@ -21,7 +21,6 @@ export interface IWsMessage extends IWsMessageShape {
 export type IWsConnectMessage = IWsMessageShape
 
 const discriminateWsMessageShape = (input: Record<string, unknown>): IWsMessageShape => {
-    console.log(input)
     const inputAsAccessToken = input as unknown as IWsConnectMessage
     if (inputAsAccessToken.event.multiValueHeaders?.authorization?.[0]
         && inputAsAccessToken.id) {
