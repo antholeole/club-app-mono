@@ -25,7 +25,6 @@ void main() {
     });
 
     test('should use refresh token when expired or no token', () async {
-      //TODO: why isn't this bouning back and recalling?
       final MockTokenManager mockTokenManager = MockTokenManager();
       final MockClient mockClient = MockClient();
 
@@ -42,6 +41,8 @@ void main() {
       await client.request(GFakeGqlReq()).first;
 
       verify(mockTokenManager.refresh()).called(1);
+      verify(mockClient.send(any))
+          .called(2); //one fails, second works b/c new token
     });
 
     test('should throw revoke error if refresh fails', () async {
@@ -62,9 +63,5 @@ void main() {
 
       expect(resp.linkException?.originalException, isA<FailedRefresh>());
     });
-
-    //should attempt to read tokens
-
-    //should be in auth mode if or if no tokens
   });
 }
