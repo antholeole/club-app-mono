@@ -19,8 +19,10 @@ Future<Failure> basicGqlErrorHandler(OperationResponse resp) async {
           status: FailureStatus.GQLRefresh,
           message: 'failed to refresh token',
           resolved: false);
+    } else if (resp.linkException!.originalException is HttpException) {
+      debugPrint('got a http ex ' + resp.linkException!.originalException.toString());
     } else {
-      debugPrint('got a linkex but it isnt a revoke token ex');
+      debugPrint('got a bad linkex ' + resp.linkException!.originalException.toString());
     }
   }
 

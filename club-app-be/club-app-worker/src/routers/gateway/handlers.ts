@@ -1,11 +1,11 @@
 import { decodeJwt } from '../../helpers/jwt'
 import { IAccessToken } from '../../helpers/types/access_token'
-import { IWsConnectMessage, IWsMessage, discriminateMessageMessage } from './discriminators'
-import { status, json, StatusError } from 'itty-router-extras'
-import { handleMessageMessage, MessageType } from './message_handlers'
+import { IWsConnectMessage, IWsMessage, IWsMessageMessage, messageTypes, toMessageTypes } from './discriminators'
+import { status, StatusError } from 'itty-router-extras'
+import { handleMessageMessage } from './message_handlers'
 import { DiscriminatorError } from '../../helpers/discriminator_error'
-import { cryptoRandomString } from '../../helpers/crypto'
-import { KV_CONCAT_STRING } from '../../constants'
+import { discriminate } from '../../helpers/discriminators/base_discriminator'
+import { EnumFieldOption, FieldOption, MockValues } from '../../helpers/discriminators/field_options'
 
 export const connectRoute = async (wsMessage: IWsConnectMessage): Promise<Response> => {
     const jwt = decodeJwt(wsMessage.event.multiValueHeaders.authorization[0]) as unknown as IAccessToken
@@ -39,8 +39,24 @@ export const messageRoute = async (wsMessage: IWsMessage): Promise<Response> => 
     }
 
     switch (wsMessage.message.type) {
-        case MessageType.Message:
-            handleMessageMessage(discriminateMessageMessage(wsMessage))
+        case 'message':
+            handleMessageMessage(discriminate<IWsMessageMessage>(
+                {
+                    event: {
+                        multiValueHeaders: {
+                            authorization: new FieldOption([MockValues.mockString])
+                        }
+                    },
+                    message: {
+                        toPlace: new EnumFieldOption<typeof toMessageTypes>(toMessageTypes),
+                        toId: new FieldOption(MockValues.mockString),
+                        message: new FieldOption(MockValues.mockString),
+                        type: new EnumFieldOption<typeof messageTypes>(messageTypes)
+                    },
+                    id: new FieldOption(MockValues.mockString)
+                },
+                wsMessage as unknown as Record<string, unknown>
+            ))
             break
         default:
             throw new DiscriminatorError()

@@ -9,5 +9,3 @@ declare const HASURA_PASSWORD = 'PASSWORD'
 declare const SECRET = 'SECRET'
 declare const ENVIRONMENT = 'dev'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type HkdfParams = any

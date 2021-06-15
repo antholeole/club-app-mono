@@ -1,5 +1,5 @@
 import { StatusError, json } from 'itty-router-extras'
-import { IAccessTokenRequest, IRefresh } from './discriminators'
+import { IAccessTokenRequest, IRefresh } from './types'
 import { generateAccessToken, getFakeIdentifier, IIdentifier, verifyIdTokenWithGoogle } from './helpers'
 import { addUser, getUserBySub } from './gql_queries'
 import { cryptoRandomString } from '../../helpers/crypto'
