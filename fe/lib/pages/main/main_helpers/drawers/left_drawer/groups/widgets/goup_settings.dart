@@ -5,6 +5,7 @@ import 'package:fe/gql/query_users_in_group.data.gql.dart';
 import 'package:fe/gql/query_users_in_group.req.gql.dart';
 import 'package:fe/gql/query_users_in_group.var.gql.dart';
 import 'package:fe/stdlib/theme/loadable_tile_button.dart';
+import 'package:fe/stdlib/widgets/gql_operation.dart';
 import 'package:ferry/ferry.dart';
 import 'package:ferry_flutter/ferry_flutter.dart';
 import 'package:fe/stdlib/theme/loader.dart';
@@ -79,31 +80,17 @@ class _GroupSettingsState extends State<GroupSettings> {
   List<Widget> _buildUsers() {
     return [
       TileHeader(text: 'Members'),
-      Operation(
-        client: _client,
-        operationRequest: GQueryUsersInGroupReq(
-          (b) => b
-            ..fetchPolicy = FetchPolicy.NetworkOnly
-            ..vars.groupId = widget._group.id,
-        ),
-        builder: (
-          oContext,
-          OperationResponse<GQueryUsersInGroupData, GQueryUsersInGroupVars>?
-              resp,
-          err,
-        ) {
-          if (resp!.loading) {
-            return Loader();
-          }
-
-          final usersInGroup = resp.data?.user_to_group ?? BuiltList();
-
-          return Column(
-              children: usersInGroup.map((user) {
-            return _buildUserTile(user);
-          }).toList());
-        },
-      ),
+      GqlOperation(
+          operationRequest: GQueryUsersInGroupReq(
+            (b) => b
+              ..fetchPolicy = FetchPolicy.NetworkOnly
+              ..vars.groupId = widget._group.id,
+          ),
+          toastErrorPrefix: 'Error loading members',
+          onResponse: (GQueryUsersInGroupData data) => Column(
+                  children: data.user_to_group.map((user) {
+                return _buildUserTile(user);
+              }).toList())),
     ];
   }
 

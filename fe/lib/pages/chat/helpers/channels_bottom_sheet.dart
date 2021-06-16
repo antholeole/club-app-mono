@@ -1,13 +1,10 @@
 import 'package:fe/data/models/group.dart';
 import 'package:fe/gql/query_self_threads_in_group.data.gql.dart';
 import 'package:fe/gql/query_self_threads_in_group.req.gql.dart';
-import 'package:fe/gql/query_self_threads_in_group.var.gql.dart';
 import 'package:fe/pages/chat/cubit/chat_cubit.dart';
 import 'package:fe/stdlib/local_user.dart';
-import 'package:fe/stdlib/theme/loader.dart';
 import 'package:fe/stdlib/theme/search_bar.dart';
-import 'package:ferry/ferry.dart';
-import 'package:ferry_flutter/ferry_flutter.dart';
+import 'package:fe/stdlib/widgets/gql_operation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -34,7 +31,6 @@ class _ChannelsBottomSheetState extends State<ChannelsBottomSheet>
   late final AnimationController _animationController;
 
   final LocalUser _localUser = getIt<LocalUser>();
-  final Client _client = getIt<Client>();
 
   @override
   void initState() {
@@ -105,45 +101,33 @@ class _ChannelsBottomSheetState extends State<ChannelsBottomSheet>
                               fontFamily: 'IBM Plex Mono',
                               color: Colors.grey.shade700),
                         ),
-                        Operation(
+                        GqlOperation(
                             operationRequest:
                                 GQuerySelfThreadsInGroupReq((q) => q
                                   ..vars.groupId = widget._selectedGroup!.id
                                   ..vars.userId = _localUser.uuid),
-                            builder: (oContext,
-                                OperationResponse<GQuerySelfThreadsInGroupData,
-                                        GQuerySelfThreadsInGroupVars>?
-                                    resp,
-                                error) {
-                              if (resp!.loading) {
-                                return Loader(size: 24);
-                              }
-
-                              if (resp.hasErrors) {
-                                print('HAS ERROR');
-                              }
-
-                              return BlocBuilder<ChatCubit, ChatState>(
-                                  bloc: widget._chatCubit,
-                                  builder: (_, state) {
-                                    return Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: resp.data!.group_threads
-                                          .where((v) => v.name
-                                              .toLowerCase()
-                                              .contains(_channelSearch.text
-                                                  .toLowerCase()))
-                                          .map((v) => _buildChannelTile(
-                                              unreadMessages: 2,
-                                              onTap: () => widget._chatCubit
-                                                  .setThread(v.id),
-                                              selected: state.threadId == v.id,
-                                              title: v.name))
-                                          .toList(),
-                                    );
-                                  });
-                            },
-                            client: _client)
+                            toastErrorPrefix: 'Error loading threads',
+                            onResponse: (GQuerySelfThreadsInGroupData data) =>
+                                BlocBuilder<ChatCubit, ChatState>(
+                                    bloc: widget._chatCubit,
+                                    builder: (_, state) {
+                                      return Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: data.group_threads
+                                            .where((v) => v.name
+                                                .toLowerCase()
+                                                .contains(_channelSearch.text
+                                                    .toLowerCase()))
+                                            .map((v) => _buildChannelTile(
+                                                unreadMessages: 2,
+                                                onTap: () => widget._chatCubit
+                                                    .setThread(v.id),
+                                                selected:
+                                                    state.threadId == v.id,
+                                                title: v.name))
+                                            .toList(),
+                                      );
+                                    })),
                       ],
                     ))
                   ],
