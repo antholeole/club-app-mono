@@ -4,6 +4,7 @@ import 'package:fe/gql/query_self_group_preview.req.gql.dart';
 import 'package:fe/gql/query_self_group_preview.var.gql.dart';
 import 'package:fe/pages/main/main_helpers/drawers/left_drawer/groups/widgets/group_tab.dart';
 import 'package:fe/service_locator.dart';
+import 'package:fe/stdlib/widgets/gql_operation.dart';
 import 'package:ferry/ferry.dart';
 import 'package:ferry_flutter/ferry_flutter.dart';
 import 'package:flutter/material.dart';
@@ -33,23 +34,18 @@ class _GroupsPageState extends State<GroupsPage> {
   @override
   Widget build(BuildContext context) {
     return SizedBox.expand(
-      child: Operation(
-          client: _client,
-          operationRequest: _groupsReq,
-          builder: (context,
-              OperationResponse<GQuerySelfGroupsPreviewData,
-                      GQuerySelfGroupsPreviewVars>?
-                  response,
-              error) {
-            if (response!.loading) {
-              return Loader();
-            }
-
-            return _buildGroups(response.data!.user_to_group.map((utg) => Group(
-                admin: utg.admin,
-                id: utg.group.id,
-                name: utg.group.group_name)));
-          }),
+      child: GqlOperation(
+        operationRequest: _groupsReq,
+        onResponse: (GQuerySelfGroupsPreviewData data) => _buildGroups(
+          data.user_to_group.map(
+            (utg) => Group(
+                admin: utg.admin, id: utg.group.id, name: utg.group.group_name),
+          ),
+        ),
+        error: Center(
+          child: Text('sorry, there was an error loading groups.'),
+        ),
+      ),
     );
   }
 

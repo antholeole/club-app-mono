@@ -34,7 +34,7 @@ abstract class HttpClient {
     }
 
     if (e.statusCode == 500) {
-      debugPrint('recieved 500: ${e.message}');
+      debugPrint('recieved 500 error');
       return Failure(
           status: FailureStatus.InternalServerError,
           message:

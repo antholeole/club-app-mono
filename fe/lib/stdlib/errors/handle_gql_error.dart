@@ -20,9 +20,14 @@ Future<Failure> basicGqlErrorHandler(OperationResponse resp) async {
           message: 'failed to refresh token',
           resolved: false);
     } else if (resp.linkException!.originalException is HttpException) {
-      debugPrint('got a http ex ' + resp.linkException!.originalException.toString());
+      return HttpClient.basicHttpErrorHandler(
+          resp.linkException!.originalException, {});
     } else {
-      debugPrint('got a bad linkex ' + resp.linkException!.originalException.toString());
+      return Failure(
+          status: FailureStatus.GQLRefresh,
+          message:
+              'Unknown error: ${resp.linkException!.originalException.toString()}',
+          resolved: false);
     }
   }
 

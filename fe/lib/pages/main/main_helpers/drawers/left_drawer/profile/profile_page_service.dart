@@ -2,6 +2,7 @@ import 'package:fe/gql/update_self_name.req.gql.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
+import 'package:fe/stdlib/errors/handle_gql_error.dart';
 import 'package:fe/stdlib/local_user.dart';
 import 'package:ferry/ferry.dart';
 
@@ -28,6 +29,10 @@ class ProfilePageService {
       ..vars.name = newName);
 
     final resp = await _gqlClient.request(query).first;
+
+    if (resp.hasErrors) {
+      throw await basicGqlErrorHandler(resp);
+    }
 
     _user.name = resp.data!.update_users_by_pk!.name;
   }

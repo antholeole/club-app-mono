@@ -39,10 +39,11 @@ class GqlOperation<TData, TVars> extends StatelessWidget {
         if (response.hasErrors) {
           basicGqlErrorHandler(response).then(
               (f) => handleFailure(f, context, withPrefix: toastErrorPrefix));
-          return Text(
-            'error',
-            style: TextStyle(color: Colors.red),
-          );
+          return this.error ??
+              Text(
+                'error',
+                style: TextStyle(color: Colors.red),
+              );
         }
 
         return onResponse(response.data!);
