@@ -8,15 +8,16 @@ const fs = require('fs')
 const mode = 'production'
 
 let plugins = []
+let sourceMap = undefined
 
 
 function getDotEnvVariable(variable) {
   let read = JSON.stringify(
     fs.readFileSync('../../.env', 'utf-8').split('\n')
-    .find((v) => v.includes(`${variable}=`))
-    .split(`${variable}=`)[1])
+      .find((v) => v.includes(`${variable}=`))
+      .split(`${variable}=`)[1])
 
-    return read
+  return read
 }
 
 if (process.env.NODE_ENV === 'development') {
@@ -30,6 +31,8 @@ if (process.env.NODE_ENV === 'development') {
       SECRET: jwtSecret
     })
   )
+
+  sourceMap = 'inline-source-map'
 }
 
 module.exports = {
@@ -37,6 +40,7 @@ module.exports = {
     filename: `worker.js`,
     path: path.join(__dirname, 'dist'),
   },
+  devtool: sourceMap,
   mode,
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],

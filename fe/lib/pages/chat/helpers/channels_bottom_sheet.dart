@@ -5,6 +5,7 @@ import 'package:fe/pages/chat/cubit/chat_cubit.dart';
 import 'package:fe/stdlib/local_user.dart';
 import 'package:fe/stdlib/theme/search_bar.dart';
 import 'package:fe/stdlib/widgets/gql_operation.dart';
+import 'package:ferry/ferry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -104,6 +105,7 @@ class _ChannelsBottomSheetState extends State<ChannelsBottomSheet>
                         GqlOperation(
                             operationRequest:
                                 GQuerySelfThreadsInGroupReq((q) => q
+                                  ..fetchPolicy = FetchPolicy.CacheAndNetwork
                                   ..vars.groupId = widget._selectedGroup!.id
                                   ..vars.userId = _localUser.uuid),
                             toastErrorPrefix: 'Error loading threads',
