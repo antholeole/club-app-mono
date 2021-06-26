@@ -1,6 +1,6 @@
 import 'package:fe/config.dart';
 import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
-import 'package:fe/pages/main/main_helpers/drawers/left_drawer/profile/profile_page_service.dart';
+import 'package:fe/pages/main/main_helpers/scaffold/drawers/left_drawer/profile/profile_page_service.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/handle_failure.dart';

@@ -1,16 +1,14 @@
 import 'package:fe/data/models/group.dart';
 import 'package:fe/gql/query_self_group_preview.data.gql.dart';
 import 'package:fe/gql/query_self_group_preview.req.gql.dart';
-import 'package:fe/gql/query_self_group_preview.var.gql.dart';
-import 'package:fe/pages/main/main_helpers/drawers/left_drawer/groups/widgets/group_tab.dart';
-import 'package:fe/service_locator.dart';
-import 'package:fe/stdlib/widgets/gql_operation.dart';
-import 'package:ferry/ferry.dart';
-import 'package:ferry_flutter/ferry_flutter.dart';
-import 'package:flutter/material.dart';
+import 'package:fe/pages/main/main_helpers/scaffold/drawers/left_drawer/groups/widgets/group_tab.dart';
 
-import '../../../../../../stdlib/local_user.dart';
-import '../../../../../../stdlib/theme/loader.dart';
+import 'package:fe/service_locator.dart';
+import 'package:fe/stdlib/local_user.dart';
+import 'package:fe/stdlib/shared_widgets/gql_operation.dart';
+import 'package:ferry/ferry.dart';
+
+import 'package:flutter/material.dart';
 
 class GroupsPage extends StatefulWidget {
   @override
@@ -18,7 +16,6 @@ class GroupsPage extends StatefulWidget {
 }
 
 class _GroupsPageState extends State<GroupsPage> {
-  final Client _client = getIt<Client>();
   final LocalUser _localUser = getIt<LocalUser>();
 
   late GQuerySelfGroupsPreviewReq _groupsReq;

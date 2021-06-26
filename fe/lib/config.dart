@@ -3,6 +3,7 @@ abstract class Config {
   //this bool can toggle it off.
   String get connectionUrl;
   String get gqlUrl;
+  String get wsUrl;
   bool get httpIsSecure;
   bool get playTaxingAnimations;
   bool get refreshLocalCacheOnReload;
@@ -15,6 +16,9 @@ class DevConfig extends Config {
 
   @override
   String get gqlUrl => 'http://127.0.0.1:8080/v1/graphql';
+
+  @override
+  String get wsUrl => 'http://127.0.0.1:5000';
 
   @override
   bool get httpIsSecure => false;
@@ -35,6 +39,9 @@ class ProdConfig extends Config {
 
   @override
   String get gqlUrl => throw UnimplementedError('bruh');
+
+  @override
+  String get wsUrl => throw UnimplementedError('bruh');
 
   @override
   bool get httpIsSecure => true;

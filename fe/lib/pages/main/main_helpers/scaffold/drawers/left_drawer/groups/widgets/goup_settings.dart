@@ -1,21 +1,17 @@
-import 'package:built_collection/built_collection.dart';
 import 'package:fe/data/models/group.dart';
 import 'package:fe/gql/query_group_join_token.req.gql.dart';
 import 'package:fe/gql/query_users_in_group.data.gql.dart';
 import 'package:fe/gql/query_users_in_group.req.gql.dart';
-import 'package:fe/gql/query_users_in_group.var.gql.dart';
 import 'package:fe/stdlib/theme/loadable_tile_button.dart';
-import 'package:fe/stdlib/widgets/gql_operation.dart';
+import 'package:fe/stdlib/shared_widgets/gql_operation.dart';
 import 'package:ferry/ferry.dart';
-import 'package:ferry_flutter/ferry_flutter.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:fe/stdlib/theme/tile.dart';
 import 'package:fe/stdlib/theme/tile_header.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../../../service_locator.dart';
-import '../../../../../../../stdlib/theme/loader.dart';
+import '../../../../../../../../service_locator.dart';
 import '../groups_service.dart';
 
 class GroupSettings extends StatefulWidget {

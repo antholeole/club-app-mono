@@ -31,6 +31,10 @@ dependencies:
   fluttertoast: ^8.0.3
   flutter_platform_widgets: ^1.6.1
   badges: ^2.0.0-nullsafety.1
+  keyboard_attachable:
+    git:
+      url: https://github.com/drogel/keyboard_attachable.git
+      ref: bugfix/footer-offset
 
   #gql
   ferry: ^0.10.1-0.1.nullsafety.0
@@ -46,6 +50,9 @@ dependencies:
 
   #http
   http: ^0.13.1
+
+  #ws
+  web_socket_channel: ^2.1.0
 
   #other 
   google_sign_in: ^5.0.0

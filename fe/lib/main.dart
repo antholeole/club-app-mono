@@ -1,17 +1,25 @@
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:fe/stdlib/theme/colors.dart';
+import 'package:fe/stdlib/toaster.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 void main() async {
-  await startup();
   setupLocator(isProd: false);
   runApp(MyApp());
 }
 
-Future<void> startup() async {}
+Future<void> asyncStartup() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Future.wait([
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
+  ]);
+}
 
 class MyApp extends StatelessWidget {
   final _appRouter = AppRouter();
@@ -21,6 +29,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Flutter Demo',
       theme: ThemeData(
+          primaryColorBrightness: Brightness.light,
           textTheme: TextTheme(
               caption: TextStyle(
             color: Colors.grey,
@@ -31,11 +40,14 @@ class MyApp extends StatelessWidget {
               backgroundColor: Colors.black.withOpacity(0))),
       routerDelegate: _appRouter.delegate(),
       routeInformationParser: _appRouter.defaultRouteParser(),
-      builder: (innerContext, router) => PlatformWidgetBuilder(
-          cupertino: (_, child, __) => CupertinoTheme(
-              data: CupertinoThemeData(primaryColor: primaryColor),
-              child: child!),
-          child: router!),
+      builder: (innerContext, router) => Toaster(
+        context: innerContext,
+        child: PlatformWidgetBuilder(
+            cupertino: (_, child, __) => CupertinoTheme(
+                data: CupertinoThemeData(primaryColor: primaryColor),
+                child: child!),
+            child: router!),
+      ),
     );
   }
 }

@@ -1,10 +1,9 @@
 import 'package:fe/config.dart';
 import 'package:fe/pages/login/login_service.dart';
-import 'package:fe/pages/main/main_helpers/drawers/left_drawer/groups/groups_service.dart';
-import 'package:fe/pages/main/main_helpers/drawers/left_drawer/profile/profile_page_service.dart';
+import 'package:fe/pages/main/main_helpers/scaffold/drawers/left_drawer/groups/groups_service.dart';
+import 'package:fe/pages/main/main_helpers/scaffold/drawers/left_drawer/profile/profile_page_service.dart';
 import 'package:fe/pages/main/main_service.dart';
 import 'package:fe/pages/splash/splash_service.dart';
-import 'package:fe/stdlib/clients/gql_client/cache.dart';
 import 'package:fe/stdlib/clients/gql_client/gql_client.dart';
 import 'package:fe/stdlib/clients/http_client/unauth_http_client.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';

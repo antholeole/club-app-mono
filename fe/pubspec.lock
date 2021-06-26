@@ -328,6 +328,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "7.0.0"
+  flutter_keyboard_visibility:
+    dependency: transitive
+    description:
+      name: flutter_keyboard_visibility
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.0.2"
+  flutter_keyboard_visibility_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_keyboard_visibility_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
+  flutter_keyboard_visibility_web:
+    dependency: transitive
+    description:
+      name: flutter_keyboard_visibility_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   flutter_platform_widgets:
     dependency: "direct main"
     description:
@@ -534,6 +555,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.1.3"
+  keyboard_attachable:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: "bugfix/footer-offset"
+      resolved-ref: be34f7e991a71291ec696f3b979298d5fa4d4daf
+      url: "https://github.com/drogel/keyboard_attachable.git"
+    source: git
+    version: "2.0.0"
   logging:
     dependency: transitive
     description:
@@ -820,7 +850,7 @@ packages:
     source: hosted
     version: "1.0.0"
   web_socket_channel:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: web_socket_channel
       url: "https://pub.dartlang.org"

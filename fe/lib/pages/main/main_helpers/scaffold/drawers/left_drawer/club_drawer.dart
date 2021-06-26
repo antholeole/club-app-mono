@@ -1,7 +1,8 @@
-import 'package:fe/pages/main/main_helpers/drawers/left_drawer/groups/groups_page.dart';
-import 'package:fe/pages/main/main_helpers/drawers/left_drawer/profile/profile_page.dart';
+import 'package:fe/pages/main/main_helpers/scaffold/drawers/left_drawer/profile/profile_page.dart';
 import 'package:fe/stdlib/theme/option_pill.dart';
 import 'package:flutter/material.dart';
+
+import 'groups/groups_page.dart';
 
 //Need to include a two tab swiper... One to see stuff dependent on view,
 //i.e. pins in chat, two to change clubs. NOTE: Change clubs only for now!

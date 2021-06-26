@@ -1,6 +1,7 @@
 import 'package:fe/data/models/group.dart';
 import 'package:fe/gql/remove_self_from_group.req.gql.dart';
 import 'package:fe/gql/upsert_group_join_token.req.gql.dart';
+import 'package:fe/pages/main/bloc/main_page_bloc.dart';
 import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
 import 'package:fe/stdlib/helpers/random_string.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
@@ -10,8 +11,7 @@ import 'package:ferry/ferry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../../service_locator.dart';
-import '../../../../../../stdlib/helpers/uuid_type.dart';
+import '../../../../../../../service_locator.dart';
 
 class GroupsService {
   final _gqlClient = getIt<Client>();
@@ -38,7 +38,7 @@ class GroupsService {
       if (context.read<MainPageActionsCubit>().state.selectedGroup != null &&
           context.read<MainPageActionsCubit>().state.selectedGroup!.id ==
               group.id) {
-        context.read<MainPageActionsCubit>().resetPage();
+        context.read<MainPageBloc>().add(ResetMainPageEvent());
       }
       didLeaveGroup();
     }

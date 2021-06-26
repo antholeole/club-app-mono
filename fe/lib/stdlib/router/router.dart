@@ -2,7 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fe/pages/chat/chat_page.dart';
 import 'package:fe/pages/login/login_page.dart';
 import 'package:fe/pages/main/events/events_page.dart';
-import 'package:fe/pages/main/main_wrapper.dart';
+import 'package:fe/pages/main/main_helpers/main_page_wrapper.dart';
+import 'package:fe/pages/main/main_page.dart';
 import 'package:fe/pages/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -11,10 +12,14 @@ import 'package:flutter/material.dart';
   routes: <AutoRoute>[
     NoAnimationRoute(path: '/', page: SplashScreen, initial: true),
     NoAnimationRoute(path: '/login', page: LoginPage),
-    NoAnimationRoute(path: '/main', name: 'main', page: MainWrapper, children: [
-      NoAnimationRoute(path: 'events', page: EventsPage),
-      NoAnimationRoute(path: 'chat', page: ChatPage)
-    ])
+    NoAnimationRoute(
+        path: '/main',
+        name: 'main',
+        page: MainPageWrapper,
+        children: [
+          NoAnimationRoute(path: 'events', page: EventsPage),
+          NoAnimationRoute(path: 'chat', page: ChatPage)
+        ])
   ],
 )
 class $AppRouter {}

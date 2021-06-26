@@ -2,7 +2,7 @@ import { Router } from 'itty-router'
 import { discriminate } from '../../helpers/discriminators/base_discriminator'
 import { EnumFieldOption, FieldOption, MockValues } from '../../helpers/discriminators/field_options'
 import { readJsonBody } from '../../helpers/read_json_body'
-import { IWsMessage, IWsMessageShape, messageTypes, toMessageTypes } from './discriminators'
+import { IWsMessage, IWsMessageShape, messageTypes } from './discriminators'
 import { connectRoute, disconnectRoute, messageRoute } from './handlers'
 
 export const gatewayRouter = Router({

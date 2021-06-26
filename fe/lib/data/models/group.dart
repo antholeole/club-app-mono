@@ -1,9 +1,13 @@
 import '../../stdlib/helpers/uuid_type.dart';
 
 class Group {
-  final UuidType id;
-  final String name;
-  final bool admin;
+  final UuidType _id;
+  String name;
+  bool admin;
+  bool hasNotifications = false;
 
-  const Group({required this.id, required this.name, required this.admin});
+  UuidType get id => _id;
+
+  Group({required UuidType id, required this.name, required this.admin})
+      : _id = id;
 }

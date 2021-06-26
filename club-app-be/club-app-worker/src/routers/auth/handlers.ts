@@ -4,7 +4,7 @@ import { generateAccessToken, getFakeIdentifier, IIdentifier, verifyIdTokenWithG
 import { addUser, getUserBySub } from './gql_queries'
 import { cryptoRandomString } from '../../helpers/crypto'
 import { getDecryptedKV, putEncryptedKV } from 'encrypt-workers-kv'
-import { NO_V_GET_DECRYPTED_KV } from '../../constants'
+import { NotFoundError } from '@cloudflare/kv-asset-handler'
 
 export const registerRoute = async (tokens: IAccessTokenRequest): Promise<Response> => {
     let identifier: IIdentifier
@@ -39,7 +39,8 @@ export const refreshRoute = async (refreshParams: IRefresh): Promise<Response> =
     try {
         decryptedHash = await getDecryptedKV(REFRESH_TOKENS, refreshParams.userId, SECRET)
     } catch (e) {
-        if (e instanceof Error && e.message.includes(NO_V_GET_DECRYPTED_KV)) {
+        //instanceof does not work here. idk y
+        if (e.constructor.name == 'NotFoundError') {
             throw new StatusError(404, `user with id ${refreshParams.userId} not found`)
         } else {
             throw e
