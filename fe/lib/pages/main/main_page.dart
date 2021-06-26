@@ -1,60 +1,65 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fe/pages/main/main_service.dart';
 import 'package:fe/stdlib/clients/ws_client/ws_client.dart';
+import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/handle_failure.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:fe/stdlib/shared_widgets/join_group_button.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:fe/stdlib/theme/pill_button.dart';
-import 'package:fe/stdlib/toaster.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../service_locator.dart';
 import 'bloc/main_page_bloc.dart';
-import 'cubit/main_page_actions_cubit.dart';
 import 'main_helpers/ws_provider.dart';
 
-class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
-
-  @override
-  _MainPageState createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
+class MainPage extends StatelessWidget {
   final MainService _mainService = getIt<MainService>();
+
+  MainPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<MainPageActionsCubit, MainPageActionsState>(
-      listener: (blContext, state) {
-        if (state is Logout) {
-          _logout(state.withError, blContext);
-        }
-      },
-      child: BlocConsumer<MainPageBloc, MainPageState>(
-          listener: (bcContext, state) {
-        if (state is MainPageWithGroup) {
-          bcContext.read<MainPageActionsCubit>().selectGroup(state.group);
-        }
-      }, builder: (bcContext, state) {
-        if (state is MainPageLoading || state is MainPageInitial) {
-          return Center(
-            child: Loader(),
-          );
-        } else if (state is MainPageLoadFailure) {
-          handleFailure(state.failure, bcContext);
-          return _buildErrorScreen();
-        } else if (state is MainPageGroupless) {
-          return _buildGroupless(state.wsClient);
-        } else if (state is MainPageWithGroup) {
-          return _buildContent(state.wsClient);
-        } else {
-          throw 'unreachable state';
-        }
-      }),
+    return FutureBuilder<WsClient>(
+        future: _mainService.getWsClient(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return _buildLoading();
+          }
+
+          if (snapshot.hasError) {
+            final error = snapshot.error;
+
+            if (error is Failure) {
+              handleFailure(error, context);
+            } else {
+              debugPrint('unhandled error: $error');
+              throw error!;
+            }
+          }
+
+          return BlocBuilder<MainPageBloc, MainPageState>(
+              builder: (bcContext, state) {
+            if (state is MainPageLoading || state is MainPageInitial) {
+              return _buildLoading();
+            } else if (state is MainPageLoadFailure) {
+              handleFailure(state.failure, bcContext);
+              return _buildErrorScreen(bcContext);
+            } else if (state is MainPageGroupless) {
+              return _buildGroupless(snapshot.data!);
+            } else if (state is MainPageWithGroup) {
+              return _buildContent(snapshot.data!);
+            } else {
+              throw 'unreachable state';
+            }
+          });
+        });
+  }
+
+  Widget _buildLoading() {
+    return Center(
+      child: Loader(),
     );
   }
 
@@ -93,7 +98,7 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  Widget _buildErrorScreen() {
+  Widget _buildErrorScreen(BuildContext context) {
     return Center(
         child: Column(
       mainAxisSize: MainAxisSize.min,
@@ -115,18 +120,5 @@ class _MainPageState extends State<MainPage> {
         ),
       ],
     ));
-  }
-
-  Future<void> _logout(bool withError, BuildContext context) async {
-    await _mainService.logOut();
-    AutoRouter.of(context).popUntilRouteWithName(Main.name);
-    await AutoRouter.of(context).popAndPush(LoginRoute());
-
-    if (withError) {
-      Toaster.of(context)
-          .errorToast("Sorry, you've been logged out due to an error.");
-    } else {
-      Toaster.of(context).warningToast('Logged Out.');
-    }
   }
 }

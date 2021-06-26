@@ -1,10 +1,10 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:fe/pages/chat/cubit/chat_cubit.dart';
-import 'package:fe/pages/chat/helpers/channels_bottom_sheet.dart';
-import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
+import 'package:fe/pages/chat/widgets/channels_bottom_sheet.dart';
+import 'package:fe/pages/main/bloc/main_page_bloc.dart';
 import 'package:fe/pages/main/main_helpers/scaffold/scaffold_button.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:fe/stdlib/theme/bottom_nav/bottom_nav.dart';
+import 'package:fe/stdlib/theme/loader.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -29,22 +29,11 @@ class MainScaffold extends StatelessWidget {
         backgroundColor: Color(0xffFBFBFB),
         foregroundColor: Colors.grey[900],
         automaticallyImplyLeading: false,
-        title: Column(
-          children: _buildTitle(context),
-        ),
+        title: _buildTitle(),
         leading: ScaffoldButton(
             icon: Icons.menu,
             onPressed: (sbContext) => Scaffold.of(sbContext).openDrawer()),
-        actions:
-            context.read<MainPageActionsCubit>().state.selectedGroup != null
-                ? [
-                    ScaffoldButton(
-                      icon: Icons.group,
-                      onPressed: (sbContext) =>
-                          Scaffold.of(sbContext).openEndDrawer(),
-                    )
-                  ]
-                : [],
+        actions: _buildContextButtons(context),
       ),
       drawer: ClubDrawer(),
       endDrawer: GroupDrawer(),
@@ -61,21 +50,36 @@ class MainScaffold extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildTitle(BuildContext context) {
-    final titleElements = <Widget>[];
+  List<Widget> _buildContextButtons(BuildContext context) {
+    final currentState = context.watch<MainPageBloc>().state;
 
-    final actionCubit = context.read<MainPageActionsCubit>();
-
-    if (actionCubit.state.selectedGroup != null) {
-      {
-        titleElements.add(Text(
-          actionCubit.state.selectedGroup!.name,
-          style: Theme.of(context).textTheme.caption,
-        ));
-      }
+    if (currentState is MainPageWithGroup) {
+      return [
+        ScaffoldButton(
+            icon: Icons.group,
+            onPressed: (sbContext) => Scaffold.of(sbContext).openEndDrawer())
+      ];
+    } else {
+      return [];
     }
+  }
 
-    return titleElements;
+  Widget _buildTitle() {
+    return BlocBuilder<MainPageBloc, MainPageState>(builder: (context, state) {
+      if (state is MainPageGroupless) {
+        return Text('No group selected',
+            style: Theme.of(context).textTheme.caption);
+      } else if (state is MainPageWithGroup) {
+        return Text(
+          state.group.name,
+          style: Theme.of(context).textTheme.caption,
+        );
+      } else if (state is MainPageLoading) {
+        return Loader(size: 12);
+      } else {
+        return Container();
+      }
+    });
   }
 
   void _changeTab(int tab, bool held, BuildContext context) {

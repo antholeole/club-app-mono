@@ -1,5 +1,4 @@
 import 'package:fe/config.dart';
-import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
 import 'package:fe/pages/main/main_helpers/scaffold/drawers/left_drawer/profile/profile_page_service.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/errors/failure.dart';
@@ -11,8 +10,9 @@ import 'package:fe/stdlib/theme/button_group.dart';
 import 'package:fe/stdlib/theme/loadable_tile_button.dart';
 import 'package:fe/stdlib/toaster.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+
+import '../../../../../main_service.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -20,6 +20,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final MainService _mainService = getIt<MainService>();
   final ProfilePageService _profilePageService = getIt<ProfilePageService>();
   final TokenManager _tokenManager = getIt<TokenManager>();
   bool _changingName = false;
@@ -56,7 +57,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     setState(() {
                       _loggingOut = false;
                     });
-                    context.read<MainPageActionsCubit>().logout();
+
+                    _mainService.logOut(context, false);
                   },
                   color: Colors.red,
                   text: 'Log Out',

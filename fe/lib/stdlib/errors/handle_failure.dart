@@ -1,14 +1,14 @@
+import 'package:fe/pages/main/main_service.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../../pages/main/cubit/main_page_actions_cubit.dart';
+import '../../service_locator.dart';
 import '../toaster.dart';
 import 'failure.dart';
 import 'failure_status.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 void handleFailure(Failure f, BuildContext context, {String? withPrefix}) {
   if (f.status == FailureStatus.GQLRefresh) {
-    context.read<MainPageActionsCubit>().logout(withError: true);
+    getIt<MainService>().logOut(context, true);
   } else {
     String errorString = f.message;
 

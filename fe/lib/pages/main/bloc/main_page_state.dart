@@ -20,14 +20,11 @@ class MainPageLoadFailure extends MainPageState {
 }
 
 class MainPageGroupless extends MainPageState {
-  final WsClient wsClient;
-
-  const MainPageGroupless({required this.wsClient});
+  const MainPageGroupless();
 }
 
 class MainPageWithGroup extends MainPageState {
-  final WsClient wsClient;
   final Group group;
 
-  const MainPageWithGroup({required this.wsClient, required this.group});
+  const MainPageWithGroup({required this.group});
 }

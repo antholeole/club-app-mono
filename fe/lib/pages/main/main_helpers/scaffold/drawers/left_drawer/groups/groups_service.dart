@@ -2,7 +2,6 @@ import 'package:fe/data/models/group.dart';
 import 'package:fe/gql/remove_self_from_group.req.gql.dart';
 import 'package:fe/gql/upsert_group_join_token.req.gql.dart';
 import 'package:fe/pages/main/bloc/main_page_bloc.dart';
-import 'package:fe/pages/main/cubit/main_page_actions_cubit.dart';
 import 'package:fe/stdlib/helpers/random_string.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/local_user.dart';
@@ -33,11 +32,9 @@ class GroupsService {
 
       Toaster.of(context).successToast('Left group ${group.name}');
 
-      //if the current group we are in in is the selected one, we should reset
-      //selected group
-      if (context.read<MainPageActionsCubit>().state.selectedGroup != null &&
-          context.read<MainPageActionsCubit>().state.selectedGroup!.id ==
-              group.id) {
+      final state = context.read<MainPageBloc>().state;
+
+      if (state is MainPageWithGroup && state.group.id == group.id) {
         context.read<MainPageBloc>().add(ResetMainPageEvent());
       }
       didLeaveGroup();

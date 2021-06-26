@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:fe/data/models/group.dart';
 import 'package:fe/gql/query_self_group_preview.data.gql.dart';
 import 'package:fe/gql/query_self_group_preview.req.gql.dart';
@@ -8,7 +9,10 @@ import 'package:fe/stdlib/errors/handle_gql_error.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
 import 'package:fe/stdlib/local_data/token_manager.dart';
 import 'package:fe/stdlib/local_user.dart';
+import 'package:fe/stdlib/router/router.gr.dart';
+import 'package:fe/stdlib/toaster.dart';
 import 'package:ferry/ferry.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../service_locator.dart';
@@ -22,9 +26,18 @@ class MainService {
 
   MainService();
 
-  Future<void> logOut() {
-    return Future.wait(
+  Future<void> logOut(BuildContext context, bool withError) async {
+    await Future.wait(
         [_localFileStore.clear(), _user.logOut(), _secureStorage.deleteAll()]);
+    AutoRouter.of(context).popUntilRouteWithName(Main.name);
+    await AutoRouter.of(context).popAndPush(LoginRoute());
+
+    if (withError) {
+      Toaster.of(context)
+          .errorToast("Sorry, you've been logged out due to an error.");
+    } else {
+      Toaster.of(context).warningToast('Logged Out.');
+    }
   }
 
   Future<GQuerySelfGroupsPreviewData?> querySelfGroups() async {

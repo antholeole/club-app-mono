@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:fe/constants.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
-import 'package:ferry/ferry.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:json_annotation/json_annotation.dart';
 

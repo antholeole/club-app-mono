@@ -21,17 +21,17 @@ class MainPageBloc extends Bloc<MainPageEvent, MainPageState> {
   Stream<MainPageState> mapEventToState(
     MainPageEvent event,
   ) async* {
-    if (event is ResetMainPageEvent) {
+    if (event is SetGroupEvent) {
+      yield MainPageWithGroup(group: event.group);
+    } else if (event is ResetMainPageEvent) {
       yield MainPageLoading();
       try {
         final loadState = await _mainService.querySelfGroups();
-        final WsClient wsClient = await _mainService.getWsClient();
 
         if (loadState!.user_to_group.isEmpty) {
-          yield MainPageGroupless(wsClient: wsClient);
+          yield MainPageGroupless();
         } else {
           yield MainPageWithGroup(
-              wsClient: wsClient,
               group: Group(
                   id: loadState.user_to_group[0].group.id,
                   name: loadState.user_to_group[0].group.group_name,

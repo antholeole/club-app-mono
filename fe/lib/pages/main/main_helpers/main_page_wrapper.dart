@@ -1,5 +1,4 @@
 import 'package:fe/pages/main/main_helpers/main_provider.dart';
-import 'package:fe/pages/main/main_helpers/scaffold/main_scaffold.dart';
 import 'package:fe/pages/main/main_page.dart';
 import 'package:flutter/cupertino.dart';
 

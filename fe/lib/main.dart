@@ -40,14 +40,18 @@ class MyApp extends StatelessWidget {
               backgroundColor: Colors.black.withOpacity(0))),
       routerDelegate: _appRouter.delegate(),
       routeInformationParser: _appRouter.defaultRouteParser(),
-      builder: (innerContext, router) => Toaster(
-        context: innerContext,
-        child: PlatformWidgetBuilder(
-            cupertino: (_, child, __) => CupertinoTheme(
-                data: CupertinoThemeData(primaryColor: primaryColor),
-                child: child!),
-            child: router!),
-      ),
+      builder: (innerContext, router) => PlatformWidgetBuilder(
+          cupertino: (_, child, __) => CupertinoTheme(
+              data: CupertinoThemeData(primaryColor: primaryColor),
+              child: child!),
+          //need toaster to be able to access overlay
+          child: Overlay(
+            initialEntries: [
+              OverlayEntry(
+                builder: (context) => Toaster(context: context, child: router!),
+              ),
+            ],
+          )),
     );
   }
 }
