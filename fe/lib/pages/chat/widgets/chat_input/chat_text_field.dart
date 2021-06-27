@@ -4,7 +4,7 @@ class ChatTextField extends StatelessWidget {
   final TextEditingController _controller;
   final FocusNode _focusNode;
 
-  const ChatTextField(
+  ChatTextField(
       {Key? key,
       required TextEditingController controller,
       required FocusNode focusNode})
@@ -19,6 +19,11 @@ class ChatTextField extends StatelessWidget {
       minLines: 1,
       controller: _controller,
       focusNode: _focusNode,
+      decoration: InputDecoration(
+        hintText: 'Send Message...',
+        enabledBorder: InputBorder.none,
+        focusedBorder: InputBorder.none,
+      ),
     );
   }
 }

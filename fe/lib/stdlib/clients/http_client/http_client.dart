@@ -19,15 +19,12 @@ abstract class HttpClient {
   static Future<Failure> basicHttpErrorHandler(
       HttpException e, Map<int, String> extraErrors) async {
     if (e.socketException) {
-      return Failure(
-          status: FailureStatus.ServersDown,
-          message: "Couldn't connect to our servers. Please try again soon.");
+      return Failure(status: FailureStatus.ServersDown);
     }
 
     if (e.message == '') {
       if (!await isConnected()) {
         return Failure(
-          message: "Couldn't connect to internet.",
           status: FailureStatus.NoConn,
         );
       }
@@ -35,15 +32,9 @@ abstract class HttpClient {
 
     if (e.statusCode == 500) {
       debugPrint('recieved 500 error');
-      return Failure(
-          status: FailureStatus.InternalServerError,
-          message:
-              'Sorry! We had an internal server error performing that action.');
+      return Failure(status: FailureStatus.InternalServerError);
     }
-    var f = Failure(
-        message: 'Unknown Error',
-        status: FailureStatus.Unknown,
-        resolved: false);
+    var f = Failure(status: FailureStatus.Unknown, resolved: false);
 
     extraErrors.forEach((code, error) {
       if (code == e.statusCode) {

@@ -1,10 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fe/pages/chat/widgets/channels_bottom_sheet.dart';
 import 'package:fe/pages/main/bloc/main_page_bloc.dart';
+import 'package:fe/pages/main/main_helpers/scaffold/cubit/main_scaffold_cubit.dart';
 import 'package:fe/pages/main/main_helpers/scaffold/scaffold_button.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:fe/stdlib/theme/bottom_nav/bottom_nav.dart';
-import 'package:fe/stdlib/theme/loader.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -22,60 +22,72 @@ class MainScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        backwardsCompatibility: false,
-        backgroundColor: Color(0xffFBFBFB),
-        foregroundColor: Colors.grey[900],
-        automaticallyImplyLeading: false,
-        title: _buildTitle(),
-        leading: ScaffoldButton(
-            icon: Icons.menu,
-            onPressed: (sbContext) => Scaffold.of(sbContext).openDrawer()),
-        actions: _buildContextButtons(context),
-      ),
-      drawer: ClubDrawer(),
-      endDrawer: GroupDrawer(),
-      backgroundColor: Colors.white,
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: _child,
-      ),
-      bottomNavigationBar: BottomNav(
-          onClickTab: (to, held) => _changeTab(to, held, context),
-          icons: [Icons.chat_bubble_outline, Icons.event]),
+    return BlocBuilder<MainScaffoldCubit, MainScaffoldState>(
+      builder: (context, state) {
+        return Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            backwardsCompatibility: false,
+            backgroundColor: Color(0xffFBFBFB),
+            foregroundColor: Colors.grey[900],
+            automaticallyImplyLeading: false,
+            title: _buildTitle(state.titleBarWidget),
+            leading: ScaffoldButton(
+                icon: Icons.menu,
+                onPressed: (sbContext) => Scaffold.of(sbContext).openDrawer()),
+            actions: _buildContextButtons(state.actionButtons),
+          ),
+          drawer: ClubDrawer(),
+          endDrawer: state.endDrawer,
+          backgroundColor: Colors.white,
+          body: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).unfocus();
+            },
+            child: _child,
+          ),
+          bottomNavigationBar: BottomNav(
+              onClickTab: (to, held) => _changeTab(to, held, context),
+              icons: [Icons.chat_bubble_outline, Icons.event]),
+        );
+      },
     );
   }
 
-  List<Widget> _buildContextButtons(BuildContext context) {
-    final currentState = context.watch<MainPageBloc>().state;
-
-    if (currentState is MainPageWithGroup) {
+  List<Widget> _buildContextButtons(List<ActionButton> actionButtons) {
+    if (actionButtons.isEmpty) {
       return [
-        ScaffoldButton(
-            icon: Icons.group,
-            onPressed: (sbContext) => Scaffold.of(sbContext).openEndDrawer())
+        Container(),
       ];
-    } else {
-      return [];
     }
+
+    return actionButtons
+        .map((actionButton) => ScaffoldButton(
+            icon: actionButton.icon, onPressed: (_) => actionButton.onClick()))
+        .toList();
   }
 
-  Widget _buildTitle() {
+  Widget _buildTitle(Widget? titleBarWidget) {
     return BlocBuilder<MainPageBloc, MainPageState>(builder: (context, state) {
       if (state is MainPageGroupless) {
         return Text('No group selected',
             style: Theme.of(context).textTheme.caption);
       } else if (state is MainPageWithGroup) {
-        return Text(
+        final subheader = Text(
           state.group.name,
           style: Theme.of(context).textTheme.caption,
         );
-      } else if (state is MainPageLoading) {
-        return Loader(size: 12);
+
+        if (titleBarWidget != null) {
+          return Column(
+            children: [
+              titleBarWidget,
+              subheader,
+            ],
+          );
+        } else {
+          return subheader;
+        }
       } else {
         return Container();
       }

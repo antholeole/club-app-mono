@@ -145,6 +145,7 @@ class Toaster extends InheritedWidget {
 
   void _toast(String message, Icon icon, Color behindIconColor,
       {void Function()? action, String? actionText, Color? actionColor}) {
+    debugPrint('toasting "$message"');
     assert(
         (action == null && actionText == null) ||
             (action != null && actionText != null),

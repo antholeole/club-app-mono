@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:fe/pages/chat/cubit/chat_cubit.dart';
 import 'package:fe/pages/chat/widgets/chat_input/chat_bar.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
@@ -14,8 +15,9 @@ class _ChatPageState extends State<ChatPage> {
   UuidType? threadId;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    print('changedDep');
+    super.didChangeDependencies();
   }
 
   @override

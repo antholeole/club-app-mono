@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fe/stdlib/clients/http_client/http_client.dart';
 import 'package:fe/stdlib/clients/http_client/unauth_http_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
@@ -15,16 +17,15 @@ Future<Failure> basicGqlErrorHandler(OperationResponse resp) async {
 
   if (resp.linkException != null) {
     if (resp.linkException!.originalException is TokenException) {
-      return Failure(
-          status: FailureStatus.GQLRefresh,
-          message: 'failed to refresh token',
-          resolved: false);
+      return Failure(status: FailureStatus.GQLRefresh, resolved: false);
     } else if (resp.linkException!.originalException is HttpException) {
       return HttpClient.basicHttpErrorHandler(
           resp.linkException!.originalException, {});
+    } else if (resp.linkException!.originalException is SocketException) {
+      return Failure(status: FailureStatus.NoConn, resolved: false);
     } else {
       return Failure(
-          status: FailureStatus.GQLRefresh,
+          status: FailureStatus.Unknown,
           message:
               'Unknown error: ${resp.linkException!.originalException.toString()}',
           resolved: false);
@@ -32,18 +33,14 @@ Future<Failure> basicGqlErrorHandler(OperationResponse resp) async {
   }
 
   if (!(await HttpClient.isConnected())) {
-    return Failure(
-        message: "Couldn't connect to internet.", status: FailureStatus.NoConn);
+    return Failure(status: FailureStatus.NoConn);
   }
 
   try {
     await getIt<UnauthHttpClient>().getReq('/ping');
   } on HttpException catch (e) {
     if (e.socketException) {
-      return Failure(
-          message:
-              "Sorry, looks like our servers are down - we're working on it!",
-          status: FailureStatus.ServersDown);
+      return Failure(status: FailureStatus.ServersDown);
     }
   }
 
@@ -58,5 +55,5 @@ Future<Failure> basicGqlErrorHandler(OperationResponse resp) async {
   }
 
   debugPrint('entered gql error handler with errors = null');
-  return Failure(message: 'Unknown error', status: FailureStatus.Unknown);
+  return Failure(status: FailureStatus.Unknown);
 }

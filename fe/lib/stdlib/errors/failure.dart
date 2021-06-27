@@ -1,9 +1,9 @@
 import 'package:fe/stdlib/errors/failure_status.dart';
 
 class Failure {
-  String message;
   bool resolved;
+  final String? message;
   final FailureStatus status;
 
-  Failure({required this.message, this.resolved = true, required this.status});
+  Failure({this.message, this.resolved = true, required this.status});
 }

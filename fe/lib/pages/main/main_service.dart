@@ -30,7 +30,6 @@ class MainService {
     await Future.wait(
         [_localFileStore.clear(), _user.logOut(), _secureStorage.deleteAll()]);
     AutoRouter.of(context).popUntilRouteWithName(Main.name);
-    await AutoRouter.of(context).popAndPush(LoginRoute());
 
     if (withError) {
       Toaster.of(context)
@@ -38,6 +37,8 @@ class MainService {
     } else {
       Toaster.of(context).warningToast('Logged Out.');
     }
+
+    await AutoRouter.of(context).popAndPush(LoginRoute());
   }
 
   Future<GQuerySelfGroupsPreviewData?> querySelfGroups() async {
@@ -60,10 +61,7 @@ class MainService {
     try {
       aToken ??= await _tokenManager.refresh();
     } on TokenException catch (_) {
-      throw Failure(
-          status: FailureStatus.GQLRefresh,
-          message: 'failed to refresh token',
-          resolved: false);
+      throw Failure(status: FailureStatus.GQLRefresh, resolved: false);
     }
     return WsClient(aToken);
   }
