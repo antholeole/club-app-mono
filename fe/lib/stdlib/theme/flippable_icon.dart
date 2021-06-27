@@ -4,10 +4,17 @@ import 'dart:math';
 const FLIP_DURATION = Duration(milliseconds: 200);
 
 class FlippableIcon extends StatefulWidget {
-  final Icon icon;
-  final void Function(bool) onClick;
+  final Icon _icon;
+  final void Function() _onClick;
+  final bool _flipped;
 
-  const FlippableIcon({required this.icon, required this.onClick});
+  const FlippableIcon(
+      {required Icon icon,
+      required void Function() onClick,
+      required bool flipped})
+      : _flipped = flipped,
+        _onClick = onClick,
+        _icon = icon;
 
   @override
   _FlippableIconState createState() => _FlippableIconState();
@@ -17,7 +24,6 @@ class _FlippableIconState extends State<FlippableIcon>
     with SingleTickerProviderStateMixin {
   late Animation<double> _animation;
   late AnimationController _controller;
-  late bool _isOpen = true;
 
   @override
   void initState() {
@@ -25,8 +31,15 @@ class _FlippableIconState extends State<FlippableIcon>
     super.initState();
   }
 
+  @override
+  void didUpdateWidget(FlippableIcon oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _toggleMenu();
+    super.didChangeDependencies();
+  }
+
   void _prepareAnimations() {
-        _controller = AnimationController(duration: FLIP_DURATION, vsync: this);
+    _controller = AnimationController(duration: FLIP_DURATION, vsync: this);
 
     _animation = Tween<double>(begin: 0.5, end: 1.0).animate(_controller)
       ..addListener(() {
@@ -34,31 +47,24 @@ class _FlippableIconState extends State<FlippableIcon>
       });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: _toggleMenu,
+        onTap: () => widget._onClick(),
         child: Transform.rotate(
           angle: (90 * 3) * (pi / 180),
           child: RotationTransition(
             turns: _animation,
-            child: widget.icon,
+            child: widget._icon,
           ),
         ));
   }
 
   void _toggleMenu() {
-    if (_isOpen) {
+    if (widget._flipped) {
       _controller.forward();
     } else {
       _controller.reverse();
     }
-    setState(() {
-      _isOpen = !_isOpen;
-    });
-
-    widget.onClick(_isOpen);
   }
 }

@@ -2,15 +2,15 @@ part of 'chat_cubit.dart';
 
 @immutable
 abstract class ChatState {
-  final UuidType? threadId;
+  final Thread? thread;
 
-  const ChatState({this.threadId});
+  const ChatState({this.thread});
 }
 
 class ChatInitial extends ChatState {
-  ChatInitial() : super(threadId: null);
+  ChatInitial() : super(thread: null);
 }
 
 class ChatSetThread extends ChatState {
-  const ChatSetThread({UuidType? threadId}) : super(threadId: threadId);
+  const ChatSetThread({Thread? thread}) : super(thread: thread);
 }

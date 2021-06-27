@@ -94,42 +94,41 @@ class _GroupTabState extends State<GroupTab>
                             style: Theme.of(context).textTheme.bodyText2,
                           ))),
                   FlippableIcon(
-                      icon: Icon(Icons.chevron_left,
-                          color: Colors.blue, size: 30),
-                      onClick: (v) => _displaySettings(!v)),
+                    icon:
+                        Icon(Icons.chevron_left, color: Colors.blue, size: 30),
+                    onClick: () {
+                      setState(() {
+                        _tabOpen = !_tabOpen;
+                      });
+                      _displaySettings();
+                    },
+                    flipped: _tabOpen,
+                  ),
                 ],
               ),
             ),
-            if (_tabOpen)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Tile(
-                    child: SizeTransition(
-                  axisAlignment: 1.0,
-                  sizeFactor: animation,
-                  child: GroupSettings(
-                      group: widget.group,
-                      didUpdateGroup: widget.didUpdateGroups),
-                )),
-              ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Tile(
+                  child: SizeTransition(
+                axisAlignment: 1.0,
+                sizeFactor: animation,
+                child: GroupSettings(
+                    group: widget.group,
+                    didUpdateGroup: widget.didUpdateGroups),
+              )),
+            ),
           ],
         );
       },
     );
   }
 
-  void _displaySettings(bool display) {
-    if (display) {
+  void _displaySettings() {
+    if (_tabOpen) {
       expandController.forward();
-      setState(() {
-        _tabOpen = display;
-      });
     } else {
-      expandController.reverse().then((value) {
-        setState(() {
-          _tabOpen = display;
-        });
-      });
+      expandController.reverse();
     }
   }
 }

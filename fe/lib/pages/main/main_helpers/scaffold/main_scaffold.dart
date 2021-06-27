@@ -10,7 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
 import 'drawers/left_drawer/club_drawer.dart';
-import 'drawers/right_drawer/group_drawer.dart';
 
 class MainScaffold extends StatelessWidget {
   final Widget _child;
@@ -27,6 +26,7 @@ class MainScaffold extends StatelessWidget {
         return Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
+            centerTitle: true,
             backwardsCompatibility: false,
             backgroundColor: Color(0xffFBFBFB),
             foregroundColor: Colors.grey[900],
@@ -80,6 +80,7 @@ class MainScaffold extends StatelessWidget {
 
         if (titleBarWidget != null) {
           return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               titleBarWidget,
               subheader,
@@ -94,16 +95,17 @@ class MainScaffold extends StatelessWidget {
     });
   }
 
-  void _changeTab(int tab, bool held, BuildContext context) {
-    if (tab == 0 && held) {
-      HapticFeedback.mediumImpact();
-      showModalBottomSheet(
-          context: context,
-          builder: (_) => ChannelsBottomSheet(
-                providerReadableContext: context,
-              ));
+  void _changeTab(int tab, bool held, BuildContext scaffoldContext) {
+    //if held tab 0 or double tapped
+    if ((tab == 0 && held) ||
+        (tab == 0 &&
+            AutoRouter.of(scaffoldContext)
+                    .innerRouterOf<TabsRouter>(Main.name)!
+                    .activeIndex ==
+                tab)) {
+      ChannelsBottomSheet.show(scaffoldContext);
     } else {
-      AutoRouter.of(context)
+      AutoRouter.of(scaffoldContext)
           .innerRouterOf<TabsRouter>(Main.name)!
           .setActiveIndex(tab);
     }

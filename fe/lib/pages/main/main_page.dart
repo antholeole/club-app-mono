@@ -12,10 +12,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../service_locator.dart';
 import 'bloc/main_page_bloc.dart';
-import 'main_helpers/main_navigator_observer.dart';
 import 'main_helpers/ws_provider.dart';
 
-class MainPage extends StatelessWidget with NavigatorObserver {
+class MainPage extends StatelessWidget {
   final MainService _mainService = getIt<MainService>();
 
   MainPage({Key? key}) : super(key: key);
@@ -69,7 +68,6 @@ class MainPage extends StatelessWidget with NavigatorObserver {
       wsClient: wsClient,
       child: AutoTabsRouter(
         duration: Duration(seconds: 0),
-        navigatorObservers: () => [MainPageNavigatorObserver()],
         routes: [
           ChatRoute(),
           EventsRoute(),

@@ -1,3 +1,4 @@
+import 'package:fe/pages/chat/cubit/bottom_sheet_open_cubit.dart';
 import 'package:fe/pages/chat/cubit/chat_cubit.dart';
 import 'package:fe/pages/main/bloc/main_page_bloc.dart';
 import 'package:fe/pages/main/main_helpers/scaffold/cubit/main_scaffold_cubit.dart';
@@ -14,9 +15,13 @@ class MainProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => MainScaffoldCubit()),
+        //chat cubits
         BlocProvider(create: (_) => ChatCubit()),
-        BlocProvider(create: (_) => MainPageBloc()..add(ResetMainPageEvent()))
+        BlocProvider(create: (_) => ChatBottomSheetCubit()),
+
+        //main cubits
+        BlocProvider(create: (_) => MainPageBloc()..add(ResetMainPageEvent())),
+        BlocProvider(create: (_) => MainScaffoldCubit()),
       ],
       child: Builder(builder: (_) => MainScaffold(child: _child)),
     );
