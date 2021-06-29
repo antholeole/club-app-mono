@@ -21,16 +21,10 @@ export interface IWsMessage extends IWsMessageShape {
 export type IWsConnectMessage = IWsMessageShape
 
 
-export const toMessageTypes = <const>[
-    'thread',
-    'dm'
-]
-
 export interface IWsMessageMessage extends IWsMessage {
     message: {
         type: typeof messageTypes[number]
         message: string
         toId: string
-        toPlace: typeof toMessageTypes[number]
     }
 }

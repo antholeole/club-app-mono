@@ -18,4 +18,7 @@ class TestingConfig extends Config {
 
   @override
   bool get memoryCache => true;
+
+  @override
+  String get wsUrl => throw UnimplementedError();
 }

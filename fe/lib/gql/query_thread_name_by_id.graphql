@@ -1,8 +1,0 @@
-query QueryThreadName($threadId: uuid!) {
-  group_threads_by_pk(
-    id: $threadId
-  ) {
-    id
-    name
-  }
-}

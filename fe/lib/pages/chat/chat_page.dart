@@ -3,6 +3,7 @@ import 'package:fe/pages/chat/cubit/chat_cubit.dart';
 import 'package:fe/pages/chat/widgets/channels_bottom_sheet.dart';
 import 'package:fe/pages/chat/widgets/chat_input/chat_bar.dart';
 import 'package:fe/pages/chat/widgets/chat_title.dart';
+import 'package:fe/pages/main/bloc/main_page_bloc.dart';
 import 'package:fe/pages/main/main_helpers/scaffold/cubit/main_scaffold_cubit.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
@@ -29,10 +30,13 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    return FooterLayout(
-      footer: KeyboardAttachable(child: ChatBar()),
-      child: Container(
-        color: Colors.red,
+    return BlocListener<MainPageBloc, MainPageState>(
+      listener: (context, state) => context.read<ChatCubit>().setThread(null),
+      child: FooterLayout(
+        footer: KeyboardAttachable(child: ChatBar()),
+        child: Container(
+          color: Colors.red,
+        ),
       ),
     );
   }

@@ -1,5 +1,3 @@
-import 'package:fe/data/models/thread.dart';
-import 'package:fe/gql/query_thread_name_by_id.req.gql.dart';
 import 'package:fe/pages/chat/cubit/bottom_sheet_open_cubit.dart';
 import 'package:fe/pages/chat/cubit/chat_cubit.dart';
 import 'package:fe/pages/chat/widgets/channels_bottom_sheet.dart';

@@ -1,6 +1,6 @@
 import { decodeJwt } from '../../helpers/jwt'
 import { IAccessToken } from '../../helpers/types/access_token'
-import { IWsConnectMessage, IWsMessage, IWsMessageMessage, messageTypes, toMessageTypes } from './discriminators'
+import { IWsConnectMessage, IWsMessage, IWsMessageMessage, messageTypes } from './discriminators'
 import { status, StatusError } from 'itty-router-extras'
 import { handleMessageMessage } from './message_handlers'
 import { DiscriminatorError } from '../../helpers/discriminator_error'
@@ -48,7 +48,6 @@ export const messageRoute = async (wsMessage: IWsMessage): Promise<Response> => 
                         }
                     },
                     message: {
-                        toPlace: new EnumFieldOption<typeof toMessageTypes>(toMessageTypes),
                         toId: new FieldOption(MockValues.mockString),
                         message: new FieldOption(MockValues.mockString),
                         type: new EnumFieldOption<typeof messageTypes>(messageTypes)

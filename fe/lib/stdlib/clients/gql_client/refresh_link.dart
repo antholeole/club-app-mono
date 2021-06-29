@@ -24,8 +24,6 @@ class RefresherLink extends Link {
         return true;
       } else if (error.message.contains(JWS_ERROR)) {
         return true;
-      } else {
-        debugPrint('Got gql error: $error');
       }
     }
     return false;
