@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 
 class SendButton extends StatelessWidget {
   final bool _isSendable;
+  final void Function() _onClick;
 
-  const SendButton({Key? key, required bool isSendable})
+  const SendButton(
+      {Key? key, required bool isSendable, required void Function() onClick})
       : _isSendable = isSendable,
+        _onClick = onClick,
         super(key: key);
 
   @override
@@ -24,7 +27,7 @@ class SendButton extends StatelessWidget {
               padding: EdgeInsets.all(0),
               icon: Icon(Icons.send),
               color: Colors.white,
-              onPressed: () {},
+              onPressed: _onClick,
             ),
           ),
         ),

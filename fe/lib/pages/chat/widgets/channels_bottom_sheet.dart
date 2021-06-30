@@ -102,9 +102,7 @@ class ChannelsBottomSheet extends StatelessWidget {
                                             .map((v) => _buildChannelTile(
                                                 unreadMessages: 2,
                                                 onTap: () =>
-                                                    _providerReadableContext
-                                                        .read<ChatCubit>()
-                                                        .setThread(v),
+                                                    _selectedThread(v, context),
                                                 selected:
                                                     state.thread?.id == v.id,
                                                 title: v.name))
@@ -158,5 +156,10 @@ class ChannelsBottomSheet extends StatelessWidget {
                 )
               : null),
     );
+  }
+
+  void _selectedThread(Thread v, BuildContext context) {
+    _providerReadableContext.read<ChatCubit>().setThread(v);
+    Navigator.of(context).pop();
   }
 }

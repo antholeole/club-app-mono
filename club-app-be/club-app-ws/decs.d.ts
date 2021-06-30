@@ -11,7 +11,3 @@ declare interface WsConnectMessage extends WsMessage {
         }
     }
 }
-
-declare interface RoutedWsMessage extends WsMessage {
-    route: string
-}

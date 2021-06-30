@@ -1,3 +1,5 @@
+import { DEBUG } from '../../constants'
+import { debugPrint } from '../debug_print'
 import { isUUID } from '../uuid_validator'
 
 export class MockValues {
@@ -32,6 +34,7 @@ export class FieldOption<T> {
             return true
         }
 
+        debugPrint(`could not validate input ${input} as ${this.constructor.name}`)
         return false
     }
 }

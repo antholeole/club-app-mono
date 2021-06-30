@@ -1,6 +1,12 @@
+import 'package:fe/data/ws_message/message_message.dart';
+import 'package:fe/pages/chat/cubit/chat_cubit.dart';
 import 'package:fe/pages/chat/widgets/chat_input/chat_buttons.dart';
 import 'package:fe/pages/chat/widgets/chat_input/chat_text_field.dart';
 import 'package:fe/pages/chat/widgets/chat_input/send_button.dart';
+import 'package:fe/pages/main/main_helpers/ws_provider.dart';
+import 'package:fe/stdlib/helpers/uuid_type.dart';
+import 'package:fe/stdlib/toaster.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
 class ChatBar extends StatefulWidget {
@@ -43,7 +49,7 @@ class _ChatBarState extends State<ChatBar> {
             focusNode: _focusNode,
             controller: _controller,
           )),
-          SendButton(isSendable: _controller.text.isNotEmpty)
+          SendButton(isSendable: _controller.text.isNotEmpty, onClick: _onSend)
         ],
       ),
     );
@@ -63,5 +69,20 @@ class _ChatBarState extends State<ChatBar> {
         _settingsIsOpen = false;
       });
     }
+  }
+
+  void _onSend() {
+    UuidType? to = context.read<ChatCubit>().state.thread?.id;
+
+    if (to == null) {
+      Toaster.of(context).errorToast('No thread selected! Nowhere to send!');
+      return;
+    }
+
+    WsProvider.of(context)!
+        .wsClient
+        .send(WsMessageMessage(message: _controller.text, toId: to));
+
+    _controller.clear();
   }
 }

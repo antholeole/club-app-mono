@@ -26,14 +26,14 @@ class MainService {
 
   MainService();
 
-  Future<void> logOut(BuildContext context, bool withError) async {
+  Future<void> logOut(BuildContext context, {String? withError}) async {
     await Future.wait(
         [_localFileStore.clear(), _user.logOut(), _secureStorage.deleteAll()]);
     AutoRouter.of(context).popUntilRouteWithName(Main.name);
 
-    if (withError) {
-      Toaster.of(context)
-          .errorToast("Sorry, you've been logged out due to an error.");
+    if (withError != null) {
+      Toaster.of(context).errorToast(
+          "Sorry, you've been logged out due to an error: $withError");
     } else {
       Toaster.of(context).warningToast('Logged Out.');
     }

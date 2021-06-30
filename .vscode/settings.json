@@ -10,5 +10,35 @@
         "**/*.gql.dart": true,
         "**/*.gr.dart": true
     },
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "restoreTerminals.terminals": [
+        {
+            "splitTerminals": [
+                {
+                    "name": "flutter",
+                    "commands": [
+                        "cd fe",
+                        "flutter run"
+                    ]
+                }
+            ]
+        },
+        {
+            "splitTerminals": [
+                {
+                    "name": "backend",
+                    "commands": [
+                        "make run",
+                    ]
+                }
+            ]
+        },
+        {
+            "splitTerminals": [
+                {
+                    "name": "misc",
+                }
+            ]
+        }
+    ]
 }

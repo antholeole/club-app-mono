@@ -58,7 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       _loggingOut = false;
                     });
 
-                    _mainService.logOut(context, false);
+                    _mainService.logOut(context);
                   },
                   color: Colors.red,
                   text: 'Log Out',

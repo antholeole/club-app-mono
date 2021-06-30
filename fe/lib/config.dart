@@ -18,7 +18,7 @@ class DevConfig extends Config {
   String get gqlUrl => 'http://127.0.0.1:8080/v1/graphql';
 
   @override
-  String get wsUrl => 'http://127.0.0.1:5000';
+  String get wsUrl => 'ws://127.0.0.1:5000';
 
   @override
   bool get httpIsSecure => false;
