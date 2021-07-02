@@ -1,4 +1,5 @@
 import 'package:fe/config.dart';
+import 'package:fe/pages/chat/chat_service.dart';
 import 'package:fe/pages/login/login_service.dart';
 import 'package:fe/pages/main/main_helpers/scaffold/drawers/left_drawer/groups/groups_service.dart';
 import 'package:fe/pages/main/main_helpers/scaffold/drawers/left_drawer/profile/profile_page_service.dart';
@@ -51,5 +52,7 @@ void setupLocator({required bool isProd}) {
   getIt.registerSingletonWithDependencies(() => ProfilePageService(),
       dependsOn: [Client]);
   getIt.registerSingletonWithDependencies(() => GroupsService(),
+      dependsOn: [Client]);
+  getIt.registerSingletonWithDependencies(() => ChatService(),
       dependsOn: [Client]);
 }

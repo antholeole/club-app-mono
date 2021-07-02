@@ -6,7 +6,7 @@ import 'package:fe/stdlib/theme/tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'goup_settings.dart';
+import 'group_settings.dart';
 
 class GroupTab extends StatefulWidget {
   final Group group;

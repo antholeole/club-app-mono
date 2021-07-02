@@ -1,13 +1,22 @@
+import 'dart:convert';
+
+import 'package:json_annotation/json_annotation.dart';
+
 import '../../stdlib/helpers/uuid_type.dart';
 
+part 'group.g.dart';
+
+@JsonSerializable()
+@CustomUuidConverter()
 class Group {
-  final UuidType _id;
+  final UuidType id;
   String name;
   bool admin;
   bool hasNotifications = false;
 
-  UuidType get id => _id;
+  Group({required this.id, required this.name, required this.admin});
 
-  Group({required UuidType id, required this.name, required this.admin})
-      : _id = id;
+  factory Group.fromJson(String jsonString) =>
+      _$GroupFromJson(json.decode(jsonString));
+  Map<String, dynamic> toJson() => _$GroupToJson(this);
 }

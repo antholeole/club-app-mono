@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:fe/data/models/group.dart';
-import 'package:fe/stdlib/clients/ws_client/ws_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:meta/meta.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../service_locator.dart';
 import '../main_service.dart';

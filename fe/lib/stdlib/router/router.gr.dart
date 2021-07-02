@@ -7,6 +7,7 @@
 import 'package:auto_route/auto_route.dart' as _i1;
 import 'package:flutter/material.dart' as _i2;
 
+import '../../data/models/group.dart' as _i9;
 import '../../pages/chat/chat_page.dart' as _i8;
 import '../../pages/events/events_page.dart' as _i7;
 import '../../pages/login/login_page.dart' as _i5;
@@ -52,8 +53,9 @@ class AppRouter extends _i1.RootStackRouter {
         barrierDismissible: false),
     EventsRoute.name: (routeData) => _i1.CustomPage<dynamic>(
         routeData: routeData,
-        builder: (_) {
-          return _i7.EventsPage();
+        builder: (data) {
+          final args = data.argsAs<EventsRouteArgs>();
+          return _i7.EventsPage(group: args.group);
         },
         transitionsBuilder: _i4.NoAnimationRoute.invisAnimation,
         durationInMilliseconds: 0,
@@ -62,8 +64,9 @@ class AppRouter extends _i1.RootStackRouter {
         barrierDismissible: false),
     ChatRoute.name: (routeData) => _i1.CustomPage<dynamic>(
         routeData: routeData,
-        builder: (_) {
-          return _i8.ChatPage();
+        builder: (data) {
+          final args = data.argsAs<ChatRouteArgs>();
+          return _i8.ChatPage(group: args.group);
         },
         transitionsBuilder: _i4.NoAnimationRoute.invisAnimation,
         durationInMilliseconds: 0,
@@ -102,14 +105,28 @@ class Main extends _i1.PageRouteInfo {
   static const String name = 'Main';
 }
 
-class EventsRoute extends _i1.PageRouteInfo {
-  const EventsRoute() : super(name, path: 'events');
+class EventsRoute extends _i1.PageRouteInfo<EventsRouteArgs> {
+  EventsRoute({required _i9.Group group})
+      : super(name, path: 'events', args: EventsRouteArgs(group: group));
 
   static const String name = 'EventsRoute';
 }
 
-class ChatRoute extends _i1.PageRouteInfo {
-  const ChatRoute() : super(name, path: 'chat');
+class EventsRouteArgs {
+  const EventsRouteArgs({required this.group});
+
+  final _i9.Group group;
+}
+
+class ChatRoute extends _i1.PageRouteInfo<ChatRouteArgs> {
+  ChatRoute({required _i9.Group group})
+      : super(name, path: 'chat', args: ChatRouteArgs(group: group));
 
   static const String name = 'ChatRoute';
+}
+
+class ChatRouteArgs {
+  const ChatRouteArgs({required this.group});
+
+  final _i9.Group group;
 }

@@ -1,27 +1,32 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:fe/pages/chat/chat_page.dart';
 import 'package:fe/pages/chat/widgets/channels_bottom_sheet.dart';
+import 'package:fe/pages/events/events_page.dart';
 import 'package:fe/pages/main/bloc/main_page_bloc.dart';
-import 'package:fe/pages/main/main_helpers/scaffold/cubit/main_scaffold_cubit.dart';
+import 'package:fe/pages/main/main_helpers/scaffold/cubit/main_scaffold_parts.dart';
+import 'package:fe/pages/main/main_helpers/scaffold/cubit/scaffold_cubit.dart'
+    as sc;
 import 'package:fe/pages/main/main_helpers/scaffold/scaffold_button.dart';
+import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:fe/stdlib/theme/bottom_nav/bottom_nav.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
+import '../../main_service.dart';
 import 'drawers/left_drawer/club_drawer.dart';
 
 class MainScaffold extends StatelessWidget {
   final Widget _child;
 
-  const MainScaffold({
+  MainScaffold({
     Key? key,
     required Widget child,
   }) : _child = child;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MainScaffoldCubit, MainScaffoldState>(
+    return BlocBuilder<sc.ScaffoldCubit, sc.ScaffoldState>(
       builder: (context, state) {
         return Scaffold(
           resizeToAvoidBottomInset: false,
@@ -31,14 +36,15 @@ class MainScaffold extends StatelessWidget {
             backgroundColor: Color(0xffFBFBFB),
             foregroundColor: Colors.grey[900],
             automaticallyImplyLeading: false,
-            title: _buildTitle(state.titleBarWidget),
+            title: _buildTitle(state.mainScaffoldParts.titleBarWidget),
             leading: ScaffoldButton(
                 icon: Icons.menu,
                 onPressed: (sbContext) => Scaffold.of(sbContext).openDrawer()),
-            actions: _buildContextButtons(state.actionButtons),
+            actions:
+                _buildContextButtons(state.mainScaffoldParts.actionButtons),
           ),
           drawer: ClubDrawer(),
-          endDrawer: state.endDrawer,
+          endDrawer: state.mainScaffoldParts.endDrawer,
           backgroundColor: Colors.white,
           body: GestureDetector(
             onTap: () {
@@ -96,7 +102,7 @@ class MainScaffold extends StatelessWidget {
   }
 
   void _changeTab(int tab, bool held, BuildContext scaffoldContext) {
-    //if held tab 0 or double tapped
+    //if held tab 0 or double tapped, open bottom sheet
     if ((tab == 0 && held) ||
         (tab == 0 &&
             AutoRouter.of(scaffoldContext)

@@ -1,6 +1,5 @@
 import 'package:fe/stdlib/local_data/token_manager.dart';
 import 'package:ferry/ferry.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:gql_exec/gql_exec.dart';
 import 'package:gql_http_link/gql_http_link.dart';
 

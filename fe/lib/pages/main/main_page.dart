@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:fe/data/models/group.dart';
 import 'package:fe/pages/main/main_service.dart';
 import 'package:fe/stdlib/clients/ws_client/ws_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
@@ -44,12 +45,15 @@ class MainPage extends StatelessWidget {
             if (state is MainPageLoading || state is MainPageInitial) {
               return _buildLoading();
             } else if (state is MainPageLoadFailure) {
-              handleFailure(state.failure, bcContext);
+              WidgetsBinding.instance!.addPostFrameCallback((_) {
+                handleFailure(state.failure, bcContext);
+              });
+
               return _buildErrorScreen(bcContext);
             } else if (state is MainPageGroupless) {
               return _buildGroupless(snapshot.data!);
             } else if (state is MainPageWithGroup) {
-              return _buildContent(snapshot.data!);
+              return _buildContent(snapshot.data!, state.group);
             } else {
               throw 'unreachable state';
             }
@@ -63,14 +67,14 @@ class MainPage extends StatelessWidget {
     );
   }
 
-  Widget _buildContent(WsClient wsClient) {
+  Widget _buildContent(WsClient wsClient, Group group) {
     return WsProvider(
       wsClient: wsClient,
       child: AutoTabsRouter(
         duration: Duration(seconds: 0),
         routes: [
-          ChatRoute(),
-          EventsRoute(),
+          ChatRoute(group: group),
+          EventsRoute(group: group),
         ],
       ),
     );

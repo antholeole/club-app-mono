@@ -1,11 +1,10 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:fe/data/models/group.dart';
 import 'package:fe/gql/query_self_group_preview.data.gql.dart';
 import 'package:fe/gql/query_self_group_preview.req.gql.dart';
 import 'package:fe/stdlib/clients/ws_client/ws_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
-import 'package:fe/stdlib/errors/handle_gql_error.dart';
+import 'package:fe/stdlib/errors/gq_req_or_throw_failure.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
 import 'package:fe/stdlib/local_data/token_manager.dart';
 import 'package:fe/stdlib/local_user.dart';
@@ -42,18 +41,11 @@ class MainService {
   }
 
   Future<GQuerySelfGroupsPreviewData?> querySelfGroups() async {
-    final req = GQuerySelfGroupsPreviewReq((q) => q
-      ..fetchPolicy = FetchPolicy.NetworkOnly
-      ..vars.self_id = _user.uuid);
-
-    final resp = await _client.request(req).first;
-
-    if (resp.hasErrors) {
-      final f = await basicGqlErrorHandler(resp);
-      throw f;
-    }
-
-    return resp.data;
+    return await gqlReqOrThrowFailure(
+        GQuerySelfGroupsPreviewReq((q) => q
+          ..fetchPolicy = FetchPolicy.NetworkOnly
+          ..vars.self_id = _user.uuid),
+        _client);
   }
 
   Future<WsClient> getWsClient() async {

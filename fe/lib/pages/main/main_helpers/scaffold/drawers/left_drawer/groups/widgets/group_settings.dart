@@ -2,6 +2,7 @@ import 'package:fe/data/models/group.dart';
 import 'package:fe/gql/query_group_join_token.req.gql.dart';
 import 'package:fe/gql/query_users_in_group.data.gql.dart';
 import 'package:fe/gql/query_users_in_group.req.gql.dart';
+import 'package:fe/stdlib/errors/handle_gql_error.dart';
 import 'package:fe/stdlib/theme/loadable_tile_button.dart';
 import 'package:fe/stdlib/shared_widgets/gql_operation.dart';
 import 'package:ferry/ferry.dart';
@@ -174,6 +175,11 @@ class _GroupSettingsState extends State<GroupSettings> {
       ..fetchPolicy = FetchPolicy.NetworkOnly);
 
     final resp = await _client.request(req).first;
+
+    if (resp.hasErrors) {
+      final f = await basicGqlErrorHandler(resp);
+      throw f;
+    }
 
     if (resp.data!.group_join_tokens.isEmpty) {
       return null;
