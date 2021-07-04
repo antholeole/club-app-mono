@@ -1,4 +1,4 @@
-query QuerySelfThreadsInGroup($userId: uuid, $groupId: uuid) {
+query QuerySelfThreadsInGroup($userId: uuid!, $groupId: uuid!) {
   group_threads(where: {
   	_and: {
       group_id: {

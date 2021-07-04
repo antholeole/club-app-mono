@@ -32,11 +32,12 @@ class MainPageBloc extends Bloc<MainPageEvent, MainPageState> {
         if (loadState!.user_to_group.isEmpty) {
           yield MainPageGroupless();
         } else {
-          yield MainPageWithGroup(
-              group: Group(
-                  id: loadState.user_to_group[0].group.id,
-                  name: loadState.user_to_group[0].group.group_name,
-                  admin: loadState.user_to_group[0].admin));
+          final group = Group(
+              id: loadState.user_to_group[0].group.id,
+              name: loadState.user_to_group[0].group.group_name,
+              admin: loadState.user_to_group[0].admin);
+
+          yield MainPageWithGroup(group: group);
         }
       } on Failure catch (f) {
         yield MainPageLoadFailure(failure: f);

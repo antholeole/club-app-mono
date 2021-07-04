@@ -8,7 +8,7 @@ import 'failure_status.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
 
 void handleFailure(Failure f, BuildContext context, {String? withPrefix}) {
-  if (f.status == FailureStatus.GQLRefresh) {
+  if (f.status == FailureStatus.RefreshFail) {
     getIt<MainService>()
         .logOut(context, withError: 'Failed to refresh access token');
   } else {

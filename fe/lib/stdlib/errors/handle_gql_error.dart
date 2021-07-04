@@ -17,18 +17,11 @@ Future<Failure> basicGqlErrorHandler(OperationResponse resp) async {
 
   if (resp.linkException != null) {
     if (resp.linkException!.originalException is TokenException) {
-      return Failure(status: FailureStatus.GQLRefresh, resolved: false);
+      return Failure(status: FailureStatus.RefreshFail, resolved: false);
     } else if (resp.linkException!.originalException is HttpException) {
+      print('http');
       return HttpClient.basicHttpErrorHandler(
           resp.linkException!.originalException, {});
-    } else if (resp.linkException!.originalException is SocketException) {
-      return Failure(status: FailureStatus.NoConn, resolved: false);
-    } else {
-      return Failure(
-          status: FailureStatus.Unknown,
-          message:
-              'Unknown error: ${resp.linkException!.originalException.toString()}',
-          resolved: false);
     }
   }
 
@@ -36,12 +29,10 @@ Future<Failure> basicGqlErrorHandler(OperationResponse resp) async {
     return Failure(status: FailureStatus.NoConn);
   }
 
-  try {
-    await getIt<UnauthHttpClient>().getReq('/ping');
-  } on HttpException catch (e) {
-    if (e.socketException) {
-      return Failure(status: FailureStatus.ServersDown);
-    }
+  final hasServerConnection =
+      await getIt<UnauthHttpClient>().hasServerConnection();
+  if (!hasServerConnection) {
+    return Failure(status: FailureStatus.ServersDown);
   }
 
   if (errors != null) {
@@ -54,6 +45,5 @@ Future<Failure> basicGqlErrorHandler(OperationResponse resp) async {
         message: errorBuff.toString(), status: FailureStatus.GQLMisc);
   }
 
-  debugPrint('entered gql error handler with errors = null');
   return Failure(status: FailureStatus.Unknown);
 }

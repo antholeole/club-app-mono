@@ -1,13 +1,13 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:fe/data/models/group.dart';
 import 'package:fe/pages/chat/chat_service.dart';
 import 'package:fe/pages/chat/cubit/chat_cubit.dart';
 import 'package:fe/pages/chat/widgets/channels_bottom_sheet.dart';
 import 'package:fe/pages/chat/widgets/chat_input/chat_bar.dart';
 import 'package:fe/pages/chat/widgets/chat_title.dart';
+import 'package:fe/pages/chat/widgets/chats/chats.dart';
 import 'package:fe/pages/main/main_helpers/scaffold/cubit/main_scaffold_parts.dart';
+import 'package:fe/pages/main/main_helpers/scaffold/cubit/page_cubit.dart';
 import 'package:fe/pages/main/main_helpers/scaffold/cubit/scaffold_cubit.dart';
-import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:keyboard_attachable/keyboard_attachable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,9 +15,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../service_locator.dart';
 
 class ChatPage extends StatefulWidget {
-  final Group _group;
+  final Group group;
 
-  const ChatPage({required Group group}) : _group = group;
+  ChatPage({required this.group});
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -45,77 +45,85 @@ class ChatPage extends StatefulWidget {
   }
 }
 
-class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
+class _ChatPageState extends State<ChatPage>
+    with WidgetsBindingObserver, AutomaticKeepAliveClientMixin<ChatPage> {
   final ChatService _chatService = getIt<ChatService>();
   late void Function() updateScaffold;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance!.addObserver(this);
     updateScaffold = () {
-      if (AutoRouter.of(context)
-              .innerRouterOf<TabsRouter>(Main.name)!
-              .current
-              .name ==
-          ChatRoute.name) {
+      if (context.read<PageCubit>().state.currentPage == 0) {
         context
             .read<ScaffoldCubit>()
             .updateMainParts(ChatPage.scaffoldWidgets(context));
       }
     };
+
+    final newThread = _chatService.getCachedThread(widget.group);
+
+    context.read<ChatCubit>().setThread(newThread);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final router = AutoRouter.of(context).innerRouterOf<TabsRouter>(Main.name)!;
-
-    //for the first render
     updateScaffold();
-
-    //for remaining renders
-    router.removeListener(updateScaffold);
-    router.addListener(updateScaffold);
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
       _chatService.cacheThread(
-          widget._group, context.read<ChatCubit>().state.thread);
+          widget.group, context.read<ChatCubit>().state.thread);
     }
   }
 
   @override
   void didUpdateWidget(ChatPage oldWidget) {
-    _chatService.cacheThread(
-        oldWidget._group, context.read<ChatCubit>().state.thread);
+    super.didUpdateWidget(oldWidget);
 
-    final newThread = _chatService.getCachedThread(widget._group);
+    _chatService.cacheThread(
+        oldWidget.group, context.read<ChatCubit>().state.thread);
+
+    final newThread = _chatService.getCachedThread(widget.group);
 
     context.read<ChatCubit>().setThread(newThread);
 
-    //begin a check to make sure that this thread stil exists
     if (newThread != null) {
       _chatService
-          .verifyStillInThread(oldWidget._group, newThread.id)
-          .then((threadExists) {
-        if (!threadExists) {
+          .verifyStillInThread(widget.group, newThread)
+          .then((inThread) {
+        if (!inThread) {
           context.read<ChatCubit>().setThread(null);
         }
       });
     }
-
-    super.didUpdateWidget(oldWidget);
   }
 
   @override
   Widget build(BuildContext context) {
-    return FooterLayout(
-      footer: KeyboardAttachable(child: ChatBar()),
-      child: Container(
-        color: Colors.red,
-      ),
-    );
+    super.build(context);
+    return BlocListener<PageCubit, PageState>(
+        listener: (context, state) {
+          if (state.currentPage == 0) {
+            updateScaffold();
+          }
+        },
+        child: FooterLayout(
+          footer: KeyboardAttachable(child: ChatBar()),
+          child: Chats(),
+        ));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

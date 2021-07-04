@@ -35,22 +35,28 @@ class _ChatBarState extends State<ChatBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          ChatButtons(
-              isOpen: _settingsIsOpen,
-              manuallyShowbuttons: () => setState(() {
-                    _settingsIsOpen = true;
-                  })),
-          Expanded(
-              child: ChatTextField(
-            focusNode: _focusNode,
-            controller: _controller,
-          )),
-          SendButton(isSendable: _controller.text.isNotEmpty, onClick: _onSend)
-        ],
+    return Container(
+      decoration: BoxDecoration(
+          border:
+              Border(top: BorderSide(color: Colors.grey.shade300, width: 1))),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            ChatButtons(
+                isOpen: _settingsIsOpen,
+                manuallyShowbuttons: () => setState(() {
+                      _settingsIsOpen = true;
+                    })),
+            Expanded(
+                child: ChatTextField(
+              focusNode: _focusNode,
+              controller: _controller,
+            )),
+            SendButton(
+                isSendable: _controller.text.isNotEmpty, onClick: _onSend)
+          ],
+        ),
       ),
     );
   }

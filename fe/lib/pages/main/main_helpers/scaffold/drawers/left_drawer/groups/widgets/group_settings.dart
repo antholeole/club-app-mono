@@ -3,6 +3,7 @@ import 'package:fe/gql/query_group_join_token.req.gql.dart';
 import 'package:fe/gql/query_users_in_group.data.gql.dart';
 import 'package:fe/gql/query_users_in_group.req.gql.dart';
 import 'package:fe/stdlib/errors/handle_gql_error.dart';
+import 'package:fe/stdlib/shared_widgets/user_avatar.dart';
 import 'package:fe/stdlib/theme/loadable_tile_button.dart';
 import 'package:fe/stdlib/shared_widgets/gql_operation.dart';
 import 'package:ferry/ferry.dart';
@@ -91,27 +92,17 @@ class _GroupSettingsState extends State<GroupSettings> {
     ];
   }
 
-  Widget _buildUserTile(GQueryUsersInGroupData_user_to_group user) {
-    final initals = user.user.name.split(' ').map((e) {
-      if (e.isNotEmpty) {
-        return e[0];
-      } else {
-        return '';
-      }
-    }).join('');
-
+  Widget _buildUserTile(GQueryUsersInGroupData_user_to_group userData) {
     return Tile(
       child: Row(children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: CircleAvatar(
-            foregroundImage: user.user.profile_picture != null
-                ? NetworkImage(user.user.profile_picture!)
-                : null,
-            child: user.user.profile_picture == null ? Text(initals) : null,
+          child: UserAvatar(
+            name: userData.user.name,
+            profileUrl: userData.user.profile_picture,
           ),
         ),
-        Text(user.user.name)
+        Text(userData.user.name)
       ]),
     );
   }

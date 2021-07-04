@@ -53,7 +53,7 @@ class MainService {
     try {
       aToken ??= await _tokenManager.refresh();
     } on TokenException catch (_) {
-      throw Failure(status: FailureStatus.GQLRefresh, resolved: false);
+      throw Failure(status: FailureStatus.RefreshFail, resolved: false);
     }
     return WsClient(aToken);
   }

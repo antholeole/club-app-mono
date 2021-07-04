@@ -30,4 +30,13 @@ class UnauthHttpClient extends HttpClient {
       throw HttpException(message: '', statusCode: 999, socketException: true);
     }
   }
+
+  Future<bool> hasServerConnection() async {
+    try {
+      await getReq('/ping');
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }

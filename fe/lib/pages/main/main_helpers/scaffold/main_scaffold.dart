@@ -1,19 +1,16 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:fe/pages/chat/chat_page.dart';
 import 'package:fe/pages/chat/widgets/channels_bottom_sheet.dart';
-import 'package:fe/pages/events/events_page.dart';
 import 'package:fe/pages/main/bloc/main_page_bloc.dart';
 import 'package:fe/pages/main/main_helpers/scaffold/cubit/main_scaffold_parts.dart';
+import 'package:fe/pages/main/main_helpers/scaffold/cubit/page_cubit.dart';
 import 'package:fe/pages/main/main_helpers/scaffold/cubit/scaffold_cubit.dart'
     as sc;
 import 'package:fe/pages/main/main_helpers/scaffold/scaffold_button.dart';
-import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:fe/stdlib/theme/bottom_nav/bottom_nav.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
-import '../../main_service.dart';
 import 'drawers/left_drawer/club_drawer.dart';
 
 class MainScaffold extends StatelessWidget {
@@ -105,15 +102,10 @@ class MainScaffold extends StatelessWidget {
     //if held tab 0 or double tapped, open bottom sheet
     if ((tab == 0 && held) ||
         (tab == 0 &&
-            AutoRouter.of(scaffoldContext)
-                    .innerRouterOf<TabsRouter>(Main.name)!
-                    .activeIndex ==
-                tab)) {
+            scaffoldContext.read<PageCubit>().state.currentPage == tab)) {
       ChannelsBottomSheet.show(scaffoldContext);
     } else {
-      AutoRouter.of(scaffoldContext)
-          .innerRouterOf<TabsRouter>(Main.name)!
-          .setActiveIndex(tab);
+      scaffoldContext.read<PageCubit>().setPage(tab);
     }
   }
 }

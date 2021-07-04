@@ -1,5 +1,5 @@
-import 'package:auto_route/auto_route.dart';
-import 'package:fe/stdlib/router/router.gr.dart';
+import 'package:fe/pages/main/main_helpers/scaffold/cubit/page_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
 class BottomNav extends StatelessWidget {
@@ -21,22 +21,19 @@ class BottomNav extends StatelessWidget {
       child: SafeArea(
         child: Padding(
           padding: EdgeInsets.only(bottom: 12.5, top: 7.5),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: _buildTabs(context),
+          child: BlocBuilder<PageCubit, PageState>(
+            builder: (context, state) => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: _buildTabs(context, state.currentPage),
+            ),
           ),
         ),
       ),
     );
   }
 
-  List<Widget> _buildTabs(BuildContext context) {
+  List<Widget> _buildTabs(BuildContext context, int currentTab) {
     final tabs = <Widget>[];
-
-    final currentTab = AutoRouter.of(context)
-            .innerRouterOf<TabsRouter>(Main.name)
-            ?.activeIndex ??
-        0;
 
     _icons.asMap().forEach((i, element) {
       tabs.add(_buildTab(element, i, context, active: currentTab == i));

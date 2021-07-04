@@ -1,6 +1,6 @@
 enum FailureStatus {
   GQLMisc,
-  GQLRefresh,
+  RefreshFail,
   NoConn,
   ServersDown,
   InternalServerError,
@@ -14,7 +14,7 @@ extension FailureStatusMessage on FailureStatus {
     switch (this) {
       case FailureStatus.GQLMisc:
         return 'Unknown GQL Error';
-      case FailureStatus.GQLRefresh:
+      case FailureStatus.RefreshFail:
         return 'Failure refreshing tokens';
       case FailureStatus.NoConn:
         return 'Unable to connect to the internet. Please check your connection.';

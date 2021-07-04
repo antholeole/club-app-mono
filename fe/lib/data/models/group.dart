@@ -12,7 +12,6 @@ class Group {
   final UuidType id;
   String name;
   bool admin;
-  bool hasNotifications = false;
 
   Group({required this.id, required this.name, required this.admin});
 

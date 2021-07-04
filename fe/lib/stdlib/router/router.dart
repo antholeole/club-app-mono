@@ -1,26 +1,18 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:fe/pages/chat/chat_page.dart';
-import 'package:fe/pages/events/events_page.dart';
 import 'package:fe/pages/login/login_page.dart';
 import 'package:fe/pages/main/main_helpers/main_page_wrapper.dart';
 import 'package:fe/pages/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 
-@MaterialAutoRouter(
-  replaceInRouteName: 'Page,Route',
-  routes: <AutoRoute>[
-    NoAnimationRoute(path: '/', page: SplashScreen, initial: true),
-    NoAnimationRoute(path: '/login', page: LoginPage),
-    NoAnimationRoute(
-        path: '/main',
-        name: 'main',
-        page: MainPageWrapper,
-        children: [
-          NoAnimationRoute(path: 'events', page: EventsPage),
-          NoAnimationRoute(path: 'chat', page: ChatPage)
-        ])
-  ],
-)
+@MaterialAutoRouter(replaceInRouteName: 'Page,Route', routes: <AutoRoute>[
+  NoAnimationRoute(path: '/', page: SplashScreen, initial: true),
+  NoAnimationRoute(path: '/login', page: LoginPage),
+  NoAnimationRoute(
+    path: '/main',
+    name: 'main',
+    page: MainPageWrapper,
+  )
+])
 class $AppRouter {}
 
 class NoAnimationRoute<T> extends CustomRoute<T> {

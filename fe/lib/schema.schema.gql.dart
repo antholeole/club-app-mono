@@ -4,9 +4,9 @@ import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 import 'package:fe/serializers.gql.dart' as _i1;
-import 'package:fe/stdlib/helpers/uuid_type.dart' as _i2;
+import 'package:fe/stdlib/helpers/uuid_type.dart' as _i3;
 import 'package:gql_code_builder/src/serializers/default_scalar_serializer.dart'
-    as _i3;
+    as _i2;
 
 part 'schema.schema.gql.g.dart';
 
@@ -43,6 +43,53 @@ abstract class GBoolean_comparison_exp
           as Map<String, dynamic>);
   static GBoolean_comparison_exp? fromJson(Map<String, dynamic> json) =>
       _i1.serializers.deserializeWith(GBoolean_comparison_exp.serializer, json);
+}
+
+abstract class Gdate implements Built<Gdate, GdateBuilder> {
+  Gdate._();
+
+  factory Gdate([String? value]) =>
+      _$Gdate((b) => value != null ? (b..value = value) : b);
+
+  String get value;
+  @BuiltValueSerializer(custom: true)
+  static Serializer<Gdate> get serializer => _i2.DefaultScalarSerializer<Gdate>(
+      (Object serialized) => Gdate((serialized as String?)));
+}
+
+abstract class Gdate_comparison_exp
+    implements Built<Gdate_comparison_exp, Gdate_comparison_expBuilder> {
+  Gdate_comparison_exp._();
+
+  factory Gdate_comparison_exp(
+          [Function(Gdate_comparison_expBuilder b) updates]) =
+      _$Gdate_comparison_exp;
+
+  @BuiltValueField(wireName: '_eq')
+  Gdate? get G_eq;
+  @BuiltValueField(wireName: '_gt')
+  Gdate? get G_gt;
+  @BuiltValueField(wireName: '_gte')
+  Gdate? get G_gte;
+  @BuiltValueField(wireName: '_in')
+  BuiltList<Gdate>? get G_in;
+  @BuiltValueField(wireName: '_is_null')
+  bool? get G_is_null;
+  @BuiltValueField(wireName: '_lt')
+  Gdate? get G_lt;
+  @BuiltValueField(wireName: '_lte')
+  Gdate? get G_lte;
+  @BuiltValueField(wireName: '_neq')
+  Gdate? get G_neq;
+  @BuiltValueField(wireName: '_nin')
+  BuiltList<Gdate>? get G_nin;
+  static Serializer<Gdate_comparison_exp> get serializer =>
+      _$gdateComparisonExpSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gdate_comparison_exp.serializer, this)
+          as Map<String, dynamic>);
+  static Gdate_comparison_exp? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(Gdate_comparison_exp.serializer, json);
 }
 
 abstract class Ggroup_join_tokens_aggregate_order_by
@@ -148,8 +195,8 @@ abstract class Ggroup_join_tokens_insert_input
       _$Ggroup_join_tokens_insert_input;
 
   Ggroups_obj_rel_insert_input? get group;
-  _i2.UuidType? get group_id;
-  _i2.UuidType? get id;
+  _i3.UuidType? get group_id;
+  _i3.UuidType? get id;
   String? get join_token;
   static Serializer<Ggroup_join_tokens_insert_input> get serializer =>
       _$ggroupJoinTokensInsertInputSerializer;
@@ -261,7 +308,7 @@ abstract class Ggroup_join_tokens_pk_columns_input
           [Function(Ggroup_join_tokens_pk_columns_inputBuilder b) updates]) =
       _$Ggroup_join_tokens_pk_columns_input;
 
-  _i2.UuidType get id;
+  _i3.UuidType get id;
   static Serializer<Ggroup_join_tokens_pk_columns_input> get serializer =>
       _$ggroupJoinTokensPkColumnsInputSerializer;
   Map<String, dynamic> toJson() => (_i1.serializers
@@ -303,8 +350,8 @@ abstract class Ggroup_join_tokens_set_input
           [Function(Ggroup_join_tokens_set_inputBuilder b) updates]) =
       _$Ggroup_join_tokens_set_input;
 
-  _i2.UuidType? get group_id;
-  _i2.UuidType? get id;
+  _i3.UuidType? get group_id;
+  _i3.UuidType? get id;
   String? get join_token;
   static Serializer<Ggroup_join_tokens_set_input> get serializer =>
       _$ggroupJoinTokensSetInputSerializer;
@@ -435,8 +482,8 @@ abstract class Ggroup_threads_insert_input
       _$Ggroup_threads_insert_input;
 
   Ggroups_obj_rel_insert_input? get group;
-  _i2.UuidType? get group_id;
-  _i2.UuidType? get id;
+  _i3.UuidType? get group_id;
+  _i3.UuidType? get id;
   Gmessages_arr_rel_insert_input? get messages;
   String? get name;
   Guser_to_thread_arr_rel_insert_input? get user_to_threads;
@@ -568,7 +615,7 @@ abstract class Ggroup_threads_pk_columns_input
           [Function(Ggroup_threads_pk_columns_inputBuilder b) updates]) =
       _$Ggroup_threads_pk_columns_input;
 
-  _i2.UuidType get id;
+  _i3.UuidType get id;
   static Serializer<Ggroup_threads_pk_columns_input> get serializer =>
       _$ggroupThreadsPkColumnsInputSerializer;
   Map<String, dynamic> toJson() => (_i1.serializers
@@ -608,8 +655,8 @@ abstract class Ggroup_threads_set_input
           [Function(Ggroup_threads_set_inputBuilder b) updates]) =
       _$Ggroup_threads_set_input;
 
-  _i2.UuidType? get group_id;
-  _i2.UuidType? get id;
+  _i3.UuidType? get group_id;
+  _i3.UuidType? get id;
   String? get name;
   static Serializer<Ggroup_threads_set_input> get serializer =>
       _$ggroupThreadsSetInputSerializer;
@@ -691,7 +738,7 @@ abstract class Ggroups_insert_input
   Ggroup_join_tokens_arr_rel_insert_input? get group_join_tokens;
   String? get group_name;
   Ggroup_threads_arr_rel_insert_input? get group_threads;
-  _i2.UuidType? get id;
+  _i3.UuidType? get id;
   Guser_to_group_arr_rel_insert_input? get user_to_groups;
   static Serializer<Ggroups_insert_input> get serializer =>
       _$ggroupsInsertInputSerializer;
@@ -772,7 +819,7 @@ abstract class Ggroups_pk_columns_input
           [Function(Ggroups_pk_columns_inputBuilder b) updates]) =
       _$Ggroups_pk_columns_input;
 
-  _i2.UuidType get id;
+  _i3.UuidType get id;
   static Serializer<Ggroups_pk_columns_input> get serializer =>
       _$ggroupsPkColumnsInputSerializer;
   Map<String, dynamic> toJson() =>
@@ -807,7 +854,7 @@ abstract class Ggroups_set_input
       _$Ggroups_set_input;
 
   String? get group_name;
-  _i2.UuidType? get id;
+  _i3.UuidType? get id;
   static Serializer<Ggroups_set_input> get serializer =>
       _$ggroupsSetInputSerializer;
   Map<String, dynamic> toJson() =>
@@ -890,8 +937,7 @@ abstract class Gmessages_bool_exp
   @BuiltValueField(wireName: '_or')
   BuiltList<Gmessages_bool_exp>? get G_or;
   Gtimestamptz_comparison_exp? get created_at;
-  GBoolean_comparison_exp? get deleted;
-  GBoolean_comparison_exp? get edited;
+  Gdate_comparison_exp? get edited_at;
   Ggroup_threads_bool_exp? get group_thread;
   Guuid_comparison_exp? get id;
   GBoolean_comparison_exp? get is_image;
@@ -930,16 +976,15 @@ abstract class Gmessages_insert_input
           [Function(Gmessages_insert_inputBuilder b) updates]) =
       _$Gmessages_insert_input;
 
-  Gtimestamptz? get created_at;
-  bool? get deleted;
-  bool? get edited;
+  DateTime? get created_at;
+  Gdate? get edited_at;
   Ggroup_threads_obj_rel_insert_input? get group_thread;
-  _i2.UuidType? get id;
+  _i3.UuidType? get id;
   bool? get is_image;
   String? get message;
-  _i2.UuidType? get thread_id;
+  _i3.UuidType? get thread_id;
   Gusers_obj_rel_insert_input? get user;
-  _i2.UuidType? get user_sent;
+  _i3.UuidType? get user_sent;
   static Serializer<Gmessages_insert_input> get serializer =>
       _$gmessagesInsertInputSerializer;
   Map<String, dynamic> toJson() =>
@@ -958,6 +1003,7 @@ abstract class Gmessages_max_order_by
       _$Gmessages_max_order_by;
 
   Gorder_by? get created_at;
+  Gorder_by? get edited_at;
   Gorder_by? get id;
   Gorder_by? get message;
   Gorder_by? get thread_id;
@@ -980,6 +1026,7 @@ abstract class Gmessages_min_order_by
       _$Gmessages_min_order_by;
 
   Gorder_by? get created_at;
+  Gorder_by? get edited_at;
   Gorder_by? get id;
   Gorder_by? get message;
   Gorder_by? get thread_id;
@@ -1021,8 +1068,7 @@ abstract class Gmessages_order_by
       _$Gmessages_order_by;
 
   Gorder_by? get created_at;
-  Gorder_by? get deleted;
-  Gorder_by? get edited;
+  Gorder_by? get edited_at;
   Ggroup_threads_order_by? get group_thread;
   Gorder_by? get id;
   Gorder_by? get is_image;
@@ -1048,7 +1094,7 @@ abstract class Gmessages_pk_columns_input
           [Function(Gmessages_pk_columns_inputBuilder b) updates]) =
       _$Gmessages_pk_columns_input;
 
-  _i2.UuidType get id;
+  _i3.UuidType get id;
   static Serializer<Gmessages_pk_columns_input> get serializer =>
       _$gmessagesPkColumnsInputSerializer;
   Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
@@ -1064,9 +1110,8 @@ class Gmessages_select_column extends EnumClass {
   static const Gmessages_select_column created_at =
       _$gmessagesSelectColumncreated_at;
 
-  static const Gmessages_select_column deleted = _$gmessagesSelectColumndeleted;
-
-  static const Gmessages_select_column edited = _$gmessagesSelectColumnedited;
+  static const Gmessages_select_column edited_at =
+      _$gmessagesSelectColumnedited_at;
 
   static const Gmessages_select_column id = _$gmessagesSelectColumnid;
 
@@ -1096,14 +1141,13 @@ abstract class Gmessages_set_input
   factory Gmessages_set_input(
       [Function(Gmessages_set_inputBuilder b) updates]) = _$Gmessages_set_input;
 
-  Gtimestamptz? get created_at;
-  bool? get deleted;
-  bool? get edited;
-  _i2.UuidType? get id;
+  DateTime? get created_at;
+  Gdate? get edited_at;
+  _i3.UuidType? get id;
   bool? get is_image;
   String? get message;
-  _i2.UuidType? get thread_id;
-  _i2.UuidType? get user_sent;
+  _i3.UuidType? get thread_id;
+  _i3.UuidType? get user_sent;
   static Serializer<Gmessages_set_input> get serializer =>
       _$gmessagesSetInputSerializer;
   Map<String, dynamic> toJson() =>
@@ -1119,9 +1163,8 @@ class Gmessages_update_column extends EnumClass {
   static const Gmessages_update_column created_at =
       _$gmessagesUpdateColumncreated_at;
 
-  static const Gmessages_update_column deleted = _$gmessagesUpdateColumndeleted;
-
-  static const Gmessages_update_column edited = _$gmessagesUpdateColumnedited;
+  static const Gmessages_update_column edited_at =
+      _$gmessagesUpdateColumnedited_at;
 
   static const Gmessages_update_column id = _$gmessagesUpdateColumnid;
 
@@ -1219,20 +1262,6 @@ abstract class GString_comparison_exp
       _i1.serializers.deserializeWith(GString_comparison_exp.serializer, json);
 }
 
-abstract class Gtimestamptz
-    implements Built<Gtimestamptz, GtimestamptzBuilder> {
-  Gtimestamptz._();
-
-  factory Gtimestamptz([String? value]) =>
-      _$Gtimestamptz((b) => value != null ? (b..value = value) : b);
-
-  String get value;
-  @BuiltValueSerializer(custom: true)
-  static Serializer<Gtimestamptz> get serializer =>
-      _i3.DefaultScalarSerializer<Gtimestamptz>(
-          (Object serialized) => Gtimestamptz((serialized as String?)));
-}
-
 abstract class Gtimestamptz_comparison_exp
     implements
         Built<Gtimestamptz_comparison_exp, Gtimestamptz_comparison_expBuilder> {
@@ -1243,23 +1272,23 @@ abstract class Gtimestamptz_comparison_exp
       _$Gtimestamptz_comparison_exp;
 
   @BuiltValueField(wireName: '_eq')
-  Gtimestamptz? get G_eq;
+  DateTime? get G_eq;
   @BuiltValueField(wireName: '_gt')
-  Gtimestamptz? get G_gt;
+  DateTime? get G_gt;
   @BuiltValueField(wireName: '_gte')
-  Gtimestamptz? get G_gte;
+  DateTime? get G_gte;
   @BuiltValueField(wireName: '_in')
-  BuiltList<Gtimestamptz>? get G_in;
+  BuiltList<DateTime>? get G_in;
   @BuiltValueField(wireName: '_is_null')
   bool? get G_is_null;
   @BuiltValueField(wireName: '_lt')
-  Gtimestamptz? get G_lt;
+  DateTime? get G_lt;
   @BuiltValueField(wireName: '_lte')
-  Gtimestamptz? get G_lte;
+  DateTime? get G_lte;
   @BuiltValueField(wireName: '_neq')
-  Gtimestamptz? get G_neq;
+  DateTime? get G_neq;
   @BuiltValueField(wireName: '_nin')
-  BuiltList<Gtimestamptz>? get G_nin;
+  BuiltList<DateTime>? get G_nin;
   static Serializer<Gtimestamptz_comparison_exp> get serializer =>
       _$gtimestamptzComparisonExpSerializer;
   Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
@@ -1370,10 +1399,10 @@ abstract class Guser_to_group_insert_input
 
   bool? get admin;
   Ggroups_obj_rel_insert_input? get group;
-  _i2.UuidType? get group_id;
-  _i2.UuidType? get id;
+  _i3.UuidType? get group_id;
+  _i3.UuidType? get id;
   Gusers_obj_rel_insert_input? get user;
-  _i2.UuidType? get user_id;
+  _i3.UuidType? get user_id;
   static Serializer<Guser_to_group_insert_input> get serializer =>
       _$guserToGroupInsertInputSerializer;
   Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
@@ -1479,7 +1508,7 @@ abstract class Guser_to_group_pk_columns_input
           [Function(Guser_to_group_pk_columns_inputBuilder b) updates]) =
       _$Guser_to_group_pk_columns_input;
 
-  _i2.UuidType get id;
+  _i3.UuidType get id;
   static Serializer<Guser_to_group_pk_columns_input> get serializer =>
       _$guserToGroupPkColumnsInputSerializer;
   Map<String, dynamic> toJson() => (_i1.serializers
@@ -1522,9 +1551,9 @@ abstract class Guser_to_group_set_input
       _$Guser_to_group_set_input;
 
   bool? get admin;
-  _i2.UuidType? get group_id;
-  _i2.UuidType? get id;
-  _i2.UuidType? get user_id;
+  _i3.UuidType? get group_id;
+  _i3.UuidType? get id;
+  _i3.UuidType? get user_id;
   static Serializer<Guser_to_group_set_input> get serializer =>
       _$guserToGroupSetInputSerializer;
   Map<String, dynamic> toJson() =>
@@ -1659,10 +1688,10 @@ abstract class Guser_to_thread_insert_input
       _$Guser_to_thread_insert_input;
 
   Ggroup_threads_obj_rel_insert_input? get group_thread;
-  _i2.UuidType? get id;
-  _i2.UuidType? get thread_id;
+  _i3.UuidType? get id;
+  _i3.UuidType? get thread_id;
   Gusers_obj_rel_insert_input? get user;
-  _i2.UuidType? get user_id;
+  _i3.UuidType? get user_id;
   static Serializer<Guser_to_thread_insert_input> get serializer =>
       _$guserToThreadInsertInputSerializer;
   Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
@@ -1771,7 +1800,7 @@ abstract class Guser_to_thread_pk_columns_input
           [Function(Guser_to_thread_pk_columns_inputBuilder b) updates]) =
       _$Guser_to_thread_pk_columns_input;
 
-  _i2.UuidType get id;
+  _i3.UuidType get id;
   static Serializer<Guser_to_thread_pk_columns_input> get serializer =>
       _$guserToThreadPkColumnsInputSerializer;
   Map<String, dynamic> toJson() => (_i1.serializers
@@ -1811,9 +1840,9 @@ abstract class Guser_to_thread_set_input
           [Function(Guser_to_thread_set_inputBuilder b) updates]) =
       _$Guser_to_thread_set_input;
 
-  _i2.UuidType? get id;
-  _i2.UuidType? get thread_id;
-  _i2.UuidType? get user_id;
+  _i3.UuidType? get id;
+  _i3.UuidType? get thread_id;
+  _i3.UuidType? get user_id;
   static Serializer<Guser_to_thread_set_input> get serializer =>
       _$guserToThreadSetInputSerializer;
   Map<String, dynamic> toJson() =>
@@ -1896,7 +1925,7 @@ abstract class Gusers_insert_input
       [Function(Gusers_insert_inputBuilder b) updates]) = _$Gusers_insert_input;
 
   String? get email;
-  _i2.UuidType? get id;
+  _i3.UuidType? get id;
   Gmessages_arr_rel_insert_input? get messages;
   String? get name;
   String? get profile_picture;
@@ -1983,7 +2012,7 @@ abstract class Gusers_pk_columns_input
           [Function(Gusers_pk_columns_inputBuilder b) updates]) =
       _$Gusers_pk_columns_input;
 
-  _i2.UuidType get id;
+  _i3.UuidType get id;
   static Serializer<Gusers_pk_columns_input> get serializer =>
       _$gusersPkColumnsInputSerializer;
   Map<String, dynamic> toJson() =>
@@ -2024,7 +2053,7 @@ abstract class Gusers_set_input
       _$Gusers_set_input;
 
   String? get email;
-  _i2.UuidType? get id;
+  _i3.UuidType? get id;
   String? get name;
   String? get profile_picture;
   String? get sub;
@@ -2069,23 +2098,23 @@ abstract class Guuid_comparison_exp
       _$Guuid_comparison_exp;
 
   @BuiltValueField(wireName: '_eq')
-  _i2.UuidType? get G_eq;
+  _i3.UuidType? get G_eq;
   @BuiltValueField(wireName: '_gt')
-  _i2.UuidType? get G_gt;
+  _i3.UuidType? get G_gt;
   @BuiltValueField(wireName: '_gte')
-  _i2.UuidType? get G_gte;
+  _i3.UuidType? get G_gte;
   @BuiltValueField(wireName: '_in')
-  BuiltList<_i2.UuidType>? get G_in;
+  BuiltList<_i3.UuidType>? get G_in;
   @BuiltValueField(wireName: '_is_null')
   bool? get G_is_null;
   @BuiltValueField(wireName: '_lt')
-  _i2.UuidType? get G_lt;
+  _i3.UuidType? get G_lt;
   @BuiltValueField(wireName: '_lte')
-  _i2.UuidType? get G_lte;
+  _i3.UuidType? get G_lte;
   @BuiltValueField(wireName: '_neq')
-  _i2.UuidType? get G_neq;
+  _i3.UuidType? get G_neq;
   @BuiltValueField(wireName: '_nin')
-  BuiltList<_i2.UuidType>? get G_nin;
+  BuiltList<_i3.UuidType>? get G_nin;
   static Serializer<Guuid_comparison_exp> get serializer =>
       _$guuidComparisonExpSerializer;
   Map<String, dynamic> toJson() =>

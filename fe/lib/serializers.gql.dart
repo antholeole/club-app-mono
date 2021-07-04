@@ -5,12 +5,28 @@ import 'package:fe/gql/fake/fake.data.gql.dart'
     show GFakeGqlData, GFakeGqlData_group_join_tokens;
 import 'package:fe/gql/fake/fake.req.gql.dart' show GFakeGqlReq;
 import 'package:fe/gql/fake/fake.var.gql.dart' show GFakeGqlVars;
+import 'package:fe/gql/insert_message.data.gql.dart'
+    show
+        GGetMessagesData,
+        GGetMessagesData_messages,
+        GGetMessagesData_messages_user;
+import 'package:fe/gql/insert_message.req.gql.dart' show GGetMessagesReq;
+import 'package:fe/gql/insert_message.var.gql.dart' show GGetMessagesVars;
 import 'package:fe/gql/query_group_join_token.data.gql.dart'
     show GQueryGroupJoinTokenData, GQueryGroupJoinTokenData_group_join_tokens;
 import 'package:fe/gql/query_group_join_token.req.gql.dart'
     show GQueryGroupJoinTokenReq;
 import 'package:fe/gql/query_group_join_token.var.gql.dart'
     show GQueryGroupJoinTokenVars;
+import 'package:fe/gql/query_messages_in_thread.data.gql.dart'
+    show
+        GQueryMessagesInThreadData,
+        GQueryMessagesInThreadData_messages,
+        GQueryMessagesInThreadData_messages_user;
+import 'package:fe/gql/query_messages_in_thread.req.gql.dart'
+    show GQueryMessagesInThreadReq;
+import 'package:fe/gql/query_messages_in_thread.var.gql.dart'
+    show GQueryMessagesInThreadVars;
 import 'package:fe/gql/query_self_group_preview.data.gql.dart'
     show
         GQuerySelfGroupsPreviewData,
@@ -61,6 +77,8 @@ import 'package:fe/schema.schema.gql.dart'
     show
         GBoolean_comparison_exp,
         GString_comparison_exp,
+        Gdate,
+        Gdate_comparison_exp,
         Ggroup_join_tokens_aggregate_order_by,
         Ggroup_join_tokens_arr_rel_insert_input,
         Ggroup_join_tokens_bool_exp,
@@ -112,7 +130,6 @@ import 'package:fe/schema.schema.gql.dart'
         Gmessages_set_input,
         Gmessages_update_column,
         Gorder_by,
-        Gtimestamptz,
         Gtimestamptz_comparison_exp,
         Guser_to_group_aggregate_order_by,
         Guser_to_group_arr_rel_insert_input,
@@ -151,6 +168,8 @@ import 'package:fe/schema.schema.gql.dart'
         Gusers_set_input,
         Gusers_update_column,
         Guuid_comparison_exp;
+import 'package:fe/stdlib/helpers/datetime_type_converter.dart'
+    show DateTimeSerializer;
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:gql_code_builder/src/serializers/operation_serializer.dart'
     show OperationSerializer;
@@ -160,6 +179,7 @@ part 'serializers.gql.g.dart';
 final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   ..add(OperationSerializer())
   ..add(UuidTypeSerializer())
+  ..add(DateTimeSerializer())
   ..addPlugin(StandardJsonPlugin());
 @SerializersFor([
   GBoolean_comparison_exp,
@@ -167,10 +187,20 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GFakeGqlData_group_join_tokens,
   GFakeGqlReq,
   GFakeGqlVars,
+  GGetMessagesData,
+  GGetMessagesData_messages,
+  GGetMessagesData_messages_user,
+  GGetMessagesReq,
+  GGetMessagesVars,
   GQueryGroupJoinTokenData,
   GQueryGroupJoinTokenData_group_join_tokens,
   GQueryGroupJoinTokenReq,
   GQueryGroupJoinTokenVars,
+  GQueryMessagesInThreadData,
+  GQueryMessagesInThreadData_messages,
+  GQueryMessagesInThreadData_messages_user,
+  GQueryMessagesInThreadReq,
+  GQueryMessagesInThreadVars,
   GQuerySelfGroupsPreviewData,
   GQuerySelfGroupsPreviewData_user_to_group,
   GQuerySelfGroupsPreviewData_user_to_group_group,
@@ -198,6 +228,8 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GUpsertGroupJoinTokenData_insert_group_join_tokens_one,
   GUpsertGroupJoinTokenReq,
   GUpsertGroupJoinTokenVars,
+  Gdate,
+  Gdate_comparison_exp,
   Ggroup_join_tokens_aggregate_order_by,
   Ggroup_join_tokens_arr_rel_insert_input,
   Ggroup_join_tokens_bool_exp,
@@ -249,7 +281,6 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   Gmessages_set_input,
   Gmessages_update_column,
   Gorder_by,
-  Gtimestamptz,
   Gtimestamptz_comparison_exp,
   Guser_to_group_aggregate_order_by,
   Guser_to_group_arr_rel_insert_input,

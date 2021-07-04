@@ -36,6 +36,7 @@ class MyApp extends StatelessWidget {
             fontSize: 14,
           )),
           primaryColor: primaryColor,
+          primarySwatch: Colors.red,
           bottomSheetTheme: BottomSheetThemeData(
               backgroundColor: Colors.black.withOpacity(0))),
       routerDelegate: _appRouter.delegate(),

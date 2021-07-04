@@ -1,0 +1,30 @@
+query QueryMessagesInThread(
+  $threadId: uuid!,
+  $before: timestamptz!
+) {
+  messages(
+    limit: 20,
+    order_by: {
+      created_at: desc
+    },
+    where: {
+      thread_id: {
+        _eq: $threadId,
+      },
+      created_at: {
+        _lt: $before
+      }
+    }
+  ) {
+   created_at,
+    message,
+    user {
+      name,
+      profile_picture,
+      id
+    },
+    is_image,
+    edited_at,
+    id
+  }
+}

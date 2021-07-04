@@ -82,5 +82,39 @@ INSERT INTO public.user_to_thread(user_id, thread_id)
     VALUES ('d3ac2f6b-e56f-47d2-9121-c5444b959a3f', '6481f35f-e444-494b-a980-c0a420384c61');
 
 /* finally, insert some messages in the meetup group of D&D */
+/* britb d3ac2f6b-e56f-47d2-9121-c5444b959a3f */
+/* charles a1e459f1-b3aa-4e47-a3c7-cf6f7ff8f19f */
+
+INSERT INTO public.messages(user_sent, message, thread_id)
+    VALUES ('d3ac2f6b-e56f-47d2-9121-c5444b959a3f', 'eaque rerum! Provident similique accusantium', '6481f35f-e444-494b-a980-c0a420384c61');
+    
+
+INSERT INTO public.messages(user_sent, message, thread_id)
+    VALUES ('a1e459f1-b3aa-4e47-a3c7-cf6f7ff8f19f', 'hi there! Im', '6481f35f-e444-494b-a980-c0a420384c61');
+
+INSERT INTO public.messages(user_sent, message, thread_id)
+    VALUES ('d3ac2f6b-e56f-47d2-9121-c5444b959a3f', 'eaque rerum! di at sunt excepturi expedita sint? Sed quibusd', '6481f35f-e444-494b-a980-c0a420384c61');
+    
+
+INSERT INTO public.messages(user_sent, message, thread_id)
+    VALUES ('a1e459f1-b3aa-4e47-a3c7-cf6f7ff8f19f', ' libero, at maximus nisl suscipit posuere. Mor', '6481f35f-e444-494b-a980-c0a420384c61');
+
+INSERT INTO public.messages(user_sent, message, thread_id)
+    VALUES ('d3ac2f6b-e56f-47d2-9121-c5444b959a3f', ', hic voluptates pariatur est explicabo 
+fugiat, dolorum eligendi quam cupiditate excepturi mollitia maiores labore 
+suscipit quas? Nulla, placeat. Voluptatem quaerat non architecto ab laudantium
+modi minima sunt esse temporibus sint culpa, recusandae aliquam numquam 
+totam ratione voluptas quod exercitationem fuga. Possimus quis earum veniam 
+quasi aliquam eligendi, placeat qui corporis!', '6481f35f-e444-494b-a980-c0a420384c61');
+
+
+INSERT INTO public.messages(user_sent, message, thread_id)
+    VALUES ('d3ac2f6b-e56f-47d2-9121-c5444b959a3f', 'isis justo mollis, auctor consequat urna. Morbi a bibendum metus. 
+Donec scelerisque sollicitudin enim eu venenatis. Duis tincidunt laoreet ex, 
+in pretium orci vestibulum eget', '6481f35f-e444-494b-a980-c0a420384c61');
+    
+
+INSERT INTO public.messages(user_sent, message, thread_id)
+    VALUES ('a1e459f1-b3aa-4e47-a3c7-cf6f7ff8f19f', 'hi there! Im', '6481f35f-e444-494b-a980-c0a420384c61');
 
 
