@@ -16,10 +16,9 @@ Future<Failure> basicGqlErrorHandler(OperationResponse resp) async {
   final errors = resp.graphqlErrors;
 
   if (resp.linkException != null) {
-    if (resp.linkException!.originalException is TokenException) {
-      return Failure(status: FailureStatus.RefreshFail, resolved: false);
+    if (resp.linkException!.originalException is Failure) {
+      return resp.linkException!.originalException;
     } else if (resp.linkException!.originalException is HttpException) {
-      print('http');
       return HttpClient.basicHttpErrorHandler(
           resp.linkException!.originalException, {});
     }

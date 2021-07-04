@@ -1,8 +1,9 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:fe/data/json/provider_access_token.dart';
 import 'package:fe/pages/login/widgets/sign_in_with_provider_button.dart';
+import 'package:fe/pages/splash/splash_service.dart';
 import 'package:fe/stdlib/clients/http_client/http_client.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
-import 'package:fe/stdlib/local_user.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:fe/stdlib/theme/logo.dart';

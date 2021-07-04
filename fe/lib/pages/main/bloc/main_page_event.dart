@@ -12,3 +12,9 @@ class SetGroupEvent extends MainPageEvent {
 
   const SetGroupEvent({required this.group});
 }
+
+class ManualAddDataEvent extends MainPageEvent {
+  final GQuerySelfGroupsPreviewData data;
+
+  const ManualAddDataEvent({required this.data});
+}

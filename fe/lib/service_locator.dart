@@ -9,7 +9,7 @@ import 'package:fe/stdlib/clients/gql_client/gql_client.dart';
 import 'package:fe/stdlib/clients/http_client/unauth_http_client.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
 import 'package:fe/stdlib/local_data/token_manager.dart';
-import 'package:fe/stdlib/local_user.dart';
+import 'package:fe/stdlib/local_user_service.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
@@ -37,14 +37,19 @@ void setupLocator({required bool isProd}) {
   //general deps
   getIt.registerSingleton<FlutterSecureStorage>(FlutterSecureStorage());
   getIt.registerSingleton<LocalFileStore>(LocalFileStore());
-  getIt.registerSingleton<LocalUser>(LocalUser.empty());
+  getIt.registerSingletonWithDependencies<LocalUserService>(
+      () => LocalUserService(),
+      dependsOn: [SharedPreferences]);
 
   //pre-local user
-  getIt.registerSingleton<LoginService>(LoginService());
+  getIt.registerSingletonWithDependencies<LoginService>(() => LoginService(),
+      dependsOn: [SharedPreferences]);
+  getIt.registerSingletonWithDependencies<TokenManager>(() => TokenManager(),
+      dependsOn: [LocalUserService]);
   getIt.registerSingleton<SplashService>(SplashService());
 
-  getIt.registerSingleton<TokenManager>(TokenManager());
-  getIt.registerSingletonAsync<Client>(() => buildGqlClient());
+  getIt.registerSingletonAsync<Client>(() => buildGqlClient(),
+      dependsOn: [TokenManager]);
 
   //logged in services
   getIt.registerSingletonWithDependencies(() => MainService(),

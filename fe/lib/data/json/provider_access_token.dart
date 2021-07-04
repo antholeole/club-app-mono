@@ -1,9 +1,14 @@
 import 'dart:convert';
-
-import 'package:fe/stdlib/local_user.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'provider_access_token.g.dart';
+
+enum LoginType {
+  @JsonValue('Google')
+  Google,
+}
+
+class NotLoggedInError extends Error {}
 
 @JsonSerializable()
 class ProviderIdToken {

@@ -3,7 +3,7 @@ import 'package:fe/pages/chat/cubit/chat_cubit.dart';
 import 'package:fe/pages/chat/widgets/chat_input/chat_buttons.dart';
 import 'package:fe/pages/chat/widgets/chat_input/chat_text_field.dart';
 import 'package:fe/pages/chat/widgets/chat_input/send_button.dart';
-import 'package:fe/pages/main/main_helpers/ws_provider.dart';
+import 'package:fe/pages/main/providers/ws_provider.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/toaster.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

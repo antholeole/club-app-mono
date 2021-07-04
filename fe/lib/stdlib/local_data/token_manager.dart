@@ -4,16 +4,19 @@ import 'package:fe/data/json/refresh_carrier.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/clients/http_client/http_client.dart';
 import 'package:fe/stdlib/clients/http_client/unauth_http_client.dart';
+import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/errors/failure_status.dart';
+import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import '../local_user.dart';
+import '../local_user_service.dart';
 import 'local_file_store.dart';
 
 class TokenManager {
   final _secureStorage = getIt<FlutterSecureStorage>();
   final _localFileStore = getIt<LocalFileStore>();
   final _unauthClient = getIt<UnauthHttpClient>();
-  final _localUser = getIt<LocalUser>();
+  final _localUserService = getIt<LocalUserService>();
   bool hasTokens = false;
 
   String? _tokenCache;
@@ -60,10 +63,11 @@ class TokenManager {
   Future<String> refresh() async {
     hasTokens = true;
     final refreshToken = await _refreshToken;
-    final userId = _localUser.uuid;
+
+    UuidType userId = await _localUserService.getLoggedInUserId();
 
     if (refreshToken == null) {
-      throw NoRefreshTokenException();
+      throw Failure(status: FailureStatus.RefreshFail);
     }
 
     try {
@@ -73,16 +77,11 @@ class TokenManager {
       return resp.body;
     } on HttpException catch (e) {
       if (e.statusCode == 404) {
-        throw FailedRefresh();
+        //user not found
+        throw Failure(status: FailureStatus.RefreshFail);
       } else {
         rethrow;
       }
     }
   }
 }
-
-class TokenException implements Exception {}
-
-class NoRefreshTokenException extends TokenException {}
-
-class FailedRefresh extends TokenException {}

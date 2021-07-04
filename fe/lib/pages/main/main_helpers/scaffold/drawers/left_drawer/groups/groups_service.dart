@@ -3,10 +3,9 @@ import 'package:fe/gql/remove_self_from_group.req.gql.dart';
 import 'package:fe/gql/upsert_group_join_token.req.gql.dart';
 import 'package:fe/pages/main/bloc/main_page_bloc.dart';
 import 'package:fe/stdlib/errors/gq_req_or_throw_failure.dart';
-import 'package:fe/stdlib/errors/handle_gql_error.dart';
 import 'package:fe/stdlib/helpers/random_string.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
-import 'package:fe/stdlib/local_user.dart';
+import 'package:fe/stdlib/local_user_service.dart';
 import 'package:fe/stdlib/toaster.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter/material.dart';
@@ -16,17 +15,19 @@ import '../../../../../../../service_locator.dart';
 
 class GroupsService {
   final _gqlClient = getIt<Client>();
-  final _localUser = getIt<LocalUser>();
+  final _localUserService = getIt<LocalUserService>();
 
   void leaveGroup(Group group, BuildContext context, Function() willLeaveGroup,
       void Function() didLeaveGroup) {
     Future<void> leftGroup() async {
       willLeaveGroup();
 
+      final userId = await _localUserService.getLoggedInUserId();
+
       await gqlReqOrThrowFailure(
           GRemoveSelfFromGroupReq((q) => q
             ..vars.groupId = group.id
-            ..vars.userId = _localUser.uuid),
+            ..vars.userId = userId),
           _gqlClient);
 
       _gqlClient.cache.evict('groups:${group.id}');

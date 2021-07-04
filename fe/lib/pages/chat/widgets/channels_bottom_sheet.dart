@@ -5,18 +5,15 @@ import 'package:fe/gql/query_self_threads_in_group.req.gql.dart';
 import 'package:fe/pages/chat/cubit/bottom_sheet_open_cubit.dart';
 import 'package:fe/pages/chat/cubit/chat_cubit.dart';
 import 'package:fe/pages/main/bloc/main_page_bloc.dart';
-import 'package:fe/stdlib/local_user.dart';
+import 'package:fe/pages/main/providers/user_provider.dart';
 import 'package:fe/stdlib/shared_widgets/gql_operation.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../service_locator.dart';
-
 class ChannelsBottomSheet extends StatelessWidget {
   final BuildContext _providerReadableContext;
-  final LocalUser _localUser = getIt<LocalUser>();
 
   static void show(BuildContext context) {
     HapticFeedback.mediumImpact();
@@ -83,11 +80,12 @@ class ChannelsBottomSheet extends StatelessWidget {
                               color: Colors.grey.shade700),
                         ),
                         GqlOperation(
-                            operationRequest:
-                                GQuerySelfThreadsInGroupReq((q) => q
+                            operationRequest: GQuerySelfThreadsInGroupReq((q) =>
+                                q
                                   ..fetchPolicy = FetchPolicy.CacheAndNetwork
                                   ..vars.groupId = currentGroup!.id
-                                  ..vars.userId = _localUser.uuid),
+                                  ..vars.userId =
+                                      UserProvider.of(context)!.user.id),
                             toastErrorPrefix: 'Error loading threads',
                             onResponse: (GQuerySelfThreadsInGroupData data) =>
                                 BlocBuilder<ChatCubit, ChatState>(

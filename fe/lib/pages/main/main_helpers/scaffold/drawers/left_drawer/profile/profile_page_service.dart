@@ -3,13 +3,12 @@ import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/errors/gq_req_or_throw_failure.dart';
-import 'package:fe/stdlib/errors/handle_gql_error.dart';
-import 'package:fe/stdlib/local_user.dart';
+import 'package:fe/stdlib/local_user_service.dart';
 import 'package:ferry/ferry.dart';
 
 class ProfilePageService {
-  final _user = getIt<LocalUser>();
   final _gqlClient = getIt<Client>();
+  final _localUserService = getIt<LocalUserService>();
 
   Future<void> changeName(String newName) async {
     RegExp regex = RegExp(
@@ -25,14 +24,12 @@ class ProfilePageService {
           status: FailureStatus.RegexFail);
     }
 
-    final resp = await gqlReqOrThrowFailure(
+    final userId = await _localUserService.getLoggedInUserId();
+
+    await gqlReqOrThrowFailure(
         GUpdateSelfNameReq((b) => b
-          ..vars.id = _user.uuid
+          ..vars.id = userId
           ..vars.name = newName),
         _gqlClient);
-
-    _user.name = resp.update_users_by_pk!.name;
   }
 }
-
-class GUserReq {}

@@ -6,9 +6,8 @@ import 'package:fe/data/models/thread.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/errors/gq_req_or_throw_failure.dart';
-import 'package:fe/stdlib/local_user.dart';
+import 'package:fe/stdlib/local_user_service.dart';
 import 'package:ferry/ferry.dart';
-import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fe/gql/query_self_threads_in_group.req.gql.dart';
 import 'package:fe/gql/query_messages_in_thread.req.gql.dart';
@@ -16,7 +15,7 @@ import 'package:fe/gql/query_messages_in_thread.req.gql.dart';
 class ChatService {
   final _sharedPrefrences = getIt<SharedPreferences>();
   final _gqlClient = getIt<Client>();
-  final _user = getIt<LocalUser>();
+  final _localUserService = getIt<LocalUserService>();
 
   String _getCacheThreadKey(Group group) {
     return 'group:${group.id.uuid}:thread';
@@ -33,11 +32,13 @@ class ChatService {
   }
 
   Future<bool> verifyStillInThread(Group group, Thread thread) async {
+    final userId = await _localUserService.getLoggedInUserId();
+
     final resp = await gqlReqOrThrowFailure(
         GQuerySelfThreadsInGroupReq((q) => q
           ..fetchPolicy = FetchPolicy.NetworkOnly
           ..vars.groupId = group.id
-          ..vars.userId = _user.uuid),
+          ..vars.userId = userId),
         _gqlClient);
 
     for (final groupThread in resp.group_threads) {
@@ -65,10 +66,6 @@ class ChatService {
   }
 
   Future<List<Message>> getChats(Thread thread, DateTime before) async {
-    final q = GQueryMessagesInThreadReq((q) => q
-      ..vars.before = before
-      ..vars.threadId = thread.id);
-
     final resp = await gqlReqOrThrowFailure(
         GQueryMessagesInThreadReq((q) => q
           ..vars.before = before

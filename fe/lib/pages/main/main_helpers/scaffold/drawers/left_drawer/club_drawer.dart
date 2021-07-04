@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'groups/groups_page.dart';
 
-//Need to include a two tab swiper... One to see stuff dependent on view,
-//i.e. pins in chat, two to change clubs. NOTE: Change clubs only for now!
-//pins and other options in v2
 class ClubDrawer extends StatefulWidget {
   final List<Widget> _pages = [
     GroupsPage(),

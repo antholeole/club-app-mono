@@ -1,9 +1,10 @@
 import 'package:fe/data/json/backend_access_tokens.dart';
 import 'package:fe/data/json/provider_access_token.dart';
+import 'package:fe/data/models/user.dart';
 import 'package:fe/stdlib/clients/http_client/unauth_http_client.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/local_data/token_manager.dart';
-import 'package:fe/stdlib/local_user.dart';
+import 'package:fe/stdlib/local_user_service.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../service_locator.dart';
@@ -14,7 +15,7 @@ import 'login_exception.dart';
 
 class LoginService {
   final _client = getIt<UnauthHttpClient>();
-  final _localUser = getIt<LocalUser>();
+  final _localUserService = getIt<LocalUserService>();
 
   LoginService();
 
@@ -32,14 +33,11 @@ class LoginService {
 
     await TokenManager.setTokens(backendAccessTokens);
 
-    final localUser = LocalUser(
-        name: providerLoginDetails.displayName,
-        email: providerLoginDetails.email,
-        uuid: UuidType(backendAccessTokens.id));
+    final localUser = User(
+        name: providerLoginDetails.displayName ?? 'Club App User',
+        id: UuidType(backendAccessTokens.id));
 
-    _localUser.login(localUser);
-
-    await localUser.serializeSelf();
+    await _localUserService.saveChanges(localUser);
   }
 
   Future<BackendAccessTokens> _getGqlAuth(

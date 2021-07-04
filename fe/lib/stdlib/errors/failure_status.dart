@@ -1,12 +1,22 @@
 enum FailureStatus {
-  GQLMisc,
+  //catastrohic
+  NotLoggedIn,
   RefreshFail,
+
+  //no connection
   NoConn,
   ServersDown,
+
+  //log this
   InternalServerError,
-  HttpMisc,
+
+  //specific reason (client)
   RegexFail,
-  Unknown
+
+  //miscs
+  HttpMisc,
+  GQLMisc,
+  Unknown,
 }
 
 extension FailureStatusMessage on FailureStatus {
@@ -16,6 +26,8 @@ extension FailureStatusMessage on FailureStatus {
         return 'Unknown GQL Error';
       case FailureStatus.RefreshFail:
         return 'Failure refreshing tokens';
+      case FailureStatus.NotLoggedIn:
+        return 'Failure finding logged in data';
       case FailureStatus.NoConn:
         return 'Unable to connect to the internet. Please check your connection.';
       case FailureStatus.ServersDown:

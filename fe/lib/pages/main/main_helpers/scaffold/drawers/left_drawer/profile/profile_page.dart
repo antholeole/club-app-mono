@@ -1,11 +1,12 @@
 import 'package:fe/config.dart';
 import 'package:fe/pages/main/main_helpers/scaffold/drawers/left_drawer/profile/profile_page_service.dart';
+import 'package:fe/pages/main/providers/user_provider.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/handle_failure.dart';
 import 'package:fe/stdlib/helpers/DEBUG_print.dart';
 import 'package:fe/stdlib/local_data/token_manager.dart';
-import 'package:fe/stdlib/local_user.dart';
+import 'package:fe/stdlib/shared_widgets/user_avatar.dart';
 import 'package:fe/stdlib/theme/button_group.dart';
 import 'package:fe/stdlib/theme/loadable_tile_button.dart';
 import 'package:fe/stdlib/toaster.dart';
@@ -25,21 +26,20 @@ class _ProfilePageState extends State<ProfilePage> {
   final TokenManager _tokenManager = getIt<TokenManager>();
   bool _changingName = false;
   bool _loggingOut = false;
-  final LocalUser _localUser = getIt<LocalUser>();
   final Config _config = getIt<Config>();
 
   @override
   Widget build(BuildContext context) {
+    final userName = UserProvider.of(context)!.user.name;
+
     return Column(
       children: [
-        CircleAvatar(
-          backgroundColor: Colors.brown.shade800,
-          minRadius: 50,
-          maxRadius: 50,
-          child: Text('AO'),
+        UserAvatar(
+          name: userName,
+          radius: 50,
         ),
         Text(
-          _localUser.name,
+          userName,
           style: Theme.of(context).textTheme.headline5,
         ),
         Column(

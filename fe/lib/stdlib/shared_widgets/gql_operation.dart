@@ -1,5 +1,6 @@
 import 'package:fe/stdlib/errors/handle_failure.dart';
 import 'package:fe/stdlib/errors/handle_gql_error.dart';
+import 'package:fe/stdlib/local_user_service.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:ferry/ferry.dart';
 import 'package:ferry/typed_links.dart';
@@ -29,14 +30,15 @@ class GqlOperation<TData, TVars> extends StatefulWidget {
 
 class _GqlOperationState<TData, TVars>
     extends State<GqlOperation<TData, TVars>> {
-  final client = getIt<Client>();
-  TData? resultFromCache;
+  final _client = getIt<Client>();
+  final _userIdFuture = getIt<LocalUserService>().getLoggedInUserId();
+  TData? _resultFromCache;
 
   @override
   void didUpdateWidget(GqlOperation<TData, TVars> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.operationRequest != widget.operationRequest) {
-      setState(() => resultFromCache = null);
+      setState(() => _resultFromCache = null);
     }
   }
 
@@ -56,8 +58,8 @@ class _GqlOperationState<TData, TVars>
         if (response.hasErrors) {
           basicGqlErrorHandler(response).then((f) =>
               handleFailure(f, context, withPrefix: widget.toastErrorPrefix));
-          return resultFromCache != null
-              ? widget.onResponse(resultFromCache!)
+          return _resultFromCache != null
+              ? widget.onResponse(_resultFromCache!)
               : widget.error ??
                   Text(
                     'error',
@@ -65,11 +67,11 @@ class _GqlOperationState<TData, TVars>
                   );
         }
 
-        resultFromCache = response.data;
+        _resultFromCache = response.data;
 
         return widget.onResponse(response.data!);
       },
-      client: client,
+      client: _client,
     );
   }
 }

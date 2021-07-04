@@ -2,10 +2,12 @@ import 'package:fe/data/models/group.dart';
 import 'package:fe/gql/query_self_group_preview.data.gql.dart';
 import 'package:fe/gql/query_self_group_preview.req.gql.dart';
 import 'package:fe/pages/main/main_helpers/scaffold/drawers/left_drawer/groups/widgets/group_tab.dart';
+import 'package:fe/pages/main/providers/user_provider.dart';
 
 import 'package:fe/service_locator.dart';
-import 'package:fe/stdlib/local_user.dart';
+import 'package:fe/stdlib/local_user_service.dart';
 import 'package:fe/stdlib/shared_widgets/gql_operation.dart';
+import 'package:fe/stdlib/theme/loader.dart';
 import 'package:ferry/ferry.dart';
 
 import 'package:flutter/material.dart';
@@ -16,33 +18,37 @@ class GroupsPage extends StatefulWidget {
 }
 
 class _GroupsPageState extends State<GroupsPage> {
-  final LocalUser _localUser = getIt<LocalUser>();
-
   late GQuerySelfGroupsPreviewReq _groupsReq;
 
   @override
-  void initState() {
+  void didChangeDependencies() {
     _groupsReq = GQuerySelfGroupsPreviewReq((b) => b
       ..fetchPolicy = FetchPolicy.CacheAndNetwork
-      ..vars.self_id = _localUser.uuid);
-    super.initState();
+      ..vars.self_id = UserProvider.of(context)!.user.id);
+    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox.expand(
-      child: GqlOperation(
-        operationRequest: _groupsReq,
-        onResponse: (GQuerySelfGroupsPreviewData data) => _buildGroups(
-          data.user_to_group.map(
-            (utg) => Group(
-                admin: utg.admin, id: utg.group.id, name: utg.group.group_name),
-          ),
-        ),
-        error: Center(
-          child: Text('sorry, there was an error loading groups.'),
-        ),
-      ),
+      child: _groupsReq != null
+          ? GqlOperation(
+              operationRequest: _groupsReq,
+              onResponse: (GQuerySelfGroupsPreviewData data) => _buildGroups(
+                data.user_to_group.map(
+                  (utg) => Group(
+                      admin: utg.admin,
+                      id: utg.group.id,
+                      name: utg.group.group_name),
+                ),
+              ),
+              error: Center(
+                child: Text('sorry, there was an error loading groups.'),
+              ),
+            )
+          : Center(
+              child: Loader(),
+            ),
     );
   }
 
@@ -86,7 +92,7 @@ class _GroupsPageState extends State<GroupsPage> {
     setState(() {
       _groupsReq = GQuerySelfGroupsPreviewReq((b) => b
         ..fetchPolicy = FetchPolicy.CacheOnly
-        ..vars.self_id = _localUser.uuid);
+        ..vars.self_id = UserProvider.of(context)!.user.id);
     });
   }
 }

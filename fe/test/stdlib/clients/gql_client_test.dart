@@ -3,6 +3,8 @@ import 'package:fe/constants.dart';
 import 'package:fe/gql/fake/fake.req.gql.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/clients/gql_client/gql_client.dart';
+import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/local_data/token_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -52,7 +54,8 @@ void main() {
       getIt.registerSingleton<TokenManager>(mockTokenManager);
       getIt.registerSingleton<http.Client>(mockClient);
 
-      when(mockTokenManager.refresh()).thenThrow(FailedRefresh());
+      when(mockTokenManager.refresh())
+          .thenThrow(Failure(status: FailureStatus.RefreshFail));
       when(mockTokenManager.read()).thenAnswer((_) => Future.value(null));
       when(mockClient.send(any))
           .thenAnswer((_) => buildFailedGqlResponse([JWS_ERROR]));
@@ -61,7 +64,9 @@ void main() {
 
       final resp = await client.request(GFakeGqlReq()).first;
 
-      expect(resp.linkException?.originalException, isA<FailedRefresh>());
+      final original = resp.linkException?.originalException;
+      expect(original, isA<Failure>());
+      expect((original as Failure).resolved, FailureStatus.RefreshFail);
     });
   });
 }

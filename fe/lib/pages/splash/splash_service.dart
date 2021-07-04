@@ -1,6 +1,7 @@
+import 'package:fe/data/json/provider_access_token.dart';
+import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/login/widgets/sign_in_with_provider_button.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
-import 'package:fe/stdlib/local_user.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -8,7 +9,6 @@ import '../../service_locator.dart';
 
 class SplashService {
   final LocalFileStore _localFileStore = getIt<LocalFileStore>();
-  final LocalUser _localUser = getIt<LocalUser>();
 
   SplashService();
 
@@ -24,20 +24,15 @@ class SplashService {
   }
 
   //returns true if user exists, false if it doesn't.
-  Future<bool> loadPreExistingUserFromMemory() async {
+  Future<User?> loadPreExistingUserFromMemory() async {
     final localUserString =
         await _localFileStore.deserialize(LocalStorageType.LocalUser);
 
     if (localUserString != null) {
-      final localUser = LocalUser.fromJson(localUserString);
-      _localUser.login(localUser);
-      if (localUser.isLoggedIn()) {
-        await getIt.allReady();
-        return true;
-      }
+      final localUser = User.fromJson(localUserString);
+      await getIt.allReady();
+      return localUser;
     }
-
-    return false;
   }
 
   Future<void> essentialLoadsFuture() async {

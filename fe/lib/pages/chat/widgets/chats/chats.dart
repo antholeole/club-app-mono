@@ -1,11 +1,19 @@
+import 'dart:ui';
+
 import 'package:fe/data/models/message.dart';
 import 'package:fe/pages/chat/chat_service.dart';
 import 'package:fe/pages/chat/cubit/chat_cubit.dart';
-import 'package:fe/pages/chat/widgets/chats/message_display.dart';
+import 'package:fe/pages/chat/widgets/chats/message/message_display.dart';
+import 'package:fe/pages/chat/widgets/chats/message/message_overlay.dart';
 import 'package:fe/service_locator.dart';
+import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/errors/failure_status.dart';
+import 'package:fe/stdlib/errors/handle_failure.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/theme/loader.dart';
+import 'package:fe/stdlib/theme/pill_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,12 +26,13 @@ class Chats extends StatefulWidget {
 
 class _ChatsState extends State<Chats> {
   final _chatService = getIt<ChatService>();
-  UuidType? _selectedMessage;
 
   final PagingController<DateTime, Message> _pagingController =
       PagingController(
           firstPageKey: DateTime.now().add(Duration(hours: 5)),
           invisibleItemsThreshold: 3);
+
+  OverlayEntry? currentMessageOverlay;
 
   @override
   void initState() {
@@ -49,17 +58,43 @@ class _ChatsState extends State<Chats> {
             reverse: true,
             pagingController: _pagingController,
             builderDelegate: PagedChildBuilderDelegate<Message>(
+              firstPageErrorIndicatorBuilder: _buildFirstPageError,
               noItemsFoundIndicatorBuilder: _buildNoChats,
               newPageProgressIndicatorBuilder: _buildLoading,
               firstPageProgressIndicatorBuilder: _buildLoading,
-              itemBuilder: (context, message, index) => MessageDisplay(
-                message: message,
-                selectedMessageId: _selectedMessage,
-                onTapped: _onTappedMessage,
-              ),
+              itemBuilder: (context, message, index) {
+                return MessageDisplay(
+                  message: message,
+                  onTapped: _onTappedMessage,
+                );
+              },
             ),
           ),
         ));
+  }
+
+  Widget _buildFirstPageError(BuildContext context) {
+    return Center(
+        child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: SizedBox(
+            width: 250,
+            child: Text(
+              'There was an error while fetching chats.',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+        PillButton(
+          text: 'retry',
+          onClick: () => _pagingController.retryLastFailedRequest(),
+          icon: Icons.refresh,
+        ),
+      ],
+    ));
   }
 
   Widget _buildNoChats(BuildContext context) {
@@ -85,16 +120,27 @@ class _ChatsState extends State<Chats> {
     return Center(child: Loader());
   }
 
-  void _onTappedMessage(UuidType messageId) {
-    if (_selectedMessage == messageId) {
-      setState(() {
-        _selectedMessage = null;
-      });
-    } else {
-      setState(() {
-        _selectedMessage = messageId;
-      });
+  void _onTappedMessage(Message message, LayerLink link) {
+    if (currentMessageOverlay != null) {
+      currentMessageOverlay!.remove();
     }
+
+    currentMessageOverlay = OverlayEntry(
+      opaque: false,
+      maintainState: true,
+      builder: (_) => Scaffold(
+        backgroundColor: Colors.transparent,
+        body: MessageOverlay(
+            dismissSelf: () {
+              currentMessageOverlay!.remove();
+              currentMessageOverlay = null;
+            },
+            link: link,
+            message: message),
+      ),
+    );
+    HapticFeedback.lightImpact();
+    Overlay.of(context)!.insert(currentMessageOverlay!);
   }
 
   Future<void> _fetchPage(DateTime pageKey) async {
@@ -105,12 +151,17 @@ class _ChatsState extends State<Chats> {
       return;
     }
 
-    final chats = await _chatService.getChats(thread, pageKey);
+    try {
+      final chats = await _chatService.getChats(thread, pageKey);
 
-    if (chats.isNotEmpty) {
-      _pagingController.appendPage(chats, chats.last.sentAt);
-    } else {
-      _pagingController.appendPage([], null);
+      if (chats.isNotEmpty) {
+        _pagingController.appendPage(chats, chats.last.sentAt);
+      } else {
+        _pagingController.appendPage([], null);
+      }
+    } on Failure catch (f) {
+      _pagingController.error = f;
+      handleFailure(f, context);
     }
   }
 }

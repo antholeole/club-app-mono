@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
@@ -20,7 +19,7 @@ class LocalFileStore {
 
   Future<void> delete(LocalStorageType lst) async {
     final path = await _localPath(lst);
-    final file = File('$path/${lst.fileName}.json');
+    final file = File('$path/${lst.fileName}.${lst.fileExtension}');
 
     if (await file.exists()) {
       await file.delete();
@@ -32,7 +31,7 @@ class LocalFileStore {
 
     for (final lst in LocalStorageType.values) {
       final path = await _localPath(lst);
-      final file = File('$path/${lst.fileName}.json');
+      final file = File('$path/${lst.fileName}.${lst.fileExtension}');
 
       futures.add(file.exists().then((doesExist) {
         if (doesExist) {
@@ -58,12 +57,13 @@ class LocalFileStore {
   }
 
   Future<File> _buildFile(LocalStorageType lst) async {
-    final fileName = '${await _localPath(lst)}/${lst.fileName}.json';
+    final fileName =
+        '${await _localPath(lst)}/${lst.fileName}.${lst.fileExtension}';
     return File(fileName);
   }
 }
 
-enum LocalStorageType { LocalUser, AccessTokens }
+enum LocalStorageType { AccessTokens, LocalUser }
 enum _DocumentType {
   Document,
   Support,
@@ -72,15 +72,29 @@ enum _DocumentType {
 
 extension FileName on LocalStorageType {
   String get fileName {
-    return ['local_user', 'access_tokens'][index];
+    switch (this) {
+      case LocalStorageType.AccessTokens:
+        return 'access_tokens';
+      case LocalStorageType.LocalUser:
+        return 'user';
+    }
   }
 
   _DocumentType get documentType {
     switch (this) {
-      case LocalStorageType.LocalUser:
-        return _DocumentType.Document;
       case LocalStorageType.AccessTokens:
         return _DocumentType.Support;
+      case LocalStorageType.LocalUser:
+        return _DocumentType.Document;
+    }
+  }
+
+  String get fileExtension {
+    switch (this) {
+      case LocalStorageType.AccessTokens:
+        return 'json';
+      case LocalStorageType.LocalUser:
+        return 'txt';
     }
   }
 }
