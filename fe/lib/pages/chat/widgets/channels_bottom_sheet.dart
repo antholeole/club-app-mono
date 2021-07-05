@@ -85,7 +85,9 @@ class ChannelsBottomSheet extends StatelessWidget {
                                   ..fetchPolicy = FetchPolicy.CacheAndNetwork
                                   ..vars.groupId = currentGroup!.id
                                   ..vars.userId =
-                                      UserProvider.of(context)!.user.id),
+                                      UserProvider.of(_providerReadableContext)!
+                                          .user
+                                          .id),
                             toastErrorPrefix: 'Error loading threads',
                             onResponse: (GQuerySelfThreadsInGroupData data) =>
                                 BlocBuilder<ChatCubit, ChatState>(
