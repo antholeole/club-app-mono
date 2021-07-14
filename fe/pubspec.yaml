@@ -33,6 +33,7 @@ dependencies:
   flutter_platform_widgets: ^1.6.1
   badges: ^2.0.0-nullsafety.1
   infinite_scroll_pagination: ^3.0.1+1
+  another_flushbar: ^1.10.24
   keyboard_attachable:
     git:
       url: https://github.com/drogel/keyboard_attachable.git

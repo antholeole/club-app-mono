@@ -3,7 +3,9 @@ import 'package:fe/pages/chat/cubit/chat_cubit.dart';
 import 'package:fe/pages/chat/widgets/chat_input/chat_buttons.dart';
 import 'package:fe/pages/chat/widgets/chat_input/chat_text_field.dart';
 import 'package:fe/pages/chat/widgets/chat_input/send_button.dart';
-import 'package:fe/pages/main/providers/ws_provider.dart';
+import 'package:fe/pages/main/main_helpers/ws/ws_provider.dart';
+import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/errors/handle_failure.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/toaster.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,6 +22,7 @@ class _ChatBarState extends State<ChatBar> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   bool _settingsIsOpen = true;
+  bool _loadingSend = false;
 
   @override
   void initState() {
@@ -54,7 +57,9 @@ class _ChatBarState extends State<ChatBar> {
               controller: _controller,
             )),
             SendButton(
-                isSendable: _controller.text.isNotEmpty, onClick: _onSend)
+                loading: _loadingSend,
+                isSendable: _controller.text.isNotEmpty,
+                onClick: _onSend)
           ],
         ),
       ),
@@ -77,7 +82,7 @@ class _ChatBarState extends State<ChatBar> {
     }
   }
 
-  void _onSend() {
+  Future<void> _onSend() async {
     UuidType? to = context.read<ChatCubit>().state.thread?.id;
 
     if (to == null) {
@@ -85,10 +90,21 @@ class _ChatBarState extends State<ChatBar> {
       return;
     }
 
-    WsProvider.of(context)!
-        .wsClient
-        .send(WsMessageMessage(message: _controller.text, toId: to));
+    try {
+      setState(() {
+        _loadingSend = true;
+      });
 
-    _controller.clear();
+      await WsProvider.of(context)!
+          .wsClient
+          .send(WsMessageMessage(message: _controller.text, toId: to));
+      _controller.clear();
+    } on Failure catch (f) {
+      handleFailure(f, context);
+    } finally {
+      setState(() {
+        _loadingSend = false;
+      });
+    }
   }
 }

@@ -1,4 +1,3 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:fe/pages/chat/widgets/channels_bottom_sheet.dart';
 import 'package:fe/pages/main/bloc/main_page_bloc.dart';
 import 'package:fe/pages/main/main_helpers/scaffold/cubit/main_scaffold_parts.dart';
@@ -6,31 +5,46 @@ import 'package:fe/pages/main/main_helpers/scaffold/cubit/page_cubit.dart';
 import 'package:fe/pages/main/main_helpers/scaffold/cubit/scaffold_cubit.dart'
     as sc;
 import 'package:fe/pages/main/main_helpers/scaffold/scaffold_button.dart';
-import 'package:fe/stdlib/router/router.gr.dart';
+import 'package:fe/pages/main/main_helpers/ws/ws_reactor.dart';
 import 'package:fe/stdlib/theme/bottom_nav/bottom_nav.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
 import 'drawers/left_drawer/club_drawer.dart';
 
-class MainScaffold extends StatelessWidget {
+class MainScaffold extends StatefulWidget {
   final Widget _child;
 
-  MainScaffold({
+  const MainScaffold({
     Key? key,
     required Widget child,
   }) : _child = child;
+
+  @override
+  _MainScaffoldState createState() => _MainScaffoldState();
+}
+
+class _MainScaffoldState extends State<MainScaffold> {
+  double _appBarToastSize = 0;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<sc.ScaffoldCubit, sc.ScaffoldState>(
       builder: (context, state) {
         return Scaffold(
-          resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomInset: true,
           appBar: AppBar(
+            bottom: PreferredSize(
+                preferredSize: Size(10, _appBarToastSize),
+                child: WsReactor(
+                  sizeCallback: (size) => WidgetsBinding.instance!
+                      .addPostFrameCallback((_) => setState(() {
+                            _appBarToastSize = size;
+                          })),
+                )),
             centerTitle: true,
             backwardsCompatibility: false,
-            backgroundColor: Color(0xffFBFBFB),
+            backgroundColor: const Color(0xffFBFBFB),
             foregroundColor: Colors.grey[900],
             automaticallyImplyLeading: false,
             title: _buildTitle(state.mainScaffoldParts.titleBarWidget),
@@ -47,7 +61,7 @@ class MainScaffold extends StatelessWidget {
             onTap: () {
               FocusScope.of(context).unfocus();
             },
-            child: _child,
+            child: widget._child,
           ),
           bottomNavigationBar: BottomNav(
               onClickTab: (to, held) => _changeTab(to, held, context),

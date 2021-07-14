@@ -16,7 +16,8 @@ class UnauthHttpClient extends HttpClient {
       return super
           .throwIfNot2xx(await _httpClient.get(super.urlBuilder(endpoint)));
     } on SocketException catch (_) {
-      throw HttpException(message: '', statusCode: 999, socketException: true);
+      throw const HttpException(
+          message: '', statusCode: 999, socketException: true);
     }
   }
 

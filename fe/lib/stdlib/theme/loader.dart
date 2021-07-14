@@ -7,8 +7,11 @@ import '../../service_locator.dart';
 
 class Loader extends StatefulWidget {
   final double _size;
+  final bool _white;
 
-  Loader({double size = 32}) : _size = size;
+  Loader({double size = 32, bool white = false})
+      : _size = size,
+        _white = white;
 
   @override
   _LoaderState createState() => _LoaderState();
@@ -30,7 +33,8 @@ class _LoaderState extends State<Loader> with SingleTickerProviderStateMixin {
           )
         : SpinKitThreeBounce(
             size: widget._size,
-            color: Theme.of(context).primaryColor,
+            color:
+                widget._white ? Colors.white : Theme.of(context).primaryColor,
             controller: _animationController,
           );
   }

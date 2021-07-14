@@ -1,36 +1,31 @@
 import 'package:fe/data/models/message.dart';
-import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/shared_widgets/user_avatar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class MessageDisplay extends StatelessWidget {
-  final Message _message;
-  final void Function(Message, LayerLink)? _onTapped;
-  final LayerLink link = LayerLink();
+class SimpleMessageDisplay extends StatelessWidget {
+  static const double padding = 8.0;
 
-  MessageDisplay(
-      {required Message message, void Function(Message, LayerLink)? onTapped})
+  final Message _message;
+  final bool _withPadding;
+
+  const SimpleMessageDisplay(
+      {required Message message, bool withPadding = true, Key? key})
       : _message = message,
-        _onTapped = onTapped;
+        _withPadding = withPadding,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return CompositedTransformTarget(
-      link: link,
-      child: GestureDetector(
-        onTap: () {
-          if (_onTapped != null) {
-            _onTapped!(_message, link);
-          }
-        },
+    return Container(
+      color: Colors.white,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: _withPadding ? padding : 0.0),
         child: ListTile(
           leading: UserAvatar(
             name: _message.sender.name,
             profileUrl: _message.sender.profilePictureUrl,
           ),
           title: Text(_message.sender.name),
-          tileColor: Colors.white,
           subtitle: Text(
             _message.message,
             style: Theme.of(context).textTheme.bodyText2,

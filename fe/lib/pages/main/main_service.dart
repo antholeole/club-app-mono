@@ -65,9 +65,7 @@ class MainService {
     await Future.wait([
       querySelfGroups().then((value) => groupsData = value),
       () async {
-        String? aToken = await _tokenManager.read();
-        aToken ??= await _tokenManager.refresh();
-        return WsClient(aToken);
+        return WsClient();
       }()
           .then((value) => client = value),
       _localUserService.getLoggedInUser().then((value) => loggedInUser = value)

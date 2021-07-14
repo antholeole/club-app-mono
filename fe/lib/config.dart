@@ -24,7 +24,7 @@ class DevConfig extends Config {
   bool get httpIsSecure => false;
 
   @override
-  bool get playTaxingAnimations => false;
+  bool get playTaxingAnimations => true;
 
   @override
   bool get refreshLocalCacheOnReload => false;

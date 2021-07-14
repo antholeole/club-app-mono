@@ -3,13 +3,11 @@ import 'dart:ui';
 import 'package:fe/data/models/message.dart';
 import 'package:fe/pages/chat/chat_service.dart';
 import 'package:fe/pages/chat/cubit/chat_cubit.dart';
-import 'package:fe/pages/chat/widgets/chats/message/message_display.dart';
-import 'package:fe/pages/chat/widgets/chats/message/message_overlay.dart';
+import 'package:fe/pages/chat/widgets/chats/message/chat_page_message_display.dart';
+import 'package:fe/pages/chat/widgets/chats/message/hold_overlay/message_overlay.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/errors/failure.dart';
-import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/errors/handle_failure.dart';
-import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:fe/stdlib/theme/pill_button.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +27,7 @@ class _ChatsState extends State<Chats> {
 
   final PagingController<DateTime, Message> _pagingController =
       PagingController(
-          firstPageKey: DateTime.now().add(Duration(hours: 5)),
+          firstPageKey: DateTime.now().add(const Duration(hours: 5)),
           invisibleItemsThreshold: 3);
 
   OverlayEntry? currentMessageOverlay;
@@ -63,9 +61,9 @@ class _ChatsState extends State<Chats> {
               newPageProgressIndicatorBuilder: _buildLoading,
               firstPageProgressIndicatorBuilder: _buildLoading,
               itemBuilder: (context, message, index) {
-                return MessageDisplay(
+                return ChatPageMessageDisplay(
                   message: message,
-                  onTapped: _onTappedMessage,
+                  onHeld: _onTappedMessage,
                 );
               },
             ),
@@ -78,8 +76,8 @@ class _ChatsState extends State<Chats> {
         child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
+        const Padding(
+          padding: EdgeInsets.only(bottom: 8.0),
           child: SizedBox(
             width: 250,
             child: Text(
@@ -121,6 +119,7 @@ class _ChatsState extends State<Chats> {
   }
 
   void _onTappedMessage(Message message, LayerLink link) {
+    FocusScope.of(context).requestFocus();
     if (currentMessageOverlay != null) {
       currentMessageOverlay!.remove();
     }

@@ -1,5 +1,9 @@
 club-app monorepo.
 
+All knowledge is stored in the knowledge folder. [Obsidian](https://obsidian.md/) is highly recommended
+for ease of viewing and browsing.
+
+
 ## Dev
 
 Note: Can run each individually. No need to run all if not required

@@ -1,15 +1,21 @@
 import 'package:fe/stdlib/shared_widgets/no_overflow_crossfade.dart';
+import 'package:fe/stdlib/theme/loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SendButton extends StatelessWidget {
   final bool _isSendable;
   final void Function() _onClick;
+  final bool _loading;
 
   const SendButton(
-      {Key? key, required bool isSendable, required void Function() onClick})
+      {Key? key,
+      required bool loading,
+      required bool isSendable,
+      required void Function() onClick})
       : _isSendable = isSendable,
         _onClick = onClick,
+        _loading = loading,
         super(key: key);
 
   @override
@@ -25,7 +31,7 @@ class SendButton extends StatelessWidget {
             ),
             child: IconButton(
               padding: EdgeInsets.all(0),
-              icon: Icon(Icons.send),
+              icon: _loading ? Loader(size: 12, white: true) : Icon(Icons.send),
               color: Colors.white,
               onPressed: _onClick,
             ),

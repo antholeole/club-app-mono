@@ -17,7 +17,7 @@ import '../../service_locator.dart';
 class ChatPage extends StatefulWidget {
   final Group group;
 
-  ChatPage({required this.group});
+  const ChatPage({required this.group});
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -41,7 +41,7 @@ class ChatPage extends StatefulWidget {
         ),
         titleBarWidget: GestureDetector(
             onTap: () => ChannelsBottomSheet.show(context),
-            child: ChatTitle()));
+            child: const ChatTitle()));
   }
 }
 
@@ -118,7 +118,7 @@ class _ChatPageState extends State<ChatPage>
             updateScaffold();
           }
         },
-        child: FooterLayout(
+        child: const FooterLayout(
           footer: KeyboardAttachable(child: ChatBar()),
           child: Chats(),
         ));

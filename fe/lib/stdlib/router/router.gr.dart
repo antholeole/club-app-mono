@@ -41,7 +41,7 @@ class AppRouter extends _i1.RootStackRouter {
     Main.name: (routeData) => _i1.CustomPage<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return const _i6.MainPageWrapper();
+          return _i6.MainPageWrapper();
         },
         transitionsBuilder: _i4.NoAnimationRoute.invisAnimation,
         durationInMilliseconds: 0,

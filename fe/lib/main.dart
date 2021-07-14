@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
           primaryColorBrightness: Brightness.light,
-          textTheme: TextTheme(
+          textTheme: const TextTheme(
               caption: TextStyle(
             color: Colors.grey,
             fontSize: 14,
@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
       routeInformationParser: _appRouter.defaultRouteParser(),
       builder: (innerContext, router) => PlatformWidgetBuilder(
           cupertino: (_, child, __) => CupertinoTheme(
-              data: CupertinoThemeData(primaryColor: primaryColor),
+              data: const CupertinoThemeData(primaryColor: primaryColor),
               child: child!),
           //need toaster to be able to access overlay
           child: Overlay(

@@ -6,9 +6,10 @@ import 'package:fe/pages/main/main_helpers/scaffold/cubit/scaffold_cubit.dart';
 import 'package:fe/pages/main/main_helpers/scaffold/main_scaffold.dart';
 import 'package:fe/pages/main/main_page.dart';
 import 'package:fe/pages/main/providers/user_provider.dart';
-import 'package:fe/pages/main/providers/ws_provider.dart';
+import 'package:fe/pages/main/main_helpers/ws/ws_provider.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/handle_failure.dart';
+import 'package:fe/stdlib/helpers/context_refresher.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:fe/stdlib/theme/pill_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -61,21 +62,21 @@ class _MainPageWrapperState extends State<MainPageWrapper> {
               child: UserProvider(
                 user: snapshot.data!.localUser,
                 child: MultiBlocProvider(
-                  providers: [
-                    //chat cubits
-                    BlocProvider(create: (_) => ChatCubit()),
-                    BlocProvider(create: (_) => ChatBottomSheetCubit()),
+                    providers: [
+                      //chat cubits
+                      BlocProvider(create: (_) => ChatCubit()),
+                      BlocProvider(create: (_) => ChatBottomSheetCubit()),
 
-                    //main cubits
-                    BlocProvider(create: (_) => ScaffoldCubit()),
-                    BlocProvider(create: (_) => PageCubit()),
-                    BlocProvider(
-                        create: (_) => MainPageBloc(
-                            data: snapshot.data!.selfGroupsPreviewData))
-                  ],
-                  child:
-                      Builder(builder: (_) => MainScaffold(child: MainPage())),
-                ),
+                      //main cubits
+                      BlocProvider(create: (_) => ScaffoldCubit()),
+                      BlocProvider(create: (_) => PageCubit()),
+                      BlocProvider(
+                          create: (_) => MainPageBloc(
+                              data: snapshot.data!.selfGroupsPreviewData))
+                    ],
+                    child: ContextRefresher(
+                      child: MainScaffold(child: MainPage()),
+                    )),
               ));
         });
   }
@@ -86,8 +87,8 @@ class _MainPageWrapperState extends State<MainPageWrapper> {
           child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
+          const Padding(
+            padding: EdgeInsets.only(bottom: 8.0),
             child: SizedBox(
               width: 250,
               child: Text(
