@@ -1,0 +1,53 @@
+{
+	"info": {
+		"_postman_id": "12c9363d-1ef3-444e-bdac-5bb95baccaa7",
+		"name": "Club App",
+		"description": "Club App",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get_debug_api_key",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"from\": \"Debug\",\n    \"idToken\": \"{\\\"name\\\": \\\"Anthony\\\", \\\"sub\\\": \\\"fake_sub\\\"}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8787/api/auth/",
+					"host": [
+						"localhost"
+					],
+					"port": "8787",
+					"path": [
+						"api",
+						"auth",
+						""
+					]
+				},
+				"description": "gets an API key from a local host debug."
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "localhost:8787"
+		},
+		{
+			"key": "access_token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MmM5Njc2OS1kYjcwLTQ2OWYtYWI4OS0zZTJkMGI4NDJmYWMiLCJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsidXNlciIsImd1ZXN0Il0sIngtaGFzdXJhLXVzZXItaWQiOiI5MmM5Njc2OS1kYjcwLTQ2OWYtYWI4OS0zZTJkMGI4NDJmYWMiLCJ4LWhhc3VyYS1kZWZhdWx0LXJvbGUiOiJ1c2VyIn0sImlhdCI6MTYyMzAzOTE1OSwiZXhwIjoxNjIzMDQyNzU5LCJpc3MiOiJDbHViIEFwcCJ9.6UxibqVvGVYXohLfLHfJVdx24I7xo9BMjNNDruc2Euw"
+		}
+	]
+}
