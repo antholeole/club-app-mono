@@ -15,7 +15,7 @@ class ChatTitle extends StatelessWidget {
         Text text;
 
         if (state.thread == null) {
-          text = Text(
+          text = const Text(
             'Select Thread',
             style: TextStyle(color: Colors.grey),
           );
@@ -31,10 +31,10 @@ class ChatTitle extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.balcony, color: Colors.transparent),
+              const Icon(Icons.balcony, color: Colors.transparent),
               text,
               FlippableIcon(
-                  icon: Icon(Icons.chevron_right),
+                  icon: const Icon(Icons.chevron_right),
                   onClick: () => ChannelsBottomSheet.show(context),
                   flipped: context.watch<ChatBottomSheetCubit>().state.isOpen),
             ]);

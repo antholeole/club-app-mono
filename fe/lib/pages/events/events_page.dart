@@ -1,15 +1,12 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:fe/data/models/group.dart';
 import 'package:fe/pages/main/main_helpers/scaffold/cubit/main_scaffold_parts.dart';
 import 'package:fe/pages/main/main_helpers/scaffold/cubit/page_cubit.dart';
 import 'package:fe/pages/main/main_helpers/scaffold/cubit/scaffold_cubit.dart';
-import 'package:fe/pages/main/main_helpers/ws/ws_provider.dart';
-import 'package:fe/stdlib/clients/ws_client/ws_client.dart';
-import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EventsPage extends StatefulWidget {
+  // ignore: unused_field
   final Group? _group;
 
   const EventsPage({Group? group}) : _group = group;
@@ -34,7 +31,7 @@ class EventsPage extends StatefulWidget {
         endDrawer: Container(
           color: Colors.pink,
         ),
-        titleBarWidget: Text('not donkey'));
+        titleBarWidget: const Text('not donkey'));
   }
 }
 
@@ -63,8 +60,6 @@ class _EventsPageState extends State<EventsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final ws = WsProvider.of(context)!.wsClient;
-
     return BlocListener<PageCubit, PageState>(
         listener: (context, state) => updateScaffold(), child: Container());
   }

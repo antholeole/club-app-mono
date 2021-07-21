@@ -15,7 +15,7 @@ class Toaster extends InheritedWidget {
       {void Function()? action, String? actionText}) {
     _toast(
         message,
-        Icon(
+        const Icon(
           Icons.report,
           color: Colors.red,
           size: 36,
@@ -30,7 +30,7 @@ class Toaster extends InheritedWidget {
       {void Function()? action, String? actionText}) {
     _toast(
         message,
-        Icon(
+        const Icon(
           Icons.done,
           color: Colors.green,
           size: 36,
@@ -48,7 +48,7 @@ class Toaster extends InheritedWidget {
       {void Function()? action, String? actionText}) {
     _toast(
         message,
-        Icon(
+        const Icon(
           Icons.warning_rounded,
           color: Colors.amber,
           size: 36,
@@ -69,7 +69,7 @@ class Toaster extends InheritedWidget {
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-                offset: Offset(0, 2.5),
+                offset: const Offset(0, 2.5),
                 blurRadius: 3,
                 spreadRadius: 1.5,
                 color: Colors.grey.shade200)
@@ -139,7 +139,7 @@ class Toaster extends InheritedWidget {
     _fToast.showToast(
       child: toast,
       gravity: ToastGravity.TOP,
-      toastDuration: Duration(seconds: 200),
+      toastDuration: const Duration(seconds: 200),
     );
   }
 

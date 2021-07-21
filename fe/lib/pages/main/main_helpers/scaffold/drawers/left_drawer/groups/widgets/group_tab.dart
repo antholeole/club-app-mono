@@ -12,7 +12,7 @@ class GroupTab extends StatefulWidget {
   final Group group;
   final Function() didUpdateGroups;
 
-  GroupTab({required this.group, required this.didUpdateGroups});
+  const GroupTab({required this.group, required this.didUpdateGroups});
 
   @override
   _GroupTabState createState() => _GroupTabState();
@@ -78,7 +78,7 @@ class _GroupTabState extends State<GroupTab>
                       width: 5,
                       height: 5,
                     ),
-                    child: CircleAvatar(
+                    child: const CircleAvatar(
                       minRadius: 24,
                       maxRadius: 24,
                       backgroundColor: Colors.grey,
@@ -94,8 +94,8 @@ class _GroupTabState extends State<GroupTab>
                             style: Theme.of(context).textTheme.bodyText2,
                           ))),
                   FlippableIcon(
-                    icon:
-                        Icon(Icons.chevron_left, color: Colors.blue, size: 30),
+                    icon: const Icon(Icons.chevron_left,
+                        color: Colors.blue, size: 30),
                     onClick: () {
                       setState(() {
                         _tabOpen = !_tabOpen;

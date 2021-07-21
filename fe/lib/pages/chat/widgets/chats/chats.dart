@@ -115,7 +115,7 @@ class _ChatsState extends State<Chats> {
   }
 
   Widget _buildLoading(BuildContext _) {
-    return Center(child: Loader());
+    return const Center(child: Loader());
   }
 
   void _onTappedMessage(Message message, LayerLink link) {

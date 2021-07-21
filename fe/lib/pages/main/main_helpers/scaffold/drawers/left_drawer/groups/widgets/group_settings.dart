@@ -77,7 +77,7 @@ class _GroupSettingsState extends State<GroupSettings> {
 
   List<Widget> _buildUsers() {
     return [
-      TileHeader(text: 'Members'),
+      const TileHeader(text: 'Members'),
       GqlOperation(
           operationRequest: GQueryUsersInGroupReq(
             (b) => b
@@ -109,7 +109,7 @@ class _GroupSettingsState extends State<GroupSettings> {
 
   List<Widget> _buildJoinToken() {
     return [
-      TileHeader(
+      const TileHeader(
         text: 'Join Token',
       ),
       FutureBuilder<String?>(
@@ -122,7 +122,7 @@ class _GroupSettingsState extends State<GroupSettings> {
                 return _buildJoinTokenTile(null);
               case ConnectionState.active:
               case ConnectionState.waiting:
-                return Loader(size: 12);
+                return const Loader(size: 12);
             }
           }),
     ];

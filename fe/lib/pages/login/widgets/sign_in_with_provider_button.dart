@@ -35,11 +35,12 @@ class SignInWithProviderButton extends StatelessWidget {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             backgroundColor: _getColor(),
-            padding: EdgeInsets.all(15)),
+            padding: const EdgeInsets.all(15)),
         child: Row(
           children: [
             ColorFiltered(
-              colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcATop),
+              colorFilter:
+                  const ColorFilter.mode(Colors.white, BlendMode.srcATop),
               child: Image.asset(
                 _loginType.imageLocation,
                 height: 40,
@@ -73,7 +74,7 @@ class SignInWithProviderButton extends StatelessWidget {
   Color _getColor() {
     switch (_loginType) {
       case LoginType.Google:
-        return Color(0xff4285F4);
+        return const Color(0xff4285F4);
     }
   }
 

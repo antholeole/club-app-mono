@@ -1,14 +1,16 @@
-export const validProviders = <const>[
-    'Google',
-    'Debug'
-]
+import { Union, Record, Literal, String } from 'runtypes'
 
-export interface IAccessTokenRequest {
-    idToken: string
-    from: typeof validProviders[number]
-}
+const ValidProviders = Union(
+    Literal('Google'),
+    Literal('Debug')
+)
 
-export interface IRefresh {
-    userId: string,
-    refreshToken: string
-}
+export const AcessTokenRequest = Record({
+    idToken: String,
+    from: ValidProviders
+})
+
+export const RefreshRequest = Record({
+    userId: String,
+    refreshToken: String
+})

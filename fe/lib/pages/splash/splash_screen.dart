@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fe/pages/splash/spash_helpers/spash_page.dart';
 import 'package:fe/pages/splash/splash_service.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
-import 'package:fe/stdlib/theme/logo.dart';
 import 'package:flutter/material.dart';
 
 import '../../service_locator.dart';

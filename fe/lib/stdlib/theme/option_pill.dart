@@ -17,7 +17,7 @@ class OptionPill extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey[350],
-        borderRadius: BorderRadius.all(Radius.circular(30)),
+        borderRadius: const BorderRadius.all(Radius.circular(30)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),

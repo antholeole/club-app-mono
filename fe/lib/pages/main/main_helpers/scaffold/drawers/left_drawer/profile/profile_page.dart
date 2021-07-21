@@ -106,7 +106,7 @@ class _ProfilePageState extends State<ProfilePage> {
     showPlatformDialog(
       context: context,
       builder: (_) => PlatformAlertDialog(
-        title: Text('Enter Your New Name'),
+        title: const Text('Enter Your New Name'),
         content: PlatformTextField(
           controller: textEditingController,
           hintText: 'New name...',
@@ -116,11 +116,11 @@ class _ProfilePageState extends State<ProfilePage> {
             cupertino: (_, __) =>
                 CupertinoDialogActionData(isDestructiveAction: true),
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('cancel'),
+            child: const Text('cancel'),
           ),
           PlatformDialogAction(
             onPressed: _tryUpdateName,
-            child: Text('update'),
+            child: const Text('update'),
           ),
         ],
       ),

@@ -8,7 +8,7 @@ abstract class ChatState {
 }
 
 class ChatInitial extends ChatState {
-  ChatInitial() : super(thread: null);
+  const ChatInitial() : super(thread: null);
 }
 
 class ChatSetThread extends ChatState {

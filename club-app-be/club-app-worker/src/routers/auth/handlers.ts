@@ -1,12 +1,12 @@
 import { StatusError, json } from 'itty-router-extras'
-import { IAccessTokenRequest, IRefresh } from './types'
+import { AcessTokenRequest, RefreshRequest } from './types'
+import type { Static } from 'runtypes'
 import { generateAccessToken, getFakeIdentifier, IIdentifier, verifyIdTokenWithGoogle } from './helpers'
 import { addUser, getUserBySub } from './gql_queries'
 import { cryptoRandomString } from '../../helpers/crypto'
 import { getDecryptedKV, putEncryptedKV } from 'encrypt-workers-kv'
-import { NotFoundError } from '@cloudflare/kv-asset-handler'
 
-export const registerRoute = async (tokens: IAccessTokenRequest): Promise<Response> => {
+export const registerRoute = async (tokens: Static<typeof AcessTokenRequest>): Promise<Response> => {
     let identifier: IIdentifier
     switch (tokens.from) {
         case 'Google':
@@ -34,7 +34,7 @@ export const registerRoute = async (tokens: IAccessTokenRequest): Promise<Respon
     })
 }
 
-export const refreshRoute = async (refreshParams: IRefresh): Promise<Response> => {
+export const refreshRoute = async (refreshParams: Static<typeof RefreshRequest>): Promise<Response> => {
     let decryptedHash: ArrayBuffer
     try {
         decryptedHash = await getDecryptedKV(REFRESH_TOKENS, refreshParams.userId, SECRET)

@@ -15,12 +15,12 @@ class BottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         border: Border(top: BorderSide(width: 0.5, color: Colors.grey)),
       ),
       child: SafeArea(
         child: Padding(
-          padding: EdgeInsets.only(bottom: 12.5, top: 7.5),
+          padding: const EdgeInsets.only(bottom: 12.5, top: 7.5),
           child: BlocBuilder<PageCubit, PageState>(
             builder: (context, state) => Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -65,7 +65,7 @@ class BottomNav extends StatelessWidget {
                 color: active
                     ? Theme.of(context).primaryColor
                     : Colors.transparent,
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(30),
                   topRight: Radius.circular(30),
                 )),

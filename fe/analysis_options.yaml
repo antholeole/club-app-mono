@@ -7,6 +7,10 @@ linter:
     prefer_const_constructors_in_immutables: true
     prefer_const_constructors: true
 
-exclude:
-    - lib//*.g.dart
-    - lib//*.req.gql.dart
+
+analyzer:
+  exclude: 
+    - '**/*.g.dart'
+    - '**/*.gql.dart'
+    - '**/*.mocks.dart'
+    - '**/*.gr.dart'

@@ -30,8 +30,10 @@ class SendButton extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: IconButton(
-              padding: EdgeInsets.all(0),
-              icon: _loading ? Loader(size: 12, white: true) : Icon(Icons.send),
+              padding: const EdgeInsets.all(0),
+              icon: _loading
+                  ? const Loader(size: 12, white: true)
+                  : const Icon(Icons.send),
               color: Colors.white,
               onPressed: _onClick,
             ),

@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
                     const Logo(
                       filled: true,
                     ),
-                    loading ? Loader() : _buildInitLoginButton(),
+                    loading ? const Loader() : _buildInitLoginButton(),
                     Container(),
                   ],
                 ),
@@ -80,6 +80,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _proceedToApp() async {
-    await AutoRouter.of(context).navigate(Main());
+    await AutoRouter.of(context).navigate(const Main());
   }
 }

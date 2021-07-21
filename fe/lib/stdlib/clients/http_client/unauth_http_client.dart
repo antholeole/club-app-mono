@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:fe/service_locator.dart';
 import 'package:http/src/response.dart';
 import 'package:http/http.dart' as http;
@@ -12,24 +10,15 @@ class UnauthHttpClient extends HttpClient {
   @override
   Future<Response> getReq(String endpoint,
       {Map<String, dynamic>? queryParameters}) async {
-    try {
-      return super
-          .throwIfNot2xx(await _httpClient.get(super.urlBuilder(endpoint)));
-    } on SocketException catch (_) {
-      throw const HttpException(
-          message: '', statusCode: 999, socketException: true);
-    }
+    return super
+        .throwIfNot2xx(await _httpClient.get(super.urlBuilder(endpoint)));
   }
 
   @override
   Future<Response> postReq(
       String endpoint, Map<String, dynamic>? jsonBody) async {
-    try {
-      return super.throwIfNot2xx(await _httpClient
-          .post(super.urlBuilder(endpoint), body: json.encode(jsonBody)));
-    } on SocketException catch (_) {
-      throw HttpException(message: '', statusCode: 999, socketException: true);
-    }
+    return super.throwIfNot2xx(await _httpClient
+        .post(super.urlBuilder(endpoint), body: json.encode(jsonBody)));
   }
 
   Future<bool> hasServerConnection() async {

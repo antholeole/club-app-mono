@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/gql/query_self_group_preview.data.gql.dart';
 import 'package:fe/gql/query_self_group_preview.req.gql.dart';
-import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/gq_req_or_throw_failure.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
 import 'package:fe/stdlib/local_user_service.dart';

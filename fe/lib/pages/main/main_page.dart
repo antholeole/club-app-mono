@@ -78,7 +78,7 @@ class MainPage extends StatelessWidget {
   }
 
   Widget _buildLoading() {
-    return Center(
+    return const Center(
       child: Loader(),
     );
   }

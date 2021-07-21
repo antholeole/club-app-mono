@@ -36,7 +36,7 @@ class _GroupsPageState extends State<GroupsPage> {
               admin: utg.admin, id: utg.group.id, name: utg.group.group_name),
         ),
       ),
-      error: Center(
+      error: const Center(
         child: Text('sorry, there was an error loading groups.'),
       ),
     ));

@@ -25,13 +25,13 @@ class MessageOptions extends StatelessWidget {
       late BorderRadiusGeometry borderRadius;
 
       if (i == 0 && i == _options.length - 1) {
-        borderRadius =
-            BorderRadius.all(Radius.circular(MessageOverlay.BORDER_RADIUS));
+        borderRadius = const BorderRadius.all(
+            Radius.circular(MessageOverlay.BORDER_RADIUS));
       } else if (i == 0) {
-        borderRadius = BorderRadius.vertical(
+        borderRadius = const BorderRadius.vertical(
             top: Radius.circular(MessageOverlay.BORDER_RADIUS));
       } else if (i == _options.length - 1) {
-        borderRadius = BorderRadius.vertical(
+        borderRadius = const BorderRadius.vertical(
             bottom: Radius.circular(MessageOverlay.BORDER_RADIUS));
       } else {
         borderRadius = BorderRadius.zero;

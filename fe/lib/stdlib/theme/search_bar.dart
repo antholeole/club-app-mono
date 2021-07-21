@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 
 /// updated ios_search_bar package!
 class SearchBar extends AnimatedWidget {
-  SearchBar({
+  const SearchBar({
     Key? key,
     required this.animation,
     required this.controller,
@@ -61,7 +61,7 @@ class SearchBar extends AnimatedWidget {
                 alignment: Alignment.centerLeft,
                 children: <Widget>[
                   Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                         color: CupertinoColors.systemGroupedBackground,
                         borderRadius: BorderRadius.all(Radius.circular(20))),
                     child: Padding(
@@ -69,9 +69,8 @@ class SearchBar extends AnimatedWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(0.0, 0.0, 4.0, 1.0),
+                          const Padding(
+                            padding: EdgeInsets.fromLTRB(0.0, 0.0, 4.0, 1.0),
                             child: Icon(
                               CupertinoIcons.search,
                               color: CupertinoColors.inactiveGray,
@@ -103,7 +102,7 @@ class SearchBar extends AnimatedWidget {
                             focusNode: focusNode,
                             onChanged: onUpdate,
                             onSubmitted: onSubmit,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: CupertinoColors.black,
                               inherit: false,
                               fontSize: _kFontSize,
@@ -129,7 +128,7 @@ class SearchBar extends AnimatedWidget {
                               onClear!();
                             }
                           },
-                          child: Icon(
+                          child: const Icon(
                             Icons.close,
                             size: 8.0,
                             color: CupertinoColors.white,

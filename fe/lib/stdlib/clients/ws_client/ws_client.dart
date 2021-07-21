@@ -1,10 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:fe/data/ws_message/message_message.dart';
-import 'package:fe/data/ws_message/ping_message.dart';
-import 'package:fe/stdlib/clients/http_client/unauth_http_client.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
 
 import 'package:fe/data/ws_message/ws_message.dart';
@@ -20,7 +17,6 @@ enum WsConnectionState { Connecting, Connected, Error }
 
 class WsClient {
   final TokenManager _tokenManager = getIt<TokenManager>();
-  final UnauthHttpClient _unauthHttpClient = getIt<UnauthHttpClient>();
   final Config _config = getIt<Config>();
 
   final StreamController<Failure> _failureStream = StreamController();

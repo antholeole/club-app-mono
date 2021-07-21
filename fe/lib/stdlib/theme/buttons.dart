@@ -19,7 +19,7 @@ class CustomWideButton extends StatelessWidget {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             backgroundColor: Theme.of(context).primaryColor,
-            padding: EdgeInsets.all(20)),
+            padding: const EdgeInsets.all(20)),
         child: Text(
           _text,
           style: Theme.of(context)

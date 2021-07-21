@@ -26,7 +26,7 @@ class LoadableTileButton extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: loading
-            ? Loader(size: 12)
+            ? const Loader(size: 12)
             : Text(
                 text,
                 style: TextStyle(color: color),

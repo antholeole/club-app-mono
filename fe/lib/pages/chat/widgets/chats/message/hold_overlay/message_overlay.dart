@@ -91,8 +91,8 @@ class _MessageOverlayState extends State<MessageOverlay>
         offset: Offset(0, -topSectionHeight - verticalOffset),
         link: widget.link,
         child: Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: SimpleMessageDisplay.padding),
+          padding: const EdgeInsets.symmetric(
+              horizontal: SimpleMessageDisplay.padding),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             key: renderKey,
@@ -105,7 +105,7 @@ class _MessageOverlayState extends State<MessageOverlay>
                 },
                 child: Container(
                   width: double.infinity,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.vertical(
                           top: Radius.circular(MessageOverlay.BORDER_RADIUS))),
@@ -128,7 +128,7 @@ class _MessageOverlayState extends State<MessageOverlay>
               ),
               Container(
                 height: MessageOverlay.BORDER_RADIUS,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.vertical(
                         bottom: Radius.circular(MessageOverlay.BORDER_RADIUS))),

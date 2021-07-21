@@ -9,7 +9,7 @@ class Loader extends StatefulWidget {
   final double _size;
   final bool _white;
 
-  Loader({double size = 32, bool white = false})
+  const Loader({double size = 32, bool white = false})
       : _size = size,
         _white = white;
 
@@ -25,7 +25,7 @@ class _LoaderState extends State<Loader> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return _showFiller
-        ? Center(
+        ? const Center(
             child: CupertinoActivityIndicator(
               animating: false,
               radius: 50,
@@ -47,7 +47,7 @@ class _LoaderState extends State<Loader> with SingleTickerProviderStateMixin {
 
   void _prepareAnimations() {
     _animationController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 1200));
+        vsync: this, duration: const Duration(milliseconds: 1200));
 
     _showFiller = !getIt<Config>().playTaxingAnimations;
   }

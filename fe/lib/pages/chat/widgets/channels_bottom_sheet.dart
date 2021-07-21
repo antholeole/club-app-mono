@@ -30,7 +30,7 @@ class ChannelsBottomSheet extends StatelessWidget {
         .then((value) => context.read<ChatBottomSheetCubit>().setState(false));
   }
 
-  ChannelsBottomSheet({required BuildContext providerReadableContext})
+  const ChannelsBottomSheet({required BuildContext providerReadableContext})
       : _providerReadableContext = providerReadableContext;
 
   @override
@@ -46,7 +46,7 @@ class ChannelsBottomSheet extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
@@ -65,7 +65,7 @@ class ChannelsBottomSheet extends StatelessWidget {
                           decoration: BoxDecoration(
                               color: Colors.grey.withOpacity(0.4),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(20))),
+                                  const BorderRadius.all(Radius.circular(20))),
                         ),
                       ),
                     ),
@@ -115,7 +115,7 @@ class ChannelsBottomSheet extends StatelessWidget {
                 )
               : SizedBox(
                   height: MediaQuery.of(context).size.height / 4,
-                  child: Center(child: Text('No group selected!'))),
+                  child: const Center(child: Text('No group selected!'))),
         ),
       ),
     );
@@ -149,7 +149,7 @@ class ChannelsBottomSheet extends StatelessWidget {
                   backgroundColor: Colors.red,
                   label: Text(
                     unreadMessages.toString(),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                     ),
                   ),

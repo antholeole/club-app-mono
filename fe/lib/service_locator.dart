@@ -35,7 +35,7 @@ void setupLocator({required bool isProd}) {
   getIt.registerSingleton<UnauthHttpClient>(UnauthHttpClient());
 
   //general deps
-  getIt.registerSingleton<FlutterSecureStorage>(FlutterSecureStorage());
+  getIt.registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
   getIt.registerSingleton<LocalFileStore>(LocalFileStore());
   getIt.registerSingletonWithDependencies<LocalUserService>(
       () => LocalUserService(),
