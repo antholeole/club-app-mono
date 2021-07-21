@@ -19,7 +19,7 @@ enum FailureStatus {
   Unknown,
 }
 
-extension FailureStatusMessage on FailureStatus {
+extension FailureMessage on FailureStatus {
   String get message {
     switch (this) {
       case FailureStatus.GQLMisc:
@@ -40,6 +40,16 @@ extension FailureStatusMessage on FailureStatus {
         return 'Input validation failed';
       case FailureStatus.Unknown:
         return 'Sorry, unknown error.';
+    }
+  }
+
+  bool get fatal {
+    switch (this) {
+      case FailureStatus.NotLoggedIn:
+      case FailureStatus.RefreshFail:
+        return true;
+      default:
+        return false;
     }
   }
 }

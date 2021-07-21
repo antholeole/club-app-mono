@@ -2,10 +2,10 @@
 // in fe/test/pages/main/main_helpers/ws/ws_reactor.test.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i2;
+import 'dart:async' as _i3;
 
 import 'package:fe/data/ws_message/ws_message.dart' as _i5;
-import 'package:fe/stdlib/clients/ws_client/ws_client.dart' as _i3;
+import 'package:fe/stdlib/clients/ws_client/ws_client.dart' as _i2;
 import 'package:fe/stdlib/errors/failure.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
 
@@ -15,39 +15,35 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: prefer_const_constructors
 // ignore_for_file: unnecessary_parenthesis
 
-class _FakeStreamController<T> extends _i1.Fake
-    implements _i2.StreamController<T> {}
-
 /// A class which mocks [WsClient].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockWsClient extends _i1.Mock implements _i3.WsClient {
+class MockWsClient extends _i1.Mock implements _i2.WsClient {
   MockWsClient() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i2.StreamController<_i3.WsConnectionState> get connectionStateController =>
-      (super.noSuchMethod(Invocation.getter(#connectionStateController),
-              returnValue: _FakeStreamController<_i3.WsConnectionState>())
-          as _i2.StreamController<_i3.WsConnectionState>);
-  @override
-  _i2.Stream<_i3.WsConnectionState> connectionState() =>
+  _i3.Stream<_i2.WsConnectionState> connectionState() =>
       (super.noSuchMethod(Invocation.method(#connectionState, []),
-              returnValue: Stream<_i3.WsConnectionState>.empty())
-          as _i2.Stream<_i3.WsConnectionState>);
+              returnValue: Stream<_i2.WsConnectionState>.empty())
+          as _i3.Stream<_i2.WsConnectionState>);
   @override
-  _i2.Stream<_i4.Failure> errorStream() =>
+  _i3.Stream<_i4.Failure> errorStream() =>
       (super.noSuchMethod(Invocation.method(#errorStream, []),
-          returnValue: Stream<_i4.Failure>.empty()) as _i2.Stream<_i4.Failure>);
+          returnValue: Stream<_i4.Failure>.empty()) as _i3.Stream<_i4.Failure>);
   @override
-  _i2.Future<void> initalize() =>
+  _i3.Stream<_i5.WsMessage> messageStream() => (super.noSuchMethod(
+      Invocation.method(#messageStream, []),
+      returnValue: Stream<_i5.WsMessage>.empty()) as _i3.Stream<_i5.WsMessage>);
+  @override
+  _i3.Future<void> initalize() =>
       (super.noSuchMethod(Invocation.method(#initalize, []),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future.value()) as _i2.Future<void>);
+          returnValueForMissingStub: Future.value()) as _i3.Future<void>);
   @override
-  _i2.Future<void> send(_i5.WsMessage? message) =>
+  _i3.Future<void> send(_i5.WsMessage? message) =>
       (super.noSuchMethod(Invocation.method(#send, [message]),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future.value()) as _i2.Future<void>);
+          returnValueForMissingStub: Future.value()) as _i3.Future<void>);
 }

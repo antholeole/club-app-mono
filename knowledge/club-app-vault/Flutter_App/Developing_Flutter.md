@@ -8,6 +8,10 @@ Hot reloading is your friend. `flutter run` by default allows hot reloading.
 #### Development
 `flutter run` by default runs in development mode. This mode allows hot reloading and has a debugger to attach.
 
+Flutter run may fail for the first `flutter run` with `OSStatus error -54.`.
+Go into xcode, and then run `ios/Runner.xcworspace`. It should work after that
+if running on the same simulator.
+
 #### Physical Device
 TODO!
 

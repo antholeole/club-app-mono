@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:fe/data/ws_message/message_message.dart';
+import 'package:fe/data/ws_message/ping_message.dart';
 import 'package:fe/stdlib/clients/http_client/unauth_http_client.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
 
-import '../http_client/http_client.dart';
 import 'package:fe/data/ws_message/ws_message.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/local_data/token_manager.dart';
@@ -22,7 +24,8 @@ class WsClient {
   final Config _config = getIt<Config>();
 
   final StreamController<Failure> _failureStream = StreamController();
-  final StreamController<WsConnectionState> connectionStateController =
+  final StreamController<WsMessage> _messageStream = StreamController();
+  final StreamController<WsConnectionState> _connectionStateController =
       StreamController();
 
   IOWebSocketChannel? _wsChannel;
@@ -30,47 +33,57 @@ class WsClient {
   WsClient();
 
   Stream<WsConnectionState> connectionState() {
-    return connectionStateController.stream;
+    return _connectionStateController.stream;
   }
 
   Stream<Failure> errorStream() {
     return _failureStream.stream;
   }
 
+  Stream<WsMessage> messageStream() {
+    return _messageStream.stream;
+  }
+
   Future<void> initalize() async {
-    connectionStateController.add(WsConnectionState.Connecting);
+    _connectionStateController.add(WsConnectionState.Connecting);
 
     _wsChannel = IOWebSocketChannel.connect(Uri.parse(_config.wsUrl),
         headers: {'Authorization': 'Bearer ${await _tokenManager.read()}'});
 
-    _wsChannel!.stream.listen(print, onError: print);
+    _wsChannel!.stream
+        .listen(_onMessage, onError: _handleWsException, onDone: _onDone);
+    print('hi');
+
+    _wsChannel!.stream.timeout(const Duration(seconds: 10));
+  }
+
+  void _onMessage(dynamic message) {
+    print('got something');
+    final jsonMessage = json.decode(message);
+    final wsMessageType = WsMessage.determineMessage(message);
+
+    switch (wsMessageType) {
+      case WsMessageType.Ping:
+      case WsMessageType.Connect:
+        _connectionStateController.add(WsConnectionState.Connected);
+        return;
+      case WsMessageType.Message:
+        _messageStream.add(WsMessageMessage.fromJson(jsonMessage));
+        return;
+    }
+  }
+
+  void _onDone() {
+    _connectionStateController.add(WsConnectionState.Error);
   }
 
   Future<void> send(WsMessage message) async {}
 
-  Future<Failure> _handleWsException(WebSocketChannelException e) async {
-    if (e.inner is WebSocketException) {
-      final wse = e.inner as WebSocketException;
-      if (wse.message.contains('WAS NOT UPGRADED')) {
-        //failure to upgrade. generally means access token is expired
-        try {
-          await _tokenManager.refresh();
-          await initalize();
-        } on Failure catch (f) {
-          return f;
-        }
-      }
-    }
+  Future<void> _handleWsException(WebSocketChannelException e) async {
+    Failure? f;
 
-    if (!(await HttpClient.isConnected())) {
-      return Failure(status: FailureStatus.NoConn);
-    }
+    f ??= Failure(status: FailureStatus.Unknown);
 
-    final hasServerConnection = await _unauthHttpClient.hasServerConnection();
-    if (!hasServerConnection) {
-      return Failure(status: FailureStatus.ServersDown);
-    }
-
-    return Failure(status: FailureStatus.Unknown);
+    _failureStream.add(f);
   }
 }

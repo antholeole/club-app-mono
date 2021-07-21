@@ -4,6 +4,15 @@ schema {
   subscription: subscription_root
 }
 
+"""whether this query should be cached (Hasura Cloud only)"""
+directive @cached(
+  """measured in seconds"""
+  ttl: Int! = 60
+
+  """refresh the cache entry"""
+  refresh: Boolean! = false
+) on QUERY
+
 """
 Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
 """
@@ -17,23 +26,6 @@ input Boolean_comparison_exp {
   _lte: Boolean
   _neq: Boolean
   _nin: [Boolean!]
-}
-
-scalar date
-
-"""
-Boolean expression to compare columns of type "date". All fields are combined with logical 'AND'.
-"""
-input date_comparison_exp {
-  _eq: date
-  _gt: date
-  _gte: date
-  _in: [date!]
-  _is_null: Boolean
-  _lt: date
-  _lte: date
-  _neq: date
-  _nin: [date!]
 }
 
 """
@@ -165,7 +157,7 @@ on conflict condition type for table "group_join_tokens"
 """
 input group_join_tokens_on_conflict {
   constraint: group_join_tokens_constraint!
-  update_columns: [group_join_tokens_update_column!]!
+  update_columns: [group_join_tokens_update_column!]! = []
   where: group_join_tokens_bool_exp
 }
 
@@ -224,10 +216,8 @@ columns and relationships of "group_threads"
 """
 type group_threads {
   """An object relationship"""
-  group: groups
-
-  """If group_id null, then this is a dm/groupchat not tied to a group."""
-  group_id: uuid
+  group: groups!
+  group_id: uuid!
   id: uuid!
 
   """An array relationship"""
@@ -368,8 +358,6 @@ input type for inserting data into table "group_threads"
 """
 input group_threads_insert_input {
   group: groups_obj_rel_insert_input
-
-  """If group_id null, then this is a dm/groupchat not tied to a group."""
   group_id: uuid
   id: uuid
   messages: messages_arr_rel_insert_input
@@ -379,7 +367,6 @@ input group_threads_insert_input {
 
 """aggregate max on columns"""
 type group_threads_max_fields {
-  """If group_id null, then this is a dm/groupchat not tied to a group."""
   group_id: uuid
   id: uuid
   name: String
@@ -389,7 +376,6 @@ type group_threads_max_fields {
 order by max() on columns of table "group_threads"
 """
 input group_threads_max_order_by {
-  """If group_id null, then this is a dm/groupchat not tied to a group."""
   group_id: order_by
   id: order_by
   name: order_by
@@ -397,7 +383,6 @@ input group_threads_max_order_by {
 
 """aggregate min on columns"""
 type group_threads_min_fields {
-  """If group_id null, then this is a dm/groupchat not tied to a group."""
   group_id: uuid
   id: uuid
   name: String
@@ -407,7 +392,6 @@ type group_threads_min_fields {
 order by min() on columns of table "group_threads"
 """
 input group_threads_min_order_by {
-  """If group_id null, then this is a dm/groupchat not tied to a group."""
   group_id: order_by
   id: order_by
   name: order_by
@@ -439,7 +423,7 @@ on conflict condition type for table "group_threads"
 """
 input group_threads_on_conflict {
   constraint: group_threads_constraint!
-  update_columns: [group_threads_update_column!]!
+  update_columns: [group_threads_update_column!]! = []
   where: group_threads_bool_exp
 }
 
@@ -476,7 +460,6 @@ enum group_threads_select_column {
 input type for updating data in table "group_threads"
 """
 input group_threads_set_input {
-  """If group_id null, then this is a dm/groupchat not tied to a group."""
   group_id: uuid
   id: uuid
   name: String
@@ -699,7 +682,7 @@ on conflict condition type for table "groups"
 """
 input groups_on_conflict {
   constraint: groups_constraint!
-  update_columns: [groups_update_column!]!
+  update_columns: [groups_update_column!]! = []
   where: groups_bool_exp
 }
 
@@ -752,7 +735,7 @@ columns and relationships of "messages"
 """
 type messages {
   created_at: timestamptz!
-  edited_at: date
+  deleted: Boolean!
 
   """An object relationship"""
   group_thread: group_threads!
@@ -760,6 +743,7 @@ type messages {
   is_image: Boolean!
   message: String!
   thread_id: uuid!
+  updated_at: timestamptz
 
   """An object relationship"""
   user: users!
@@ -810,12 +794,13 @@ input messages_bool_exp {
   _not: messages_bool_exp
   _or: [messages_bool_exp!]
   created_at: timestamptz_comparison_exp
-  edited_at: date_comparison_exp
+  deleted: Boolean_comparison_exp
   group_thread: group_threads_bool_exp
   id: uuid_comparison_exp
   is_image: Boolean_comparison_exp
   message: String_comparison_exp
   thread_id: uuid_comparison_exp
+  updated_at: timestamptz_comparison_exp
   user: users_bool_exp
   user_sent: uuid_comparison_exp
 }
@@ -833,12 +818,13 @@ input type for inserting data into table "messages"
 """
 input messages_insert_input {
   created_at: timestamptz
-  edited_at: date
+  deleted: Boolean
   group_thread: group_threads_obj_rel_insert_input
   id: uuid
   is_image: Boolean
   message: String
   thread_id: uuid
+  updated_at: timestamptz
   user: users_obj_rel_insert_input
   user_sent: uuid
 }
@@ -846,10 +832,10 @@ input messages_insert_input {
 """aggregate max on columns"""
 type messages_max_fields {
   created_at: timestamptz
-  edited_at: date
   id: uuid
   message: String
   thread_id: uuid
+  updated_at: timestamptz
   user_sent: uuid
 }
 
@@ -858,20 +844,20 @@ order by max() on columns of table "messages"
 """
 input messages_max_order_by {
   created_at: order_by
-  edited_at: order_by
   id: order_by
   message: order_by
   thread_id: order_by
+  updated_at: order_by
   user_sent: order_by
 }
 
 """aggregate min on columns"""
 type messages_min_fields {
   created_at: timestamptz
-  edited_at: date
   id: uuid
   message: String
   thread_id: uuid
+  updated_at: timestamptz
   user_sent: uuid
 }
 
@@ -880,10 +866,10 @@ order by min() on columns of table "messages"
 """
 input messages_min_order_by {
   created_at: order_by
-  edited_at: order_by
   id: order_by
   message: order_by
   thread_id: order_by
+  updated_at: order_by
   user_sent: order_by
 }
 
@@ -903,19 +889,20 @@ on conflict condition type for table "messages"
 """
 input messages_on_conflict {
   constraint: messages_constraint!
-  update_columns: [messages_update_column!]!
+  update_columns: [messages_update_column!]! = []
   where: messages_bool_exp
 }
 
 """Ordering options when selecting data from "messages"."""
 input messages_order_by {
   created_at: order_by
-  edited_at: order_by
+  deleted: order_by
   group_thread: group_threads_order_by
   id: order_by
   is_image: order_by
   message: order_by
   thread_id: order_by
+  updated_at: order_by
   user: users_order_by
   user_sent: order_by
 }
@@ -933,7 +920,7 @@ enum messages_select_column {
   created_at
 
   """column name"""
-  edited_at
+  deleted
 
   """column name"""
   id
@@ -948,6 +935,9 @@ enum messages_select_column {
   thread_id
 
   """column name"""
+  updated_at
+
+  """column name"""
   user_sent
 }
 
@@ -956,11 +946,12 @@ input type for updating data in table "messages"
 """
 input messages_set_input {
   created_at: timestamptz
-  edited_at: date
+  deleted: Boolean
   id: uuid
   is_image: Boolean
   message: String
   thread_id: uuid
+  updated_at: timestamptz
   user_sent: uuid
 }
 
@@ -972,7 +963,7 @@ enum messages_update_column {
   created_at
 
   """column name"""
-  edited_at
+  deleted
 
   """column name"""
   id
@@ -985,6 +976,9 @@ enum messages_update_column {
 
   """column name"""
   thread_id
+
+  """column name"""
+  updated_at
 
   """column name"""
   user_sent
@@ -2190,7 +2184,7 @@ on conflict condition type for table "user_to_group"
 """
 input user_to_group_on_conflict {
   constraint: user_to_group_constraint!
-  update_columns: [user_to_group_update_column!]!
+  update_columns: [user_to_group_update_column!]! = []
   where: user_to_group_bool_exp
 }
 
@@ -2384,7 +2378,7 @@ on conflict condition type for table "user_to_thread"
 """
 input user_to_thread_on_conflict {
   constraint: user_to_thread_constraint!
-  update_columns: [user_to_thread_update_column!]!
+  update_columns: [user_to_thread_update_column!]! = []
   where: user_to_thread_bool_exp
 }
 
@@ -2661,7 +2655,7 @@ on conflict condition type for table "users"
 """
 input users_on_conflict {
   constraint: users_constraint!
-  update_columns: [users_update_column!]!
+  update_columns: [users_update_column!]! = []
   where: users_bool_exp
 }
 

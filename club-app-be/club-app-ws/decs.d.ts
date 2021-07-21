@@ -11,3 +11,10 @@ declare interface WsConnectMessage extends WsMessage {
         }
     }
 }
+
+declare interface WsPostMessage extends WsMessage {
+    context: {
+        postToConnection: (any, string) => Promise<void>
+    },
+    message: any
+}

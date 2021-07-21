@@ -1,9 +1,9 @@
-#runs the hasura container and refreshes all the data by running the faker script.
 run: 
-	(while ! echo exit | nc localhost 8080; do sleep 10; done && \
-	source scripts/env/bin/activate && \
-	sleep 4 && \
-	 (cd scripts && python3 faker.py -c)) & docker compose --env-file ./../.env up 
+	docker compose --env-file ./../.env up 
+
+seed:
+	ADMIN_SECRET=$$(grep ADMIN_SECRET ./../.env | cut -d '=' -f 2-) && \
+	hasura seed apply --admin-secret "$$ADMIN_SECRET" --database-name default
 	
 console:
 	ADMIN_SECRET=$$(grep ADMIN_SECRET ./../.env | cut -d '=' -f 2-) && \

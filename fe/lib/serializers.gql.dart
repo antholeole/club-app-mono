@@ -77,8 +77,6 @@ import 'package:fe/schema.schema.gql.dart'
     show
         GBoolean_comparison_exp,
         GString_comparison_exp,
-        Gdate,
-        Gdate_comparison_exp,
         Ggroup_join_tokens_aggregate_order_by,
         Ggroup_join_tokens_arr_rel_insert_input,
         Ggroup_join_tokens_bool_exp,
@@ -228,8 +226,6 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GUpsertGroupJoinTokenData_insert_group_join_tokens_one,
   GUpsertGroupJoinTokenReq,
   GUpsertGroupJoinTokenVars,
-  Gdate,
-  Gdate_comparison_exp,
   Ggroup_join_tokens_aggregate_order_by,
   Ggroup_join_tokens_arr_rel_insert_input,
   Ggroup_join_tokens_bool_exp,

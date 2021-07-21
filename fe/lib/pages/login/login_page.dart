@@ -1,10 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fe/data/json/provider_access_token.dart';
 import 'package:fe/pages/login/widgets/sign_in_with_provider_button.dart';
-import 'package:fe/pages/splash/splash_service.dart';
 import 'package:fe/stdlib/clients/http_client/http_client.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
-import 'package:fe/stdlib/helpers/context_refresher.dart';
 import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:fe/stdlib/theme/logo.dart';
@@ -29,28 +27,28 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ContextRefresher(
-        innerContextCallback: (innerContext) =>
-            _toastableContext = innerContext,
-        child: PlatformScaffold(
-            backgroundColor: Colors.white,
-            body: SafeArea(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 36.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Logo(
-                        filled: true,
-                      ),
-                      loading ? Loader() : _buildInitLoginButton(),
-                      Container(),
-                    ],
-                  ),
+    return Builder(builder: (innerContext) {
+      _toastableContext = innerContext;
+      return PlatformScaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 36.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Logo(
+                      filled: true,
+                    ),
+                    loading ? Loader() : _buildInitLoginButton(),
+                    Container(),
+                  ],
                 ),
               ),
-            )));
+            ),
+          ));
+    });
   }
 
   Widget _buildInitLoginButton() {

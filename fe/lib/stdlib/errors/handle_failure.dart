@@ -9,8 +9,7 @@ import 'package:fe/stdlib/errors/failure_status.dart';
 
 void handleFailure(Failure f, BuildContext context,
     {String? withPrefix, bool toast = true}) {
-  if (f.status == FailureStatus.RefreshFail ||
-      f.status == FailureStatus.NotLoggedIn) {
+  if (f.status.fatal) {
     getIt<MainService>().logOut(context, withError: f.message);
   } else {
     String errorString = f.message ?? f.status.message;

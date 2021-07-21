@@ -6,11 +6,18 @@ import { handleMessageMessage } from './message_handlers'
 import { DiscriminatorError } from '../../helpers/discriminator_error'
 import { discriminate } from '../../helpers/discriminators/base_discriminator'
 import { EnumFieldOption, FieldOption, MockValues } from '../../helpers/discriminators/field_options'
+import { WS_API_GATEWAY } from '../../constants'
+import { sendToWs } from '../../helpers/send_to_ws'
 
 export const connectRoute = async (wsMessage: IWsConnectMessage): Promise<Response> => {
     const jwt = decodeJwt(wsMessage.event.multiValueHeaders.authorization[0]) as unknown as IAccessToken
 
     await ONLINE_USERS.put(jwt.sub, wsMessage.id)
+
+    sendToWs(jwt.sub, {
+        'type': 'Connected'
+    })
+
 
     return status(200)
 }

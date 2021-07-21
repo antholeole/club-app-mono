@@ -24,7 +24,7 @@ query QueryMessagesInThread(
       id
     },
     is_image,
-    edited_at,
+    updated_at,
     id
   }
 }

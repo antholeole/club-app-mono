@@ -66,21 +66,6 @@ class _EventsPageState extends State<EventsPage> {
     final ws = WsProvider.of(context)!.wsClient;
 
     return BlocListener<PageCubit, PageState>(
-      listener: (context, state) => updateScaffold(),
-      child: Column(children: [
-        GestureDetector(
-            onTap: () =>
-                ws.connectionStateController.add(WsConnectionState.Error),
-            child: Container(color: Colors.red, width: 20, height: 20)),
-        GestureDetector(
-            onTap: () =>
-                ws.connectionStateController.add(WsConnectionState.Connecting),
-            child: Container(color: Colors.yellow, width: 20, height: 20)),
-        GestureDetector(
-            onTap: () =>
-                ws.connectionStateController.add(WsConnectionState.Connected),
-            child: Container(color: Colors.green, width: 20, height: 20))
-      ]),
-    );
+        listener: (context, state) => updateScaffold(), child: Container());
   }
 }

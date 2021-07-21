@@ -23,6 +23,6 @@ query GetMessages(
       profile_picture
     },
     is_image,
-    edited_at
+    updated_at
   }
 }

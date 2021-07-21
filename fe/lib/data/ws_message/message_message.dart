@@ -1,6 +1,5 @@
 import 'package:fe/data/ws_message/ws_message.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
-import 'dart:convert';
 
 import 'package:json_annotation/json_annotation.dart';
 
@@ -17,8 +16,8 @@ class WsMessageMessage extends WsMessage {
 
   const WsMessageMessage({required this.message, required this.toId});
 
-  factory WsMessageMessage.fromJson(String jsonString) =>
-      _$WsMessageMessageFromJson(json.decode(jsonString));
+  factory WsMessageMessage.fromJson(Map<String, dynamic> jsonString) =>
+      _$WsMessageMessageFromJson(jsonString);
 
   @override
   Map<String, dynamic> selfToJson() => _$WsMessageMessageToJson(this);
