@@ -46,6 +46,7 @@ class _WsReactorState extends State<WsReactor> {
       final ws = WsProvider.of(context)!.wsClient;
       ws.connectionState().listen(_respondToConnectionStates);
       ws.errorStream().listen(_respondToFailures);
+      ws.messageStream().listen((p) => print(p.messageType));
       _isSubscribed = false;
     }
   }
@@ -83,7 +84,7 @@ class _WsReactorState extends State<WsReactor> {
   }
 
   void _respondToConnectionStates(WsConnectionState connectionState) {
-    print('hi');
+    _checkShow();
     if (_shouldShow && connectionState == WsConnectionState.Connected) {
       if (_shouldShow) {
         Timer(

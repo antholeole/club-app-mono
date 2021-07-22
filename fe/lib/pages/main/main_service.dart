@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/gql/query_self_group_preview.data.gql.dart';
 import 'package:fe/gql/query_self_group_preview.req.gql.dart';
+import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/errors/gq_req_or_throw_failure.dart';
 import 'package:fe/stdlib/local_data/local_file_store.dart';
 import 'package:fe/stdlib/local_user_service.dart';
@@ -39,11 +41,23 @@ class MainService {
     final userId = await _localUserService.getLoggedInUserId();
 
     //try to get data from network. if it fails, get it from cache.
-    return await gqlReqOrThrowFailure(
-        GQuerySelfGroupsPreviewReq((q) => q
-          ..fetchPolicy = FetchPolicy.NetworkOnly
-          ..vars.self_id = userId),
-        _client);
+    try {
+      return await gqlReqOrThrowFailure(
+          GQuerySelfGroupsPreviewReq((q) => q
+            ..fetchPolicy = FetchPolicy.NetworkOnly
+            ..vars.self_id = userId),
+          _client);
+    } on Failure catch (f) {
+      if (f.status.fatal) {
+        rethrow;
+      }
+
+      return await gqlReqOrThrowFailure(
+          GQuerySelfGroupsPreviewReq((q) => q
+            ..fetchPolicy = FetchPolicy.CacheOnly
+            ..vars.self_id = userId),
+          _client);
+    }
   }
 
   Future<User> getUser() async {

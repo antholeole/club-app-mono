@@ -2,7 +2,6 @@ import { decodeJwt } from '../../helpers/jwt'
 import { IAccessToken } from '../../helpers/types/access_token'
 import { status, StatusError } from 'itty-router-extras'
 import type { Static } from 'runtypes'
-import { sendToWs } from '../../sender/send_to_ws'
 import { RecieveableMessage, WsMessage } from './types'
 import { handleMessageMessage } from './message_handlers'
 
@@ -10,11 +9,6 @@ export const connectRoute = async (wsMessage: Static<typeof WsMessage>): Promise
     const jwt = decodeJwt(wsMessage.event.multiValueHeaders.authorization[0]) as unknown as IAccessToken
 
     await ONLINE_USERS.put(jwt.sub, wsMessage.id)
-
-    sendToWs(jwt.sub, {
-        'type': 'Connected'
-    })
-
 
     return status(200)
 }

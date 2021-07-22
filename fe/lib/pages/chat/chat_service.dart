@@ -74,7 +74,7 @@ class ChatService {
 
     return resp.messages
         .map((message) => Message(
-            edited: message.updated_at != null,
+            edited: message.updated_at != message.created_at,
             id: message.id,
             sender: User(
                 name: message.user.name,

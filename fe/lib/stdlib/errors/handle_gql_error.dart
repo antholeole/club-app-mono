@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../service_locator.dart';
+import 'check_connectivity.dart';
 
 Future<Failure> basicGqlErrorHandler(OperationResponse resp) async {
   final errors = resp.graphqlErrors;
@@ -21,14 +22,10 @@ Future<Failure> basicGqlErrorHandler(OperationResponse resp) async {
     }
   }
 
-  if (!(await HttpClient.isConnected())) {
-    return Failure(status: FailureStatus.NoConn);
-  }
+  final disconnectedFailure = await checkConnecivity();
 
-  final hasServerConnection =
-      await getIt<UnauthHttpClient>().hasServerConnection();
-  if (!hasServerConnection) {
-    return Failure(status: FailureStatus.ServersDown);
+  if (disconnectedFailure != null) {
+    return disconnectedFailure;
   }
 
   if (errors != null) {

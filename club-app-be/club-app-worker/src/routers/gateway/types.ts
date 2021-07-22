@@ -8,7 +8,7 @@ const messageTypes = Union(
 )
 
 export const WsMessage = Record({
-    id: Uuid,
+    id: String,
     event: Record({
         multiValueHeaders: Record({
             authorization: Array(String)

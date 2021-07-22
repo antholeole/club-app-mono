@@ -1,4 +1,12 @@
-declare module 'itty-router-extras'
+declare module 'itty-router-extras' {
+    class StatusError extends Error {
+        public status: number;
+
+        constructor(statusCode: number, message?: string);
+    }
+
+    function status(status: number): Response;
+}
 
 //declared vars
 declare const PUBLIC_KEYS: KVNamespace

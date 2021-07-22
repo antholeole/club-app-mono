@@ -1,4 +1,5 @@
 import { Router } from 'itty-router'
+import { readJsonBody } from '../../helpers/read_json_body'
 import { simpleRoute } from '../../helpers/simple_route'
 import { connectRoute, disconnectRoute, messageRoute } from './handlers'
 import { RecieveableMessage, WsMessage } from './types'
