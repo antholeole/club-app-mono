@@ -46,6 +46,7 @@ Scope is one of:
 - hasura
 - knowledge
 - website
+- multi
 
 depending on the area it is made.
 

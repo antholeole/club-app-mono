@@ -1,5 +1,5 @@
 module.exports = {
-    extends: ["some-other-base-config", "monorepo"],
+    extends: ["@commitlint/config-conventional", "monorepo"],
     rules: {
         "scope-enum": [
             2,
@@ -10,7 +10,8 @@ module.exports = {
                 "worker",
                 "hasura",
                 "knowledge",
-                "website"
+                "website",
+                "multi"
             ],
         ],
     },
