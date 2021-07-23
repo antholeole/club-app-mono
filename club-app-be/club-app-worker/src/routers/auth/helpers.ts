@@ -84,12 +84,12 @@ export const verifyIdTokenWithGoogle = async (idToken: string): Promise<IIdentif
 
 export const getFakeIdentifier = (accessToken: string): IIdentifier => {
     if (!DEBUG) {
-        throw StatusError('Debug Acess Tokens only allowed in dev.')
+        throw new StatusError(400, 'Debug Acess Tokens only allowed in dev.')
     }
     const identifier: IIdentifier = JSON.parse(accessToken)
 
     if (!identifier.name || !identifier.sub) {
-        throw StatusError(300, 'invalid input')
+        throw new StatusError(300, 'invalid input')
     }
 
     return identifier

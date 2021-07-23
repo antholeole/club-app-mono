@@ -1,19 +1,24 @@
-import { expect } from 'chai'
 import { StatusError } from 'itty-router-extras'
 import { getDecryptedKV, putEncryptedKV } from 'encrypt-workers-kv'
 import { setMockKvs } from '../../fixtures/mock_kvs'
 import { setGlobalValue } from '../../fixtures/set_global_value'
 import { Crypto } from '@peculiar/webcrypto'
-import { createSandbox } from 'sinon'
 import * as authHelpers from '../../../src/routers/auth/helpers'
 import * as authGqlQueries from '../../../src/routers/auth/gql_queries'
 import { refreshRoute, registerRoute } from '../../../src/routers/auth/handlers'
+import makeServiceWorkerEnv from 'service-worker-mock'
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, no-var
+declare var global: any
 
 describe('auth routes', () => {
-    const sandbox = createSandbox()
+    beforeEach(() => {
+        Object.assign(global, makeServiceWorkerEnv())
+        jest.resetModules()
+    })
 
     beforeEach(() => {
-        sandbox.restore()
+        jest.resetAllMocks()
     })
 
     describe('get access token', () => {
@@ -27,17 +32,19 @@ describe('auth routes', () => {
                 setGlobalValue('crypto', new Crypto())
                 setGlobalValue('SECRET', 'IM A SECRET')
                 setMockKvs('REFRESH_TOKENS')
-                sandbox.stub(authGqlQueries, 'getUserBySub').returns(Promise.resolve(null))
+                jest.spyOn(authGqlQueries, 'getUserBySub')
+                    .mockReturnValue(Promise.resolve(null))
             })
 
-            it('should add user with no email', async () => {
-                const addUserStub = sandbox.stub(authGqlQueries, 'addUser').returns(Promise.resolve({
+            test('should add user with no email', async () => {
+                const addUserStub = jest.spyOn(authGqlQueries, 'addUser').mockReturnValue(Promise.resolve({
                     id: userId,
                     name: userName,
                     sub: userSub
                 }))
 
-                sandbox.stub(authHelpers, 'verifyIdTokenWithGoogle').returns(Promise.resolve({
+
+                jest.spyOn(authHelpers, 'verifyIdTokenWithGoogle').mockReturnValue(Promise.resolve({
                     name: userName,
                     sub: userSub,
                 }))
@@ -47,17 +54,17 @@ describe('auth routes', () => {
                     idToken: 'fake.id.token'
                 })
 
-                expect(addUserStub.firstCall.args).deep.equal([userSub, userName, undefined])
+                expect(addUserStub.mock.calls[0]).toEqual([userSub, userName, undefined])
             })
 
-            it('should add user with email', async () => {
-                const addUserStub = sandbox.stub(authGqlQueries, 'addUser').returns(Promise.resolve({
+            test('should add user with email', async () => {
+                const addUserStub = jest.spyOn(authGqlQueries, 'addUser').mockReturnValue(Promise.resolve({
                     id: userId,
                     name: userName,
                     sub: userSub
                 }))
 
-                sandbox.stub(authHelpers, 'verifyIdTokenWithGoogle').returns(Promise.resolve({
+                jest.spyOn(authHelpers, 'verifyIdTokenWithGoogle').mockReturnValue(Promise.resolve({
                     name: userName,
                     sub: userSub,
                     email: userEmail
@@ -68,19 +75,19 @@ describe('auth routes', () => {
                     idToken: 'fake.id.token'
                 })
 
-                expect(addUserStub.firstCall.args).deep.equal([userSub, userName, userEmail])
+                expect(addUserStub.mock.calls[0]).toEqual([userSub, userName, userEmail])
             })
 
-            it('should create refresh token', async () => {
-                sandbox.stub(authGqlQueries, 'addUser').returns(Promise.resolve({
+            test('should create refresh token', async () => {
+                jest.spyOn(authGqlQueries, 'addUser').mockReturnValue(Promise.resolve({
                     id: userId,
                     name: userName,
                     sub: userSub
                 }))
 
-                const verifyStub = sandbox.stub(authHelpers, 'verifyIdTokenWithGoogle')
+                const verifyStub = jest.spyOn(authHelpers, 'verifyIdTokenWithGoogle')
 
-                verifyStub.returns(Promise.resolve({
+                verifyStub.mockReturnValue(Promise.resolve({
                     name: userName,
                     sub: userSub,
                 }))
@@ -90,12 +97,12 @@ describe('auth routes', () => {
                     idToken: 'fake.id.token'
                 })
 
-                expect(new TextDecoder().decode(await getDecryptedKV(REFRESH_TOKENS, userId, SECRET)), 'should have changed refresh token').to.not.be.null
+                expect(new TextDecoder().decode(await getDecryptedKV(REFRESH_TOKENS, userId, SECRET))).not.toBeNull
 
                 REFRESH_TOKENS.delete(userId)
-                verifyStub.reset()
+                verifyStub.mockClear()
 
-                verifyStub.returns(Promise.resolve({
+                verifyStub.mockReturnValue(Promise.resolve({
                     name: userName,
                     sub: userSub,
                     email: userEmail
@@ -106,11 +113,12 @@ describe('auth routes', () => {
                     idToken: 'fake.id.token'
                 })
 
-                expect(new TextDecoder().decode(await getDecryptedKV(REFRESH_TOKENS, userId, SECRET)), 'should have changed refresh token').to.not.be.null
+                //'should have changed refresh token'
+                expect(new TextDecoder().decode(await getDecryptedKV(REFRESH_TOKENS, userId, SECRET))).not.toBeNull
             })
         })
 
-        it('should get old user if one exists', async () => {
+        test('should get old user if one exists', async () => {
             const userName = 'anthony'
             const userSub = 'subject'
             const userId = 'userId'
@@ -124,12 +132,12 @@ describe('auth routes', () => {
 
             REFRESH_TOKENS.put(userId, startingRefreshToken)
 
-            sandbox.stub(authHelpers, 'verifyIdTokenWithGoogle').returns(Promise.resolve({
+            jest.spyOn(authHelpers, 'verifyIdTokenWithGoogle').mockReturnValue(Promise.resolve({
                 name: userName,
                 sub: userSub,
             }))
 
-            sandbox.stub(authGqlQueries, 'getUserBySub').returns(Promise.resolve({
+            jest.spyOn(authGqlQueries, 'getUserBySub').mockReturnValue(Promise.resolve({
                 id: userId,
                 name: userName,
                 sub: userSub,
@@ -141,13 +149,15 @@ describe('auth routes', () => {
                 idToken: 'fake.id.token'
             })
 
-            expect(await resp.json()).to.have.property('id', userId)
-            expect(new TextDecoder().decode(await getDecryptedKV(REFRESH_TOKENS, userId, SECRET)), 'should have changed refresh token').to.not.equal(startingRefreshToken)
+            expect(await resp.json()).toHaveProperty('id', userId)
+
+            //'should have changed refresh token'
+            expect(new TextDecoder().decode(await getDecryptedKV(REFRESH_TOKENS, userId, SECRET))).not.toEqual(startingRefreshToken)
         })
     })
 
     describe('refresh', () => {
-        it('should refresh the token if it exists in the KV storage', async () => {
+        test('should refresh the token if it exists in the KV storage', async () => {
             const testUserId = 'test_id'
             const fakeRefreshToken = 'fake_refresh_token'
 
@@ -163,10 +173,10 @@ describe('auth routes', () => {
                 refreshToken: fakeRefreshToken
             })
 
-            expect(resp.status).to.equal(200)
+            expect(resp.status).toEqual(200)
         })
 
-        it('should 404 if user does not exist in refresh token', async () => {
+        test('should 404 if user does not exist in refresh token', async () => {
             const testUserId = 'test_id'
             const fakeRefreshToken = 'fake_refresh_token'
 
@@ -183,12 +193,12 @@ describe('auth routes', () => {
                 })
 
             } catch (e) {
-                expect(e).to.be.instanceOf(StatusError)
-                expect(e).to.haveOwnProperty('status', 404)
+                expect(e).toBeInstanceOf(StatusError)
+                expect(e).toHaveProperty('status', 404)
             }
         })
 
-        it('should 402 if refresh token is different', async () => {
+        test('should 402 if refresh token is different', async () => {
             const testUserId = 'test_id'
             const fakeRefreshToken = 'fake_refresh_token'
             const notFakeRefreshToken = 'not_fake_refresh_token'
@@ -200,13 +210,13 @@ describe('auth routes', () => {
             await putEncryptedKV(REFRESH_TOKENS, testUserId, fakeRefreshToken, SECRET)
 
             try {
-                refreshRoute({
+                refreshRoute({ /ErROR im here
                     userId: testUserId,
                     refreshToken: notFakeRefreshToken
                 })
             } catch (e) {
-                expect(e).to.be.instanceOf(StatusError)
-                expect(e).to.haveOwnProperty('status', 402)
+                expect(e).toBeInstanceOf(StatusError)
+                expect(e).toHaveProperty('status', 402)
             }
         })
     })

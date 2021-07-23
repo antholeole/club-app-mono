@@ -6,6 +6,7 @@ declare module 'itty-router-extras' {
     }
 
     function status(status: number): Response;
+    function json(json: Record<string, unknown>): Response;
 }
 
 //declared vars

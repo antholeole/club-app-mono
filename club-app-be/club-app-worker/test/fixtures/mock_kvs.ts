@@ -4,7 +4,7 @@ class MockKvs {
     values: Map<string, string> = new Map()
 
     async get(key: string): Promise<string> {
-        return this.values.get(key)
+        return this.values.get(key) as string
     }
 
     async put(key: string, value: string): Promise<void> {

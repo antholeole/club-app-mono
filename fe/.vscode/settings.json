@@ -1,0 +1,25 @@
+{
+    "[dart]": {
+        "editor.formatOnSave": true,
+        "editor.formatOnType": true,
+        "editor.rulers": [
+            80
+        ],
+        "editor.selectionHighlight": false,
+        "editor.suggest.snippetsPreventQuickSuggestions": false,
+        "editor.suggestSelection": "first",
+        "editor.tabCompletion": "onlySnippets",
+        "editor.wordBasedSuggestions": false
+    },
+    "files.exclude": {
+        "**/*.ast.gql.dart": true,
+        "**/*.req.gql.dart": true,
+        "**/*.data.gql.dart": true,
+        "**/*.var.gql.dart": true,
+        "**/*.gql.g.dart": true,
+        "**/*.g.dart": true,
+        "**/*.mocks.dart": true,
+        "**/*.gql.dart": true,
+        "**/*.gr.dart": true
+    },
+}

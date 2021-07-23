@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "name": "Run Worker Tests",
+            "request": "launch",
+            "runtimeArgs": [
+                "t"
+            ],
+            "runtimeExecutable": "npm",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node",
+            "cwd": "${workspaceFolder}/club-app-be/club-app-worker/",
+        }
+    ]
+}

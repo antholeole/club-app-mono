@@ -32,7 +32,7 @@ if (process.env.NODE_ENV === 'development') {
     })
   )
 
-  sourceMap = 'inline-source-map'
+  sourceMap = 'source-map'
 }
 
 module.exports = {
@@ -57,10 +57,7 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: 'ts-loader',
-        options: {
-          transpileOnly: true,
-        },
+        loader: 'ts-loader'
       },
     ],
   },

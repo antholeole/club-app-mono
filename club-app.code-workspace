@@ -1,0 +1,60 @@
+{
+	"folders": [
+		{
+			"path": ".",
+			"name": "🗿 Club App Root"
+		},
+		{
+			"path": "club-app-be/club-app-worker",
+			"name": "👷 Worker"
+		},
+		{
+			"path": "club-app-hasura",
+			"name": "✨ Hasura"
+		},
+		{
+			"path": "fe",
+			"name": "🐦 Flutter"
+		},
+		{
+			"path": "knowledge",
+			"name": "🧠 Knowledge"
+		},
+		{
+			"path": "site",
+			"name": "⚛️ Website"
+		}
+	],
+	"settings": {
+		"restoreTerminals.terminals": [
+			{
+				"splitTerminals": [
+					{
+						"name": "flutter",
+						"commands": [
+							"cd fe",
+							"flutter run"
+						]
+					}
+				]
+			},
+			{
+				"splitTerminals": [
+					{
+						"name": "backend",
+						"commands": [
+							"make run"
+						]
+					}
+				]
+			},
+			{
+				"splitTerminals": [
+					{
+						"name": "misc"
+					}
+				]
+			}
+		]
+	}
+}
