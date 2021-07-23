@@ -10,8 +10,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "type": "node",
-            "cwd": "${workspaceFolder}/club-app-be/club-app-worker/",
+            "type": "node"
         }
     ]
 }
