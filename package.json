@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "club-app monorepo.",
   "scripts": {
+    "prepare": "husky install",
     "dev-be": "concurrently -c \"#800080.bold,#ffa500.bold\" -n \"BACKEND,HASURA\" --handle-input \"cd club-app-be && npm run dev\" \"cd club-app-hasura && make run\""
   },
   "repository": {
@@ -16,12 +17,14 @@
   },
   "homepage": "https://github.com/antholeole/club-app-mono#readme",
   "devDependencies": {
-    "@commitlint/cli": "12.1.1",
+    "@commitlint/cli": "^12.1.1",
     "@commitlint/config-conventional": "12.1.1",
+    "@pskfyi/commitlint-config": "^1.0.1",
     "commitizen": "4.2.3",
     "commitlint-config-monorepo": "^2.0.2",
     "concurrently": "^6.0.0",
-    "cz-conventional-changelog": "3.3.0"
+    "cz-conventional-changelog": "3.3.0",
+    "husky": "^7.0.1"
   },
   "config": {
     "commitizen": {
