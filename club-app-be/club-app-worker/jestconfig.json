@@ -7,6 +7,13 @@
         "src/**/*.{ts,js}"
     ],
     "globals": {
-        "ENVIRONMENT": "dev"
-    }
+        "ENVIRONMENT": "dev",
+        "SECRET": "FAKE SECRET"
+    },
+    "setupFiles": [
+        "<rootDir>/test/jest.setup_all.ts"
+      ],
+      "setupFilesAfterEnv": ["<rootDir>/test/jest.setup_each.ts"],
+      "restoreMocks": true,
+      "roots": ["<rootDir>", "<rootDir>/src/", "<rootDir>/test/"]
 }

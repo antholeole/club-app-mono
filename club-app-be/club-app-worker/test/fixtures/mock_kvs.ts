@@ -1,6 +1,4 @@
-import { setGlobalValue } from './set_global_value'
-
-class MockKvs {
+export class MockKvs {
     values: Map<string, string> = new Map()
 
     async get(key: string): Promise<string> {
@@ -14,6 +12,10 @@ class MockKvs {
     async delete(key: string): Promise<void> {
         this.values.delete(key)
     }
+
+    clear(): void {
+        this.values.clear()
+    }
 }
 
-export const setMockKvs = (name: string): void => setGlobalValue(name, new MockKvs())
+

@@ -1,26 +1,10 @@
 import { StatusError } from 'itty-router-extras'
 import { getDecryptedKV, putEncryptedKV } from 'encrypt-workers-kv'
-import { setMockKvs } from '../../fixtures/mock_kvs'
-import { setGlobalValue } from '../../fixtures/set_global_value'
-import { Crypto } from '@peculiar/webcrypto'
 import * as authHelpers from '../../../src/routers/auth/helpers'
 import * as authGqlQueries from '../../../src/routers/auth/gql_queries'
 import { refreshRoute, registerRoute } from '../../../src/routers/auth/handlers'
-import makeServiceWorkerEnv from 'service-worker-mock'
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, no-var
-declare var global: any
 
 describe('auth routes', () => {
-    beforeEach(() => {
-        Object.assign(global, makeServiceWorkerEnv())
-        jest.resetModules()
-    })
-
-    beforeEach(() => {
-        jest.resetAllMocks()
-    })
-
     describe('get access token', () => {
         describe('new user', () => {
             const userName = 'anthony'
@@ -29,9 +13,6 @@ describe('auth routes', () => {
             const userEmail = 'im an email'
 
             beforeEach(() => {
-                setGlobalValue('crypto', new Crypto())
-                setGlobalValue('SECRET', 'IM A SECRET')
-                setMockKvs('REFRESH_TOKENS')
                 jest.spyOn(authGqlQueries, 'getUserBySub')
                     .mockReturnValue(Promise.resolve(null))
             })
@@ -126,10 +107,6 @@ describe('auth routes', () => {
 
             const startingRefreshToken = 'STARTING REFRESH TOKEN'
 
-            setGlobalValue('crypto', new Crypto())
-            setGlobalValue('SECRET', 'IM A SECRET')
-            setMockKvs('REFRESH_TOKENS')
-
             REFRESH_TOKENS.put(userId, startingRefreshToken)
 
             jest.spyOn(authHelpers, 'verifyIdTokenWithGoogle').mockReturnValue(Promise.resolve({
@@ -161,11 +138,6 @@ describe('auth routes', () => {
             const testUserId = 'test_id'
             const fakeRefreshToken = 'fake_refresh_token'
 
-            setMockKvs('REFRESH_TOKENS')
-            setGlobalValue('SECRET', 'FAKE SECRET')
-            setGlobalValue('crypto', new Crypto())
-
-
             await putEncryptedKV(REFRESH_TOKENS, testUserId, fakeRefreshToken, SECRET)
 
             const resp = await refreshRoute({
@@ -179,12 +151,6 @@ describe('auth routes', () => {
         test('should 404 if user does not exist in refresh token', async () => {
             const testUserId = 'test_id'
             const fakeRefreshToken = 'fake_refresh_token'
-
-            setMockKvs('REFRESH_TOKENS')
-            setGlobalValue('SECRET', 'FAKE SECRET')
-            setGlobalValue('crypto', new Crypto())
-
-
 
             try {
                 refreshRoute({
@@ -203,21 +169,18 @@ describe('auth routes', () => {
             const fakeRefreshToken = 'fake_refresh_token'
             const notFakeRefreshToken = 'not_fake_refresh_token'
 
-            setMockKvs('REFRESH_TOKENS')
-            setGlobalValue('SECRET', 'FAKE SECRET')
-            setGlobalValue('crypto', new Crypto())
-
             await putEncryptedKV(REFRESH_TOKENS, testUserId, fakeRefreshToken, SECRET)
 
             try {
-                refreshRoute({ /ErROR im here
+                refreshRoute({ 
                     userId: testUserId,
                     refreshToken: notFakeRefreshToken
                 })
             } catch (e) {
                 expect(e).toBeInstanceOf(StatusError)
                 expect(e).toHaveProperty('status', 402)
-            }
+            } 
         })
+
     })
 })

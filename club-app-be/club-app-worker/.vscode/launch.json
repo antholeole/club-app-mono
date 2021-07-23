@@ -2,15 +2,23 @@
     "configurations": [
         {
             "name": "Run Worker Tests",
+            "type": "node",
             "request": "launch",
             "runtimeArgs": [
-                "t"
+                "--inspect-brk",
+                "${workspaceRoot}/node_modules/.bin/jest",
+                "--runInBand",
+                "--coverage",
+                "false",
+                "--config",
+                "jestconfig.json"
             ],
-            "runtimeExecutable": "npm",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "smartStep": true,
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "type": "node"
-        }
+        },
     ]
 }

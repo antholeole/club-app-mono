@@ -1,13 +1,7 @@
 import { router } from '../../src/routers/index'
 import { StatusError } from 'itty-router-extras'
-import makeServiceWorkerEnv from 'service-worker-mock'
 
 describe('handler returns response with request method', () => {
-  beforeEach(() => {
-    Object.assign(global, makeServiceWorkerEnv())
-    jest.resetModules()
-  })
-
   test('should respond with CORS headers on OPTIONS request', async () => {
     const resp: Response = await router.handle(new Request('', {
       method: 'OPTIONS',
