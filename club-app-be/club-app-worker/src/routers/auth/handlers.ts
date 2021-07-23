@@ -22,7 +22,7 @@ export const registerRoute = async (tokens: Static<typeof AcessTokenRequest>): P
         user = await addUser(identifier.sub, identifier.name, identifier.email)
     }
 
-    const refreshUnhashed = cryptoRandomString(20)
+    const refreshUnhashed = cryptoRandomString(300)
 
     await putEncryptedKV(REFRESH_TOKENS, user.id, refreshUnhashed, SECRET)
 
