@@ -1,10 +1,10 @@
 import { StatusError } from 'itty-router-extras'
 import type { Static } from 'runtypes'
 import { WS_API_GATEWAY } from '../constants'
-import { Sendable } from './sendable_messages'
+import { SendableMessage } from '../messages/sendable'
 
-export const sendToWs = async (to: string, message: Static<typeof Sendable>): Promise<Response> => {
-    const userConnection = await ONLINE_USERS.get(to)
+export const sendToWs = async (message: Static<typeof SendableMessage>): Promise<Response> => {
+    const userConnection = await ONLINE_USERS.get(message.to)
 
     if (!userConnection) {
         throw new StatusError(404)
