@@ -11,7 +11,7 @@ export const putEncryptedKV = async (mockKv: KVNamespace, key: string, value: st
 export const getDecryptedKV = async (mockKv: KVNamespace, key: string, secret: string): Promise<ArrayBuffer> => {
     const value = await mockKv.get(key)
 
-    if (value === null) {
+    if (value === null || value == undefined) {
         throw new NotFoundError()
     }
 

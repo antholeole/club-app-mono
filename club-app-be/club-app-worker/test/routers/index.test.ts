@@ -1,5 +1,4 @@
 import { router } from '../../src/routers/index'
-import { StatusError } from 'itty-router-extras'
 
 describe('handler returns response with request method', () => {
   test('should respond with CORS headers on OPTIONS request', async () => {
@@ -13,14 +12,9 @@ describe('handler returns response with request method', () => {
   })
 
   test('should respond with 404 on any /api/* request', async () => {
-    try {
-      await router.handle(new Request('/api/NOT_A_ROUTE', {
-        method: 'GET'
-      }))
-    } catch (e) {
-      expect(e).toBeInstanceOf(StatusError)
-      expect(e).toHaveProperty('status', 404)
-    }
+    await expect(router.handle(new Request('/api/NOT_A_ROUTE', {
+      method: 'GET'
+    }))).toThrowStatusError(404)
   })
 
   test('should respond with pong on /ping', async () => {

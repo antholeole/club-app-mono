@@ -1,4 +1,3 @@
-import { StatusError } from 'itty-router-extras'
 import { getDecryptedKV, putEncryptedKV } from 'encrypt-workers-kv'
 import * as authHelpers from '../../../src/routers/auth/helpers'
 import * as authGqlQueries from '../../../src/routers/auth/gql_queries'
@@ -148,20 +147,14 @@ describe('auth routes', () => {
             expect(resp.status).toEqual(200)
         })
 
-        test('should 404 if user does not exist in refresh token', async () => {
+        test('should 404 if user does not exist in the KV storage', async () => {
             const testUserId = 'test_id'
             const fakeRefreshToken = 'fake_refresh_token'
 
-            try {
-                refreshRoute({
-                    userId: testUserId,
-                    refreshToken: fakeRefreshToken
-                })
-
-            } catch (e) {
-                expect(e).toBeInstanceOf(StatusError)
-                expect(e).toHaveProperty('status', 404)
-            }
+            await expect(refreshRoute({
+                userId: testUserId,
+                refreshToken: fakeRefreshToken
+            })).toThrowStatusError(404)
         })
 
         test('should 402 if refresh token is different', async () => {
@@ -171,15 +164,10 @@ describe('auth routes', () => {
 
             await putEncryptedKV(REFRESH_TOKENS, testUserId, fakeRefreshToken, SECRET)
 
-            try {
-                refreshRoute({ 
-                    userId: testUserId,
-                    refreshToken: notFakeRefreshToken
-                })
-            } catch (e) {
-                expect(e).toBeInstanceOf(StatusError)
-                expect(e).toHaveProperty('status', 402)
-            } 
+            await expect(refreshRoute({ 
+                userId: testUserId,
+                refreshToken: notFakeRefreshToken
+            })).toThrowStatusError(402)
         })
 
     })

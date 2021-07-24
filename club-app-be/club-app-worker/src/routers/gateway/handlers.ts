@@ -3,10 +3,10 @@ import { IAccessToken } from '../../helpers/types/access_token'
 import { status, StatusError } from 'itty-router-extras'
 import type { Static } from 'runtypes'
 import { handleMessageMessage } from './message_handlers'
-import { RecieveableMessage } from '../../messages/recieveable'
+import { EmptyRecieveable, RecieveableMessage } from '../../messages/recieveable'
 import { BaseMessages } from '../../messages/message_types'
 
-export const connectRoute = async (wsMessage: Static<typeof RecieveableMessage>): Promise<Response> => {
+export const connectRoute = async (wsMessage: Static<typeof EmptyRecieveable>): Promise<Response> => {
     const jwt = decodeJwt(wsMessage.event.multiValueHeaders.authorization[0]) as unknown as IAccessToken
 
     await ONLINE_USERS.put(jwt.sub, wsMessage.id)
@@ -14,7 +14,7 @@ export const connectRoute = async (wsMessage: Static<typeof RecieveableMessage>)
     return status(200)
 }
 
-export const disconnectRoute = async (wsMessage: Static<typeof RecieveableMessage>): Promise<Response> => {
+export const disconnectRoute = async (wsMessage: Static<typeof EmptyRecieveable>): Promise<Response> => {
     //SAFETY: can ignore expiration because this client has successfully connected with this token.
     //if the token is expired, no big deal - accept the disconnect.
     const jwt = decodeJwt(wsMessage.event.multiValueHeaders.authorization[0], true) as unknown as IAccessToken
@@ -38,8 +38,8 @@ export const messageRoute = async (wsMessage: Static<typeof RecieveableMessage>)
     }
 
     const matcher = BaseMessages.match<Promise<Response> | Response>(
-        () => new Response('hi!'),
-        (b) => handleMessageMessage(b),
+        handleMessageMessage,
+        () => new Response('hi!')
     )
 
     return await matcher(wsMessage.message)

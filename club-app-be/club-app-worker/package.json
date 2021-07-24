@@ -13,8 +13,7 @@
     "build:watch": "nodemon --watch src --exec \"npm run build:dev && mv dist/worker.js dist/worker.dev.js\" -e ts",
     "dev": "npm run stop-dev ; concurrently \"npm:build:watch\" \"wait-on dist/worker.dev.js && npm run cloudworker\"",
     "deploy": "wrangler publish",
-    "test:clean": "rimraf ./transpiled/src ./transpiled/test",
-    "test": "jest --config jestconfig.json --verbose --coverage",
+    "test": "jest --config jestconfig.json --coverage",
     "lint:fix": "eslint --fix --ext .ts,.tsx ."
   },
   "dependencies": {
