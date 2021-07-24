@@ -14,7 +14,7 @@ describe('handler returns response with request method', () => {
   test('should respond with 404 on any /api/* request', async () => {
     await expect(router.handle(new Request('/api/NOT_A_ROUTE', {
       method: 'GET'
-    }))).toThrowStatusError(404)
+    })) as Promise<Response>).toThrowStatusError(404)
   })
 
   test('should respond with pong on /ping', async () => {
