@@ -1,4 +1,4 @@
-import { DEBUG, GOOGLE_CERTS, GOOGLE_PEM_SRC, GOOGLE_VALID_AUDS, GOOGLE_VALID_ISSUER } from '../../constants'
+import { DEBUG, DEFAULT_USERNAME, GOOGLE_CERTS, GOOGLE_PEM_SRC, GOOGLE_VALID_AUDS, GOOGLE_VALID_ISSUER } from '../../constants'
 import { StatusError } from 'itty-router-extras'
 import { encodeJwt } from '../../helpers/jwt'
 import jwt from 'jsonwebtoken'
@@ -24,10 +24,15 @@ export const verifyIdTokenWithGoogle = async (idToken: string): Promise<IIdentif
     if (parts.length < 3) {
         throw new StatusError(400, 'invalid idToken JWT')
     } else {
+        const noKid = new StatusError(400, 'malformed JWT input; no KID in header')
         try {
             kid = JSON.parse(atob(parts[0]))['kid']
-        } catch (_) {
-            throw new StatusError(400, 'malformed JWT input; no KID in header')
+        } catch {
+            throw noKid
+        }
+
+        if (!kid) {
+            throw noKid
         }
     }
 
@@ -61,9 +66,9 @@ export const verifyIdTokenWithGoogle = async (idToken: string): Promise<IIdentif
     const returnedIdentfier: Partial<IIdentifier> = {}
     returnedIdentfier.sub = 'google:' + jwtBody['sub']
 
-    if (jwtBody['given_name'] && jwtBody['family_name']) {
+    if (jwtBody['given_name']) {
         returnedIdentfier.name =
-            `${jwtBody['given_name']} ${jwtBody['family_name']}`
+            `${jwtBody['given_name']} ${jwtBody['family_name'] ?? ''}`.trim()
     }
 
     if (jwtBody['email']) {
@@ -75,7 +80,7 @@ export const verifyIdTokenWithGoogle = async (idToken: string): Promise<IIdentif
     }
 
     if (!returnedIdentfier.name) {
-        returnedIdentfier.name = 'Club App User'
+        returnedIdentfier.name = DEFAULT_USERNAME
     }
 
     return returnedIdentfier as IIdentifier
@@ -84,7 +89,7 @@ export const verifyIdTokenWithGoogle = async (idToken: string): Promise<IIdentif
 
 export const getFakeIdentifier = (accessToken: string): IIdentifier => {
     if (!DEBUG) {
-        throw new StatusError(400, 'Debug Acess Tokens only allowed in dev.')
+        throw new StatusError(400, 'Debug Access Tokens only allowed in dev.')
     }
     const identifier: IIdentifier = JSON.parse(accessToken)
 

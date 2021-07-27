@@ -58,6 +58,7 @@
 					}
 				]
 			}
-		]
-	}
+		],
+		"jestrunner.configPath": "jestconfig.json"
+	},
 }

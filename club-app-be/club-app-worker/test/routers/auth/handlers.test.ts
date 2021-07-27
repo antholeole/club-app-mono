@@ -4,7 +4,7 @@ import * as authGqlQueries from '../../../src/routers/auth/gql_queries'
 import { refreshRoute, registerRoute } from '../../../src/routers/auth/handlers'
 
 describe('auth routes', () => {
-    describe('get access token', () => {
+    describe('register route', () => {
         describe('new user', () => {
             const userName = 'anthony'
             const userSub = 'subject'
@@ -93,8 +93,53 @@ describe('auth routes', () => {
                     idToken: 'fake.id.token'
                 })
 
-                //'should have changed refresh token'
                 expect(new TextDecoder().decode(await getDecryptedKV(REFRESH_TOKENS, userId, SECRET))).not.toBeNull
+            })
+
+            describe('provider', () => {
+                test('google should verify with google', async () => {
+                    jest.spyOn(authGqlQueries, 'addUser').mockReturnValue(Promise.resolve({
+                        id: userId,
+                        name: userName,
+                        sub: userSub
+                    }))
+    
+                    const verifyStub = jest.spyOn(authHelpers, 'getFakeIdentifier')
+    
+                    verifyStub.mockReturnValue({
+                        sub: userSub,
+                        name: userName
+                    })
+    
+                    await registerRoute({
+                        from: 'Debug',
+                        idToken: 'fake.id.token'
+                    })
+
+                    expect(verifyStub.mock.calls.length).toBe(1)
+                })
+
+                test('debug should call get debug key', async () => {
+                    jest.spyOn(authGqlQueries, 'addUser').mockReturnValue(Promise.resolve({
+                        id: userId,
+                        name: userName,
+                        sub: userSub
+                    }))
+    
+                    const verifyStub = jest.spyOn(authHelpers, 'verifyIdTokenWithGoogle')
+    
+                    verifyStub.mockReturnValue(Promise.resolve({
+                        name: userName,
+                        sub: userSub,
+                    }))
+    
+                    await registerRoute({
+                        from: 'Google',
+                        idToken: 'fake.id.token'
+                    })
+
+                    expect(verifyStub.mock.calls.length).toBe(1)
+                })
             })
         })
 
@@ -151,7 +196,7 @@ describe('auth routes', () => {
             const testUserId = 'test_id'
             const fakeRefreshToken = 'fake_refresh_token'
 
-            await expect(refreshRoute({
+            await expect(async () => await refreshRoute({
                 userId: testUserId,
                 refreshToken: fakeRefreshToken
             })).toThrowStatusError(404)
@@ -164,11 +209,10 @@ describe('auth routes', () => {
 
             await putEncryptedKV(REFRESH_TOKENS, testUserId, fakeRefreshToken, SECRET)
 
-            await expect(refreshRoute({ 
+            await expect(async () => await refreshRoute({ 
                 userId: testUserId,
                 refreshToken: notFakeRefreshToken
             })).toThrowStatusError(402)
         })
-
     })
 })

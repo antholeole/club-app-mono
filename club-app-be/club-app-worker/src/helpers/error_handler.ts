@@ -14,9 +14,9 @@ export const errorHandler = (e: Error): Response => {
             statusText: e.message
         })
     } else {
-        console.log(e)
-        console.log(e.message)
-        console.log(e.name)
+        console.error(e)
+        console.error(e.message)
+        console.error(e.name)
         throw e
     }
 

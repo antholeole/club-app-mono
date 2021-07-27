@@ -2,12 +2,20 @@ import { decodeJwt } from '../../helpers/jwt'
 import { IAccessToken } from '../../helpers/types/access_token'
 import { status, StatusError } from 'itty-router-extras'
 import type { Static } from 'runtypes'
-import { handleMessageMessage } from './message_handlers'
+import { handleEditMessage, handleMessageMessage } from './message_handlers'
 import { EmptyRecieveable, RecieveableMessage } from '../../messages/recieveable'
 import { BaseMessages } from '../../messages/message_types'
 
 export const connectRoute = async (wsMessage: Static<typeof EmptyRecieveable>): Promise<Response> => {
-    const jwt = decodeJwt(wsMessage.event.multiValueHeaders.authorization[0]) as unknown as IAccessToken
+    let auth: string
+
+    if (!wsMessage.event.multiValueHeaders?.authorization?.[0]) {
+        throw new StatusError(401)
+    } else {
+        auth = wsMessage.event.multiValueHeaders.authorization[0]
+    }
+
+    const jwt = decodeJwt(auth) as unknown as IAccessToken
 
     await ONLINE_USERS.put(jwt.sub, wsMessage.id)
 
@@ -21,7 +29,7 @@ export const disconnectRoute = async (wsMessage: Static<typeof EmptyRecieveable>
 
     try {
         await ONLINE_USERS.delete(jwt.sub)
-    } catch (_) {
+    } catch {
         //Nothing to do here.
     }
 
@@ -39,7 +47,7 @@ export const messageRoute = async (wsMessage: Static<typeof RecieveableMessage>)
 
     const matcher = BaseMessages.match<Promise<Response> | Response>(
         handleMessageMessage,
-        () => new Response('hi!')
+        handleEditMessage
     )
 
     return await matcher(wsMessage.message)

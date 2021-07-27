@@ -4,8 +4,8 @@ import { StatusError } from 'itty-router-extras'
 const ISSUER = 'Club App'
 
 export const decodeJwt = (token: string, ignoreExpiration = false): Record<string, unknown> => {
-    if (token.startsWith('Bearer ')) {
-        token = token.replace('Bearer ', '')
+    if (!token.startsWith('Bearer ')) {
+        throw new StatusError(401, 'token must be the format "Bearer <token>')
     }
 
     try {

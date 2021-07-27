@@ -1,6 +1,6 @@
 import { StatusError } from 'itty-router-extras'
 
-export const readJsonBody = async (req: Request): Promise<Record<string, unknown>> => {
+export const readJsonBody = async (req: Request | Response): Promise<Record<string, unknown>> => {
     try {
         const t = await req.json()
         return t

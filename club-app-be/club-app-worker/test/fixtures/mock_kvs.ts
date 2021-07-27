@@ -1,8 +1,10 @@
+import { NotFoundError } from '@cloudflare/kv-asset-handler'
+
 export class MockKvs {
     values: Map<string, string> = new Map()
 
-    async get(key: string): Promise<string> {
-        return this.values.get(key) as string
+    async get(key: string): Promise<string | null> {
+        return this.values.get(key) ?? null
     }
 
     async put(key: string, value: string): Promise<void> {
@@ -10,7 +12,9 @@ export class MockKvs {
     }
 
     async delete(key: string): Promise<void> {
-        this.values.delete(key)
+        if (!this.values.delete(key)) {
+            throw new NotFoundError('deleted non-existant key')
+        }
     }
 
     clear(): void {

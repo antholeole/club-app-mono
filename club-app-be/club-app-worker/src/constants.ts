@@ -7,6 +7,4 @@ export const WS_API_GATEWAY = ENVIRONMENT === 'dev' ? 'http://localhost:5000' : 
 export const HASURA_ENDPOINT = ENVIRONMENT === 'dev' ? 'http://localhost:8080/v1/graphql' : 'http://localhost:8080/v1/graphql'
 export const DEBUG = ENVIRONMENT === 'dev'
 export const DOMAIN = 'getclub.app'
-
-
-export const KV_CONCAT_STRING = ':!#$)@$:'
+export const DEFAULT_USERNAME = 'Club App User'

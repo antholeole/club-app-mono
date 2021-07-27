@@ -17,8 +17,7 @@
     "types": [
       "@cloudflare/workers-types",
       "@types/jest",
-      "@types/service-worker-mock",
-      "./test/typings"
+      "@types/service-worker-mock"
     ]
   },
   "files": [

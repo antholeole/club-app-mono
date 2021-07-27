@@ -3,12 +3,11 @@ const charset =
 
 
 export const cryptoRandomString = (len: number): string => {
-    const length = len ?? 20
-    const values = new Uint32Array(length)
+    const values = new Uint32Array(len)
     crypto.getRandomValues(values)
     let result = ''
 
-    for (let i = 0; i < length; i++) {
+    for (let i = 0; i < len; i++) {
         result += charset[values[i] % charset.length]
     }
 

@@ -7,17 +7,6 @@ export interface IUser {
     email?: string
 }
 
-export const getUserById = async (id: string): Promise<Partial<IUser> | null> => {
-    const { data } = await gqlReq(`
-    query {
-        users_by_pk(id: "${id}") {
-        
-      }
-    }
-    `)
-
-    return (data.users_by_pk ?? null)
-}
 
 export const getUserBySub = async (sub: string): Promise<IUser | null> => {
     const { users } = await gqlReq(`query {
