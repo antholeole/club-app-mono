@@ -54,3 +54,6 @@ app.*.map.json
 **/*.gql.g.dart
 generated_plugin_registrant.dart
 **/*.g.dart
+
+#testing
+coverage/*

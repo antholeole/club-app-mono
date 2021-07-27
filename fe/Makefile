@@ -9,3 +9,6 @@ clean:
 
 schema-pull:
 	get-graphql-schema --header x-hasura-admin-secret="*hV@?*xh0)aL,@1+Tza>Kj[zC(5akn" http://localhost:8080/v1/graphql > ./lib/schema.graphql
+
+t:
+	flutter test --coverage && genhtml coverage/lcov.info -o coverage/html -q

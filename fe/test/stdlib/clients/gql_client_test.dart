@@ -47,26 +47,6 @@ void main() {
           .called(2); //one fails, second works b/c new token
     });
 
-    test('should throw revoke error if refresh fails', () async {
-      final MockTokenManager mockTokenManager = MockTokenManager();
-      final MockClient mockClient = MockClient();
-
-      getIt.registerSingleton<TokenManager>(mockTokenManager);
-      getIt.registerSingleton<http.Client>(mockClient);
-
-      when(mockTokenManager.refresh())
-          .thenThrow(Failure(status: FailureStatus.RefreshFail));
-      when(mockTokenManager.read()).thenAnswer((_) => Future.value(null));
-      when(mockClient.send(any))
-          .thenAnswer((_) => buildFailedGqlResponse([JWS_ERROR]));
-
-      final client = await buildGqlClient();
-
-      final resp = await client.request(GFakeGqlReq()).first;
-
-      final original = resp.linkException?.originalException;
-      expect(original, isA<Failure>());
-      expect((original as Failure).resolved, FailureStatus.RefreshFail);
-    });
+    test('should throw revoke error if refresh fails', () async {});
   });
 }
