@@ -1,6 +1,11 @@
 import 'package:fe/config.dart';
 
 class TestingConfig extends Config {
+  final bool _needAutoEvents;
+
+  TestingConfig({bool needAutoEvents = false})
+      : _needAutoEvents = needAutoEvents;
+
   @override
   String get connectionUrl => 'not_real';
 
@@ -21,4 +26,7 @@ class TestingConfig extends Config {
 
   @override
   String get wsUrl => throw UnimplementedError();
+
+  @override
+  bool get testing => !_needAutoEvents;
 }

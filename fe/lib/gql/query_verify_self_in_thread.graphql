@@ -1,0 +1,23 @@
+query QueryVerifySelfInThread($userId: uuid!, $groupId: uuid!, $threadId: uuid!) {
+  group_threads_aggregate(where: {
+  	_and: {
+      group_id: {
+        _eq: $groupId
+      },
+      user_to_threads: {
+        _and: {
+          user_id: {
+          	_eq: $userId
+          },
+          thread_id: {
+          	_eq: $threadId
+          }
+        }
+      },
+    }
+  }) {
+    aggregate {
+      count
+    }
+  }
+}

@@ -1,7 +1,7 @@
+import 'package:fe/flows/app_state.dart';
 import 'package:fe/service_locator.dart';
-import 'package:fe/stdlib/router/router.gr.dart';
 import 'package:fe/stdlib/theme/colors.dart';
-import 'package:fe/stdlib/toaster.dart';
+import 'package:fe/services/toaster/toaster.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,11 +22,9 @@ Future<void> asyncStartup() async {
 }
 
 class MyApp extends StatelessWidget {
-  final _appRouter = AppRouter();
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
+    return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
           primaryColorBrightness: Brightness.light,
@@ -39,8 +37,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.red,
           bottomSheetTheme: BottomSheetThemeData(
               backgroundColor: Colors.black.withOpacity(0))),
-      routerDelegate: _appRouter.delegate(),
-      routeInformationParser: _appRouter.defaultRouteParser(),
+      home: AppState.getFlow(context),
       builder: (innerContext, router) => PlatformWidgetBuilder(
           cupertino: (_, child, __) => CupertinoTheme(
               data: const CupertinoThemeData(primaryColor: primaryColor),
@@ -49,7 +46,7 @@ class MyApp extends StatelessWidget {
           child: Overlay(
             initialEntries: [
               OverlayEntry(
-                builder: (context) => Toaster(context: context, child: router!),
+                builder: (context) => Toaster(child: router!),
               ),
             ],
           )),

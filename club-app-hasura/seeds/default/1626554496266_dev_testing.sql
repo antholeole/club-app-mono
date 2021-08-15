@@ -126,4 +126,3 @@ in pretium orci vestibulum eget', '6481f35f-e444-494b-a980-c0a420384c61');
 INSERT INTO public.messages(user_sent, message, thread_id)
     VALUES ('a1e459f1-b3aa-4e47-a3c7-cf6f7ff8f19f', 'hi there! Im', '6481f35f-e444-494b-a980-c0a420384c61');
 
-

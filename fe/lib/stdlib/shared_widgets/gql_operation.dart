@@ -9,18 +9,18 @@ import 'package:flutter/material.dart';
 import '../../service_locator.dart';
 
 class GqlOperation<TData, TVars> extends StatefulWidget {
-  final OperationRequest<TData, TVars> operationRequest;
+  final OperationRequest<TData, TVars>? operationRequest;
   final Widget? loader;
-  final String? toastErrorPrefix;
+  final String? errorText;
   final Widget? error;
   final Widget Function(TData) onResponse;
 
   const GqlOperation(
-      {required this.operationRequest,
+      {this.operationRequest,
       required this.onResponse,
       this.loader,
       this.error,
-      this.toastErrorPrefix});
+      this.errorText});
 
   @override
   _GqlOperationState<TData, TVars> createState() =>
@@ -42,26 +42,27 @@ class _GqlOperationState<TData, TVars>
 
   @override
   Widget build(BuildContext context) {
+    if (widget.operationRequest == null) {
+      return _buildLoader();
+    }
+
     return Operation(
-      operationRequest: widget.operationRequest,
+      operationRequest: widget.operationRequest!,
       builder: (BuildContext context, OperationResponse<TData, TVars>? response,
           Object? error) {
         if (response == null || response.loading) {
-          return widget.loader ??
-              const Loader(
-                size: 12,
-              );
+          return _buildLoader();
         }
 
         if (response.hasErrors) {
-          basicGqlErrorHandler(response).then((f) =>
-              handleFailure(f, context, withPrefix: widget.toastErrorPrefix));
+          basicGqlErrorHandler(response).then(
+              (f) => handleFailure(f, context, withPrefix: widget.errorText));
           return _resultFromCache != null
               ? widget.onResponse(_resultFromCache!)
               : widget.error ??
-                  const Text(
-                    'error',
-                    style: TextStyle(color: Colors.red),
+                  Text(
+                    widget.errorText ?? 'error',
+                    style: const TextStyle(color: Colors.red),
                   );
         }
 
@@ -71,5 +72,12 @@ class _GqlOperationState<TData, TVars>
       },
       client: _client,
     );
+  }
+
+  Widget _buildLoader() {
+    return widget.loader ??
+        const Loader(
+          size: 12,
+        );
   }
 }

@@ -27,7 +27,7 @@
 	],
 	"settings": {
 		"files.exclude": {
-			"**/node_modules/**": true,
+			"**/node_modules/*": true,
 		},
 		"restoreTerminals.terminals": [
 			{
@@ -59,6 +59,7 @@
 				]
 			}
 		],
-		"jestrunner.configPath": "jestconfig.json"
+		"jestrunner.configPath": "jestconfig.json",
+		"liveServer.settings.multiRootWorkspaceName": "🗿 Club App Root"
 	},
 }

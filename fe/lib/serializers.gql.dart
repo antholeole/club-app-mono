@@ -12,6 +12,19 @@ import 'package:fe/gql/insert_message.data.gql.dart'
         GGetMessagesData_messages_user;
 import 'package:fe/gql/insert_message.req.gql.dart' show GGetMessagesReq;
 import 'package:fe/gql/insert_message.var.gql.dart' show GGetMessagesVars;
+import 'package:fe/gql/query_all_groups_conditional_join_token.data.gql.dart'
+    show
+        GQueryAllGroupsConditionalJoinTokenData,
+        GQueryAllGroupsConditionalJoinTokenData_admin_groups,
+        GQueryAllGroupsConditionalJoinTokenData_admin_groups_group,
+        GQueryAllGroupsConditionalJoinTokenData_admin_groups_group_group_join_tokens,
+        GQueryAllGroupsConditionalJoinTokenData_member_groups,
+        GQueryAllGroupsConditionalJoinTokenData_member_groups_group,
+        Ggroup_base_fieldsData;
+import 'package:fe/gql/query_all_groups_conditional_join_token.req.gql.dart'
+    show GQueryAllGroupsConditionalJoinTokenReq, Ggroup_base_fieldsReq;
+import 'package:fe/gql/query_all_groups_conditional_join_token.var.gql.dart'
+    show GQueryAllGroupsConditionalJoinTokenVars, Ggroup_base_fieldsVars;
 import 'package:fe/gql/query_group_join_token.data.gql.dart'
     show GQueryGroupJoinTokenData, GQueryGroupJoinTokenData_group_join_tokens;
 import 'package:fe/gql/query_group_join_token.req.gql.dart'
@@ -53,6 +66,15 @@ import 'package:fe/gql/query_users_in_group.req.gql.dart'
     show GQueryUsersInGroupReq;
 import 'package:fe/gql/query_users_in_group.var.gql.dart'
     show GQueryUsersInGroupVars;
+import 'package:fe/gql/query_verify_self_in_thread.data.gql.dart'
+    show
+        GQueryVerifySelfInThreadData,
+        GQueryVerifySelfInThreadData_group_threads_aggregate,
+        GQueryVerifySelfInThreadData_group_threads_aggregate_aggregate;
+import 'package:fe/gql/query_verify_self_in_thread.req.gql.dart'
+    show GQueryVerifySelfInThreadReq;
+import 'package:fe/gql/query_verify_self_in_thread.var.gql.dart'
+    show GQueryVerifySelfInThreadVars;
 import 'package:fe/gql/remove_self_from_group.data.gql.dart'
     show
         GRemoveSelfFromGroupData,
@@ -190,6 +212,14 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GGetMessagesData_messages_user,
   GGetMessagesReq,
   GGetMessagesVars,
+  GQueryAllGroupsConditionalJoinTokenData,
+  GQueryAllGroupsConditionalJoinTokenData_admin_groups,
+  GQueryAllGroupsConditionalJoinTokenData_admin_groups_group,
+  GQueryAllGroupsConditionalJoinTokenData_admin_groups_group_group_join_tokens,
+  GQueryAllGroupsConditionalJoinTokenData_member_groups,
+  GQueryAllGroupsConditionalJoinTokenData_member_groups_group,
+  GQueryAllGroupsConditionalJoinTokenReq,
+  GQueryAllGroupsConditionalJoinTokenVars,
   GQueryGroupJoinTokenData,
   GQueryGroupJoinTokenData_group_join_tokens,
   GQueryGroupJoinTokenReq,
@@ -213,6 +243,11 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GQueryUsersInGroupData_user_to_group_user,
   GQueryUsersInGroupReq,
   GQueryUsersInGroupVars,
+  GQueryVerifySelfInThreadData,
+  GQueryVerifySelfInThreadData_group_threads_aggregate,
+  GQueryVerifySelfInThreadData_group_threads_aggregate_aggregate,
+  GQueryVerifySelfInThreadReq,
+  GQueryVerifySelfInThreadVars,
   GRemoveSelfFromGroupData,
   GRemoveSelfFromGroupData_delete_user_to_group,
   GRemoveSelfFromGroupReq,
@@ -226,6 +261,9 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GUpsertGroupJoinTokenData_insert_group_join_tokens_one,
   GUpsertGroupJoinTokenReq,
   GUpsertGroupJoinTokenVars,
+  Ggroup_base_fieldsData,
+  Ggroup_base_fieldsReq,
+  Ggroup_base_fieldsVars,
   Ggroup_join_tokens_aggregate_order_by,
   Ggroup_join_tokens_arr_rel_insert_input,
   Ggroup_join_tokens_bool_exp,

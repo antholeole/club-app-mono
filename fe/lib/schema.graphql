@@ -743,7 +743,7 @@ type messages {
   is_image: Boolean!
   message: String!
   thread_id: uuid!
-  updated_at: timestamptz
+  updated_at: timestamptz!
 
   """An object relationship"""
   user: users!

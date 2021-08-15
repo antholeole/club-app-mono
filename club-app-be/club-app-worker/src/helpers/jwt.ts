@@ -2,19 +2,21 @@ import jwt from 'jsonwebtoken'
 import { StatusError } from 'itty-router-extras'
 
 const ISSUER = 'Club App'
+const BEARER = 'Bearer '
 
 export const decodeJwt = (token: string, ignoreExpiration = false): Record<string, unknown> => {
-    if (!token.startsWith('Bearer ')) {
+    if (!token.startsWith(BEARER)) {
         throw new StatusError(401, 'token must be the format "Bearer <token>')
     }
 
     try {
-        return jwt.verify(token, SECRET, {
+        console.log(token)
+        return jwt.verify(token.replace(BEARER, ''), SECRET, {
             issuer: ISSUER,
             ignoreExpiration
         }) as Record<string, unknown>
     } catch (e) {
-        throw new StatusError(401, 'Unauthorized JWT')
+        throw new StatusError(401, `JWT verification failed: ${e.message}`)
     }
 }
 

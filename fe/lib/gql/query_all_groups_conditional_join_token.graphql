@@ -1,0 +1,38 @@
+fragment group_base_fields on groups {
+    group_name,
+    id
+}
+
+query QueryAllGroupsConditionalJoinToken($self_id: uuid!) {
+  admin_groups: user_to_group(
+    where: {
+      admin: {
+      	_eq:true
+      },
+      user_id: {
+        _eq: $self_id
+      }
+    }
+  ) {
+    group {
+      ...group_base_fields,
+      group_join_tokens {
+        join_token
+      }
+    }
+  },
+    member_groups: user_to_group(
+    where: {
+      admin: {
+      	_eq:false
+      },
+      user_id: {
+        _eq: $self_id
+      }
+    }
+  ) {
+    group {
+      ...group_base_fields
+    }
+  }
+}

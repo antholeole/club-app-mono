@@ -1,3 +1,4 @@
+#runs the hasura container and refreshes all the data by running the faker script.
 run: 
 	docker compose --env-file ./../.env up 
 

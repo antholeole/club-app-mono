@@ -14,11 +14,12 @@ export const gqlReq = async <T>(req: string): Promise<T> => {
             },
         })
     } catch (e) {
-        throw new StatusError(502, `Error connecting to GQL endpoint: ${e}`)
+        console.error(e)
+        throw new StatusError(502, `Error connecting to GQL endpoint: ${e.message}`)
     }
 
     if (!response.ok) {
-        throw new StatusError(502, `error connecting to GQL endpont: ${response.body}`)
+        throw new StatusError(502, `error connecting to GQL endpont: ${await response.text()}`)
     }
 
     const json = await response.json()

@@ -1,7 +1,10 @@
 import 'package:fe/data/models/group.dart';
-import 'package:fe/pages/main/main_helpers/scaffold/cubit/main_scaffold_parts.dart';
-import 'package:fe/pages/main/main_helpers/scaffold/cubit/page_cubit.dart';
-import 'package:fe/pages/main/main_helpers/scaffold/cubit/scaffold_cubit.dart';
+import 'package:fe/pages/scaffold/cubit/data_carriers/main_scaffold_parts.dart';
+import 'package:fe/pages/scaffold/cubit/page_cubit.dart';
+import 'package:fe/pages/scaffold/cubit/scaffold_cubit.dart';
+import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
+import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
+import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,7 +23,10 @@ class EventsPage extends StatefulWidget {
           ActionButton(
               icon: Icons.baby_changing_station,
               onClick: () {
-                print('hi 4!');
+                context.read<ToasterCubit>().add(Toast.customExpire(
+                    message: '${UuidType.generate().uuid}',
+                    type: ToastType.Error,
+                    expireAt: DateTime.now().add(const Duration(seconds: 3))));
               }),
           ActionButton(
               icon: Icons.baby_changing_station_outlined,
@@ -42,11 +48,11 @@ class _EventsPageState extends State<EventsPage> {
   void initState() {
     super.initState();
     updateScaffold = () {
-      if (context.read<PageCubit>().state.currentPage == 1) {
-        context
-            .read<ScaffoldCubit>()
-            .updateMainParts(EventsPage.scaffoldWidgets(context));
-      }
+      context.read<PageCubit>().state.join(
+          (_) => context
+              .read<ScaffoldCubit>()
+              .updateMainParts(EventsPage.scaffoldWidgets(context)),
+          (_) => null);
     };
   }
 

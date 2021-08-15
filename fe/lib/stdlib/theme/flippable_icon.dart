@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-const FLIP_DURATION = Duration(milliseconds: 200);
-
 class FlippableIcon extends StatefulWidget {
+  static const FLIP_DURATION = Duration(milliseconds: 200);
+
   final Icon _icon;
   final void Function() _onClick;
-  final bool _flipped;
+  final bool flipped;
 
   const FlippableIcon(
       {required Icon icon,
       required void Function() onClick,
-      required bool flipped})
-      : _flipped = flipped,
-        _onClick = onClick,
+      required this.flipped})
+      : _onClick = onClick,
         _icon = icon;
 
   @override
@@ -32,14 +31,21 @@ class _FlippableIconState extends State<FlippableIcon>
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   void didUpdateWidget(FlippableIcon oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _toggleMenu();
+    _flipWidget();
     super.didChangeDependencies();
   }
 
   void _prepareAnimations() {
-    _controller = AnimationController(duration: FLIP_DURATION, vsync: this);
+    _controller =
+        AnimationController(duration: FlippableIcon.FLIP_DURATION, vsync: this);
 
     _animation = Tween<double>(begin: 0.5, end: 1.0).animate(_controller)
       ..addListener(() {
@@ -60,8 +66,8 @@ class _FlippableIconState extends State<FlippableIcon>
         ));
   }
 
-  void _toggleMenu() {
-    if (widget._flipped) {
+  void _flipWidget() {
+    if (widget.flipped) {
       _controller.forward();
     } else {
       _controller.reverse();

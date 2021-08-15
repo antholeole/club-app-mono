@@ -1,13 +1,7 @@
-import 'package:fe/stdlib/clients/http_client/http_client.dart';
-import 'package:fe/stdlib/clients/http_client/unauth_http_client.dart';
+import 'package:fe/services/clients/http_client/http_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:ferry/ferry.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-
-import '../../service_locator.dart';
 import 'check_connectivity.dart';
 
 Future<Failure> basicGqlErrorHandler(OperationResponse resp) async {
@@ -18,8 +12,17 @@ Future<Failure> basicGqlErrorHandler(OperationResponse resp) async {
       return resp.linkException!.originalException;
     } else if (resp.linkException!.originalException is HttpException) {
       return HttpClient.basicHttpErrorHandler(
-          resp.linkException!.originalException, {});
+          resp.linkException!.originalException);
     }
+  }
+
+  if (errors != null) {
+    StringBuffer errorBuff = StringBuffer();
+    errors.forEach((error) {
+      errorBuff.write(error.message);
+    });
+    return Failure(
+        message: errorBuff.toString(), status: FailureStatus.GQLMisc);
   }
 
   final disconnectedFailure = await checkConnecivity();
@@ -28,15 +31,5 @@ Future<Failure> basicGqlErrorHandler(OperationResponse resp) async {
     return disconnectedFailure;
   }
 
-  if (errors != null) {
-    StringBuffer errorBuff = StringBuffer();
-    errors.forEach((error) {
-      errorBuff.write(error.message);
-      debugPrint('got GQL error: ${error.message}');
-    });
-    return Failure(
-        message: errorBuff.toString(), status: FailureStatus.GQLMisc);
-  }
-
-  return Failure(status: FailureStatus.Unknown);
+  return const Failure(status: FailureStatus.Unknown);
 }

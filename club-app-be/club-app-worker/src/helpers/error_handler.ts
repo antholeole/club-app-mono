@@ -2,6 +2,7 @@ import { StatusError } from 'itty-router-extras'
 import { ValidationError } from 'runtypes'
 
 export const errorHandler = (e: Error): Response => {
+    console.debug(`got ${e.name}: ${e.message}`)
     if (e instanceof ValidationError) {
         return new Response(e.message, {
             status: 400,

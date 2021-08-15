@@ -1,4 +1,17 @@
 import 'package:built_value/serializer.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+class CustomDateTimeConverter implements JsonConverter<DateTime, String> {
+  const CustomDateTimeConverter();
+
+  @override
+  DateTime fromJson(String string) {
+    return DateTime.parse(string);
+  }
+
+  @override
+  String toJson(DateTime json) => json.toIso8601String();
+}
 
 class DateTimeSerializer implements PrimitiveSerializer<DateTime> {
   @override

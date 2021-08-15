@@ -1,9 +1,14 @@
+import 'package:equatable/equatable.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
+import 'package:flutter/foundation.dart';
 
-class Failure {
-  bool resolved;
+@immutable
+class Failure extends Equatable {
   final String? message;
   final FailureStatus status;
 
-  Failure({this.message, this.resolved = true, required this.status});
+  const Failure({this.message, required this.status});
+
+  @override
+  List<Object?> get props => [status, message];
 }

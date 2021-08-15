@@ -3,7 +3,6 @@ import { Router } from 'itty-router'
 import { cors } from '../helpers/cors'
 import { authRouter } from './auth/router'
 import { gatewayRouter } from './gateway/router'
-import { DEBUG } from '../constants'
 
 const localRouter = Router()
 
