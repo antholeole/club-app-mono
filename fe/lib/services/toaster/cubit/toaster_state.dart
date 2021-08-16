@@ -18,7 +18,7 @@ class ToasterState extends Equatable {
     _toasts[toast.id] = toast;
   }
 
-  void remove(UuidType toastId) {
-    _toasts.remove(toastId);
+  Toast? remove(UuidType toastId) {
+    return _toasts.remove(toastId);
   }
 }

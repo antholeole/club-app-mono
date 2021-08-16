@@ -10,6 +10,7 @@ import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:ferry/ferry.dart';
 import 'package:fe/gql/query_all_groups_conditional_join_token.req.gql.dart';
 import 'package:fe/gql/query_all_groups_conditional_join_token.data.gql.dart';
+import 'package:flutter/material.dart';
 import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
 import 'package:fe/gql/upsert_group_join_token.req.gql.dart';
 
@@ -24,7 +25,7 @@ class UpdateGroupsCubit extends Cubit<UpdateGroupsState> {
   final Client _gqlClient = getIt<Client>();
   final Config config = getIt<Config>();
 
-  UpdateGroupsCubit() : super(UpdateGroupsState.inital()) {
+  UpdateGroupsCubit() : super(UpdateGroupsState.fetchingGroups()) {
     if (!config.testing) fetchGroups(inital: true);
   }
 
@@ -94,10 +95,12 @@ class UpdateGroupsCubit extends Cubit<UpdateGroupsState> {
         joinTokenState: JoinTokenState.adminWithToken(token));
   }
 
-  Future<void> leaveGroup(UuidType groupId, void Function() onComplete) async {
+  Future<void> leaveGroup(UuidType groupId, VoidCallback onComplete) async {
     _updateSingleGroup(groupId,
         leaveState: LeavingState.prompting(
-            () => _leaveGroupForReal(groupId, onComplete)));
+            accepted: () => _leaveGroupForReal(groupId, onComplete),
+            rejected: () => _updateSingleGroup(groupId,
+                leaveState: LeavingState.notLeaving())));
   }
 
   Future<void> _leaveGroupForReal(
@@ -130,8 +133,7 @@ class UpdateGroupsCubit extends Cubit<UpdateGroupsState> {
     assert(leaveState != null || joinTokenState != null || remove,
         'updating no state');
 
-    final currState =
-        state.join((_) => null, (_) => null, (fgs) => fgs, (_) => null);
+    final currState = state.join((_) => null, (fgs) => fgs, (_) => null);
 
     if (currState == null) {
       throw Exception('cannot update groups without having fetched them');

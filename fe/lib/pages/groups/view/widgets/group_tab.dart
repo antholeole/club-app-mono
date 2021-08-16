@@ -93,11 +93,18 @@ class _GroupTabState extends State<GroupTab>
                   FlippableIcon(
                     icon: const Icon(Icons.chevron_left,
                         color: Colors.blue, size: 30),
-                    onClick: () {
-                      setState(() {
-                        _tabOpen = !_tabOpen;
-                      });
-                      _displaySettings();
+                    onClick: () async {
+                      if (_tabOpen) {
+                        await _toggleSettingsOpen(to: false);
+                        setState(() {
+                          _tabOpen = false;
+                        });
+                      } else {
+                        setState(() {
+                          _tabOpen = true;
+                        });
+                        await _toggleSettingsOpen(to: true);
+                      }
                     },
                     flipped: _tabOpen,
                   ),
@@ -110,7 +117,9 @@ class _GroupTabState extends State<GroupTab>
                   child: SizeTransition(
                 axisAlignment: 1.0,
                 sizeFactor: animation,
-                child: GroupSettings(group: widget.group),
+                child: _tabOpen
+                    ? GroupSettings(group: widget.group)
+                    : const SizedBox(),
               )),
             ),
           ],
@@ -119,11 +128,11 @@ class _GroupTabState extends State<GroupTab>
     );
   }
 
-  void _displaySettings() {
-    if (_tabOpen) {
-      expandController.forward();
+  Future<void> _toggleSettingsOpen({required bool to}) {
+    if (to) {
+      return expandController.forward();
     } else {
-      expandController.reverse();
+      return expandController.reverse();
     }
   }
 }

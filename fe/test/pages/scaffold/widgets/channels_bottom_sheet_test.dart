@@ -148,8 +148,6 @@ void main() {
       tester.binding.scheduleFrame();
       await tester.pump();
 
-      debugDumpApp();
-
       expect(find.text(ChannelsBottomSheet.ERROR_TEXT), findsOneWidget);
 
       verify(() => mockToasterCubit.add(any(

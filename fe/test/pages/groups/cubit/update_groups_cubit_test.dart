@@ -234,7 +234,6 @@ void main() {
                 isA<UpdateGroupsState>().having(
                     (ugs) => ugs.join(
                         (_) => null,
-                        (_) => null,
                         (fgs) => fgs.groups[groupId]!.leaveState.join(
                             (_) => null,
                             (_) => null,
@@ -268,14 +267,13 @@ void main() {
           build: () => UpdateGroupsCubit(),
           act: (cubit) async {
             await cubit.leaveGroup(groupId, caller.call);
-            cubit.state.groups![groupId]!.leaveState
+            await cubit.state.groups![groupId]!.leaveState
                 .join((_) => null, (_) => null, (pls) => pls, (_) => null)!
                 .accepted();
           },
           expect: () => [
                 isA<UpdateGroupsState>().having(
                     (ugs) => ugs.join(
-                        (_) => null,
                         (_) => null,
                         (fgs) => fgs.groups[groupId]!.leaveState.join(
                             (_) => null,
@@ -317,14 +315,13 @@ void main() {
           build: () => UpdateGroupsCubit(),
           act: (cubit) async {
             await cubit.leaveGroup(groupId, caller.call);
-            cubit.state.groups![groupId]!.leaveState
+            await cubit.state.groups![groupId]!.leaveState
                 .join((_) => null, (_) => null, (pls) => pls, (_) => null)!
                 .accepted();
           },
           expect: () => [
                 isA<UpdateGroupsState>().having(
                     (ugs) => ugs.join(
-                        (_) => null,
                         (_) => null,
                         (fgs) => fgs.groups[groupId]!.leaveState.join(
                             (_) => null,

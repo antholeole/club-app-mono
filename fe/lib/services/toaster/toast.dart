@@ -76,6 +76,7 @@ class _ToastDisplayState extends State<ToastDisplay> {
     if (widget.toast.action != null) {
       children.add(GestureDetector(
         onTap: () {
+          context.read<ToasterCubit>().remove(widget.toast.id);
           widget.toast.action!.action();
         },
         child: Text(

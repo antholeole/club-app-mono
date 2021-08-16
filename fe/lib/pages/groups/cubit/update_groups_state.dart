@@ -1,34 +1,30 @@
 part of 'update_groups_cubit.dart';
 
-class UpdateGroupsState extends Union4Impl<FetchGroupsState, UpdateGroupsInital,
-    FetchedGroupsState, FetchGroupsFailureState> {
+class UpdateGroupsState extends Union3Impl<FetchGroupsState, FetchedGroupsState,
+    FetchGroupsFailureState> {
   @override
-  String toString() => join((a) => a.toString(), (a) => a.toString(),
-      (a) => a.toString(), (a) => a.toString());
+  String toString() =>
+      join((a) => a.toString(), (a) => a.toString(), (a) => a.toString());
 
-  static const unions = Quartet<FetchGroupsState, UpdateGroupsInital,
-      FetchedGroupsState, FetchGroupsFailureState>();
+  static const unions =
+      Triplet<FetchGroupsState, FetchedGroupsState, FetchGroupsFailureState>();
 
   UpdateGroupsState._(
-      Union4<FetchGroupsState, UpdateGroupsInital, FetchedGroupsState,
-              FetchGroupsFailureState>
+      Union3<FetchGroupsState, FetchedGroupsState, FetchGroupsFailureState>
           union)
       : super(union);
 
-  factory UpdateGroupsState.fetchGroups() =>
+  factory UpdateGroupsState.fetchingGroups() =>
       UpdateGroupsState._(unions.first(const FetchGroupsState()));
 
-  factory UpdateGroupsState.inital() =>
-      UpdateGroupsState._(unions.second(const UpdateGroupsInital()));
-
   factory UpdateGroupsState.fetched(Map<UuidType, GroupsPageGroup> groups) =>
-      UpdateGroupsState._(unions.third(FetchedGroupsState(groups: groups)));
+      UpdateGroupsState._(unions.second(FetchedGroupsState(groups: groups)));
 
   factory UpdateGroupsState.failure(Failure f) =>
-      UpdateGroupsState._(unions.fourth(FetchGroupsFailureState(failure: f)));
+      UpdateGroupsState._(unions.third(FetchGroupsFailureState(failure: f)));
 
   Map<UuidType, GroupsPageGroup>? get groups {
-    return join((_) => null, (_) => null, (fgs) => fgs.groups, (_) => null);
+    return join((_) => null, (fgs) => fgs.groups, (_) => null);
   }
 }
 

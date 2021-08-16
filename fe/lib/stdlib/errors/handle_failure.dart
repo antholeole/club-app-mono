@@ -25,14 +25,10 @@ void handleFailure(Failure f, BuildContext context,
       //if we're in a build, wait for the build tocomplete
       //to avoid errors.
       WidgetsBinding.instance!.addPostFrameCallback((_) {
-        try {
-          context.read<ToasterCubit>().add(Toast(
-                message: errorString,
-                type: ToastType.Error,
-              ));
-        } catch (e) {
-          print(e);
-        }
+        context.read<ToasterCubit>().add(Toast(
+              message: errorString,
+              type: ToastType.Error,
+            ));
       });
     }
   }

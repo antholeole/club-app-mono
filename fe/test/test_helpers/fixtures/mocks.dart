@@ -1,6 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:fe/pages/chat/cubit/chat_cubit.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
+import 'package:fe/pages/groups/cubit/update_groups_cubit.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/channels_bottom_sheet_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/page_cubit.dart';
@@ -14,6 +15,7 @@ import 'package:fe/services/local_data/token_manager.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
+import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -22,7 +24,21 @@ import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
+import '../reset_mock_bloc.dart';
+
 class FakeBuildContext extends Fake implements BuildContext {}
+
+class MockUpdateGroupsCubit extends MockCubit<UpdateGroupsState>
+    implements UpdateGroupsCubit {
+  MockUpdateGroupsCubit._();
+
+  factory MockUpdateGroupsCubit.getMock() {
+    registerFallbackValue(UpdateGroupsState.fetchingGroups());
+    final cubit = MockUpdateGroupsCubit._();
+    resetMockCubit(cubit);
+    return cubit;
+  }
+}
 
 class MockSplashCubit extends MockCubit<SplashState> implements SplashCubit {
   MockSplashCubit._();
@@ -165,6 +181,8 @@ class MockRequest<TData, TVars> extends Fake
 class MockResponse extends Fake implements OperationResponse {}
 
 class MockCache extends Mock implements Cache {}
+
+class FakeUuidType extends Fake implements UuidType {}
 
 class FakeLinkException extends LinkException {
   const FakeLinkException(Exception originalException)

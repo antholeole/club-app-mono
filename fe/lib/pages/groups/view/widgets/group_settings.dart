@@ -1,6 +1,7 @@
 import 'package:fe/gql/query_users_in_group.data.gql.dart';
 import 'package:fe/gql/query_users_in_group.req.gql.dart';
 import 'package:fe/pages/groups/cubit/update_groups_cubit.dart';
+import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
 import 'package:fe/stdlib/errors/handle_failure.dart';
@@ -16,6 +17,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GroupSettings extends StatelessWidget {
+  @visibleForTesting
+  static const String JOIN_TOKEN_HEADER = 'Join Token';
+
+  @visibleForTesting
+  static const String NO_JOIN_TOKEN_TEXT = 'No Join Token.';
+
+  @visibleForTesting
+  static const String ERROR_LOADING_USERS = 'Error loading members';
+
+  @visibleForTesting
+  static const String LEAVE_GROUP = 'leave group';
+
   final GroupsPageGroup _group;
 
   const GroupSettings({required GroupsPageGroup group}) : _group = group;
@@ -23,7 +36,7 @@ class GroupSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<UpdateGroupsCubit, UpdateGroupsState>(
-      listener: (context, state) => state.join((_) => null, (_) => null,
+      listener: (context, state) => state.join((_) => null,
           (fgs) => _onUpdateJoinTokenState(fgs, context), (_) => null),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -34,7 +47,7 @@ class GroupSettings extends StatelessWidget {
               context,
             ),
           LoadableTileButton(
-            text: 'leave group',
+            text: GroupSettings.LEAVE_GROUP,
             onClick: () => context.read<UpdateGroupsCubit>().leaveGroup(
                 _group.group.id,
                 () => context.read<ToasterCubit>().add(Toast(
@@ -57,7 +70,7 @@ class GroupSettings extends StatelessWidget {
               ..fetchPolicy = FetchPolicy.NetworkOnly
               ..vars.groupId = _group.group.id,
           ),
-          errorText: 'Error loading members',
+          errorText: GroupSettings.ERROR_LOADING_USERS,
           onResponse: (GQueryUsersInGroupData data) => Column(
                   children: data.user_to_group.map((user) {
                 return _buildUserTile(user);
@@ -83,7 +96,7 @@ class GroupSettings extends StatelessWidget {
   List<Widget> _buildJoinToken(BuildContext context) {
     return [
       const TileHeader(
-        text: 'Join Token',
+        text: GroupSettings.JOIN_TOKEN_HEADER,
       ),
       _group.joinTokenState.join(
           (_) => throw Exception('not admin but building join token'),
@@ -103,7 +116,7 @@ class GroupSettings extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(joinToken ?? 'No Join Token.'),
+            Text(joinToken ?? GroupSettings.NO_JOIN_TOKEN_TEXT),
             Row(
               children: [
                 GestureDetector(
@@ -133,7 +146,15 @@ class GroupSettings extends StatelessWidget {
         (pls) {
       context.read<ToasterCubit>().add(Toast(
           type: ToastType.Warning,
-          message: "Are you sure you'd like to leave ${_group.group.name}?"));
+          message: "Are you sure you'd like to leave ${_group.group.name}?",
+          expire: false,
+          onDismiss: pls.rejected,
+          action: ToastAction(
+              action: () async {
+                await pls.accepted();
+                await context.read<MainCubit>().initalizeMainPage();
+              },
+              actionText: 'Leave Group')));
     }, (fls) => handleFailure(fls.failure, context));
   }
 }

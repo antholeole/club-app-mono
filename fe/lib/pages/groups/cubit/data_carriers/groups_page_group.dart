@@ -36,8 +36,11 @@ class LeavingState extends Union4Impl<NotLeavingState, CurrentlyLeavingState,
   factory LeavingState.leaving() =>
       LeavingState._(unions.second(const CurrentlyLeavingState()));
 
-  factory LeavingState.prompting(void Function() accepted) =>
-      LeavingState._(unions.third(PromptLeavingState(accepted: accepted)));
+  factory LeavingState.prompting(
+          {required Future<void> Function() accepted,
+          required VoidCallback rejected}) =>
+      LeavingState._(unions
+          .third(PromptLeavingState(accepted: accepted, rejected: rejected)));
 
   factory LeavingState.failure(Failure f) =>
       LeavingState._(unions.fourth(FailureLeavingState(failure: f)));
@@ -67,9 +70,10 @@ class CurrentlyLeavingState extends Equatable {
 }
 
 class PromptLeavingState extends Equatable {
-  final void Function() accepted;
+  final Future<void> Function() accepted;
+  final VoidCallback rejected;
 
-  const PromptLeavingState({required this.accepted});
+  const PromptLeavingState({required this.rejected, required this.accepted});
 
   @override
   List<Object?> get props => [];

@@ -22,6 +22,12 @@ class GroupsPage extends StatelessWidget {
 }
 
 class GroupsView extends StatelessWidget {
+  @visibleForTesting
+  static const ERROR_TEXT = 'sorry, there was an error loading groups.';
+
+  @visibleForTesting
+  static const NO_CLUBS_TEXT = 'You have no clubs. Go ahead and join some!';
+
   const GroupsView({Key? key}) : super(key: key);
 
   @override
@@ -29,13 +35,12 @@ class GroupsView extends StatelessWidget {
     return SizedBox.expand(
       child: BlocConsumer<UpdateGroupsCubit, UpdateGroupsState>(
           listener: (context, state) => state.join((_) => null, (_) => null,
-              (_) => null, (fgf) => handleFailure(fgf.failure, context)),
+              (fgf) => handleFailure(fgf.failure, context)),
           builder: (context, state) => state.join(
-              (_) => const Loader(),
               (_) => const Loader(),
               (fgs) => _buildGroups(fgs.groups.values, context),
               (_) => const Center(
-                    child: Text('sorry, there was an error loading groups.'),
+                    child: Text(GroupsView.ERROR_TEXT),
                   ))),
     );
   }
@@ -67,7 +72,7 @@ class GroupsView extends StatelessWidget {
                   child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                'You have no clubs. Go ahead and join some!',
+                GroupsView.NO_CLUBS_TEXT,
                 style: Theme.of(context).textTheme.bodyText1,
                 textAlign: TextAlign.center,
               ),

@@ -24,7 +24,12 @@ class ToasterCubit extends Cubit<ToasterState> {
   }
 
   void remove(UuidType toastId) {
-    final newState = ToasterState.fromOther(state)..remove(toastId);
+    final newState = ToasterState.fromOther(state);
+    final removedToast = newState.remove(toastId);
+
+    if (removedToast?.onDismiss != null) {
+      removedToast!.onDismiss!();
+    }
 
     timers.remove(toastId);
     emit(newState);
