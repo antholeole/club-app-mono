@@ -2,7 +2,7 @@
   
 
 Everything, but currently:
-- 
+- move knowledge over to github wiki
 
 ## CICD
 Steps: 
