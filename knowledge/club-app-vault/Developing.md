@@ -47,6 +47,7 @@ Scope is one of:
 - knowledge
 - website
 - multi
+- infra-mocks
 
 depending on the area it is made.
 

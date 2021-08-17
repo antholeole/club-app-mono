@@ -8,6 +8,7 @@ module.exports = {
                 "root",
                 "flutter",
                 "worker",
+                "infra-mocks",
                 "hasura",
                 "knowledge",
                 "website",
