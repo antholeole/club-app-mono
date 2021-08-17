@@ -5,11 +5,15 @@
 			"name": "🗿 Club App Root"
 		},
 		{
-			"path": "club-app-be/club-app-worker",
+			"path": "infra/worker",
 			"name": "👷 Worker"
 		},
 		{
-			"path": "club-app-hasura",
+			"path": "infra/infra-mocks",
+			"name": "🤡 Infra Mocks"
+		},
+		{
+			"path": "hasura",
 			"name": "✨ Hasura"
 		},
 		{

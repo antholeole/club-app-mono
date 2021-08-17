@@ -1,4 +1,4 @@
-name = "club-app-worker-1"
+name = "club-app"
 type = "webpack"
 account_id = "e0d74c227439ece29e62209d109ae43e"
 route = "getclub.app/*"

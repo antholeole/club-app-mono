@@ -4,8 +4,7 @@
   "description": "club-app monorepo.",
   "scripts": {
     "prepare": "husky install",
-    "commitlint": "commitlint --edit",
-    "dev-be": "concurrently -c \"#800080.bold,#ffa500.bold\" -n \"BACKEND,HASURA\" --handle-input \"cd club-app-be && npm run dev\" \"cd club-app-hasura && make run\""
+    "commitlint": "commitlint --edit"
   },
   "repository": {
     "type": "git",
