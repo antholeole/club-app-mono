@@ -2,6 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:fe/pages/chat/cubit/chat_cubit.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/pages/groups/cubit/update_groups_cubit.dart';
+import 'package:fe/pages/login/cubit/login_cubit.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/channels_bottom_sheet_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/page_cubit.dart';
@@ -20,6 +21,7 @@ import 'package:ferry/ferry.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -134,6 +136,16 @@ class MockChatBottomSheetCubit extends MockCubit<ChatBottomSheetState>
   }
 }
 
+class MockLoginCubit extends MockCubit<LoginState> implements LoginCubit {
+  MockLoginCubit._();
+
+  factory MockLoginCubit.getMock() {
+    registerFallbackValue(LoginState.initial());
+    final cubit = MockLoginCubit._();
+    return cubit;
+  }
+}
+
 class MockPageCubit extends MockCubit<PageState> implements PageCubit {
   MockPageCubit._();
 
@@ -187,6 +199,53 @@ class FakeUuidType extends Fake implements UuidType {}
 class FakeLinkException extends LinkException {
   const FakeLinkException(Exception originalException)
       : super(originalException);
+}
+
+class MockGoogleSignIn extends Mock implements GoogleSignIn {}
+
+class FakeGoogleSignIn implements GoogleSignInAccount {
+  @override
+  bool operator ==(dynamic obj) {
+    return obj == obj;
+  }
+
+  String? get idToken => 'id token';
+
+  /// The OAuth2 access token to access Google services.
+  String? get accessToken => 'accestoken';
+
+  @override
+  Future<Map<String, String>> get authHeaders async => {};
+
+  @override
+  Future<GoogleSignInAuthentication> get authentication =>
+      Future.value(FakeGoogleSignInAuthentication());
+
+  @override
+  Future<void> clearAuthCache() async {}
+
+  @override
+  String? get displayName => 'fake display';
+
+  @override
+  String get email => 'email';
+
+  @override
+  String get id => 'asdas';
+
+  @override
+  String? get photoUrl => 'asdasds';
+}
+
+class FakeGoogleSignInAuthentication implements GoogleSignInAuthentication {
+  @override
+  String? get accessToken => 'accesstoken';
+
+  @override
+  String? get idToken => 'idtoken';
+
+  @override
+  String? get serverAuthCode => 'ad123123';
 }
 
 class MockUnauthHttpClient extends Mock implements UnauthHttpClient {}

@@ -10,8 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 void handleFailure(Failure f, BuildContext context,
     {String? withPrefix, bool toast = true}) {
-  debugPrint('got failure: ${f.message}');
-
   if (f.status.fatal) {
     context.read<MainCubit>().logOut(withError: f.message);
   } else {

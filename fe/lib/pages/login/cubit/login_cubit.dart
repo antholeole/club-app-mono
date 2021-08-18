@@ -3,11 +3,10 @@ import 'package:equatable/equatable.dart';
 import 'package:fe/data/json/backend_access_tokens.dart';
 import 'package:fe/data/json/provider_access_token.dart';
 import 'package:fe/data/models/user.dart';
-import 'package:fe/services/clients/http_client/http_client.dart';
 import 'package:fe/services/clients/http_client/unauth_http_client.dart';
 import 'package:fe/services/local_data/token_manager.dart';
 import 'package:fe/stdlib/errors/failure.dart';
-import 'package:fe/stdlib/helpers/uuid_type.dart';
+import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:meta/meta.dart';
@@ -20,6 +19,8 @@ part 'login_state.dart';
 class LoginCubit extends Cubit<LoginState> {
   final _client = getIt<UnauthHttpClient>();
   final _localUserService = getIt<LocalUserService>();
+
+  final _googleSignIn = getIt<GoogleSignIn>();
 
   LoginCubit() : super(LoginState.initial());
 
@@ -37,8 +38,9 @@ class LoginCubit extends Cubit<LoginState> {
     } on _UserDeniedException catch (_) {
       emit(LoginState.initial());
       return;
-    } on HttpException catch (e) {
-      emit(LoginState.failure(await HttpClient.basicHttpErrorHandler(e)));
+    } on Exception catch (e) {
+      emit(LoginState.failure(
+          Failure(status: FailureStatus.Unknown, message: e.toString())));
       return;
     }
 
@@ -50,7 +52,7 @@ class LoginCubit extends Cubit<LoginState> {
 
     final localUser = User(
         name: providerLoginDetails.displayName ?? 'Club App User',
-        id: UuidType(backendAccessTokens.id));
+        id: backendAccessTokens.id);
 
     await _localUserService.saveChanges(localUser);
 
@@ -65,10 +67,6 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   Future<_ProviderLoginDetails> _googleLogin() async {
-    final _googleSignIn = GoogleSignIn(
-      scopes: [],
-    );
-
     final acc = await _googleSignIn.signIn();
 
     if (acc == null) {

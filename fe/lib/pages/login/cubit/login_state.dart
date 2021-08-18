@@ -3,6 +3,10 @@ part of 'login_cubit.dart';
 @immutable
 class LoginState
     extends Union4Impl<LoginInitial, LoginLoading, LoginSuccess, LoginFailure> {
+  @override
+  String toString() => join((a) => a.toString(), (b) => b.toString(),
+      (c) => c.toString(), (d) => d.toString());
+
   static const unions =
       Quartet<LoginInitial, LoginLoading, LoginSuccess, LoginFailure>();
 

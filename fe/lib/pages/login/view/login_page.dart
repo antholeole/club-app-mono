@@ -23,8 +23,6 @@ class LoginPage extends StatelessWidget {
 class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final loginCubit = context.read<LoginCubit>();
-
     return PlatformScaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
@@ -39,10 +37,10 @@ class LoginView extends StatelessWidget {
                 ),
                 BlocConsumer<LoginCubit, LoginState>(
                     builder: (context, state) => state.join(
-                        (_) => _buildInitLoginButtons(loginCubit),
+                        (_) => _buildInitLoginButtons(),
                         (_) => const Loader(),
                         (_) => const Text('logging in...'),
-                        (_) => _buildInitLoginButtons(loginCubit)),
+                        (_) => _buildInitLoginButtons()),
                     listener: (context, state) => state.join(
                         (_) => null,
                         (_) => null,
@@ -60,12 +58,10 @@ class LoginView extends StatelessWidget {
         )));
   }
 
-  Widget _buildInitLoginButtons(LoginCubit loginCubit) {
+  Widget _buildInitLoginButtons() {
     return Column(
         children: LoginType.values
-            .map((loginType) => SignInWithProviderButton(
-                onClick: () => loginCubit.login(loginType),
-                loginType: loginType))
+            .map((loginType) => SignInWithProviderButton(loginType: loginType))
             .toList());
   }
 }

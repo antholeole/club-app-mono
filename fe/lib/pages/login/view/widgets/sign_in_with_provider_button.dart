@@ -1,4 +1,6 @@
 import 'package:fe/data/json/provider_access_token.dart';
+import 'package:fe/pages/login/cubit/login_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
 extension AssetLocation on LoginType {
@@ -11,21 +13,18 @@ extension AssetLocation on LoginType {
 }
 
 class SignInWithProviderButton extends StatelessWidget {
-  final void Function() _onClick;
   final LoginType _loginType;
 
   const SignInWithProviderButton({
-    required void Function() onClick,
     required LoginType loginType,
-  })  : _loginType = loginType,
-        _onClick = onClick;
+  }) : _loginType = loginType;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       child: TextButton(
-        onPressed: _onClick,
+        onPressed: () => context.read<LoginCubit>().login(_loginType),
         style: TextButton.styleFrom(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),

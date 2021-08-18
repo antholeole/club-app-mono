@@ -10,6 +10,7 @@ import 'package:fe/services/local_data/token_manager.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -26,6 +27,7 @@ Future<void> registerAllServices({needCubitAutoEvents = false}) {
   getIt.registerSingleton<FlutterSecureStorage>(MockFlutterSecureStorage());
   getIt.registerSingleton<ImageHandler>(MockImageHandler.getMock());
   getIt.registerSingleton<UnauthHttpClient>(MockUnauthHttpClient());
+  getIt.registerSingleton<GoogleSignIn>(MockGoogleSignIn());
   getIt.registerSingleton(FlowController(AppState.loading()));
   getIt.registerSingleton<http.Client>(MockHttpClient.getMock());
   getIt.registerSingletonAsync<SharedPreferences>(

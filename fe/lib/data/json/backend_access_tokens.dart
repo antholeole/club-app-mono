@@ -1,14 +1,16 @@
 import 'dart:convert';
 
+import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'backend_access_tokens.g.dart';
 
 @JsonSerializable()
+@CustomUuidConverter()
 class BackendAccessTokens {
   final String accessToken;
   final String refreshToken;
-  final String id;
+  final UuidType id;
   final String name;
 
   BackendAccessTokens(
