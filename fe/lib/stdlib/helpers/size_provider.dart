@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 
-class SizeProviderWidget extends StatefulWidget {
+class SizeProvider extends StatefulWidget {
   final Widget child;
   final Function(Size) onChildSize;
 
-  const SizeProviderWidget(
-      {Key? key, required this.onChildSize, required this.child})
+  const SizeProvider({Key? key, required this.onChildSize, required this.child})
       : super(key: key);
   @override
-  _SizeProviderWidgetState createState() => _SizeProviderWidgetState();
+  _SizeProviderState createState() => _SizeProviderState();
 }
 
-class _SizeProviderWidgetState extends State<SizeProviderWidget> {
+class _SizeProviderState extends State<SizeProvider> {
   @override
   void initState() {
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       widget.onChildSize(context.size!);
     });
     super.initState();

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:fe/services/clients/ws_client/ws_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
-import 'package:fe/stdlib/errors/handle_failure.dart';
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/size_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +26,8 @@ class WsReactor extends StatefulWidget {
 
 class _WsReactorState extends State<WsReactor> {
   final WsClient _wsClient = getIt<WsClient>();
+  final _handler = getIt<Handler>();
+
   late Timer _intitalConnectionTimer;
   bool _shouldShow = false;
   final List<StreamSubscription<dynamic>> _subscriptions = [];
@@ -114,7 +116,7 @@ class _WsReactorState extends State<WsReactor> {
   }
 
   void _respondToFailures(Failure f) {
-    handleFailure(f, context, toast: false);
+    _handler.handleFailure(f, context, toast: false);
   }
 
   Widget _buildEmpty() {
@@ -125,7 +127,7 @@ class _WsReactorState extends State<WsReactor> {
   Widget _buildSnackBar(Color bgColor, String text) {
     widget._sizeCallback(WsReactor._ESTIMATED_HEIGHT);
 
-    return SizeProviderWidget(
+    return SizeProvider(
         onChildSize: (size) => widget._sizeCallback(size.height),
         child: Container(
             width: double.infinity,

@@ -56,7 +56,7 @@ void main() {
     resetMockCubit(mockPageCubit);
     resetMockCubit(mockScaffoldCubit);
 
-    await registerAllServices();
+    await registerAllMockServices();
     setupMocks();
   });
 
@@ -112,7 +112,7 @@ void main() {
           .thenAnswer((_) async => null);
     });
 
-    Widget wrapWithWidgets(Widget child) {
+    Widget wrapWithDependencies(Widget child) {
       return MultiBlocProvider(providers: [
         BlocProvider<PageCubit>(create: (_) => mockPageCubit),
         BlocProvider<ScaffoldCubit>(create: (_) => mockScaffoldCubit),
@@ -123,7 +123,7 @@ void main() {
     }
 
     testWidgets('should update scaffold on render', (tester) async {
-      await tester.pumpApp(wrapWithWidgets(const ChatView()));
+      await tester.pumpApp(wrapWithDependencies(const ChatView()));
 
       verify(() => mockScaffoldCubit.updateMainParts(any())).called(1);
     });
@@ -134,7 +134,7 @@ void main() {
       whenListen(mockPageCubit, Stream<PageState>.fromIterable([]),
           initialState: PageState.chatPage());
 
-      await tester.pumpApp(wrapWithWidgets(Builder(builder: (context) {
+      await tester.pumpApp(wrapWithDependencies(Builder(builder: (context) {
         return context
             .watch<PageCubit>()
             .state
@@ -165,7 +165,7 @@ void main() {
         when(() => mockThreadCubit.newGroup(any()))
             .thenAnswer((invocation) async => null);
 
-        await tester.pumpApp(wrapWithWidgets(const ChatView()));
+        await tester.pumpApp(wrapWithDependencies(const ChatView()));
         mainStateCubitController.add(MainState.withGroup(groupB));
         await tester.pump(const Duration(milliseconds: 10));
 
@@ -181,7 +181,7 @@ void main() {
         final threadStateCubitController = stubCubitStream(mockThreadCubit,
             initialState: ThreadState.noThread());
 
-        await tester.pumpApp(wrapWithWidgets(const ChatView()));
+        await tester.pumpApp(wrapWithDependencies(const ChatView()));
         expect(find.byType(Chats), findsNothing);
 
         threadStateCubitController.add(ThreadState.thread(
@@ -202,7 +202,7 @@ void main() {
               [PageState.chatPage(toThread: fakeThread)]),
           initialState: PageState.chatPage());
 
-      await tester.pumpApp(wrapWithWidgets(const ChatView()));
+      await tester.pumpApp(wrapWithDependencies(const ChatView()));
 
       verify(() => mockThreadCubit.switchToThread(fakeThread)).called(1);
     });
@@ -213,7 +213,7 @@ void main() {
         when(() => mockThreadCubit.cacheThread())
             .thenAnswer((invocation) async => null);
 
-        await tester.pumpApp(wrapWithWidgets(const ChatView()));
+        await tester.pumpApp(wrapWithDependencies(const ChatView()));
 
         tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
 

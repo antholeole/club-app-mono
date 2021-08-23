@@ -25,5 +25,5 @@ String toDisplayDateTime(DateTime time) {
     ampm = 'AM';
   }
 
-  return '${months[time.month - 1]} ${time.day}, at $hour:${time.minute} $ampm';
+  return '${months[time.month - 1]} ${time.day}, at ${hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')} $ampm';
 }

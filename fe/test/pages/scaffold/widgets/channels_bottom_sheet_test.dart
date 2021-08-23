@@ -8,8 +8,10 @@ import 'package:fe/pages/scaffold/view/widgets/channels_bottom_sheet.dart';
 import 'package:fe/pages/scaffold/cubit/channels_bottom_sheet_cubit.dart';
 import 'package:fe/providers/user_provider.dart';
 import 'package:fe/service_locator.dart';
-import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
+import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/errors/failure_status.dart';
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter/material.dart';
 
@@ -91,14 +93,13 @@ void main() {
       resetMockCubit(mockThreadCubit);
       resetMockCubit(mockChatBottomSheetCubit);
 
-      await registerAllServices();
+      await registerAllMockServices();
 
       whenListen(mockMainCubit, Stream<MainState>.fromIterable([]),
           initialState: MainState.withGroup(mockGroupAdmin));
 
-      whenListen(mockChatBottomSheetCubit,
-          Stream<ChatBottomSheetState>.fromIterable([]),
-          initialState: const ChatBottomSheetState(isOpen: false));
+      whenListen(mockChatBottomSheetCubit, Stream<bool>.fromIterable([]),
+          initialState: false);
 
       whenListen(mockThreadCubit, Stream<ThreadState>.fromIterable([]),
           initialState: ThreadState.noThread());
@@ -140,6 +141,9 @@ void main() {
               GQuerySelfThreadsInGroupVars>(getIt<Client>(),
           errors: (_) => [const GraphQLError(message: 'fake')]);
 
+      when(() => getIt<Handler>().basicGqlErrorHandler(any())).thenAnswer(
+          (_) async => const Failure(status: FailureStatus.GQLMisc));
+
       await tester.pumpWidget(build());
       await show(tester);
 
@@ -150,13 +154,9 @@ void main() {
 
       expect(find.text(ChannelsBottomSheet.ERROR_TEXT), findsOneWidget);
 
-      verify(() => mockToasterCubit.add(any(
-              that: isA<Toast>()
-                  .having((toast) => toast.message, 'message',
-                      contains(ChannelsBottomSheet.ERROR_TEXT))
-                  .having(
-                      (toast) => toast.type, 'type', equals(ToastType.Error)))))
-          .called(1);
+      verify(() => getIt<Handler>().handleFailure(any(), any(),
+          withPrefix: any(named: 'withPrefix'),
+          toast: any(named: 'toast'))).called(1);
 
       await cleanUp(tester);
     });

@@ -1,9 +1,11 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/chat/cubit/chat_cubit.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/pages/groups/cubit/update_groups_cubit.dart';
 import 'package:fe/pages/login/cubit/login_cubit.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
+import 'package:fe/pages/profile/cubit/name_change_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/channels_bottom_sheet_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/page_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/scaffold_cubit.dart';
@@ -16,6 +18,9 @@ import 'package:fe/services/local_data/token_manager.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
+import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/errors/failure_status.dart';
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter/cupertino.dart';
@@ -39,6 +44,19 @@ class MockUpdateGroupsCubit extends MockCubit<UpdateGroupsState>
     final cubit = MockUpdateGroupsCubit._();
     resetMockCubit(cubit);
     return cubit;
+  }
+}
+
+class MockNameChangeCubit extends MockCubit<NameChangeState>
+    implements NameChangeCubit {
+  MockNameChangeCubit._();
+
+  factory MockNameChangeCubit.getMock() {
+    registerFallbackValue(NameChangeState.changing());
+    final mockNameChangeCubit = MockNameChangeCubit._();
+    when(() => mockNameChangeCubit.close())
+        .thenAnswer((invocation) async => null);
+    return mockNameChangeCubit;
   }
 }
 
@@ -109,6 +127,7 @@ class MockLocalFileStore extends Mock implements LocalFileStore {
 
   static MockLocalFileStore getMock() {
     registerFallbackValue(LocalStorageType.AccessTokens);
+    registerFallbackValue(User(name: 'asdas', id: UuidType.generate()));
     return MockLocalFileStore._();
   }
 }
@@ -125,13 +144,13 @@ class MockMainCubit extends MockCubit<MainState> implements MainCubit {
 
 class MockMainState extends Fake implements MainState {}
 
-class MockChatBottomSheetCubit extends MockCubit<ChatBottomSheetState>
+class MockChatBottomSheetCubit extends MockCubit<bool>
     implements ChatBottomSheetCubit {
   MockChatBottomSheetCubit._();
 
   factory MockChatBottomSheetCubit.getMock() {
-    registerFallbackValue(const ChatBottomSheetState());
     final cubit = MockChatBottomSheetCubit._();
+
     return cubit;
   }
 }
@@ -181,24 +200,27 @@ class MockGqlClient extends Mock implements Client {
   MockGqlClient._();
 
   factory MockGqlClient.getMock() {
-    registerFallbackValue(MockRequest());
-    registerFallbackValue(MockResponse());
+    registerFallbackValue(FakeRequest());
+    registerFallbackValue(FakeResponse());
     return MockGqlClient._();
   }
 }
 
-class MockRequest<TData, TVars> extends Fake
-    implements OperationRequest<TData, TVars> {}
+class FakeRequest<TData, TVars> extends Fake
+    implements OperationRequest<TData, TVars> {
+  static void registerOfType<TData, TVars>() {
+    registerFallbackValue(FakeRequest<TData, TVars>());
+  }
+}
 
-class MockResponse extends Fake implements OperationResponse {}
+class FakeResponse extends Fake implements OperationResponse {}
 
 class MockCache extends Mock implements Cache {}
 
 class FakeUuidType extends Fake implements UuidType {}
 
 class FakeLinkException extends LinkException {
-  const FakeLinkException(Exception originalException)
-      : super(originalException);
+  const FakeLinkException(Object originalException) : super(originalException);
 }
 
 class MockGoogleSignIn extends Mock implements GoogleSignIn {}
@@ -278,6 +300,17 @@ class MockWsClient extends Mock implements WsClient {
     when(() => errorStream()).thenAnswer((_) => const Stream.empty());
     when(() => messageStream()).thenAnswer((_) => const Stream.empty());
     when(() => close()).thenAnswer((_) async => null);
+  }
+}
+
+class MockHandler extends Mock implements Handler {
+  MockHandler._();
+
+  factory MockHandler.getMock() {
+    final handler = MockHandler._();
+    registerFallbackValue(FakeBuildContext());
+    registerFallbackValue(const Failure(status: FailureStatus.GQLMisc));
+    return handler;
   }
 }
 

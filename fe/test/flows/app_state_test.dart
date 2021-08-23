@@ -15,7 +15,7 @@ void main() {
     setUpAll(() {
       getIt.allowReassignment = true;
 
-      registerAllServices();
+      registerAllMockServices();
     });
 
     testWidgets('should default to splash screen', (tester) async {

@@ -16,7 +16,7 @@ abstract class HttpClient {
     Map<String, dynamic>? jsonBody,
   );
 
-  static Future<Failure> basicHttpErrorHandler(HttpException e) async {
+  Future<Failure> basicHttpErrorHandler(HttpException e) async {
     if (e.socketException) {
       return const Failure(status: FailureStatus.ServersDown);
     }
@@ -58,7 +58,7 @@ abstract class HttpClient {
     }
   }
 
-  static Future<bool> isConnected() async {
+  Future<bool> isConnected() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
       return false;

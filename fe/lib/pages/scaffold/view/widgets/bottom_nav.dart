@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
 class BottomNav extends StatelessWidget {
+  static const CHAT_TAB_ICON = Icons.chat_bubble_outline;
+  static const EVENT_TAB_ICON = Icons.event;
+
   const BottomNav();
 
   @override
@@ -23,7 +26,7 @@ class BottomNav extends StatelessWidget {
               children: [
                 _buildTab(
                   context,
-                  icon: Icons.chat_bubble_outline,
+                  icon: CHAT_TAB_ICON,
                   active: selected == AppPage.Chat,
                   onClick: () {
                     if (selected == AppPage.Chat) {
@@ -36,11 +39,9 @@ class BottomNav extends StatelessWidget {
                 ),
                 _buildTab(
                   context,
-                  icon: Icons.event,
+                  icon: EVENT_TAB_ICON,
                   active: selected == AppPage.Events,
                   onClick: () =>
-                      context.read<PageCubit>().switchTo(AppPage.Events),
-                  onHeld: () =>
                       context.read<PageCubit>().switchTo(AppPage.Events),
                 )
               ],
@@ -56,7 +57,7 @@ class BottomNav extends StatelessWidget {
     required IconData icon,
     bool active = false,
     required void Function() onClick,
-    required void Function() onHeld,
+    void Function()? onHeld,
   }) {
     return GestureDetector(
       onTap: onClick,

@@ -17,7 +17,8 @@ class ChannelsBottomSheet extends StatelessWidget {
   static const String NO_GROUP = 'No group selected!';
   static const String NO_THREADS = "You're not in any threads yet!";
 
-  final Thread? _selectedThread;
+  @visibleForTesting
+  final Thread? selectedThread;
   final BuildContext _providerReadableContext;
 
   static Future<Thread?> show(BuildContext context,
@@ -40,9 +41,8 @@ class ChannelsBottomSheet extends StatelessWidget {
   }
 
   const ChannelsBottomSheet(
-      {Thread? selectedThread, required BuildContext providerReadableContext})
-      : _selectedThread = selectedThread,
-        _providerReadableContext = providerReadableContext;
+      {this.selectedThread, required BuildContext providerReadableContext})
+      : _providerReadableContext = providerReadableContext;
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +106,7 @@ class ChannelsBottomSheet extends StatelessWidget {
                                                 unreadMessages: 2,
                                                 onTap: () =>
                                                     _selectThread(v, context),
-                                                selected: v == _selectedThread,
+                                                selected: v == selectedThread,
                                                 title: v.name))
                                             .toList(),
                                       )

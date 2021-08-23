@@ -4,7 +4,7 @@ import 'package:fe/pages/groups/cubit/update_groups_cubit.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
-import 'package:fe/stdlib/errors/handle_failure.dart';
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/shared_widgets/user_avatar.dart';
 import 'package:fe/stdlib/theme/loadable_tile_button.dart';
 import 'package:fe/stdlib/shared_widgets/gql_operation.dart';
@@ -16,7 +16,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../service_locator.dart';
+
 class GroupSettings extends StatelessWidget {
+  final _handler = getIt<Handler>();
+
   @visibleForTesting
   static const String JOIN_TOKEN_HEADER = 'Join Token';
 
@@ -31,7 +35,7 @@ class GroupSettings extends StatelessWidget {
 
   final GroupsPageGroup _group;
 
-  const GroupSettings({required GroupsPageGroup group}) : _group = group;
+  GroupSettings({required GroupsPageGroup group}) : _group = group;
 
   @override
   Widget build(BuildContext context) {
@@ -155,6 +159,6 @@ class GroupSettings extends StatelessWidget {
                 await context.read<MainCubit>().initalizeMainPage();
               },
               actionText: 'Leave Group')));
-    }, (fls) => handleFailure(fls.failure, context));
+    }, (fls) => _handler.handleFailure(fls.failure, context));
   }
 }

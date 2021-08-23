@@ -20,13 +20,4 @@ class UnauthHttpClient extends HttpClient {
     return super.throwIfNot2xx(await _httpClient
         .post(super.urlBuilder(endpoint), body: json.encode(jsonBody)));
   }
-
-  Future<bool> hasServerConnection() async {
-    try {
-      await getReq('/ping');
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
 }

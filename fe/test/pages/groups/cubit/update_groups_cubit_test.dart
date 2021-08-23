@@ -5,6 +5,7 @@ import 'package:fe/service_locator.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -30,7 +31,7 @@ void main() {
 
   group('update groups cubit', () {
     setUp(() async {
-      await registerAllServices();
+      await registerAllMockServices();
       when(() => getIt<LocalUserService>().getLoggedInUserId())
           .thenAnswer((invocation) async => userId);
     });
@@ -42,6 +43,10 @@ void main() {
             stubGqlResponse<GQueryAllGroupsConditionalJoinTokenData,
                     GQueryAllGroupsConditionalJoinTokenVars>(getIt<Client>(),
                 errors: (_) => [const GraphQLError(message: failureMessage)]);
+
+            when(() => getIt<Handler>().basicGqlErrorHandler(any())).thenAnswer(
+                (_) async => const Failure(
+                    status: FailureStatus.GQLMisc, message: failureMessage));
           },
           build: () => UpdateGroupsCubit(),
           act: (cubit) => cubit.fetchGroups(),
@@ -123,6 +128,10 @@ void main() {
             stubGqlResponse<GUpsertGroupJoinTokenData,
                     GUpsertGroupJoinTokenVars>(getIt<Client>(),
                 errors: (_) => [const GraphQLError(message: failureMessage)]);
+
+            when(() => getIt<Handler>().basicGqlErrorHandler(any())).thenAnswer(
+                (_) async => const Failure(
+                    status: FailureStatus.GQLMisc, message: failureMessage));
           },
           build: () => UpdateGroupsCubit(),
           act: (cubit) => cubit.updateGroupJoinToken(groupId),
@@ -300,6 +309,10 @@ void main() {
             when(() => getIt<Client>().cache).thenReturn(mockCache);
             when(() => mockCache.gc())
                 .thenReturn(<String>{'im a set not a map'});
+
+            when(() => getIt<Handler>().basicGqlErrorHandler(any())).thenAnswer(
+                (_) async => const Failure(
+                    status: FailureStatus.GQLMisc, message: failureMessage));
 
             stubGqlResponse<GRemoveSelfFromGroupData, GRemoveSelfFromGroupVars>(
               getIt<Client>(),

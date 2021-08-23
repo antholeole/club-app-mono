@@ -38,7 +38,7 @@ dependencies:
   keyboard_attachable: ^2.0.1
 
   #gql
-  ferry: ^0.10.1-0.1.nullsafety.0
+  ferry: ^0.10.4
   gql: ^0.13.0-nullsafety.2
   gql_link: ^0.4.0-nullsafety.3
   gql_error_link: ^0.2.0-nullsafety.1
@@ -47,7 +47,7 @@ dependencies:
   hive: ^2.0.4
   hive_flutter: ^1.0.0
   ferry_hive_store: ^0.4.2
-  ferry_flutter: ^0.5.1-0.1.nullsafety.1
+  ferry_flutter: ^0.5.4
   gql_exec: ^0.3.0
 
   #http
@@ -73,12 +73,11 @@ dev_dependencies:
   #cicd
   dependency_validator: ^3.0.0
 
-  #testing
-  mocktail: ^0.1.4
-
   flutter_test:
     sdk: flutter
   bloc_test: ^8.1.0
+  fake_async: ^1.2.0
+  mocktail: ^0.1.4
 
 
 flutter:

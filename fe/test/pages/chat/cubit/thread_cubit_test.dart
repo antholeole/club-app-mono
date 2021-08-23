@@ -5,6 +5,9 @@ import 'package:fe/data/models/thread.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
+import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/errors/failure_status.dart';
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -30,7 +33,7 @@ void main() {
   final mockUserId = UuidType('d9ca66cd-4376-48ff-aec1-44c1b9093c74');
 
   setUp(() async {
-    await registerAllServices();
+    await registerAllMockServices();
 
     when(() => getIt<SharedPreferences>().setString(any(), any()))
         .thenAnswer((_) async => true);
@@ -211,6 +214,9 @@ void main() {
                   GQuerySelfThreadsInGroupVars>(getIt<Client>(),
               requestMatcher: isA<GQuerySelfThreadsInGroupReq>(),
               errors: (_) => [const GraphQLError(message: 'fake error')]);
+
+          when(() => getIt<Handler>().basicGqlErrorHandler(any())).thenAnswer(
+              (_) async => const Failure(status: FailureStatus.GQLMisc));
         },
         build: () => ThreadCubit(group: mockGroup),
         act: (cubit) => cubit.newGroup(mockGroup2),

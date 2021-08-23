@@ -5,6 +5,7 @@ import 'package:fe/pages/chat/cubit/chat_cubit.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/gql/query_messages_in_thread.var.gql.dart';
 import 'package:fe/gql/query_messages_in_thread.data.gql.dart';
@@ -50,16 +51,20 @@ void main() {
         Thread(name: 'threadthread', id: UuidType(const Uuid().v4()));
 
     setUp(() {
-      registerAllServices();
+      registerAllMockServices();
     });
 
     group('get chats', () {
       const mockError = 'im an error';
       blocTest<ChatCubit, ChatState>('should emit failure on failure',
           setUp: () {
-            when(() => stubGqlResponse<GQueryMessagesInThreadData,
+            stubGqlResponse<GQueryMessagesInThreadData,
                     GQueryMessagesInThreadVars>(getIt<Client>(),
-                errors: (_) => [const GraphQLError(message: mockError)]));
+                errors: (_) => [const GraphQLError(message: mockError)]);
+
+            when(() => getIt<Handler>().basicGqlErrorHandler(any())).thenAnswer(
+                (_) async => const Failure(
+                    status: FailureStatus.GQLMisc, message: mockError));
           },
           build: () => ChatCubit(),
           act: (cubit) => cubit.getChats(mockThread, DateTime(1)),
@@ -100,10 +105,10 @@ void main() {
       blocTest<ChatCubit, ChatState>(
         'should emit empty fetched message on no fetched messages',
         setUp: () {
-          when(() => stubGqlResponse<GQueryMessagesInThreadData,
+          stubGqlResponse<GQueryMessagesInThreadData,
                   GQueryMessagesInThreadVars>(getIt<Client>(),
               data: (_) =>
-                  GQueryMessagesInThreadData.fromJson({'messages': []})!));
+                  GQueryMessagesInThreadData.fromJson({'messages': []})!);
         },
         build: () => ChatCubit(),
         act: (cubit) => cubit.getChats(mockThread, DateTime(1)),

@@ -18,7 +18,7 @@ class ChatTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool shouldBeOpen =
-        _chatProviderContext.watch<ChatBottomSheetCubit>().state.isOpen;
+        _chatProviderContext.watch<ChatBottomSheetCubit>().state;
 
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,

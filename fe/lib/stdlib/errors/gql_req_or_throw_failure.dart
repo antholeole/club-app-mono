@@ -1,13 +1,14 @@
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:ferry/ferry.dart';
 
-import 'handle_gql_error.dart';
+import '../../service_locator.dart';
 
 Future<TData> gqlReqOrThrowFailure<TData, TVars>(
     OperationRequest<TData, TVars> request, Client gqlClient) async {
   final resp = await gqlClient.request(request).first;
 
   if (resp.hasErrors) {
-    throw await basicGqlErrorHandler(resp);
+    throw await getIt<Handler>().basicGqlErrorHandler(resp);
   }
 
   return resp.data!;

@@ -1,26 +1,23 @@
-import 'package:fe/flows/app_state.dart';
-import 'package:fe/pages/profile/cubit/log_out_cubit.dart';
+import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/pages/profile/cubit/name_change_cubit.dart';
 import 'package:fe/providers/user_provider.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
-import 'package:fe/stdlib/errors/handle_failure.dart';
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/shared_widgets/user_avatar.dart';
 import 'package:fe/stdlib/theme/button_group.dart';
 import 'package:fe/stdlib/theme/loadable_tile_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:flow_builder/flow_builder.dart';
+
+import '../../../service_locator.dart';
 
 class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => LogOutCubit(),
-        ),
         BlocProvider(
           create: (context) => NameChangeCubit(),
         ),
@@ -31,6 +28,13 @@ class ProfilePage extends StatelessWidget {
 }
 
 class ProfileView extends StatelessWidget {
+  static const CHANGE_NAME_COPY = 'Change Name';
+  static const UPDATE_NAME_BUTTON_COPY = 'Update';
+  static const LOGOUT_COPY = 'Log Out';
+  static const CANCEL_NAME_CHANGE_COPY = 'cancel';
+
+  final _handler = getIt<Handler>();
+
   @override
   Widget build(BuildContext context) {
     final userProvider = UserProvider.of(context);
@@ -52,27 +56,16 @@ class ProfileView extends StatelessWidget {
                 builder: (context, state) => state.join(
                       (_) => _buildChangeNameButton(false, context),
                       (_) => _buildChangeNameButton(true, context),
-                      (_) => _buildChangeNameButton(true, context),
+                      (_) => _buildChangeNameButton(false, context),
                     ),
                 listener: (context, state) => state.join(
                       (_) => null,
                       (_) => null,
-                      (errorState) => handleFailure(errorState.failure, context,
+                      (errorState) => _handler.handleFailure(
+                          errorState.failure, context,
                           withPrefix: "Couldn't change name"),
                     )),
-            BlocConsumer<LogOutCubit, LogOutState>(
-                listener: (context, state) => state.join(
-                    (_) => null,
-                    (_) => null,
-                    (_) => context
-                        .flow<AppState>()
-                        .update((_) => AppState.needLogIn()),
-                    (errorState) => handleFailure(errorState.failure, context)),
-                builder: (context, state) => state.join(
-                    (_) => _buildLogOutButton(false, context),
-                    (_) => _buildLogOutButton(true, context),
-                    (loggedOut) => const Text('logged out!'),
-                    (_) => _buildLogOutButton(false, context))),
+            _buildLogOutButton(context),
           ],
         )
       ],
@@ -83,18 +76,17 @@ class ProfileView extends StatelessWidget {
     return ButtonGroup(name: 'Profile', buttons: [
       LoadableTileButton(
           onClick: () => _showChangeNameDialog(context),
-          text: 'Change name',
+          text: ProfileView.CHANGE_NAME_COPY,
           loading: loading),
     ]);
   }
 
-  Widget _buildLogOutButton(bool loading, BuildContext context) {
+  Widget _buildLogOutButton(BuildContext context) {
     return ButtonGroup(buttons: [
       LoadableTileButton(
-          onClick: context.read<LogOutCubit>().logOut,
+          onClick: context.read<MainCubit>().logOut,
           color: Colors.red,
-          text: 'Log Out',
-          loading: loading),
+          text: ProfileView.LOGOUT_COPY),
     ]);
   }
 
@@ -115,7 +107,7 @@ class ProfileView extends StatelessWidget {
             cupertino: (_, __) =>
                 CupertinoDialogActionData(isDestructiveAction: true),
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('cancel'),
+            child: const Text(ProfileView.CANCEL_NAME_CHANGE_COPY),
           ),
           PlatformDialogAction(
             onPressed: () {
@@ -130,7 +122,7 @@ class ProfileView extends StatelessWidget {
                 UserProvider.of(context).notifyUpdate();
               });
             },
-            child: const Text('update'),
+            child: const Text(ProfileView.UPDATE_NAME_BUTTON_COPY),
           ),
         ],
       ),

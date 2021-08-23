@@ -100,7 +100,7 @@ class _MessageOverlayState extends State<MessageOverlay>
             mainAxisSize: MainAxisSize.min,
             key: renderKey,
             children: [
-              SizeProviderWidget(
+              SizeProvider(
                 onChildSize: (size) {
                   setState(() {
                     topSectionHeight = size.height;

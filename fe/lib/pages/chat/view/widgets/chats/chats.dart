@@ -4,7 +4,7 @@ import 'package:fe/data/models/message.dart';
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/pages/chat/cubit/chat_cubit.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
-import 'package:fe/stdlib/errors/handle_failure.dart';
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:fe/stdlib/theme/pill_button.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../service_locator.dart';
 import 'message/chat_page_message_display.dart';
 import 'message/hold_overlay/message_overlay.dart';
 
@@ -27,6 +28,8 @@ class Chats extends StatefulWidget {
 }
 
 class _ChatsState extends State<Chats> {
+  final _handler = getIt<Handler>();
+
   OverlayEntry? _currentMessageOverlay;
 
   late PagingController<DateTime, Message> _pagingController;
@@ -79,7 +82,7 @@ class _ChatsState extends State<Chats> {
                     _pagingController.appendPage(cfm.messages, cfm.lastSentAt),
                 (cfmf) {
               _pagingController.error = cfmf.failure;
-              handleFailure(cfmf.failure, context,
+              _handler.handleFailure(cfmf.failure, context,
                   withPrefix: 'failed fetching messages');
             }),
             child: PagedListView<DateTime, Message>(

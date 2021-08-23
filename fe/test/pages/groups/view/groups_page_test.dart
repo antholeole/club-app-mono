@@ -5,10 +5,10 @@ import 'package:fe/pages/groups/view/groups_page.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
-import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter/widgets.dart';
@@ -36,7 +36,7 @@ void main() {
   const String failureMessage = 'what happened bro';
 
   setUp(() {
-    registerAllServices(needCubitAutoEvents: true);
+    registerAllMockServices(needCubitAutoEvents: true);
 
     when(() => getIt<LocalUserService>().getLoggedInUserId())
         .thenAnswer((_) async => userId);
@@ -67,7 +67,7 @@ void main() {
         MockUpdateGroupsCubit.getMock();
     MockToasterCubit mockToasterCubit = MockToasterCubit.getMock();
 
-    Widget wrapWithWidgets(Widget child) {
+    Widget wrapWithDependencies(Widget child) {
       return MultiBlocProvider(
         providers: [
           BlocProvider<UpdateGroupsCubit>(
@@ -103,17 +103,15 @@ void main() {
           ]),
           initialState: UpdateGroupsState.fetchingGroups());
 
-      await tester.pumpApp(wrapWithWidgets(const GroupsView()));
+      await tester.pumpApp(wrapWithDependencies(GroupsView()));
 
       tester.binding.scheduleFrame();
       await tester.pumpAndSettle();
 
       expect(find.text(GroupsView.ERROR_TEXT), findsOneWidget);
-      verify(() => mockToasterCubit.add(any(
-          that: isA<Toast>()
-              .having((toast) => toast.type, 'error type', ToastType.Error)
-              .having((toast) => toast.message, 'toast message',
-                  failureMessage)))).called(1);
+      verify(() => getIt<Handler>().handleFailure(any(), any(),
+          toast: any(named: 'toast'),
+          withPrefix: any(named: 'withPrefix'))).called(1);
     });
 
     testWidgets('should display no clubs on no clubs', (tester) async {
@@ -123,7 +121,7 @@ void main() {
               [UpdateGroupsState.fetched({})]),
           initialState: UpdateGroupsState.fetchingGroups());
 
-      await tester.pumpApp(wrapWithWidgets(const GroupsView()));
+      await tester.pumpApp(wrapWithDependencies(GroupsView()));
       await tester.pumpAndSettle();
 
       expect(find.text(GroupsView.NO_CLUBS_TEXT), findsOneWidget);
@@ -154,7 +152,7 @@ void main() {
 
       await tester.pumpApp(BlocProvider<MainCubit>(
         create: (_) => mockMainCubit,
-        child: wrapWithWidgets(const GroupsView()),
+        child: wrapWithDependencies(GroupsView()),
       ));
       await tester.pumpAndSettle();
 

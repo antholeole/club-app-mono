@@ -5,6 +5,9 @@ import 'package:fe/pages/groups/view/widgets/group_settings.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
+import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/errors/failure_status.dart';
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +36,7 @@ void main() {
       name: 'group name',
       admin: false);
 
-  Widget wrapWithWidgets(Widget child) {
+  Widget wrapWithDependencies(Widget child) {
     return MultiBlocProvider(
       providers: [
         BlocProvider<ToasterCubit>(
@@ -52,7 +55,7 @@ void main() {
   });
 
   setUp(() {
-    registerAllServices();
+    registerAllMockServices();
 
     resetMockCubit(mockUpdateGroupsCubit);
     resetMockCubit(mockToasterCubit);
@@ -68,7 +71,7 @@ void main() {
           getIt<Client>(),
           data: (_) => GQueryUsersInGroupData.fromJson({'user_to_group': []})!);
 
-      await tester.pumpApp(wrapWithWidgets(GroupSettings(
+      await tester.pumpApp(wrapWithDependencies(GroupSettings(
           group: GroupsPageGroup(
               group: fakeGroup,
               leaveState: LeavingState.notLeaving(),
@@ -105,7 +108,7 @@ void main() {
             ]),
             initialState: UpdateGroupsState.fetched({}));
 
-        await tester.pumpApp(wrapWithWidgets(GroupSettings(
+        await tester.pumpApp(wrapWithDependencies(GroupSettings(
             group: GroupsPageGroup(
                 group: fakeGroup,
                 leaveState: LeavingState.notLeaving(),
@@ -142,7 +145,7 @@ void main() {
             ]),
             initialState: UpdateGroupsState.fetched({}));
 
-        await tester.pumpApp(wrapWithWidgets(GroupSettings(
+        await tester.pumpApp(wrapWithDependencies(GroupSettings(
             group: GroupsPageGroup(
                 group: fakeGroup,
                 leaveState: LeavingState.notLeaving(),
@@ -163,6 +166,10 @@ void main() {
             getIt<Client>(),
             errors: (_) => [const GraphQLError(message: failureMessage)]);
 
+        when(() => getIt<Handler>().basicGqlErrorHandler(any())).thenAnswer(
+            (_) async => const Failure(
+                status: FailureStatus.GQLMisc, message: failureMessage));
+
         whenListen(mockToasterCubit, Stream<ToasterState>.fromIterable([]));
 
         whenListen(
@@ -174,7 +181,7 @@ void main() {
                   leaveState: LeavingState.notLeaving()),
             }));
 
-        await tester.pumpApp(wrapWithWidgets(GroupSettings(
+        await tester.pumpApp(wrapWithDependencies(GroupSettings(
             group: GroupsPageGroup(
                 group: fakeGroup,
                 leaveState: LeavingState.notLeaving(),
@@ -183,11 +190,9 @@ void main() {
         await tester.pumpAndSettle();
         tester.binding.scheduleFrame();
 
-        verify(() => mockToasterCubit.add(any(
-            that: isA<Toast>()
-                .having((toast) => toast.message, 'message',
-                    contains(failureMessage))
-                .having((toast) => toast.type, 'type', ToastType.Error))));
+        verify(() => getIt<Handler>().handleFailure(any(), any(),
+            toast: any(named: 'toast'),
+            withPrefix: any(named: 'withPrefix'))).called(1);
       });
     });
 
@@ -206,7 +211,7 @@ void main() {
       });
 
       testWidgets('should display join token on admin', (tester) async {
-        await tester.pumpApp(wrapWithWidgets(GroupSettings(
+        await tester.pumpApp(wrapWithDependencies(GroupSettings(
             group: GroupsPageGroup(
                 group:
                     Group(admin: true, id: fakeGroup.id, name: fakeGroup.name),
@@ -220,7 +225,7 @@ void main() {
       });
 
       testWidgets('should none on admin but no join token', (tester) async {
-        await tester.pumpApp(wrapWithWidgets(GroupSettings(
+        await tester.pumpApp(wrapWithDependencies(GroupSettings(
             group: GroupsPageGroup(
                 group:
                     Group(admin: true, id: fakeGroup.id, name: fakeGroup.name),
@@ -237,7 +242,7 @@ void main() {
                 delete: any(named: 'delete')))
             .thenAnswer((invocation) async => null);
 
-        await tester.pumpApp(wrapWithWidgets(GroupSettings(
+        await tester.pumpApp(wrapWithDependencies(GroupSettings(
             group: GroupsPageGroup(
                 group:
                     Group(admin: true, id: fakeGroup.id, name: fakeGroup.name),
@@ -260,7 +265,7 @@ void main() {
                 delete: any(named: 'delete')))
             .thenAnswer((invocation) async => null);
 
-        await tester.pumpApp(wrapWithWidgets(GroupSettings(
+        await tester.pumpApp(wrapWithDependencies(GroupSettings(
             group: GroupsPageGroup(
                 group:
                     Group(admin: true, id: fakeGroup.id, name: fakeGroup.name),
@@ -306,7 +311,7 @@ void main() {
             mockUpdateGroupsCubit, Stream<UpdateGroupsState>.fromIterable([]),
             initialState: UpdateGroupsState.fetched({}));
 
-        await tester.pumpApp(wrapWithWidgets(GroupSettings(
+        await tester.pumpApp(wrapWithDependencies(GroupSettings(
             group: GroupsPageGroup(
                 group:
                     Group(admin: true, id: fakeGroup.id, name: fakeGroup.name),
@@ -325,6 +330,9 @@ void main() {
             getIt<Client>(),
             errors: (_) => [const GraphQLError(message: failureMessage)]);
 
+        when(() => getIt<Handler>().basicGqlErrorHandler(any())).thenAnswer(
+            (_) async => const Failure(status: FailureStatus.GQLMisc));
+
         whenListen(
             mockUpdateGroupsCubit, Stream<UpdateGroupsState>.fromIterable([]),
             initialState: UpdateGroupsState.fetched({}));
@@ -332,7 +340,7 @@ void main() {
         whenListen(mockToasterCubit, Stream<ToasterState>.fromIterable([]),
             initialState: ToasterState());
 
-        await tester.pumpApp(wrapWithWidgets(GroupSettings(
+        await tester.pumpApp(wrapWithDependencies(GroupSettings(
             group: GroupsPageGroup(
                 group:
                     Group(admin: true, id: fakeGroup.id, name: fakeGroup.name),

@@ -7,6 +7,7 @@ import 'package:fe/services/local_data/image_handler.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:fe/services/local_data/token_manager.dart';
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -17,7 +18,7 @@ import 'package:http/http.dart' as http;
 import 'fixtures/mocks.dart';
 import 'testing_config.dart';
 
-Future<void> registerAllServices({needCubitAutoEvents = false}) {
+Future<void> registerAllMockServices({needCubitAutoEvents = false}) {
   getIt.allowReassignment = true;
 
   getIt.registerSingleton<TokenManager>(MockTokenManager());
@@ -33,6 +34,7 @@ Future<void> registerAllServices({needCubitAutoEvents = false}) {
   getIt.registerSingletonAsync<SharedPreferences>(
       () async => MockSharedPreferences());
   getIt.registerSingleton<Client>(MockGqlClient.getMock());
+  getIt.registerSingleton<Handler>(MockHandler.getMock());
 
   getIt.registerSingleton<Config>(
       TestingConfig(needAutoEvents: needCubitAutoEvents));

@@ -32,12 +32,12 @@ void main() {
       leaveState: LeavingState.notLeaving());
 
   setUp(() {
-    registerAllServices(needCubitAutoEvents: true);
+    registerAllMockServices(needCubitAutoEvents: true);
     resetMockCubit(mockMainCubit);
     resetMockCubit(mockUpdateGroupsCubit);
   });
 
-  Widget wrapWithWidgets(Widget child) {
+  Widget wrapWithDependencies(Widget child) {
     return MultiBlocProvider(
       providers: [
         BlocProvider<MainCubit>(
@@ -70,7 +70,7 @@ void main() {
       stubEmpty();
 
       await tester
-          .pumpApp(wrapWithWidgets(GroupTab(group: fakeGroupPageGroup)));
+          .pumpApp(wrapWithDependencies(GroupTab(group: fakeGroupPageGroup)));
 
       expect(find.text(fakeGroupPageGroup.group.name), findsOneWidget);
     });
@@ -80,7 +80,7 @@ void main() {
       stubEmpty();
 
       await tester
-          .pumpApp(wrapWithWidgets(GroupTab(group: fakeGroupPageGroup)));
+          .pumpApp(wrapWithDependencies(GroupTab(group: fakeGroupPageGroup)));
 
       expect(find.byType(GroupSettings), findsNothing);
     });
@@ -89,7 +89,7 @@ void main() {
       stubEmpty();
 
       await tester
-          .pumpApp(wrapWithWidgets(GroupTab(group: fakeGroupPageGroup)));
+          .pumpApp(wrapWithDependencies(GroupTab(group: fakeGroupPageGroup)));
       await tester.tap(find.byType(FlippableIcon));
       await tester.pumpAndSettle();
 
@@ -100,7 +100,7 @@ void main() {
       stubEmpty();
 
       await tester
-          .pumpApp(wrapWithWidgets(GroupTab(group: fakeGroupPageGroup)));
+          .pumpApp(wrapWithDependencies(GroupTab(group: fakeGroupPageGroup)));
       await tester.tap(find.byType(FlippableIcon));
       await tester.pumpAndSettle();
       await tester.tap(find.byType(FlippableIcon));
@@ -113,7 +113,7 @@ void main() {
       stubEmpty();
 
       await tester
-          .pumpApp(wrapWithWidgets(GroupTab(group: fakeGroupPageGroup)));
+          .pumpApp(wrapWithDependencies(GroupTab(group: fakeGroupPageGroup)));
 
       await tester.tap(find.byType(TextButton));
       await tester.pumpAndSettle();

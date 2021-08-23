@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:fe/data/models/group.dart';
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/stdlib/errors/failure.dart';
-import 'package:fe/stdlib/errors/gq_req_or_throw_failure.dart';
+import 'package:fe/stdlib/errors/gql_req_or_throw_failure.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:ferry/ferry.dart';
 import 'package:fe/gql/query_self_threads_in_group.req.gql.dart';

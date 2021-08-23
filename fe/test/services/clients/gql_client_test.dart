@@ -27,7 +27,7 @@ Future<http.StreamedResponse> buildFailedGqlResponse(List<String> errors) {
 void main() {
   group('buildGqlClient', () {
     setUp(() {
-      registerAllServices();
+      registerAllMockServices();
     });
 
     test('should use refresh token when expired or no token', () async {

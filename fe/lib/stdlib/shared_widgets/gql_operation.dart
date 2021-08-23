@@ -1,5 +1,4 @@
-import 'package:fe/stdlib/errors/handle_failure.dart';
-import 'package:fe/stdlib/errors/handle_gql_error.dart';
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:ferry/ferry.dart';
 import 'package:ferry/typed_links.dart';
@@ -30,6 +29,7 @@ class GqlOperation<TData, TVars> extends StatefulWidget {
 class _GqlOperationState<TData, TVars>
     extends State<GqlOperation<TData, TVars>> {
   final _client = getIt<Client>();
+  final _handler = getIt<Handler>();
   TData? _resultFromCache;
 
   @override
@@ -50,13 +50,14 @@ class _GqlOperationState<TData, TVars>
       operationRequest: widget.operationRequest!,
       builder: (BuildContext context, OperationResponse<TData, TVars>? response,
           Object? error) {
-        if (response == null || response.loading) {
+        if (response!.loading) {
           return _buildLoader();
         }
 
         if (response.hasErrors) {
-          basicGqlErrorHandler(response).then(
-              (f) => handleFailure(f, context, withPrefix: widget.errorText));
+          _handler.basicGqlErrorHandler(response).then((f) {
+            _handler.handleFailure(f, context, withPrefix: widget.errorText);
+          });
           return _resultFromCache != null
               ? widget.onResponse(_resultFromCache!)
               : widget.error ??

@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fe/data/models/group.dart';
 import 'package:fe/stdlib/errors/failure.dart';
-import 'package:fe/stdlib/errors/gq_req_or_throw_failure.dart';
+import 'package:fe/stdlib/errors/gql_req_or_throw_failure.dart';
 import 'package:fe/stdlib/helpers/random_string.dart';
 import 'package:fe/gql/remove_self_from_group.req.gql.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';

@@ -24,7 +24,7 @@ void main() {
       mockImageHandler = MockImageHandler.getMock();
       mockSharedPreferences = MockSharedPreferences();
 
-      registerAllServices(needCubitAutoEvents: true);
+      registerAllMockServices(needCubitAutoEvents: true);
 
       getIt.registerSingleton<LocalFileStore>(mockLocalFileStore);
       getIt.registerSingleton<ImageHandler>(mockImageHandler);

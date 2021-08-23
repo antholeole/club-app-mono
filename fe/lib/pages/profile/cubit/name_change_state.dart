@@ -3,6 +3,10 @@ part of 'name_change_cubit.dart';
 @immutable
 class NameChangeState
     extends Union3Impl<NotChangingName, NameChangeChanging, NameChangeFailure> {
+  @override
+  String toString() =>
+      join((a) => a.toString(), (a) => a.toString(), (a) => a.toString());
+
   static const unions =
       Triplet<NotChangingName, NameChangeChanging, NameChangeFailure>();
 

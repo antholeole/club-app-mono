@@ -1,11 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
 
-part 'channels_bottom_sheet_state.dart';
+class ChatBottomSheetCubit extends Cubit<bool> {
+  ChatBottomSheetCubit() : super(false);
 
-class ChatBottomSheetCubit extends Cubit<ChatBottomSheetState> {
-  ChatBottomSheetCubit() : super(const ChatBottomSheetState());
-
-  void setState(bool isOpen) => emit(ChatBottomSheetState(isOpen: isOpen));
+  void setState(bool isOpen) => emit(isOpen);
 }

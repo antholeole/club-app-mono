@@ -3,11 +3,11 @@ import 'package:fe/pages/scaffold/cubit/channels_bottom_sheet_cubit.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  blocTest<ChatBottomSheetCubit, ChatBottomSheetState>('should start closed',
+  blocTest<ChatBottomSheetCubit, bool>('should start closed',
       build: () => ChatBottomSheetCubit(),
-      verify: (cubit) => expect(cubit.state.isOpen, equals(false)));
+      verify: (cubit) => expect(cubit.state, equals(false)));
 
-  blocTest<ChatBottomSheetCubit, ChatBottomSheetState>(
+  blocTest<ChatBottomSheetCubit, bool>(
     'should emit states equal to inputted state, ignoring double states',
     build: () => ChatBottomSheetCubit(),
     act: (cubit) {
@@ -16,10 +16,6 @@ void main() {
       cubit.setState(false);
       cubit.setState(true);
     },
-    expect: () => [
-      const ChatBottomSheetState(isOpen: true),
-      const ChatBottomSheetState(isOpen: false),
-      const ChatBottomSheetState(isOpen: true)
-    ],
+    expect: () => [true, false, true],
   );
 }

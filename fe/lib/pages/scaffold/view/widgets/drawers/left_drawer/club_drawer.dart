@@ -8,7 +8,6 @@ class ClubDrawer extends StatefulWidget {
   final List<Widget> _pages = [
     const GroupsPage(),
     ProfilePage(),
-    Container(color: Colors.green)
   ];
 
   @override
@@ -18,6 +17,16 @@ class ClubDrawer extends StatefulWidget {
 class _ClubDrawerState extends State<ClubDrawer> {
   int _currentPage = 0;
   final PageController _pageController = PageController(initialPage: 0);
+
+  @override
+  void initState() {
+    _pageController.addListener(() {
+      setState(() {
+        _currentPage = _pageController.page?.toInt() ?? 0;
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +41,9 @@ class _ClubDrawerState extends State<ClubDrawer> {
             Expanded(
               child: PageView(
                 controller: _pageController,
-                onPageChanged: (newPage) => setState(() {
-                  _currentPage = newPage;
-                }),
+                //onPageChanged: (newPage) => setState(() {
+                //  _currentPage = newPage;
+                //}),
                 children: widget._pages,
               ),
             ),

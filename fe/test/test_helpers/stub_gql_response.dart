@@ -5,16 +5,16 @@ import 'package:mocktail/mocktail.dart';
 import 'fixtures/mocks.dart';
 
 void stubGqlResponse<TData, TVars>(Client client,
-    {TData Function(Invocation)? data,
-    List<GraphQLError> Function(Invocation)? errors,
+    {TData? Function(Invocation)? data,
+    List<GraphQLError>? Function(Invocation)? errors,
     Matcher? requestMatcher}) {
-  assert((data != null || errors != null) && (data == null || errors == null),
-      'one and only one of data or errors must be provided');
+  assert(
+      data != null || errors != null, 'one of data or errors must be provided');
 
   when(() => client.request(any(that: requestMatcher))).thenAnswer(
       (invocation) => Stream<OperationResponse<TData, TVars>>.fromIterable([
             OperationResponse(
-                operationRequest: MockRequest<TData, TVars>(),
+                operationRequest: FakeRequest<TData, TVars>(),
                 data: data?.call(invocation),
                 graphqlErrors: errors?.call(invocation),
                 linkException:

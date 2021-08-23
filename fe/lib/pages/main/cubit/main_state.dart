@@ -2,6 +2,10 @@ part of 'main_cubit.dart';
 
 class MainState extends Union5Impl<MainLoading, MainLoadFailure, MainGroupless,
     MainWithGroup, MainLogOut> {
+  @override
+  String toString() => join((a) => a.toString(), (b) => b.toString(),
+      (c) => c.toString(), (d) => d.toString(), (e) => e.toString());
+
   static const unions = Quintet<MainLoading, MainLoadFailure, MainGroupless,
       MainWithGroup, MainLogOut>();
 
@@ -22,7 +26,7 @@ class MainState extends Union5Impl<MainLoading, MainLoadFailure, MainGroupless,
   factory MainState.withGroup(Group group) =>
       MainState._(unions.fourth(MainWithGroup(group: group)));
 
-  factory MainState.logOut(String? withError) =>
+  factory MainState.logOut({String? withError}) =>
       MainState._(unions.fifth(MainLogOut(withError: withError)));
 
   Group? get group {

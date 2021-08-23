@@ -47,16 +47,15 @@ void main() {
     testWidgets(
         'clicking on flippable icon should bring up thread bottom sheet',
         (tester) async {
-      await registerAllServices();
+      await registerAllMockServices();
 
       final mockMainCubit = MockMainCubit.getMock();
 
       whenListen(mockMainCubit, Stream<MainState>.fromIterable([]),
           initialState: MainState.withGroup(mockGroupAdmin));
 
-      whenListen(mockChatBottomSheetCubit,
-          Stream<ChatBottomSheetState>.fromIterable([]),
-          initialState: const ChatBottomSheetState(isOpen: false));
+      whenListen(mockChatBottomSheetCubit, Stream<bool>.fromIterable([]),
+          initialState: false);
 
       whenListen(mockThreadCubit, Stream<ThreadState>.fromIterable([]),
           initialState: ThreadState.noThread());
@@ -101,9 +100,8 @@ void main() {
     });
 
     testWidgets('should display "select thread" on no thread', (tester) async {
-      whenListen(mockChatBottomSheetCubit,
-          Stream<ChatBottomSheetState>.fromIterable([]),
-          initialState: const ChatBottomSheetState(isOpen: false));
+      whenListen(mockChatBottomSheetCubit, Stream<bool>.fromIterable([]),
+          initialState: false);
 
       whenListen(mockThreadCubit, Stream<ThreadState>.fromIterable([]),
           initialState: ThreadState.noThread());
@@ -126,9 +124,8 @@ void main() {
     testWidgets('should display and respond to thread name', (tester) async {
       final secondThread = Thread(name: 'second', id: UuidType.generate());
 
-      whenListen(mockChatBottomSheetCubit,
-          Stream<ChatBottomSheetState>.fromIterable([]),
-          initialState: const ChatBottomSheetState(isOpen: false));
+      whenListen(mockChatBottomSheetCubit, Stream<bool>.fromIterable([]),
+          initialState: false);
 
       final threadController = stubCubitStream(mockThreadCubit,
           initialState: ThreadState.thread(fakeThread));
@@ -154,9 +151,8 @@ void main() {
     });
 
     testWidgets('should flip when bottom sheet opens', (tester) async {
-      final chatBottomSheetCubitController = stubCubitStream(
-          mockChatBottomSheetCubit,
-          initialState: const ChatBottomSheetState(isOpen: false));
+      final chatBottomSheetCubitController =
+          stubCubitStream(mockChatBottomSheetCubit, initialState: false);
 
       whenListen(mockThreadCubit, Stream<ThreadState>.fromIterable([]),
           initialState: ThreadState.thread(fakeThread));
@@ -173,17 +169,14 @@ void main() {
           child: Builder(
               builder: (context) => ChatTitle(chatProviderContext: context))));
 
-      expect(
-          tester.firstWidget<FlippableIcon>(find.byType(FlippableIcon)).flipped,
+      expect(tester.widget<FlippableIcon>(find.byType(FlippableIcon)).flipped,
           false);
 
-      chatBottomSheetCubitController
-          .add(const ChatBottomSheetState(isOpen: true));
+      chatBottomSheetCubitController.add(true);
 
       await tester.pump(FlippableIcon.FLIP_DURATION * 2);
 
-      expect(
-          tester.firstWidget<FlippableIcon>(find.byType(FlippableIcon)).flipped,
+      expect(tester.widget<FlippableIcon>(find.byType(FlippableIcon)).flipped,
           true);
     });
   });

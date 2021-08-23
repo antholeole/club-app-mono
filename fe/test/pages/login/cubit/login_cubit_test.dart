@@ -31,7 +31,7 @@ void main() {
     });
 
     setUp(() {
-      registerAllServices();
+      registerAllMockServices();
     });
 
     group('google auth', () {

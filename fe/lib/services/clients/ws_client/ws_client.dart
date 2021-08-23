@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:fe/services/local_data/token_manager.dart';
-import 'package:fe/stdlib/errors/check_connectivity.dart';
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:fe/data/ws_message/message_message.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
@@ -19,6 +19,7 @@ enum WsConnectionState { Connecting, Connected, Error }
 class WsClient {
   final TokenManager _tokenManager = getIt<TokenManager>();
   final Config _config = getIt<Config>();
+  final Handler _handler = getIt<Handler>();
 
   final StreamController<Failure> _failureStream = StreamController.broadcast();
   final StreamController<WsMessage> _messageStream =
@@ -107,7 +108,7 @@ class WsClient {
   }
 
   Future<void> _handleConnectionError() async {
-    if (await checkConnecivity() != null) {
+    if (await _handler.checkConnectivity() != null) {
       Timer(const Duration(seconds: 5), initalize);
     }
   }

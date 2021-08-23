@@ -5,10 +5,10 @@ import 'package:fe/pages/login/cubit/login_cubit.dart';
 import 'package:fe/pages/login/view/login_page.dart';
 import 'package:fe/pages/login/view/widgets/sign_in_with_provider_button.dart';
 import 'package:fe/service_locator.dart';
-import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:flow_builder/flow_builder.dart';
@@ -25,7 +25,7 @@ import '../../../test_helpers/reset_mock_bloc.dart';
 
 void main() {
   setUpAll(() async {
-    await registerAllServices(needCubitAutoEvents: true);
+    await registerAllMockServices(needCubitAutoEvents: true);
   });
 
   group('login page', () {
@@ -43,7 +43,7 @@ void main() {
     MockLoginCubit mockLoginCubit = MockLoginCubit.getMock();
     MockToasterCubit mockToasterCubit = MockToasterCubit.getMock();
 
-    Widget wrapWithWidgets(Widget child) {
+    Widget wrapWithDependencies(Widget child) {
       return MultiBlocProvider(
         providers: [
           BlocProvider<ToasterCubit>(create: (_) => mockToasterCubit),
@@ -63,7 +63,7 @@ void main() {
       whenListen(mockLoginCubit, Stream<LoginState>.fromIterable([]),
           initialState: LoginState.initial());
 
-      await tester.pumpApp(wrapWithWidgets(LoginView()));
+      await tester.pumpApp(wrapWithDependencies(LoginView()));
       await tester.pumpAndSettle();
 
       expect(find.byType(SignInWithProviderButton), findsNWidgets(1));
@@ -73,13 +73,13 @@ void main() {
       whenListen(mockLoginCubit, Stream<LoginState>.fromIterable([]),
           initialState: LoginState.loading());
 
-      await tester.pumpApp(wrapWithWidgets(LoginView()));
+      await tester.pumpApp(wrapWithDependencies(LoginView()));
       await tester.pump();
 
       expect(find.byType(Loader), findsNWidgets(1));
     });
 
-    testWidgets('should render login buttons and toast on failure',
+    testWidgets('should render login buttons and call handleFailure',
         (tester) async {
       whenListen(
           mockLoginCubit,
@@ -89,14 +89,14 @@ void main() {
           ]),
           initialState: LoginState.loading());
 
-      await tester.pumpApp(wrapWithWidgets(LoginView()));
+      await tester.pumpApp(wrapWithDependencies(LoginView()));
       await tester.pump();
 
       expect(find.byType(SignInWithProviderButton), findsNWidgets(1));
 
-      verify(() => mockToasterCubit.add(any(
-          that: isA<Toast>().having(
-              (toast) => toast.type, 'type', ToastType.Error)))).called(1);
+      verify(() => getIt<Handler>().handleFailure(any(), any(),
+          toast: any(named: 'toast'),
+          withPrefix: any(named: 'withPrefix'))).called(1);
     });
 
     testWidgets('should push new window on login success', (tester) async {
@@ -119,7 +119,7 @@ void main() {
                 return Container(
                   key: loggedInKey,
                 );
-              }, (_) => wrapWithWidgets(LoginView())))
+              }, (_) => wrapWithDependencies(LoginView())))
             ];
           }));
 

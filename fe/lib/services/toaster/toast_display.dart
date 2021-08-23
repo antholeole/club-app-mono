@@ -5,6 +5,53 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'cubit/data_carriers/toast.dart';
 import 'cubit/toaster_cubit.dart';
 
+extension ToastRenderOptions on ToastType {
+  Color get actionColor {
+    switch (this) {
+      case ToastType.Error:
+        return Colors.red.shade900;
+      case ToastType.Warning:
+        return Colors.amber.shade900;
+      case ToastType.Success:
+        return Colors.green.shade900;
+    }
+  }
+
+  Color get iconBgColor {
+    switch (this) {
+      case ToastType.Success:
+        return Colors.green.shade50;
+      case ToastType.Error:
+        return Colors.red.shade50;
+      case ToastType.Warning:
+        return Colors.amber.shade50;
+    }
+  }
+
+  Icon get icon {
+    switch (this) {
+      case ToastType.Warning:
+        return const Icon(
+          Icons.warning_rounded,
+          color: Colors.amber,
+          size: 36,
+        );
+      case ToastType.Success:
+        return const Icon(
+          Icons.done,
+          color: Colors.green,
+          size: 36,
+        );
+      case ToastType.Error:
+        return const Icon(
+          Icons.report,
+          color: Colors.red,
+          size: 36,
+        );
+    }
+  }
+}
+
 class ToastDisplay extends StatefulWidget {
   final Toast toast;
 
@@ -41,11 +88,11 @@ class _ToastDisplayState extends State<ToastDisplay> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              decoration:
-                  BoxDecoration(shape: BoxShape.circle, color: _iconBgColor()),
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle, color: widget.toast.type.iconBgColor),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: _getIcon(),
+                child: widget.toast.type.icon,
               ),
             ),
             Expanded(
@@ -81,7 +128,7 @@ class _ToastDisplayState extends State<ToastDisplay> {
         },
         child: Text(
           widget.toast.action!.actionText,
-          style: TextStyle(color: _actionColor()),
+          style: TextStyle(color: widget.toast.type.actionColor),
         ),
       ));
     }
@@ -90,50 +137,5 @@ class _ToastDisplayState extends State<ToastDisplay> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: children,
     );
-  }
-
-  Color _actionColor() {
-    switch (widget.toast.type) {
-      case ToastType.Error:
-        return Colors.red.shade900;
-      case ToastType.Warning:
-        return Colors.amber.shade900;
-      case ToastType.Success:
-        return Colors.green.shade900;
-    }
-  }
-
-  Color _iconBgColor() {
-    switch (widget.toast.type) {
-      case ToastType.Success:
-        return Colors.green.shade50;
-      case ToastType.Error:
-        return Colors.red.shade50;
-      case ToastType.Warning:
-        return Colors.amber.shade50;
-    }
-  }
-
-  Icon _getIcon() {
-    switch (widget.toast.type) {
-      case ToastType.Warning:
-        return const Icon(
-          Icons.warning_rounded,
-          color: Colors.amber,
-          size: 36,
-        );
-      case ToastType.Success:
-        return const Icon(
-          Icons.done,
-          color: Colors.green,
-          size: 36,
-        );
-      case ToastType.Error:
-        return const Icon(
-          Icons.report,
-          color: Colors.red,
-          size: 36,
-        );
-    }
   }
 }

@@ -11,15 +11,22 @@ schema-pull:
 	get-graphql-schema --header x-hasura-admin-secret="*hV@?*xh0)aL,@1+Tza>Kj[zC(5akn" http://localhost:8080/v1/graphql > ./lib/schema.graphql
 
 t:
-	flutter test --coverage --coverage-path coverage/lcov_prefilter.info && \
-	lcov --remove coverage/lcov_prefilter.info \
+	flutter test --coverage && \
+	lcov --remove coverage/lcov.info \
 	'lib/data/*' \
 	'lib/gql/*' \
 	'lib/gql/*' \
 	'lib/schema.graphql' \
 	'lib/**/*_state.dart' \
-	-o coverage/lcov.info && \
-	rm coverage/lcov_prefilter.info 
+	'lib/*.gql.g.dart' \
+	'lib/*.gql.dart' \
+	'lib/config.dart' \
+	'lib/service_locator.dart' \
+	'lib/services/clients/gql_client/cache.dart' \
+	'lib/stdlib/helpers/uuid_type.dart' \
+	'**/data_carriers/*' \
+	'lib/stdlib/helpers/datetime_type_converter.dart' \
+	-o coverage/new_lcov.info
 
-view-cov: # recommend you use live server
-	genhtml coverage/lcov.info -o coverage/html && open coverage/html/index.html
+view-cov: 
+	genhtml coverage/new_lcov.info --output=coverage/html && open coverage/html/index.html

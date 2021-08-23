@@ -13,7 +13,7 @@ import 'package:fe/providers/user_provider.dart';
 import 'package:fe/services/clients/ws_client/ws_client.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
-import 'package:fe/stdlib/errors/handle_failure.dart';
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:fe/stdlib/theme/pill_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,8 +23,6 @@ import '../../../service_locator.dart';
 import 'package:flow_builder/flow_builder.dart';
 
 class MainPage extends StatelessWidget {
-  final PageController _pageController = PageController(initialPage: 0);
-
   final User _user;
 
   MainPage({required User user}) : _user = user {
@@ -43,29 +41,43 @@ class MainPage extends StatelessWidget {
         ],
         child: UserProvider(
           user: _user,
-          child: Builder(
-            builder: (_) => MainScaffold(
-                child: BlocListener<PageCubit, PageState>(
-              listener: (context, state) =>
-                  _pageController.jumpToPage(state.index),
-              child: BlocConsumer<MainCubit, MainState>(
-                listener: (bcContext, state) => state.join(
-                    (_) => null,
-                    (mplf) =>
-                        handleFailure(mplf.failure, bcContext, toast: false),
-                    (_) => null,
-                    (_) => null,
-                    (_) => _logOut(context)),
-                builder: (bcContext, state) => state.join(
-                    (_) => _buildLoading(),
-                    (_) => _buildErrorScreen(bcContext),
-                    (_) => _buildGroupless(),
-                    (mpwg) => _buildContent(bcContext, mpwg.group),
-                    (_) => _buildErrorScreen(bcContext)),
-              ),
-            )),
-          ),
+          child: MainView(),
         ));
+  }
+}
+
+class MainView extends StatelessWidget {
+  static const String RETRY_COPY = 'Sorry, there seems to be an error. Retry?';
+  static const String GROUPLESS_COPY =
+      "Seems like you're not in any clubs... Maybe you should join one?";
+  static const String LOGOUT_COPY = 'Logged Out.';
+
+  final _handler = getIt<Handler>();
+  final PageController _pageController = PageController(initialPage: 0);
+
+  @override
+  Widget build(BuildContext context) {
+    return MainScaffold(
+        child: BlocListener<PageCubit, PageState>(
+      listener: (context, state) => _pageController.jumpToPage(state.index),
+      child: BlocConsumer<MainCubit, MainState>(
+        listener: (bcContext, state) {
+          state.join(
+              (_) => null,
+              (mplf) =>
+                  _handler.handleFailure(mplf.failure, bcContext, toast: false),
+              (_) => null,
+              (_) => null,
+              (mplo) => _logOut(context, withError: mplo.withError));
+        },
+        builder: (bcContext, state) => state.join(
+            (_) => _buildLoading(),
+            (_) => _buildErrorScreen(bcContext),
+            (_) => _buildGroupless(),
+            (mpwg) => _buildContent(bcContext, mpwg.group),
+            (_) => _buildErrorScreen(bcContext)),
+      ),
+    ));
   }
 
   Widget _buildLoading() {
@@ -92,7 +104,7 @@ class MainPage extends StatelessWidget {
           child: SizedBox(
             width: 250,
             child: Text(
-              "Seems like you're not in any clubs... Maybe you should join one?",
+              MainView.GROUPLESS_COPY,
               textAlign: TextAlign.center,
             ),
           ),
@@ -112,7 +124,7 @@ class MainPage extends StatelessWidget {
           child: SizedBox(
             width: 250,
             child: Text(
-              'Sorry, there seems to be an error. Retry?',
+              MainView.RETRY_COPY,
               textAlign: TextAlign.center,
             ),
           ),
@@ -134,7 +146,7 @@ class MainPage extends StatelessWidget {
     } else {
       context
           .read<ToasterCubit>()
-          .add(Toast(message: 'Logged Out.', type: ToastType.Warning));
+          .add(Toast(message: MainView.LOGOUT_COPY, type: ToastType.Warning));
     }
 
     context.flow<AppState>().update((_) => AppState.needLogIn());

@@ -4,7 +4,7 @@ import 'package:fe/data/models/message.dart';
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/stdlib/errors/failure.dart';
-import 'package:fe/stdlib/errors/gq_req_or_throw_failure.dart';
+import 'package:fe/stdlib/errors/gql_req_or_throw_failure.dart';
 import 'package:ferry/ferry.dart';
 import 'package:meta/meta.dart';
 import 'package:fe/gql/query_messages_in_thread.req.gql.dart';

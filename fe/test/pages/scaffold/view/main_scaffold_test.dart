@@ -19,6 +19,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../../test_helpers/cubit_patch_close.dart';
 import '../../../test_helpers/fixtures/group.dart';
 import '../../../test_helpers/fixtures/mocks.dart';
+import '../../../test_helpers/get_it_helpers.dart';
 import '../../../test_helpers/pump_app.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -53,6 +54,7 @@ void main() {
   });
 
   setUp(() async {
+    await registerAllMockServices();
     <MockCubit>[mockPageCubit, mockMainCubit, mockScaffoldCubit]
         .forEach((cubit) {
       reset(cubit);

@@ -6,6 +6,7 @@ import 'package:fe/services/local_data/image_handler.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
 import 'package:fe/services/local_data/token_manager.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -39,6 +40,7 @@ void setupLocator({required bool isProd}) {
   getIt.registerSingleton<UnauthHttpClient>(UnauthHttpClient());
   getIt.registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
   getIt.registerSingleton<LocalFileStore>(LocalFileStore());
+  getIt.registerSingleton<Handler>(Handler());
 
   getIt.registerSingletonWithDependencies<LocalUserService>(
       () => LocalUserService(),

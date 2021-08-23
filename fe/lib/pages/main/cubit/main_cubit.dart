@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:fe/data/models/group.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
 import 'package:fe/stdlib/errors/failure.dart';
-import 'package:fe/stdlib/errors/gq_req_or_throw_failure.dart';
+import 'package:fe/stdlib/errors/gql_req_or_throw_failure.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -28,13 +28,7 @@ class MainCubit extends Cubit<MainState> {
     if (!_config.testing) initalizeMainPage();
   }
 
-  Future<void> initalizeMainPage(
-      {GQuerySelfGroupsPreviewData? withData}) async {
-    if (withData != null) {
-      emit(_determineStateFromData(withData));
-      return;
-    }
-
+  Future<void> initalizeMainPage() async {
     try {
       final loadState = await _querySelfGroups();
       emit(_determineStateFromData(loadState));
@@ -48,8 +42,12 @@ class MainCubit extends Cubit<MainState> {
   }
 
   Future<void> logOut({String? withError}) async {
-    await Future.wait([_localFileStore.clear(), _secureStorage.deleteAll()]);
-    emit(MainState.logOut(withError));
+    await Future.wait([
+      _localFileStore.clear(),
+      _secureStorage.deleteAll(),
+      _localUserService.logOut()
+    ]);
+    emit(MainState.logOut(withError: withError));
   }
 
   MainState _determineStateFromData(GQuerySelfGroupsPreviewData data) {
