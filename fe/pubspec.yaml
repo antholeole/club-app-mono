@@ -30,7 +30,6 @@ dependencies:
   json_annotation: ^4.0.0
   
   #ui
-  cupertino_icons: ^1.0.2
   flutter_spinkit: ^5.0.0
   flutter_platform_widgets: ^1.9.5
   badges: ^2.0.0-nullsafety.1
@@ -41,8 +40,6 @@ dependencies:
   ferry: ^0.10.4
   gql: ^0.13.0-nullsafety.2
   gql_link: ^0.4.0-nullsafety.3
-  gql_error_link: ^0.2.0-nullsafety.1
-  gql_transform_link: ^0.2.0-nullsafety.1 
   gql_http_link: ^0.4.0-nullsafety.1
   hive: ^2.0.4
   hive_flutter: ^1.0.0
@@ -58,7 +55,7 @@ dependencies:
 
   #other 
   google_sign_in: ^5.0.0
-  connectivity: ^3.0.3 
+  connectivity: ^3.0.3
 
 
 dev_dependencies:
@@ -70,15 +67,11 @@ dev_dependencies:
   json_serializable: ^4.1.0
   ferry_generator: ^0.4.1-0.1.nullsafety.0
 
-  #cicd
-  dependency_validator: ^3.0.0
-
   flutter_test:
     sdk: flutter
   bloc_test: ^8.1.0
   fake_async: ^1.2.0
   mocktail: ^0.1.4
-  mock_web_server: ^5.0.0-nullsafety.1
 
 
 flutter:

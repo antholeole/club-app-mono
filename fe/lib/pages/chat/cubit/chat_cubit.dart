@@ -37,7 +37,7 @@ class ChatCubit extends Cubit<ChatState> {
     final chats = resp.messages
         .map((message) => Message(
             isImage: message.is_image,
-            updatedAt: message.updated_at,
+            updatedAt: message.updated_at ?? message.created_at,
             id: message.id,
             user: User(
                 name: message.user.name,
