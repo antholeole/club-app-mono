@@ -1,0 +1,10 @@
+name: Master Workflow - Build and deploy to production
+on:
+  pull_request:
+    types: closed
+    branches:
+      - master
+Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "No deployment steps yet!"
