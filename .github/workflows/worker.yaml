@@ -1,0 +1,34 @@
+on:
+  push:
+    branches-ignore:
+      - master
+  pull_request:
+    branches:
+      - staging
+defaults:
+  run:
+    working-directory: ./infra/worker
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 2 
+    - name: Set up Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14
+    - name: Install dependencies
+      run: npm install
+    - name: Run the tests
+      run: npm t
+    - name: Upload code-cov
+      uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: coverage/lcov.info
+        flags: worker,unittests
+        name: worker-unit
+        fail_ci_if_error: true

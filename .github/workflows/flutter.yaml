@@ -9,7 +9,7 @@ defaults:
   run:
     working-directory: ./fe
 jobs:
-  tests:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
@@ -33,7 +33,6 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: coverage/out_cov.info
-          flags: unittests
+          flags: flutter,unittests
           name: flutter-unit
           fail_ci_if_error: true
-          verbose: true
