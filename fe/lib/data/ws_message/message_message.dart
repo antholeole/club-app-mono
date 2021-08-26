@@ -21,4 +21,7 @@ class WsMessageMessage extends WsMessage {
 
   @override
   Map<String, dynamic> selfToJson() => _$WsMessageMessageToJson(this);
+
+  @override
+  List<Object?> get props => [message, toId, messageType];
 }

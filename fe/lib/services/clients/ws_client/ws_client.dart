@@ -10,6 +10,7 @@ import 'package:fe/stdlib/errors/failure_status.dart';
 
 import 'package:fe/data/ws_message/ws_message.dart';
 import 'package:fe/stdlib/errors/failure.dart';
+import 'package:web_socket_channel/status.dart';
 
 import '../../../config.dart';
 import '../../../service_locator.dart';
@@ -17,6 +18,8 @@ import '../../../service_locator.dart';
 enum WsConnectionState { Connecting, Connected, Error }
 
 class WsClient {
+  static const DEFAULT_SCHEDULED_RECONNECT_WAIT = Duration(seconds: 5);
+
   final TokenManager _tokenManager = getIt<TokenManager>();
   final Config _config = getIt<Config>();
   final Handler _handler = getIt<Handler>();
@@ -27,19 +30,21 @@ class WsClient {
   final StreamController<WsConnectionState> _connectionStateController =
       StreamController.broadcast();
 
+  Timer? reinitalizeTimer;
+
   IOWebSocketChannel? _wsChannel;
 
   WsClient();
 
-  Stream<WsConnectionState> connectionState() {
+  Stream<WsConnectionState> get connectionState {
     return _connectionStateController.stream;
   }
 
-  Stream<Failure> errorStream() {
+  Stream<Failure> get failureStream {
     return _failureStream.stream;
   }
 
-  Stream<WsMessage> messageStream() {
+  Stream<WsMessage> get messageStream {
     return _messageStream.stream;
   }
 
@@ -47,9 +52,8 @@ class WsClient {
   /// because this object will live between closes (i.e. log in -> log out -> log in)
   /// we must allow the stream to be listened to again.
   Future<void> close() async {
-    if (_wsChannel != null) {
-      await _wsChannel!.sink.close();
-    }
+    await _wsChannel?.sink.close(goingAway);
+    reinitalizeTimer?.cancel();
   }
 
   Future<void> initalize() async {
@@ -57,14 +61,29 @@ class WsClient {
 
     WebSocket wsConn;
 
+    String token;
+    try {
+      String? newToken = await _tokenManager.read();
+      newToken ??= await _tokenManager.refresh();
+      token = newToken;
+    } on Failure catch (f) {
+      _failureStream.add(f);
+      _connectionStateController.add(WsConnectionState.Error);
+      _scheduleReconnect();
+      return;
+    }
+
     try {
       wsConn = await WebSocket.connect(
         _config.wsUrl,
-        headers: {'Authorization': 'Bearer ${await _tokenManager.read()}'},
+        headers: {'Authorization': 'Bearer $token'},
       );
-    } on SocketException {
-      _connectionStateController.add(WsConnectionState.Error);
-      return _handleConnectionError();
+    } catch (e) {
+      if (e is SocketException || e is WebSocketException) {
+        _connectionStateController.add(WsConnectionState.Error);
+        return _scheduleReconnect();
+      }
+      rethrow;
     }
 
     _connectionStateController.add(WsConnectionState.Connected);
@@ -74,12 +93,14 @@ class WsClient {
 
     _wsChannel!.stream
         .listen(_onMessage, onError: _handleWsException, onDone: _onDone);
+
+    reinitalizeTimer?.cancel();
+    reinitalizeTimer = null;
   }
 
   void _onMessage(dynamic message) {
-    print('got something');
     final jsonMessage = json.decode(message);
-    final wsMessageType = WsMessage.determineMessage(message);
+    final wsMessageType = WsMessage.determineMessage(jsonMessage);
 
     switch (wsMessageType) {
       case WsMessageType.Ping:
@@ -92,24 +113,30 @@ class WsClient {
     }
   }
 
-  void _onDone() {
-    _connectionStateController.add(WsConnectionState.Error);
+  Future<void> _onDone() async {
+    await initalize();
   }
 
-  Future<void> send(WsMessage message) async {}
+  void send(WsMessage message) {
+    if (_wsChannel == null) {
+      throw const Failure(
+          status: FailureStatus.NoConn, message: 'not connected to server');
+    }
+
+    _wsChannel!.sink.add(json.encode(message.toJson()));
+  }
 
   Future<void> _handleWsException(Object e) async {
-    print(e);
-    Failure? f;
+    await _handler.reportUnknown(e);
 
-    f ??= const Failure(status: FailureStatus.Unknown);
-
-    _failureStream.add(f);
+    _failureStream.add(const Failure(status: FailureStatus.Unknown));
+    await initalize();
   }
 
-  Future<void> _handleConnectionError() async {
-    if (await _handler.checkConnectivity() != null) {
-      Timer(const Duration(seconds: 5), initalize);
-    }
+  void _scheduleReconnect(
+      {Duration inDuration = DEFAULT_SCHEDULED_RECONNECT_WAIT}) {
+    reinitalizeTimer = Timer(inDuration, () async {
+      await initalize();
+    });
   }
 }

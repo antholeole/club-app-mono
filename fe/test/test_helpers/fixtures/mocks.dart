@@ -1,4 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:fe/data/json/backend_access_tokens.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/chat/cubit/chat_cubit.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
@@ -190,7 +191,19 @@ class ImageProviderFake extends Fake implements ImageProvider {}
 
 class MockSharedPreferences extends Mock implements SharedPreferences {}
 
-class MockTokenManager extends Mock implements TokenManager {}
+class MockTokenManager extends Mock implements TokenManager {
+  MockTokenManager._();
+
+  factory MockTokenManager.getMock() {
+    registerFallbackValue(BackendAccessTokens(
+        accessToken: 'a',
+        refreshToken: 'a',
+        name: 'a',
+        id: UuidType.generate()));
+    registerFallbackValue(FakeResponse());
+    return MockTokenManager._();
+  }
+}
 
 class MockLocalUserService extends Mock implements LocalUserService {}
 
@@ -296,10 +309,21 @@ class MockWsClient extends Mock implements WsClient {
   }
 
   void emptyStub() {
-    when(() => connectionState()).thenAnswer((_) => const Stream.empty());
-    when(() => errorStream()).thenAnswer((_) => const Stream.empty());
-    when(() => messageStream()).thenAnswer((_) => const Stream.empty());
+    when(() => connectionState).thenAnswer((_) => const Stream.empty());
+    when(() => failureStream).thenAnswer((_) => const Stream.empty());
+    when(() => messageStream).thenAnswer((_) => const Stream.empty());
     when(() => close()).thenAnswer((_) async => null);
+  }
+}
+
+class FakeImageProvider extends Mock implements ImageProvider {}
+
+class FakeImageInfo extends Mock implements ImageInfo {}
+
+class FakeImageStream extends Mock implements ImageStream {
+  @override
+  String toString({DiagnosticLevel? minLevel}) {
+    return '';
   }
 }
 

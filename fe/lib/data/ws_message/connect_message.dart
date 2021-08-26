@@ -8,7 +8,7 @@ part 'connect_message.g.dart';
 @CustomUuidConverter()
 class WsConnectMessage extends WsMessage {
   @override
-  WsMessageType get messageType => WsMessageType.Message;
+  WsMessageType get messageType => WsMessageType.Connect;
 
   const WsConnectMessage();
 
@@ -17,4 +17,7 @@ class WsConnectMessage extends WsMessage {
 
   @override
   Map<String, dynamic> selfToJson() => _$WsConnectMessageToJson(this);
+
+  @override
+  List<Object?> get props => [messageType];
 }

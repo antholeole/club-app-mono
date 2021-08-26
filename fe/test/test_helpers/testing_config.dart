@@ -25,7 +25,7 @@ class TestingConfig extends Config {
   bool get memoryCache => true;
 
   @override
-  String get wsUrl => throw UnimplementedError();
+  String get wsUrl => 'ws://localhost:8175';
 
   @override
   bool get testing => !_needAutoEvents;

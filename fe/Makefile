@@ -25,6 +25,7 @@ t:
 	'lib/services/clients/gql_client/cache.dart' \
 	'lib/stdlib/helpers/uuid_type.dart' \
 	'**/data_carriers/*' \
+	'lib/stdlib/errors/failure_status.dart' \
 	'lib/stdlib/helpers/datetime_type_converter.dart' \
 	-o coverage/new_lcov.info
 

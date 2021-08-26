@@ -104,8 +104,7 @@ class _ChatBarState extends State<ChatBar> {
         _loadingSend = true;
       });
 
-      await _wsClient
-          .send(WsMessageMessage(message: _controller.text, toId: to));
+      _wsClient.send(WsMessageMessage(message: _controller.text, toId: to));
       _controller.clear();
     } on Failure catch (f) {
       _handler.handleFailure(f, context);

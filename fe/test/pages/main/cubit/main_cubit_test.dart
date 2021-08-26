@@ -197,6 +197,4 @@ void main() {
       expect: () => [MainState.groupless()],
     );
   });
-
-  //should emit noGroup on no group
 }

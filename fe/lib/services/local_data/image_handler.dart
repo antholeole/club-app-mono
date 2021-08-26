@@ -20,7 +20,7 @@ class ImageHandler {
       completer.complete();
       stream.removeListener(listener);
     }, onError: (dynamic exception, StackTrace? stackTrace) {
-      completer.complete();
+      completer.completeError(exception);
       stream.removeListener(listener);
       FlutterError.reportError(FlutterErrorDetails(
         context: ErrorDescription('image failed to load'),

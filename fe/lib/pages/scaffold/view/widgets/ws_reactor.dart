@@ -41,9 +41,9 @@ class _WsReactorState extends State<WsReactor> {
         _checkShow);
 
     _subscriptions.addAll([
-      _wsClient.connectionState().listen(_respondToConnectionStates),
-      _wsClient.errorStream().listen(_respondToFailures),
-      _wsClient.messageStream().listen((p) => print(p.messageType))
+      _wsClient.connectionState.listen(_respondToConnectionStates),
+      _wsClient.failureStream.listen(_respondToFailures),
+      _wsClient.messageStream.listen((p) => print(p.messageType))
     ]);
 
     super.initState();

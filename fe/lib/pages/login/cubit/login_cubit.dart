@@ -19,6 +19,7 @@ part 'login_state.dart';
 class LoginCubit extends Cubit<LoginState> {
   final _client = getIt<UnauthHttpClient>();
   final _localUserService = getIt<LocalUserService>();
+  final _tokenManager = getIt<TokenManager>();
 
   final _googleSignIn = getIt<GoogleSignIn>();
 
@@ -48,7 +49,7 @@ class LoginCubit extends Cubit<LoginState> {
         ProviderIdToken(from: loginType, idToken: providerLoginDetails.idToken);
     final backendAccessTokens = await _getGqlAuth(providerAccessToken);
 
-    await TokenManager.setTokens(backendAccessTokens);
+    await _tokenManager.initalizeTokens(backendAccessTokens);
 
     final localUser = User(
         name: providerLoginDetails.displayName ?? 'Club App User',

@@ -1,19 +1,17 @@
 import 'dart:convert';
 
 import 'package:bloc_test/bloc_test.dart';
-import 'package:fe/constants.dart';
 import 'package:fe/data/json/backend_access_tokens.dart';
 import 'package:fe/data/json/provider_access_token.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/login/cubit/login_cubit.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/clients/http_client/unauth_http_client.dart';
-import 'package:fe/services/local_data/local_file_store.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
+import 'package:fe/services/local_data/token_manager.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart';
@@ -72,13 +70,8 @@ void main() {
                       .toJson()),
                   200));
 
-          when(() => getIt<LocalFileStore>()
-                  .serialize(LocalStorageType.AccessTokens, any()))
+          when(() => getIt<TokenManager>().initalizeTokens(any()))
               .thenAnswer((_) async => null);
-
-          when(() => getIt<FlutterSecureStorage>().write(
-              key: REFRESH_TOKEN_KEY,
-              value: any(named: 'value'))).thenAnswer((_) async => null);
 
           when(() => getIt<LocalUserService>().saveChanges(any()))
               .thenAnswer((_) async => null);
@@ -91,10 +84,8 @@ void main() {
                   User(id: userId, name: 'as', profilePictureUrl: 'a'))
             ],
         verify: (_) {
-          verify(() => getIt<LocalFileStore>()
-              .serialize(LocalStorageType.AccessTokens, any())).called(1);
-          verify(() => getIt<FlutterSecureStorage>().write(
-              key: REFRESH_TOKEN_KEY, value: any(named: 'value'))).called(1);
+          when(() => getIt<TokenManager>().initalizeTokens(any()))
+              .thenAnswer((_) async => null);
           verify(() => getIt<LocalUserService>().saveChanges(any())).called(1);
         });
   });

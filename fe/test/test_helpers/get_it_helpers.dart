@@ -21,7 +21,7 @@ import 'testing_config.dart';
 Future<void> registerAllMockServices({needCubitAutoEvents = false}) {
   getIt.allowReassignment = true;
 
-  getIt.registerSingleton<TokenManager>(MockTokenManager());
+  getIt.registerSingleton<TokenManager>(MockTokenManager.getMock());
   getIt.registerSingleton<LocalFileStore>(MockLocalFileStore.getMock());
   getIt.registerSingleton<WsClient>(MockWsClient.getMock()..emptyStub());
   getIt.registerSingleton<LocalUserService>(MockLocalUserService());

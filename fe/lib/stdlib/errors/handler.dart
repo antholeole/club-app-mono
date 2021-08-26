@@ -13,6 +13,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class Handler {
   final UnauthHttpClient _unauthHttpClient = getIt<UnauthHttpClient>();
 
+  Future<void> reportUnknown(Object e) async {
+    debugPrint(e.toString());
+  }
+
   Future<Failure?> checkConnectivity() async {
     if (!(await _unauthHttpClient.isConnected())) {
       return const Failure(status: FailureStatus.NoConn);

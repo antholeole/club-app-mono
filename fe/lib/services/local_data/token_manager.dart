@@ -18,34 +18,27 @@ class TokenManager {
   final _localFileStore = getIt<LocalFileStore>();
   final _unauthClient = getIt<UnauthHttpClient>();
   final _localUserService = getIt<LocalUserService>();
-  bool hasTokens = false;
 
   String? _tokenCache;
 
-  static Future<void> setTokens(BackendAccessTokens backendAccessTokens) async {
-    await getIt<LocalFileStore>().serialize(
-        LocalStorageType.AccessTokens, backendAccessTokens.accessToken);
-    await getIt<FlutterSecureStorage>()
-        .write(key: REFRESH_TOKEN_KEY, value: backendAccessTokens.refreshToken);
-  }
-
   Future<void> initalizeTokens(BackendAccessTokens backendAccessTokens) async {
-    await setTokens(backendAccessTokens);
+    await _localFileStore.serialize(
+        LocalStorageType.AccessTokens, backendAccessTokens.accessToken);
+    await _secureStorage.write(
+        key: REFRESH_TOKEN_KEY, value: backendAccessTokens.refreshToken);
     _tokenCache = backendAccessTokens.accessToken;
-    hasTokens = true;
   }
 
   Future<String?> get _refreshToken =>
       _secureStorage.read(key: REFRESH_TOKEN_KEY);
 
   Future<void> delete() async {
-    hasTokens = false;
     await _localFileStore.delete(LocalStorageType.AccessTokens);
+    await _secureStorage.delete(key: REFRESH_TOKEN_KEY);
     _tokenCache = null;
   }
 
   Future<String?> read() async {
-    hasTokens = true;
     if (_tokenCache != null) {
       return _tokenCache!;
     }
@@ -53,16 +46,12 @@ class TokenManager {
     final serializedToken =
         await _localFileStore.deserialize(LocalStorageType.AccessTokens);
 
+    _tokenCache = serializedToken;
+
     return serializedToken;
   }
 
-  Future<void> write(String token) async {
-    _tokenCache = token;
-    await _localFileStore.serialize(LocalStorageType.AccessTokens, token);
-  }
-
   Future<String> refresh() async {
-    hasTokens = true;
     final refreshToken = await _refreshToken;
 
     UuidType userId = await _localUserService.getLoggedInUserId();
@@ -74,7 +63,7 @@ class TokenManager {
     try {
       final resp = await _unauthClient.postReq('/auth/refresh',
           RefreshCarrier(refreshToken: refreshToken, userId: userId).toJson());
-      await _localFileStore.serialize(LocalStorageType.AccessTokens, resp.body);
+      await _writeAccessToken(resp.body);
       return resp.body;
     } on HttpException catch (e) {
       if (e.statusCode == 404) {
@@ -84,5 +73,10 @@ class TokenManager {
         rethrow;
       }
     }
+  }
+
+  Future<void> _writeAccessToken(String accessToken) async {
+    _tokenCache = accessToken;
+    await _localFileStore.serialize(LocalStorageType.AccessTokens, accessToken);
   }
 }

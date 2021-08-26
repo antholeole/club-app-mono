@@ -15,4 +15,7 @@ class WsPingMessage extends WsMessage {
 
   @override
   Map<String, dynamic> selfToJson() => _$WsPingMessageToJson(this);
+
+  @override
+  List<Object?> get props => [messageType];
 }

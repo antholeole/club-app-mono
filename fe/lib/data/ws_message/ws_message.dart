@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 enum WsMessageType { Message, Connect, Ping }
@@ -15,7 +16,7 @@ extension DiscriminatorString on WsMessageType {
   }
 }
 
-abstract class WsMessage {
+abstract class WsMessage extends Equatable {
   const WsMessage();
 
   @protected
