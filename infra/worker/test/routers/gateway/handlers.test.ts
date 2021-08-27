@@ -70,7 +70,7 @@ describe('gateway handlers', () => {
 
         describe('online users', () => {
             test('should delete online user', async () => {
-                ONLINE_USERS.put(sub, 'no matter')
+                await ONLINE_USERS.put(sub, 'no matter')
 
                 await disconnectRoute(mockWsMessage)
 

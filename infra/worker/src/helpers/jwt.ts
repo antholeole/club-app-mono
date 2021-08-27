@@ -15,8 +15,13 @@ export const decodeJwt = (token: string, ignoreExpiration = false): Record<strin
             issuer: ISSUER,
             ignoreExpiration
         }) as Record<string, unknown>
-    } catch (e) {
-        throw new StatusError(401, `JWT verification failed: ${e.message}`)
+    } catch (e: unknown) {
+        if (e instanceof Error) {
+            throw new StatusError(401, `JWT verification failed: ${e.message}`)
+        } else {
+            throw new StatusError(401, `JWT verification failed for unknown reason: ${e}`)
+        }
+        
     }
 }
 

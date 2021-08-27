@@ -38,9 +38,9 @@ export const refreshRoute = async (refreshParams: Static<typeof RefreshRequest>)
     let decryptedHash: ArrayBuffer
     try {
         decryptedHash = await getDecryptedKV(REFRESH_TOKENS, refreshParams.userId, SECRET)
-    } catch (e) {
-        //instanceof does not work here. idk y
-        if (e.constructor.name == 'NotFoundError') {
+    } catch (e: unknown) {
+        // eslint-disable-next-line @typescript-eslint/ban-types
+        if ((e as object).constructor.name == 'NotFoundError') {
             throw new StatusError(404, `user with id ${refreshParams.userId} not found`)
         } else {
             throw e

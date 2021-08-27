@@ -1,19 +1,25 @@
 on:
   push:
+    branches-ignore:
+      - master
+  pull_request:
     branches:
-      - '!main'
+      - staging
     paths:
-      - fe/**
+      - ./fe/**
+defaults:
+  run:
+    working-directory: ./fe
 jobs:
-  tests:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
       - name: Install and set Flutter version
-        uses: subosito/flutter-action@v1.4.0
+        uses: subosito/flutter-action@v1.5.3
         with:
-          flutter-version: '2.0.1'
+          channel: 'stable'
       - name: Restore packages
         run: flutter pub get
       - name: Run build runner
@@ -21,6 +27,14 @@ jobs:
       - name: Analyze
         run: flutter analyze
       - name: Run tests
-        run: flutter test --coverage
-
-
+        run: flutter test --coverage  
+      - name: Remove generated
+        run: sudo apt-get install -y lcov && make t-clean
+      - name: Upload code-cov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: coverage/out_cov.info
+          flags: flutter,unittests
+          name: flutter-unit
+          fail_ci_if_error: true

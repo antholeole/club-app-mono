@@ -25,24 +25,26 @@ global.beforeAll(() => {
         async toThrowStatusError(resp: () => (Promise<Response> | Response), expected: number, message: string): Promise<jest.CustomMatcherResult> {
           try {
             await resp()
-          } catch (e) {
+          } catch (e: unknown) {
             if (!(e instanceof StatusError)) {
               return {
                 message: () => `handler threw ${JSON.stringify(e, null, '\t')} instead of StatusError`,
                 pass: false
               }
             }
-    
-            if (e.status != expected) {
+
+            const statusError = e as StatusError
+                
+            if (statusError.status != expected) {
               return {
-                message: () => `handler threw status ${e.status} (${e.message}), not ${expected}`,
+                message: () => `handler threw status ${statusError.status} (${statusError.message}), not ${expected}`,
                 pass: false
               }
             }
 
-            if (message && e.message != message) {
+            if (message && statusError.message != message) {
               return {
-                message: () => `handler threw status ${e.status} with incorrect message (${e.message}), not ${message}`,
+                message: () => `handler threw status ${statusError.status} with incorrect message (${statusError.message}), not ${message}`,
                 pass: false
               }
             }
