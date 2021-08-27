@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fe/data/models/group.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
+import 'package:fe/services/local_data/token_manager.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/gql_req_or_throw_failure.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
@@ -22,6 +23,7 @@ class MainCubit extends Cubit<MainState> {
   final _localUserService = getIt<LocalUserService>();
   final _localFileStore = getIt<LocalFileStore>();
   final _secureStorage = getIt<FlutterSecureStorage>();
+  final _tokenManager = getIt<TokenManager>();
   final _config = getIt<Config>();
 
   MainCubit() : super(MainState.loading()) {
@@ -45,7 +47,7 @@ class MainCubit extends Cubit<MainState> {
     await Future.wait([
       _localFileStore.clear(),
       _secureStorage.deleteAll(),
-      _localUserService.logOut()
+      _tokenManager.delete()
     ]);
     emit(MainState.logOut(withError: withError));
   }

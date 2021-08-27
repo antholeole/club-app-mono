@@ -4,6 +4,7 @@ import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
+import 'package:fe/services/local_data/token_manager.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/errors/handler.dart';
@@ -51,7 +52,7 @@ void main() {
           when(() => getIt<FlutterSecureStorage>().deleteAll())
               .thenAnswer((_) async => null);
 
-          when(() => getIt<LocalUserService>().logOut())
+          when(() => getIt<TokenManager>().delete())
               .thenAnswer((_) async => null);
         },
         build: () => MainCubit(),
@@ -60,7 +61,7 @@ void main() {
         verify: (c) => [
               getIt<LocalFileStore>().clear,
               getIt<FlutterSecureStorage>().deleteAll,
-              getIt<LocalUserService>().logOut
+              getIt<TokenManager>().delete
             ].forEach((fn) => verify(() => fn()).called(1)));
 
     blocTest<MainCubit, MainState>(
@@ -72,7 +73,7 @@ void main() {
           when(() => getIt<FlutterSecureStorage>().deleteAll())
               .thenAnswer((_) async => null);
 
-          when(() => getIt<LocalUserService>().logOut())
+          when(() => getIt<TokenManager>().delete())
               .thenAnswer((_) async => null);
         },
         build: () => MainCubit(),
@@ -81,7 +82,7 @@ void main() {
         verify: (c) => [
               getIt<LocalFileStore>().clear,
               getIt<FlutterSecureStorage>().deleteAll,
-              getIt<LocalUserService>().logOut
+              getIt<TokenManager>().delete
             ].forEach((fn) => verify(() => fn()).called(1)));
   });
 
