@@ -2,7 +2,6 @@ import { StatusError } from 'itty-router-extras'
 import type { Static } from 'runtypes'
 import { WS_API_GATEWAY } from '../constants'
 import { SendableMessage } from '../messages/sendable'
-import { readJsonBody } from './read_json_body'
 
 export const sendToWs = async (message: Static<typeof SendableMessage>): Promise<Response> => {
     const userConnection = await ONLINE_USERS.get(message.to)
@@ -19,7 +18,7 @@ export const sendToWs = async (message: Static<typeof SendableMessage>): Promise
             method: 'POST',
             body: JSON.stringify(message)
         })
-    } catch (e) {
+    } catch (e: unknown) {
         throw new StatusError(502, `Error connecting to API Gateway, ${e}`)
     }
 
