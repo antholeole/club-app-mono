@@ -1,0 +1,45 @@
+type Mutation {
+  authenticate (
+    idToken: String!
+    identityProvider: IdentityProvider!
+  ): AuthenticationResponse
+}
+
+type Mutation {
+  refreshAccessToken (
+    refreshToken: String!
+  ): AccessToken
+}
+
+enum IdentityProvider {
+  Debug
+  Google
+}
+
+input RefreshRequest {
+  refreshToken : String!
+  userId : uuid!
+}
+
+type SampleOutput {
+  accessToken : String!
+  refreshToken : String!
+  userId : uuid!
+}
+
+type accessToken {
+  accessToken : String!
+}
+
+type AccessToken {
+  accessToken : String!
+}
+
+type AuthenticationResponse {
+  accessToken : String!
+  refreshToken : String!
+  id : uuid!
+  name : String!
+  email : String
+}
+

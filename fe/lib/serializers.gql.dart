@@ -98,6 +98,7 @@ import 'package:fe/gql/upsert_group_join_token.var.gql.dart'
 import 'package:fe/schema.schema.gql.dart'
     show
         GBoolean_comparison_exp,
+        GRefreshRequest,
         GString_comparison_exp,
         Ggroup_join_tokens_aggregate_order_by,
         Ggroup_join_tokens_arr_rel_insert_input,
@@ -248,6 +249,7 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GQueryVerifySelfInThreadData_group_threads_aggregate_aggregate,
   GQueryVerifySelfInThreadReq,
   GQueryVerifySelfInThreadVars,
+  GRefreshRequest,
   GRemoveSelfFromGroupData,
   GRemoveSelfFromGroupData_delete_user_to_group,
   GRemoveSelfFromGroupReq,

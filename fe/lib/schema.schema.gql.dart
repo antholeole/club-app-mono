@@ -1166,6 +1166,24 @@ class Gorder_by extends EnumClass {
   static Gorder_by valueOf(String name) => _$gorderByValueOf(name);
 }
 
+abstract class GRefreshRequest
+    implements Built<GRefreshRequest, GRefreshRequestBuilder> {
+  GRefreshRequest._();
+
+  factory GRefreshRequest([Function(GRefreshRequestBuilder b) updates]) =
+      _$GRefreshRequest;
+
+  String get refreshToken;
+  _i2.UuidType get userId;
+  static Serializer<GRefreshRequest> get serializer =>
+      _$gRefreshRequestSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(GRefreshRequest.serializer, this)
+          as Map<String, dynamic>);
+  static GRefreshRequest? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(GRefreshRequest.serializer, json);
+}
+
 abstract class GString_comparison_exp
     implements Built<GString_comparison_exp, GString_comparison_expBuilder> {
   GString_comparison_exp._();

@@ -1,4 +1,4 @@
-import { decodeJwt, encodeJwt } from '../../src/helpers/jwt'
+import { encodeJwt } from '../../src/helpers/create_jwt'
 import jwt from 'jsonwebtoken'
 
 jest.mock('jsonwebtoken')
@@ -12,36 +12,6 @@ describe('jwt', () => {
     afterEach(() => {
         verify.mockReset() 
     })    
-
-    describe('decode', () => {
-        test('should throw 401 if not in Bearer format', () => {
-            expect(() => decodeJwt('Not Bearer TOKEN')).toThrowStatusError(401)
-        })
-
-        test('should throw 401 if jwt unauthorized', () => {
-            verify.mockImplementationOnce(() => {
-                throw Error('error')
-        })
-
-            expect(() => decodeJwt('Bearer TOKEN')).toThrowStatusError(401)
-        })
-
-        test('should NOT ignoreExpired by default', () => {
-            verify.mockReturnValueOnce('valid')
-
-            decodeJwt('Bearer bear')
-
-            expect(verify.mock.calls[0][2]?.ignoreExpiration).toBe(false)
-        })
-        
-        test('should NOT throw if ignoreExpired is true and expired', () => {
-            verify.mockReturnValueOnce('valid')
-
-            decodeJwt('Bearer bear', true)
-
-            expect(verify.mock.calls[0][2]?.ignoreExpiration).toBe(true)
-        })
-    })
 
     describe('enconde', () => {
         test('should allow other options', () => {

@@ -2,12 +2,12 @@ import 'package:fe/constants.dart';
 import 'package:fe/data/json/backend_access_tokens.dart';
 import 'package:fe/data/json/refresh_carrier.dart';
 import 'package:fe/service_locator.dart';
-import 'package:fe/services/clients/http_client/http_client.dart';
-import 'package:fe/services/clients/http_client/unauth_http_client.dart';
 
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
+import 'package:fe/stdlib/errors/gql_req_or_throw_failure.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
+import 'package:ferry/ferry.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'local_file_store.dart';
@@ -16,8 +16,8 @@ import 'local_user_service.dart';
 class TokenManager {
   final _secureStorage = getIt<FlutterSecureStorage>();
   final _localFileStore = getIt<LocalFileStore>();
-  final _unauthClient = getIt<UnauthHttpClient>();
   final _localUserService = getIt<LocalUserService>();
+  final _gqlClient = getIt<Client>();
 
   String? _tokenCache;
 
@@ -59,6 +59,8 @@ class TokenManager {
     if (refreshToken == null) {
       throw const Failure(status: FailureStatus.RefreshFail);
     }
+
+    gqlReqOrThrowFailure(request, gqlClient)
 
     try {
       final resp = await _unauthClient.postReq('/auth/refresh',

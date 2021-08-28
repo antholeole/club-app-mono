@@ -986,6 +986,8 @@ enum messages_update_column {
 
 """mutation root"""
 type mutation_root {
+  actionName(arg1: RefreshRequest!): SampleOutput
+
   """
   delete data from the table: "group_join_tokens"
   """
@@ -1684,6 +1686,15 @@ type query_root {
 
   """fetch data from the table: "users" using primary key columns"""
   users_by_pk(id: uuid!): users
+}
+
+input RefreshRequest {
+  refreshToken: String!
+  userId: uuid!
+}
+
+type SampleOutput {
+  accessToken: String!
 }
 
 """

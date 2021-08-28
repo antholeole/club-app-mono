@@ -23,12 +23,14 @@ function getDotEnvVariable(variable) {
 if (process.env.NODE_ENV === 'development') {
   const hasuraPassword = getDotEnvVariable('ADMIN_SECRET')
   const jwtSecret = getDotEnvVariable('JWT_SECRET')
+  const webhookKey = getDotEnvVariable('WEBHOOK_SECRET_KEY')
 
   plugins.push(
     new webpack.DefinePlugin({
       ENVIRONMENT: JSON.stringify('dev'),
       HASURA_PASSWORD: hasuraPassword,
-      SECRET: jwtSecret
+      SECRET: jwtSecret,
+      WEBHOOK_SECRET_KEY: webhookKey
     })
   )
 
