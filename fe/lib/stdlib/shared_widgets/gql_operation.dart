@@ -1,3 +1,4 @@
+import 'package:fe/services/clients/gql_client/gql_client.dart';
 import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:ferry/ferry.dart';
@@ -28,7 +29,7 @@ class GqlOperation<TData, TVars> extends StatefulWidget {
 
 class _GqlOperationState<TData, TVars>
     extends State<GqlOperation<TData, TVars>> {
-  final _client = getIt<Client>();
+  final _client = getIt<GqlClient>();
   final _handler = getIt<Handler>();
   TData? _resultFromCache;
 
@@ -71,7 +72,7 @@ class _GqlOperationState<TData, TVars>
 
         return widget.onResponse(response.data!);
       },
-      client: _client,
+      client: _client.innerClient,
     );
   }
 

@@ -7,7 +7,6 @@ abstract class Config {
   bool get httpIsSecure;
   bool get playTaxingAnimations;
   bool get refreshLocalCacheOnReload;
-  bool get memoryCache;
 
   //use in exclusive cases where
   //testing requires a different variable.
@@ -36,9 +35,6 @@ class DevConfig extends Config {
   bool get refreshLocalCacheOnReload => false;
 
   @override
-  bool get memoryCache => false;
-
-  @override
   bool get testing => false;
 }
 
@@ -60,9 +56,6 @@ class ProdConfig extends Config {
 
   @override
   bool get refreshLocalCacheOnReload => false;
-
-  @override
-  bool get memoryCache => false;
 
   @override
   bool get testing => false;

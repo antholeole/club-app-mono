@@ -3,9 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'package:fe/data/models/message.dart';
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/data/models/user.dart';
+import 'package:fe/services/clients/gql_client/gql_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
-import 'package:fe/stdlib/errors/gql_req_or_throw_failure.dart';
-import 'package:ferry/ferry.dart';
 import 'package:meta/meta.dart';
 import 'package:fe/gql/query_messages_in_thread.req.gql.dart';
 import 'package:fe/gql/query_messages_in_thread.data.gql.dart';
@@ -16,7 +15,7 @@ import '../../../service_locator.dart';
 part 'chat_state.dart';
 
 class ChatCubit extends Cubit<ChatState> {
-  final _gqlClient = getIt<Client>();
+  final _gqlClient = getIt<GqlClient>();
 
   ChatCubit() : super(ChatState.inital());
 
@@ -24,11 +23,9 @@ class ChatCubit extends Cubit<ChatState> {
     GQueryMessagesInThreadData resp;
 
     try {
-      resp = await gqlReqOrThrowFailure(
-          GQueryMessagesInThreadReq((q) => q
-            ..vars.before = before
-            ..vars.threadId = thread.id),
-          _gqlClient);
+      resp = await _gqlClient.request(GQueryMessagesInThreadReq((q) => q
+        ..vars.before = before
+        ..vars.threadId = thread.id));
     } on Failure catch (f) {
       emit(ChatState.failure(f));
       return;

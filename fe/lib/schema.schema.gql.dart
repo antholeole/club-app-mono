@@ -831,6 +831,20 @@ class Ggroups_update_column extends EnumClass {
       _$ggroupsUpdateColumnValueOf(name);
 }
 
+class GIdentityProvider extends EnumClass {
+  const GIdentityProvider._(String name) : super(name);
+
+  static const GIdentityProvider Debug = _$gIdentityProviderDebug;
+
+  static const GIdentityProvider Google = _$gIdentityProviderGoogle;
+
+  static Serializer<GIdentityProvider> get serializer =>
+      _$gIdentityProviderSerializer;
+  static BuiltSet<GIdentityProvider> get values => _$gIdentityProviderValues;
+  static GIdentityProvider valueOf(String name) =>
+      _$gIdentityProviderValueOf(name);
+}
+
 abstract class Gmessages_aggregate_order_by
     implements
         Built<Gmessages_aggregate_order_by,
@@ -1164,24 +1178,6 @@ class Gorder_by extends EnumClass {
   static Serializer<Gorder_by> get serializer => _$gorderBySerializer;
   static BuiltSet<Gorder_by> get values => _$gorderByValues;
   static Gorder_by valueOf(String name) => _$gorderByValueOf(name);
-}
-
-abstract class GRefreshRequest
-    implements Built<GRefreshRequest, GRefreshRequestBuilder> {
-  GRefreshRequest._();
-
-  factory GRefreshRequest([Function(GRefreshRequestBuilder b) updates]) =
-      _$GRefreshRequest;
-
-  String get refreshToken;
-  _i2.UuidType get userId;
-  static Serializer<GRefreshRequest> get serializer =>
-      _$gRefreshRequestSerializer;
-  Map<String, dynamic> toJson() =>
-      (_i1.serializers.serializeWith(GRefreshRequest.serializer, this)
-          as Map<String, dynamic>);
-  static GRefreshRequest? fromJson(Map<String, dynamic> json) =>
-      _i1.serializers.deserializeWith(GRefreshRequest.serializer, json);
 }
 
 abstract class GString_comparison_exp

@@ -1,7 +1,6 @@
 import 'package:fe/config.dart';
 import 'package:fe/flows/app_state.dart';
 import 'package:fe/service_locator.dart';
-import 'package:fe/services/clients/http_client/unauth_http_client.dart';
 import 'package:fe/services/clients/ws_client/ws_client.dart';
 import 'package:fe/services/local_data/image_handler.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
@@ -27,7 +26,6 @@ Future<void> registerAllMockServices({needCubitAutoEvents = false}) {
   getIt.registerSingleton<LocalUserService>(MockLocalUserService());
   getIt.registerSingleton<FlutterSecureStorage>(MockFlutterSecureStorage());
   getIt.registerSingleton<ImageHandler>(MockImageHandler.getMock());
-  getIt.registerSingleton<UnauthHttpClient>(MockUnauthHttpClient());
   getIt.registerSingleton<GoogleSignIn>(MockGoogleSignIn());
   getIt.registerSingleton(FlowController(AppState.loading()));
   getIt.registerSingleton<http.Client>(MockHttpClient.getMock());

@@ -27,6 +27,7 @@ services:
       HASURA_GRAPHQL_JWT_SECRET: '{"type": "HS256","key": "${JWT_SECRET}"}'
       WEBHOOK_URL: '${WEBHOOK_URL}'
       WEBHOOK_SECRET_KEY: '${WEBHOOK_SECRET_KEY}'
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: 'unauthenticated'
     volumes:
       - ./migrations:/migrations
       - ./metadata:/metadata

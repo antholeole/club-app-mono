@@ -1,6 +1,10 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
 import 'package:built_value/standard_json_plugin.dart' show StandardJsonPlugin;
+import 'package:fe/gql/authenticate.data.gql.dart'
+    show GAuthenticateData, GAuthenticateData_authenticate;
+import 'package:fe/gql/authenticate.req.gql.dart' show GAuthenticateReq;
+import 'package:fe/gql/authenticate.var.gql.dart' show GAuthenticateVars;
 import 'package:fe/gql/fake/fake.data.gql.dart'
     show GFakeGqlData, GFakeGqlData_group_join_tokens;
 import 'package:fe/gql/fake/fake.req.gql.dart' show GFakeGqlReq;
@@ -75,6 +79,10 @@ import 'package:fe/gql/query_verify_self_in_thread.req.gql.dart'
     show GQueryVerifySelfInThreadReq;
 import 'package:fe/gql/query_verify_self_in_thread.var.gql.dart'
     show GQueryVerifySelfInThreadVars;
+import 'package:fe/gql/refresh.data.gql.dart'
+    show GRefreshData, GRefreshData_authenticate;
+import 'package:fe/gql/refresh.req.gql.dart' show GRefreshReq;
+import 'package:fe/gql/refresh.var.gql.dart' show GRefreshVars;
 import 'package:fe/gql/remove_self_from_group.data.gql.dart'
     show
         GRemoveSelfFromGroupData,
@@ -98,7 +106,7 @@ import 'package:fe/gql/upsert_group_join_token.var.gql.dart'
 import 'package:fe/schema.schema.gql.dart'
     show
         GBoolean_comparison_exp,
-        GRefreshRequest,
+        GIdentityProvider,
         GString_comparison_exp,
         Ggroup_join_tokens_aggregate_order_by,
         Ggroup_join_tokens_arr_rel_insert_input,
@@ -203,6 +211,10 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   ..add(DateTimeSerializer())
   ..addPlugin(StandardJsonPlugin());
 @SerializersFor([
+  GAuthenticateData,
+  GAuthenticateData_authenticate,
+  GAuthenticateReq,
+  GAuthenticateVars,
   GBoolean_comparison_exp,
   GFakeGqlData,
   GFakeGqlData_group_join_tokens,
@@ -213,6 +225,7 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GGetMessagesData_messages_user,
   GGetMessagesReq,
   GGetMessagesVars,
+  GIdentityProvider,
   GQueryAllGroupsConditionalJoinTokenData,
   GQueryAllGroupsConditionalJoinTokenData_admin_groups,
   GQueryAllGroupsConditionalJoinTokenData_admin_groups_group,
@@ -249,7 +262,10 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GQueryVerifySelfInThreadData_group_threads_aggregate_aggregate,
   GQueryVerifySelfInThreadReq,
   GQueryVerifySelfInThreadVars,
-  GRefreshRequest,
+  GRefreshData,
+  GRefreshData_authenticate,
+  GRefreshReq,
+  GRefreshVars,
   GRemoveSelfFromGroupData,
   GRemoveSelfFromGroupData_delete_user_to_group,
   GRemoveSelfFromGroupReq,

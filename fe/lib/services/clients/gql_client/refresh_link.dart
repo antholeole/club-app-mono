@@ -11,6 +11,8 @@ class RefresherLink extends Link {
   final _tokenManager = getIt<TokenManager>();
 
   Future<Map<String, String>> _buildTokenHeader() async {
+    final token = _tokenManager.read();
+
     return {
       'Authorization': 'Bearer ${await _tokenManager.read()}',
       'x-hasura-role': 'user'

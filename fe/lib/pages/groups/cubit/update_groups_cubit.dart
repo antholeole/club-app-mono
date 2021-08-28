@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fe/data/models/group.dart';
+import 'package:fe/services/clients/gql_client/gql_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
-import 'package:fe/stdlib/errors/gql_req_or_throw_failure.dart';
 import 'package:fe/stdlib/helpers/random_string.dart';
 import 'package:fe/gql/remove_self_from_group.req.gql.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
@@ -22,7 +22,7 @@ part 'data_carriers/groups_page_group.dart';
 
 class UpdateGroupsCubit extends Cubit<UpdateGroupsState> {
   final LocalUserService _localUserService = getIt<LocalUserService>();
-  final Client _gqlClient = getIt<Client>();
+  final _gqlClient = getIt<GqlClient>();
   final Config config = getIt<Config>();
 
   UpdateGroupsCubit() : super(UpdateGroupsState.fetchingGroups()) {
@@ -38,7 +38,7 @@ class UpdateGroupsCubit extends Cubit<UpdateGroupsState> {
 
     GQueryAllGroupsConditionalJoinTokenData groupsData;
     try {
-      groupsData = await gqlReqOrThrowFailure(groupsReq, _gqlClient);
+      groupsData = await _gqlClient.request(groupsReq);
     } on Failure catch (f) {
       emit(UpdateGroupsState.failure(f));
       return;
@@ -81,11 +81,9 @@ class UpdateGroupsCubit extends Cubit<UpdateGroupsState> {
     _updateSingleGroup(groupId, joinTokenState: JoinTokenState.adminLoading());
 
     try {
-      await gqlReqOrThrowFailure(
-          GUpsertGroupJoinTokenReq((q) => q
-            ..vars.group_id = groupId
-            ..vars.new_token = token),
-          _gqlClient);
+      await _gqlClient.request(GUpsertGroupJoinTokenReq((q) => q
+        ..vars.group_id = groupId
+        ..vars.new_token = token));
     } on Failure catch (f) {
       emit(UpdateGroupsState.failure(f));
       return;
@@ -110,11 +108,9 @@ class UpdateGroupsCubit extends Cubit<UpdateGroupsState> {
     final userId = await _localUserService.getLoggedInUserId();
 
     try {
-      await gqlReqOrThrowFailure(
-          GRemoveSelfFromGroupReq((q) => q
-            ..vars.groupId = groupId
-            ..vars.userId = userId),
-          _gqlClient);
+      await _gqlClient.request(GRemoveSelfFromGroupReq((q) => q
+        ..vars.groupId = groupId
+        ..vars.userId = userId));
     } on Failure catch (f) {
       _updateSingleGroup(groupId, leaveState: LeavingState.failure(f));
       return;
