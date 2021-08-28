@@ -117,15 +117,6 @@ class WsClient {
     await initalize();
   }
 
-  void send(WsMessage message) {
-    if (_wsChannel == null) {
-      throw const Failure(
-          status: FailureStatus.NoConn, message: 'not connected to server');
-    }
-
-    _wsChannel!.sink.add(json.encode(message.toJson()));
-  }
-
   Future<void> _handleWsException(Object e) async {
     await _handler.reportUnknown(e);
 

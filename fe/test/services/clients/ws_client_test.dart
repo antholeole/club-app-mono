@@ -290,30 +290,6 @@ void main() {
           await shouldClose;
         });
       });
-
-      group('send', () {
-        test('should pipe message though', () async {
-          when(() => getIt<TokenManager>().read())
-              .thenAnswer((_) async => 'token');
-
-          final wsClient = WsClient();
-          await wsClient.initalize();
-
-          final message =
-              WsMessageMessage(message: 'hi', toId: UuidType.generate());
-
-          final shouldSendMessage = expectLater(
-              channel!.stream,
-              emits(isA<String>().having(
-                  (self) => WsMessageMessage.fromJson(json.decode(self)),
-                  'jsonable',
-                  message)));
-
-          wsClient.send(message);
-
-          await shouldSendMessage;
-        });
-      });
     });
   });
 }
