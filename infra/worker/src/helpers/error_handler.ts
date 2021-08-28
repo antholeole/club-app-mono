@@ -15,7 +15,7 @@ export const errorHandler = (e: Error): Response => {
         throw e
     } else {
         return new Response(JSON.stringify({
-            'message': 'unknown error',
+            'message': e.message ?? 'unknown error',
             'code': 400
         }))
     }

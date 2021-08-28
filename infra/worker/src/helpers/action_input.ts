@@ -24,17 +24,17 @@ const verifyReqFromServer = (req: Request, jsonBody: any): jsonBody is IActionIn
     return true
 }
 
-export const unauthRoute = async <T> (req: Request, handler: (p0: IActionInput<T>) => Promise<Response>): Promise<Response> => {
+export const unauthRoute = async <T>(req: Request, handler: (p0: IActionInput<T>) => Promise<Response>): Promise<Response> => {
     const body = await req.json()
     verifyReqFromServer(req, body)
     return handler(body)
 }
 
-export const authRoute = async <T> (req: Request, handler: (p0: IAuthActionInput<T>) => Promise<Response>): Promise<Response> => {
+export const authRoute = async <T>(req: Request, handler: (p0: IAuthActionInput<T>) => Promise<Response>): Promise<Response> => {
     const body = await req.json()
 
     verifyReqFromServer(req, body)
-    
+
     if (body.session_variables['x-hasura-user-id'] == null) {
         throw new StatusError(401, 'please authorize')
     }

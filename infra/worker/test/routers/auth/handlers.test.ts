@@ -120,14 +120,14 @@ describe('auth routes', () => {
                         name: userName,
                         sub: userSub
                     }))
-    
-                    const verifyStub = jest.spyOn(authHelpers, 'getFakeIdentifier')
-    
-                    verifyStub.mockReturnValue({
+
+                    const verifyStub = jest.spyOn(authHelpers, 'verifyIdTokenWithGoogle')
+
+                    verifyStub.mockReturnValue(Promise.resolve({
+                        name: userName,
                         sub: userSub,
-                        name: userName
-                    })
-    
+                    }))
+
                     await registerRoute({
                         action: 'adasd',
                         input: {
@@ -146,14 +146,14 @@ describe('auth routes', () => {
                         name: userName,
                         sub: userSub
                     }))
-    
+
                     const verifyStub = jest.spyOn(authHelpers, 'verifyIdTokenWithGoogle')
-    
+
                     verifyStub.mockReturnValue(Promise.resolve({
                         name: userName,
                         sub: userSub,
                     }))
-    
+
                     await registerRoute({
                         action: 'adasd',
                         input: {
@@ -190,7 +190,7 @@ describe('auth routes', () => {
                 email: userEmail
             }))
 
-            const resp =  await registerRoute({
+            const resp = await registerRoute({
                 action: 'adasd',
                 input: {
                     identityProvider: 'Google',
@@ -213,14 +213,13 @@ describe('auth routes', () => {
 
             await putEncryptedKV(REFRESH_TOKENS, testUserId, fakeRefreshToken, SECRET)
 
-            const resp = await refreshRoute({ 
+            const resp = await refreshRoute({
                 action: 'asdasd',
                 input: {
+                    userId: testUserId,
                     refreshToken: fakeRefreshToken
                 },
-                session_variables: {
-                    'x-hasura-user-id': testUserId
-                }
+                session_variables: {}
             })
 
             expect(resp.status).toEqual(200)
@@ -230,14 +229,13 @@ describe('auth routes', () => {
             const testUserId = 'test_id'
             const fakeRefreshToken = 'fake_refresh_token'
 
-            await expect(async () => await refreshRoute({ 
+            await expect(async () => await refreshRoute({
                 action: 'asdasd',
                 input: {
+                    userId: testUserId,
                     refreshToken: fakeRefreshToken
                 },
-                session_variables: {
-                    'x-hasura-user-id': testUserId
-                }
+                session_variables: {}
             })).toThrowStatusError(404)
         })
 
@@ -248,14 +246,13 @@ describe('auth routes', () => {
 
             await putEncryptedKV(REFRESH_TOKENS, testUserId, fakeRefreshToken, SECRET)
 
-            await expect(async () => await refreshRoute({ 
+            await expect(async () => await refreshRoute({
                 action: 'asdasd',
                 input: {
-                    refreshToken: notFakeRefreshToken
+                    refreshToken: notFakeRefreshToken,
+                    userId: testUserId
                 },
-                session_variables: {
-                    'x-hasura-user-id': testUserId
-                }
+                session_variables: {}
             })).toThrowStatusError(402)
         })
     })
