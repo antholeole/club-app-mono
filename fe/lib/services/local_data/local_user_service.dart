@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:fe/data/models/user.dart';
 import 'package:fe/service_locator.dart';
-import 'package:fe/services/local_data/token_manager.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
@@ -15,7 +14,6 @@ const _USER_ID_KEY = 'user:id:self';
 class LocalUserService {
   final SharedPreferences _sharedPreferences = getIt<SharedPreferences>();
   final LocalFileStore _localFileStore = getIt<LocalFileStore>();
-  final TokenManager _tokenManager = getIt<TokenManager>();
 
   // returns userId, from close storage if possible.
   // prefer this ove getLoggedInUsr.
@@ -38,10 +36,6 @@ class LocalUserService {
     }
 
     return User.fromJson(json.decode(userStr));
-  }
-
-  Future<void> logOut() async {
-    await Future.wait([_tokenManager.delete()]);
   }
 
   Future<void> saveChanges(User other) {
