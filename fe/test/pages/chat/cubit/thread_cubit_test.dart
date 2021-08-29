@@ -4,12 +4,11 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/service_locator.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
-import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
-import 'package:ferry/ferry.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fe/gql/query_self_threads_in_group.data.gql.dart';
 import 'package:fe/gql/query_self_threads_in_group.var.gql.dart';
@@ -18,7 +17,6 @@ import 'package:fe/gql/query_self_threads_in_group.req.gql.dart';
 import 'package:fe/gql/query_verify_self_in_thread.data.gql.dart';
 import 'package:fe/gql/query_verify_self_in_thread.var.gql.dart';
 import 'package:fe/gql/query_verify_self_in_thread.req.gql.dart';
-import 'package:gql_exec/gql_exec.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'package:mocktail/mocktail.dart';
@@ -104,7 +102,7 @@ void main() {
     blocTest<ThreadCubit, ThreadState>('should cache thread',
         setUp: () {
           stubGqlResponse<GQuerySelfThreadsInGroupData,
-                  GQuerySelfThreadsInGroupVars>(getIt<Client>(),
+                  GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
               data: (_) => GQuerySelfThreadsInGroupData.fromJson({
                     'group_threads': [
                       {
@@ -128,7 +126,7 @@ void main() {
     blocTest<ThreadCubit, ThreadState>('should emit thread if still in thread',
         setUp: () {
           stubGqlResponse<GQuerySelfThreadsInGroupData,
-                  GQuerySelfThreadsInGroupVars>(getIt<Client>(),
+                  GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
               data: (_) => GQuerySelfThreadsInGroupData.fromJson({
                     'group_threads_aggregate': {
                       'aggregate': {'count': 1}
@@ -151,7 +149,7 @@ void main() {
               .thenReturn(json.encode(mockThread.toJson()));
 
           stubGqlResponse<GQueryVerifySelfInThreadData,
-                  GQueryVerifySelfInThreadVars>(getIt<Client>(),
+                  GQueryVerifySelfInThreadVars>(getIt<AuthGqlClient>(),
               requestMatcher: isA<GQueryVerifySelfInThreadReq>(),
               data: (_) => GQueryVerifySelfInThreadData.fromJson({
                     'group_threads_aggregate': {
@@ -160,7 +158,7 @@ void main() {
                   })!);
 
           stubGqlResponse<GQuerySelfThreadsInGroupData,
-                  GQuerySelfThreadsInGroupVars>(getIt<Client>(),
+                  GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
               requestMatcher: isA<GQuerySelfThreadsInGroupReq>(),
               data: (_) => GQuerySelfThreadsInGroupData.fromJson(
                   {'group_threads': []})!);
@@ -178,7 +176,7 @@ void main() {
         'if api call returns no thread should emit no thread',
         setUp: () {
           stubGqlResponse<GQuerySelfThreadsInGroupData,
-                  GQuerySelfThreadsInGroupVars>(getIt<Client>(),
+                  GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
               requestMatcher: isA<GQuerySelfThreadsInGroupReq>(),
               data: (_) => GQuerySelfThreadsInGroupData.fromJson(
                   {'group_threads': []})!);
@@ -191,7 +189,7 @@ void main() {
         'if api call returns thread should emit first thread',
         setUp: () {
           stubGqlResponse<GQuerySelfThreadsInGroupData,
-                  GQuerySelfThreadsInGroupVars>(getIt<Client>(),
+                  GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
               requestMatcher: isA<GQuerySelfThreadsInGroupReq>(),
               data: (_) => GQuerySelfThreadsInGroupData.fromJson({
                     'group_threads': [
@@ -211,12 +209,10 @@ void main() {
         'if api call errors should emit no thread',
         setUp: () {
           stubGqlResponse<GQuerySelfThreadsInGroupData,
-                  GQuerySelfThreadsInGroupVars>(getIt<Client>(),
+                  GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
               requestMatcher: isA<GQuerySelfThreadsInGroupReq>(),
-              errors: (_) => [const GraphQLError(message: 'fake error')]);
-
-          when(() => getIt<Handler>().basicGqlErrorHandler(any())).thenAnswer(
-              (_) async => const Failure(status: FailureStatus.GQLMisc));
+              error: (_) => const Failure(
+                  status: FailureStatus.GQLMisc, message: 'fake error'));
         },
         build: () => ThreadCubit(group: mockGroup),
         act: (cubit) => cubit.newGroup(mockGroup2),

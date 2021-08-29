@@ -1,15 +1,16 @@
 import 'dart:convert';
 
 import 'package:fe/constants.dart';
-import 'package:fe/gql/fake/fake.req.gql.dart';
 import 'package:fe/service_locator.dart';
-import 'package:fe/services/clients/gql_client/gql_client.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/services/local_data/token_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fe/gql/fake/fake.req.gql.dart';
 import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';
 
 import '../../test_helpers/get_it_helpers.dart';
+import '../../test_helpers/path_provider_setup.dart';
 
 Future<http.StreamedResponse> buildFailedGqlResponse(List<String> errors) {
   final errorResp = {
@@ -25,6 +26,16 @@ Future<http.StreamedResponse> buildFailedGqlResponse(List<String> errors) {
 }
 
 void main() {
+  final pathProviderSetups = pathProviderSetup('gql_client_test');
+
+  setUpAll(() async {
+    await pathProviderSetups[0]();
+  });
+
+  tearDownAll(() async {
+    await pathProviderSetups[1]();
+  });
+
   group('buildGqlClient', () {
     setUp(() {
       registerAllMockServices();
@@ -33,9 +44,19 @@ void main() {
     test('should use refresh token when expired or no token', () async {
       int httpCallCount = 0;
 
+      final responses = [
+        buildFailedGqlResponse([JWS_ERROR]),
+        Future<http.StreamedResponse>.value(http.StreamedResponse(
+          Stream.value(utf8.encode(jsonEncode({
+            'data': {'group_join_tokens': []}
+          }))),
+          200,
+        ))
+      ];
+
       when(() => getIt<http.Client>().send(any())).thenAnswer((invocation) {
         httpCallCount++;
-        return buildFailedGqlResponse([JWS_ERROR]);
+        return responses.removeAt(0);
       });
 
       when(() => getIt<TokenManager>().refresh())
@@ -43,14 +64,13 @@ void main() {
       when(() => getIt<TokenManager>().read())
           .thenAnswer((_) => Future.value(null));
 
-      final client = await buildGqlClient();
-      await client.request(GFakeGqlReq()).first;
+      final client = await AuthGqlClient.build();
+
+      await client.request(GFakeGqlReq());
 
       verify(() => getIt<TokenManager>().refresh()).called(1);
       expect(httpCallCount, equals(2),
           reason: 'should recall http after refresh');
     });
-
-    test('should throw revoke error if refresh fails', () async {});
   });
 }

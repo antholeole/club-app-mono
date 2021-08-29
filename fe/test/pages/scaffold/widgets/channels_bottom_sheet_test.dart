@@ -8,19 +8,17 @@ import 'package:fe/pages/scaffold/view/widgets/channels_bottom_sheet.dart';
 import 'package:fe/pages/scaffold/cubit/channels_bottom_sheet_cubit.dart';
 import 'package:fe/providers/user_provider.dart';
 import 'package:fe/service_locator.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/errors/handler.dart';
-import 'package:ferry/ferry.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gql_exec/gql_exec.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../../test_helpers/fixtures/group.dart';
@@ -108,7 +106,7 @@ void main() {
     testWidgets('should add open to chatBottomSheetCubit on show',
         (tester) async {
       stubGqlResponse<GQuerySelfThreadsInGroupData,
-              GQuerySelfThreadsInGroupVars>(getIt<Client>(),
+              GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
           data: (_) =>
               GQuerySelfThreadsInGroupData.fromJson({'group_threads': []})!);
 
@@ -123,7 +121,7 @@ void main() {
     testWidgets('should add close to chatBottomSheetCubit on dismiss',
         (tester) async {
       stubGqlResponse<GQuerySelfThreadsInGroupData,
-              GQuerySelfThreadsInGroupVars>(getIt<Client>(),
+              GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
           data: (_) =>
               GQuerySelfThreadsInGroupData.fromJson({'group_threads': []})!);
 
@@ -138,11 +136,8 @@ void main() {
         'should gracefully handle error by toasting and showing message',
         (tester) async {
       stubGqlResponse<GQuerySelfThreadsInGroupData,
-              GQuerySelfThreadsInGroupVars>(getIt<Client>(),
-          errors: (_) => [const GraphQLError(message: 'fake')]);
-
-      when(() => getIt<Handler>().basicGqlErrorHandler(any())).thenAnswer(
-          (_) async => const Failure(status: FailureStatus.GQLMisc));
+              GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
+          error: (_) => const Failure(status: FailureStatus.GQLMisc));
 
       await tester.pumpWidget(build());
       await show(tester);
@@ -165,7 +160,7 @@ void main() {
       const thread1Name = 'thread one';
       const thread2Name = 'thread two';
       stubGqlResponse<GQuerySelfThreadsInGroupData,
-              GQuerySelfThreadsInGroupVars>(getIt<Client>(),
+              GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
           data: (_) => GQuerySelfThreadsInGroupData.fromJson({
                 'group_threads': [
                   {
@@ -194,7 +189,7 @@ void main() {
       final fakeThread = Thread(name: 'han', id: UuidType.generate());
 
       stubGqlResponse<GQuerySelfThreadsInGroupData,
-              GQuerySelfThreadsInGroupVars>(getIt<Client>(),
+              GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
           data: (_) => GQuerySelfThreadsInGroupData.fromJson({
                 'group_threads': [
                   fakeThread.toJson(),

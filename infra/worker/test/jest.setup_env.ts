@@ -14,4 +14,5 @@ global.PUBLIC_KEYS = new MockKvs()
 global.REFRESH_TOKENS = new MockKvs()
 global.ONLINE_USERS = new MockKvs()
 global.encryptWorkersKv = encryptWorkersKv
+global.WEBHOOK_SECRET_KEY = 'asdkaiskdaisk'
 

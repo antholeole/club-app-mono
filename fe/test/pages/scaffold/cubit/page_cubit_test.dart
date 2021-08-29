@@ -9,8 +9,8 @@ import 'package:fe/pages/scaffold/cubit/page_cubit.dart';
 import 'package:fe/pages/scaffold/view/widgets/channels_bottom_sheet.dart';
 import 'package:fe/providers/user_provider.dart';
 import 'package:fe/service_locator.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
-import 'package:ferry/ferry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -83,7 +83,7 @@ void main() {
         final mockThreadCubit = MockThreadCubit.getMock();
 
         stubGqlResponse<GQuerySelfThreadsInGroupData,
-                GQuerySelfThreadsInGroupVars>(getIt<Client>(),
+                GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
             requestMatcher: isA<GQuerySelfThreadsInGroupReq>(),
             data: (_) => GQuerySelfThreadsInGroupData.fromJson({
                   'group_threads': [
@@ -123,7 +123,7 @@ void main() {
         final mockThreadCubit = MockThreadCubit.getMock();
 
         stubGqlResponse<GQuerySelfThreadsInGroupData,
-                GQuerySelfThreadsInGroupVars>(getIt<Client>(),
+                GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
             requestMatcher: isA<GQuerySelfThreadsInGroupReq>(),
             data: (_) => GQuerySelfThreadsInGroupData.fromJson({
                   'group_threads': [
@@ -163,7 +163,7 @@ void main() {
       testWidgets('should emit thread selected if thread selected',
           (tester) async {
         stubGqlResponse<GQuerySelfThreadsInGroupData,
-                GQuerySelfThreadsInGroupVars>(getIt<Client>(),
+                GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
             requestMatcher: isA<GQuerySelfThreadsInGroupReq>(),
             data: (_) => GQuerySelfThreadsInGroupData.fromJson({
                   'group_threads': [
@@ -197,7 +197,7 @@ void main() {
 
       testWidgets('should emit nothing if not thread selected', (tester) async {
         stubGqlResponse<GQuerySelfThreadsInGroupData,
-                GQuerySelfThreadsInGroupVars>(getIt<Client>(),
+                GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
             requestMatcher: isA<GQuerySelfThreadsInGroupReq>(),
             data: (_) => GQuerySelfThreadsInGroupData.fromJson({
                   'group_threads': [

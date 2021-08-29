@@ -5,9 +5,9 @@ import 'package:fe/pages/groups/view/widgets/group_settings.dart';
 import 'package:fe/pages/groups/view/widgets/group_tab.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/service_locator.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/theme/flippable_icon.dart';
-import 'package:ferry/ferry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -61,7 +61,7 @@ void main() {
             {fakeGroupPageGroup.group.id: fakeGroupPageGroup}));
 
     stubGqlResponse<GQueryUsersInGroupData, GQueryUsersInGroupVars>(
-        getIt<Client>(),
+        getIt<AuthGqlClient>(),
         data: (_) => GQueryUsersInGroupData.fromJson({'user_to_group': []})!);
   }
 

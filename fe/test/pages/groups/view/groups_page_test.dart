@@ -4,13 +4,13 @@ import 'package:fe/pages/groups/cubit/update_groups_cubit.dart';
 import 'package:fe/pages/groups/view/groups_page.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/service_locator.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
-import 'package:ferry/ferry.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -44,7 +44,7 @@ void main() {
   group('groups page', () {
     testWidgets('should render groupsView', (tester) async {
       stubGqlResponse<GQueryAllGroupsConditionalJoinTokenData,
-              GQueryAllGroupsConditionalJoinTokenVars>(getIt<Client>(),
+              GQueryAllGroupsConditionalJoinTokenVars>(getIt<AuthGqlClient>(),
           data: (_) => GQueryAllGroupsConditionalJoinTokenData.fromJson({
                 'member_groups': [
                   {
@@ -132,7 +132,7 @@ void main() {
       final group = Group(admin: false, id: groupId, name: groupName);
 
       stubGqlResponse<GQueryUsersInGroupData, GQueryUsersInGroupVars>(
-          getIt<Client>(),
+          getIt<AuthGqlClient>(),
           data: (_) => GQueryUsersInGroupData.fromJson({'user_to_group': []})!);
 
       whenListen(mockMainCubit, Stream<MainState>.fromIterable([]),

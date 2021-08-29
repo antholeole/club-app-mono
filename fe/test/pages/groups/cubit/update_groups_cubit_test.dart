@@ -2,6 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:fe/data/models/group.dart';
 import 'package:fe/pages/groups/cubit/update_groups_cubit.dart';
 import 'package:fe/service_locator.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
@@ -15,7 +16,6 @@ import 'package:fe/gql/upsert_group_join_token.data.gql.dart';
 import 'package:fe/gql/upsert_group_join_token.var.gql.dart';
 import 'package:fe/gql/remove_self_from_group.data.gql.dart';
 import 'package:fe/gql/remove_self_from_group.var.gql.dart';
-import 'package:gql_exec/gql_exec.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../../test_helpers/fixtures/mocks.dart';
@@ -41,11 +41,9 @@ void main() {
           'should emit failure on failure fetching groups',
           setUp: () {
             stubGqlResponse<GQueryAllGroupsConditionalJoinTokenData,
-                    GQueryAllGroupsConditionalJoinTokenVars>(getIt<Client>(),
-                errors: (_) => [const GraphQLError(message: failureMessage)]);
-
-            when(() => getIt<Handler>().basicGqlErrorHandler(any())).thenAnswer(
-                (_) async => const Failure(
+                    GQueryAllGroupsConditionalJoinTokenVars>(
+                getIt<AuthGqlClient>(),
+                error: (_) => const Failure(
                     status: FailureStatus.GQLMisc, message: failureMessage));
           },
           build: () => UpdateGroupsCubit(),
@@ -59,7 +57,8 @@ void main() {
           'should emit group with join token on admin group',
           setUp: () {
             stubGqlResponse<GQueryAllGroupsConditionalJoinTokenData,
-                    GQueryAllGroupsConditionalJoinTokenVars>(getIt<Client>(),
+                    GQueryAllGroupsConditionalJoinTokenVars>(
+                getIt<AuthGqlClient>(),
                 data: (_) => GQueryAllGroupsConditionalJoinTokenData.fromJson({
                       'admin_groups': [
                         {
@@ -90,7 +89,8 @@ void main() {
           'should emit group without join token on not admin group',
           setUp: () {
             stubGqlResponse<GQueryAllGroupsConditionalJoinTokenData,
-                    GQueryAllGroupsConditionalJoinTokenVars>(getIt<Client>(),
+                    GQueryAllGroupsConditionalJoinTokenVars>(
+                getIt<AuthGqlClient>(),
                 data: (_) => GQueryAllGroupsConditionalJoinTokenData.fromJson({
                       'admin_groups': [],
                       'member_groups': [
@@ -126,11 +126,8 @@ void main() {
               }),
           setUp: () {
             stubGqlResponse<GUpsertGroupJoinTokenData,
-                    GUpsertGroupJoinTokenVars>(getIt<Client>(),
-                errors: (_) => [const GraphQLError(message: failureMessage)]);
-
-            when(() => getIt<Handler>().basicGqlErrorHandler(any())).thenAnswer(
-                (_) async => const Failure(
+                    GUpsertGroupJoinTokenVars>(getIt<AuthGqlClient>(),
+                error: (_) => const Failure(
                     status: FailureStatus.GQLMisc, message: failureMessage));
           },
           build: () => UpdateGroupsCubit(),
@@ -157,7 +154,8 @@ void main() {
               }),
           setUp: () {
             stubGqlResponse<GUpsertGroupJoinTokenData,
-                GUpsertGroupJoinTokenVars>(getIt<Client>(), data: (invocation) {
+                    GUpsertGroupJoinTokenVars>(getIt<AuthGqlClient>(),
+                data: (invocation) {
               capturedNewJoinToken = (invocation.positionalArguments[0]
                       as OperationRequest<GUpsertGroupJoinTokenData,
                           GUpsertGroupJoinTokenVars>)
@@ -199,7 +197,7 @@ void main() {
               }),
           setUp: () {
             stubGqlResponse<GUpsertGroupJoinTokenData,
-                    GUpsertGroupJoinTokenVars>(getIt<Client>(),
+                    GUpsertGroupJoinTokenVars>(getIt<AuthGqlClient>(),
                 data: (_) => GUpsertGroupJoinTokenData.fromJson({
                       'insert_group_join_tokens_one': {'join_token': null}
                     })!);
@@ -257,12 +255,12 @@ void main() {
           'calling emitted callback should leave group and call caller',
           setUp: () {
             final mockCache = MockCache();
-            when(() => getIt<Client>().cache).thenReturn(mockCache);
+            when(() => getIt<AuthGqlClient>().cache).thenReturn(mockCache);
             when(() => mockCache.gc())
                 .thenReturn(<String>{'im a set not a map'});
 
             stubGqlResponse<GRemoveSelfFromGroupData, GRemoveSelfFromGroupVars>(
-                getIt<Client>(),
+                getIt<AuthGqlClient>(),
                 data: (_) => GRemoveSelfFromGroupData.fromJson({
                       'delete_user_to_group': {'affected_rows': 1}
                     })!);
@@ -306,7 +304,7 @@ void main() {
           'should emit failure on failed to leave group',
           setUp: () {
             final mockCache = MockCache();
-            when(() => getIt<Client>().cache).thenReturn(mockCache);
+            when(() => getIt<AuthGqlClient>().cache).thenReturn(mockCache);
             when(() => mockCache.gc())
                 .thenReturn(<String>{'im a set not a map'});
 
@@ -315,8 +313,9 @@ void main() {
                     status: FailureStatus.GQLMisc, message: failureMessage));
 
             stubGqlResponse<GRemoveSelfFromGroupData, GRemoveSelfFromGroupVars>(
-              getIt<Client>(),
-              errors: (_) => [const GraphQLError(message: failureMessage)],
+              getIt<AuthGqlClient>(),
+              error: (_) => const Failure(
+                  status: FailureStatus.GQLMisc, message: failureMessage),
             );
           },
           seed: () => UpdateGroupsState.fetched({

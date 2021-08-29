@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:fe/data/models/group.dart';
 import 'package:fe/data/models/thread.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
-import 'package:fe/stdlib/errors/gql_req_or_throw_failure.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:ferry/ferry.dart';
 import 'package:fe/gql/query_self_threads_in_group.req.gql.dart';
@@ -19,7 +19,7 @@ export 'thread_state.dart';
 
 class ThreadCubit extends Cubit<ThreadState> {
   final _sharedPrefrences = getIt<SharedPreferences>();
-  final _gqlClient = getIt<Client>();
+  final _gqlClient = getIt<AuthGqlClient>();
   final _localUserService = getIt<LocalUserService>();
   final _config = getIt<Config>();
 
@@ -101,11 +101,10 @@ class ThreadCubit extends Cubit<ThreadState> {
     }
 
     try {
-      final threads = await gqlReqOrThrowFailure(
-          GQuerySelfThreadsInGroupReq((q) => q
+      final threads =
+          await _gqlClient.request(GQuerySelfThreadsInGroupReq((q) => q
             ..vars.groupId = group.id
-            ..vars.userId = userId),
-          _gqlClient);
+            ..vars.userId = userId));
 
       if (threads.group_threads.isEmpty) {
         emit(ThreadState.noThread());
@@ -127,13 +126,11 @@ class ThreadCubit extends Cubit<ThreadState> {
     final userId = await _localUserService.getLoggedInUserId();
 
     try {
-      final resp = await gqlReqOrThrowFailure(
-          GQueryVerifySelfInThreadReq((q) => q
-            ..fetchPolicy = FetchPolicy.NetworkOnly
-            ..vars.groupId = currentGroup!.id
-            ..vars.userId = userId
-            ..vars.threadId = thread.id),
-          _gqlClient);
+      final resp = await _gqlClient.request(GQueryVerifySelfInThreadReq((q) => q
+        ..fetchPolicy = FetchPolicy.NetworkOnly
+        ..vars.groupId = currentGroup!.id
+        ..vars.userId = userId
+        ..vars.threadId = thread.id));
 
       return resp.group_threads_aggregate.aggregate!.count > 0;
     } catch (e) {

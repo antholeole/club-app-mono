@@ -10,7 +10,6 @@ import 'package:fe/pages/scaffold/cubit/page_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/scaffold_cubit.dart';
 import 'package:fe/pages/scaffold/view/main_scaffold.dart';
 import 'package:fe/providers/user_provider.dart';
-import 'package:fe/services/clients/ws_client/ws_client.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
 import 'package:fe/stdlib/errors/handler.dart';
@@ -25,9 +24,7 @@ import 'package:flow_builder/flow_builder.dart';
 class MainPage extends StatelessWidget {
   final User _user;
 
-  MainPage({required User user}) : _user = user {
-    getIt<WsClient>().initalize();
-  }
+  const MainPage({required User user}) : _user = user;
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,3 @@
-import 'package:fe/data/json/provider_access_token.dart';
 import 'package:fe/flows/app_state.dart';
 import 'package:fe/pages/login/cubit/login_cubit.dart';
 import 'package:fe/pages/login/view/widgets/sign_in_with_provider_button.dart';
