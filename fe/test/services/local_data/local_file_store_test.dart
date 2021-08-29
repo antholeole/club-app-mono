@@ -1,16 +1,17 @@
 import 'package:fe/services/local_data/local_file_store.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-void main() {
-  setUpAll(() {
-    TestWidgetsFlutterBinding.ensureInitialized();
-    const MethodChannel channel =
-        MethodChannel('plugins.flutter.io/path_provider');
+import '../../test_helpers/path_provider_setup.dart';
 
-    channel.setMockMethodCallHandler((MethodCall methodCall) async {
-      return '.';
-    });
+void main() {
+  final pathProviderSetups = pathProviderSetup('local_file_store_test');
+
+  setUpAll(() async {
+    await pathProviderSetups[0]();
+  });
+
+  tearDownAll(() async {
+    await pathProviderSetups[1]();
   });
 
   group('clear', () {

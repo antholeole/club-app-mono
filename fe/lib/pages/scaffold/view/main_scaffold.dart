@@ -1,6 +1,5 @@
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 
-import 'package:fe/pages/scaffold/view/widgets/ws_reactor.dart';
 import 'package:fe/pages/scaffold/cubit/data_carriers/main_scaffold_parts.dart';
 import 'package:fe/pages/scaffold/cubit/scaffold_cubit.dart' as sc;
 import 'package:fe/pages/scaffold/view/widgets/drawers/left_drawer/club_drawer.dart';
@@ -22,8 +21,6 @@ class MainScaffold extends StatefulWidget {
 }
 
 class _MainScaffoldState extends State<MainScaffold> {
-  double _appBarToastSize = 0;
-
   @override
   Widget build(BuildContext context) {
     final mainScaffoldParts =
@@ -32,14 +29,6 @@ class _MainScaffoldState extends State<MainScaffold> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        bottom: PreferredSize(
-            preferredSize: Size(10, _appBarToastSize),
-            child: WsReactor(
-              sizeCallback: (size) => WidgetsBinding.instance!
-                  .addPostFrameCallback((_) => setState(() {
-                        _appBarToastSize = size;
-                      })),
-            )),
         centerTitle: true,
         backwardsCompatibility: false,
         backgroundColor: const Color(0xffFBFBFB),

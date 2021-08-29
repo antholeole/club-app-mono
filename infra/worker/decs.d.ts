@@ -15,5 +15,6 @@ declare const REFRESH_TOKENS: KVNamespace
 declare const ONLINE_USERS: KVNamespace
 
 declare const HASURA_PASSWORD: string
+declare const WEBHOOK_SECRET_KEY: string
 declare const SECRET: string
 declare const ENVIRONMENT: string

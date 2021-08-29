@@ -1,13 +1,13 @@
 import 'package:fe/constants.dart';
 import 'package:fe/data/json/backend_access_tokens.dart';
-import 'package:fe/data/json/refresh_carrier.dart';
 import 'package:fe/service_locator.dart';
-import 'package:fe/services/clients/http_client/http_client.dart';
-import 'package:fe/services/clients/http_client/unauth_http_client.dart';
+import 'package:fe/services/clients/gql_client/unauth_gql_client.dart';
 
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
+import 'package:fe/gql/refresh.req.gql.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
+import 'package:ferry/ferry.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'local_file_store.dart';
@@ -16,8 +16,8 @@ import 'local_user_service.dart';
 class TokenManager {
   final _secureStorage = getIt<FlutterSecureStorage>();
   final _localFileStore = getIt<LocalFileStore>();
-  final _unauthClient = getIt<UnauthHttpClient>();
   final _localUserService = getIt<LocalUserService>();
+  final _unauthClient = getIt<UnauthGqlClient>();
 
   String? _tokenCache;
 
@@ -61,17 +61,17 @@ class TokenManager {
     }
 
     try {
-      final resp = await _unauthClient.postReq('/auth/refresh',
-          RefreshCarrier(refreshToken: refreshToken, userId: userId).toJson());
-      await _writeAccessToken(resp.body);
-      return resp.body;
-    } on HttpException catch (e) {
-      if (e.statusCode == 404) {
-        //user not found
-        throw const Failure(status: FailureStatus.RefreshFail);
-      } else {
-        rethrow;
-      }
+      final resp = await _unauthClient.request(GRefreshReq((q) => q
+        ..vars.userId = userId
+        ..vars.refreshToken = refreshToken
+        ..fetchPolicy = FetchPolicy.NetworkOnly));
+
+      final token = resp.authenticate!.accessToken;
+
+      await _writeAccessToken(token);
+      return token;
+    } on Failure catch (_) {
+      throw const Failure(status: FailureStatus.RefreshFail);
     }
   }
 

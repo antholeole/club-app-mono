@@ -1,16 +1,9 @@
-import { Union, Record, Literal, String } from 'runtypes'
+export interface IAccessTokenRequest {
+    idToken: string,
+    identityProvider: 'Google' | 'Debug'
+}
 
-const ValidProviders = Union(
-    Literal('Google'),
-    Literal('Debug')
-)
-
-export const AcessTokenRequest = Record({
-    idToken: String,
-    from: ValidProviders
-})
-
-export const RefreshRequest = Record({
-    userId: String,
-    refreshToken: String
-})
+export interface IRefreshRequest {
+    refreshToken: string
+    userId: string
+}

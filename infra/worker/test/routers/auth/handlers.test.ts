@@ -30,8 +30,12 @@ describe('auth routes', () => {
                 }))
 
                 await registerRoute({
-                    from: 'Google',
-                    idToken: 'fake.id.token'
+                    action: 'adasd',
+                    input: {
+                        identityProvider: 'Google',
+                        idToken: 'fake.id.token'
+                    },
+                    session_variables: {}
                 })
 
                 expect(addUserStub.mock.calls[0]).toEqual([userSub, userName, undefined])
@@ -51,9 +55,14 @@ describe('auth routes', () => {
                 }))
 
                 await registerRoute({
-                    from: 'Google',
-                    idToken: 'fake.id.token'
+                    action: 'adasd',
+                    input: {
+                        identityProvider: 'Google',
+                        idToken: 'fake.id.token'
+                    },
+                    session_variables: {}
                 })
+
 
                 expect(addUserStub.mock.calls[0]).toEqual([userSub, userName, userEmail])
             })
@@ -73,8 +82,12 @@ describe('auth routes', () => {
                 }))
 
                 await registerRoute({
-                    from: 'Google',
-                    idToken: 'fake.id.token'
+                    action: 'adasd',
+                    input: {
+                        identityProvider: 'Google',
+                        idToken: 'fake.id.token'
+                    },
+                    session_variables: {}
                 })
 
                 expect(new TextDecoder().decode(await getDecryptedKV(REFRESH_TOKENS, userId, SECRET))).not.toBeNull
@@ -89,8 +102,12 @@ describe('auth routes', () => {
                 }))
 
                 await registerRoute({
-                    from: 'Google',
-                    idToken: 'fake.id.token'
+                    action: 'adasd',
+                    input: {
+                        identityProvider: 'Google',
+                        idToken: 'fake.id.token'
+                    },
+                    session_variables: {}
                 })
 
                 expect(new TextDecoder().decode(await getDecryptedKV(REFRESH_TOKENS, userId, SECRET))).not.toBeNull
@@ -103,17 +120,21 @@ describe('auth routes', () => {
                         name: userName,
                         sub: userSub
                     }))
-    
-                    const verifyStub = jest.spyOn(authHelpers, 'getFakeIdentifier')
-    
-                    verifyStub.mockReturnValue({
+
+                    const verifyStub = jest.spyOn(authHelpers, 'verifyIdTokenWithGoogle')
+
+                    verifyStub.mockReturnValue(Promise.resolve({
+                        name: userName,
                         sub: userSub,
-                        name: userName
-                    })
-    
+                    }))
+
                     await registerRoute({
-                        from: 'Debug',
-                        idToken: 'fake.id.token'
+                        action: 'adasd',
+                        input: {
+                            identityProvider: 'Google',
+                            idToken: 'fake.id.token'
+                        },
+                        session_variables: {}
                     })
 
                     expect(verifyStub.mock.calls.length).toBe(1)
@@ -125,17 +146,21 @@ describe('auth routes', () => {
                         name: userName,
                         sub: userSub
                     }))
-    
+
                     const verifyStub = jest.spyOn(authHelpers, 'verifyIdTokenWithGoogle')
-    
+
                     verifyStub.mockReturnValue(Promise.resolve({
                         name: userName,
                         sub: userSub,
                     }))
-    
+
                     await registerRoute({
-                        from: 'Google',
-                        idToken: 'fake.id.token'
+                        action: 'adasd',
+                        input: {
+                            identityProvider: 'Google',
+                            idToken: 'fake.id.token'
+                        },
+                        session_variables: {}
                     })
 
                     expect(verifyStub.mock.calls.length).toBe(1)
@@ -166,8 +191,12 @@ describe('auth routes', () => {
             }))
 
             const resp = await registerRoute({
-                from: 'Google',
-                idToken: 'fake.id.token'
+                action: 'adasd',
+                input: {
+                    identityProvider: 'Google',
+                    idToken: 'fake.id.token'
+                },
+                session_variables: {}
             })
 
             expect(await resp.json()).toHaveProperty('id', userId)
@@ -185,8 +214,12 @@ describe('auth routes', () => {
             await putEncryptedKV(REFRESH_TOKENS, testUserId, fakeRefreshToken, SECRET)
 
             const resp = await refreshRoute({
-                userId: testUserId,
-                refreshToken: fakeRefreshToken
+                action: 'asdasd',
+                input: {
+                    userId: testUserId,
+                    refreshToken: fakeRefreshToken
+                },
+                session_variables: {}
             })
 
             expect(resp.status).toEqual(200)
@@ -197,8 +230,12 @@ describe('auth routes', () => {
             const fakeRefreshToken = 'fake_refresh_token'
 
             await expect(async () => await refreshRoute({
-                userId: testUserId,
-                refreshToken: fakeRefreshToken
+                action: 'asdasd',
+                input: {
+                    userId: testUserId,
+                    refreshToken: fakeRefreshToken
+                },
+                session_variables: {}
             })).toThrowStatusError(404)
         })
 
@@ -209,9 +246,13 @@ describe('auth routes', () => {
 
             await putEncryptedKV(REFRESH_TOKENS, testUserId, fakeRefreshToken, SECRET)
 
-            await expect(async () => await refreshRoute({ 
-                userId: testUserId,
-                refreshToken: notFakeRefreshToken
+            await expect(async () => await refreshRoute({
+                action: 'asdasd',
+                input: {
+                    refreshToken: notFakeRefreshToken,
+                    userId: testUserId
+                },
+                session_variables: {}
             })).toThrowStatusError(402)
         })
     })

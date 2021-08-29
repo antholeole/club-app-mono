@@ -1,8 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/service_locator.dart';
-import 'package:fe/services/clients/http_client/http_client.dart';
-import 'package:fe/services/clients/http_client/unauth_http_client.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
 import 'package:fe/stdlib/errors/failure.dart';
@@ -23,7 +22,7 @@ import '../../test_helpers/reset_mock_bloc.dart';
 
 void main() {
   setUpAll(() {
-    registerFallbackValue(const HttpException(message: 'f', statusCode: 1));
+    registerFallbackValue<Uri>(Uri(host: 'google.com'));
   });
 
   setUp(() {
@@ -32,8 +31,8 @@ void main() {
 
   group('check connectivity', () {
     test('should return no conn if no internet connection', () async {
-      when(() => getIt<UnauthHttpClient>().isConnected())
-          .thenAnswer((_) async => false);
+      when(() => getIt<Connectivity>().checkConnectivity())
+          .thenAnswer((_) async => ConnectivityResult.none);
 
       final handler = Handler();
 
@@ -42,10 +41,10 @@ void main() {
     });
 
     test('should return servers down if ping request fails', () async {
-      when(() => getIt<UnauthHttpClient>().isConnected())
-          .thenAnswer((_) async => true);
-      when(() => getIt<UnauthHttpClient>().getReq('/ping'))
-          .thenThrow((_) async => Exception('blah'));
+      when(() => getIt<Connectivity>().checkConnectivity())
+          .thenAnswer((_) async => ConnectivityResult.wifi);
+      when(() => getIt<http.Client>().get(any()))
+          .thenAnswer((_) async => http.Response('blah', 500));
 
       final handler = Handler();
 
@@ -54,9 +53,9 @@ void main() {
     });
 
     test('should return null if has both connections', () async {
-      when(() => getIt<UnauthHttpClient>().isConnected())
-          .thenAnswer((_) async => true);
-      when(() => getIt<UnauthHttpClient>().getReq('/ping'))
+      when(() => getIt<Connectivity>().checkConnectivity())
+          .thenAnswer((_) async => ConnectivityResult.wifi);
+      when(() => getIt<http.Client>().get(any()))
           .thenAnswer((_) async => http.Response('b', 200));
 
       final handler = Handler();
@@ -81,26 +80,6 @@ void main() {
       });
     });
 
-    test('inner exception is http should handle and return', () async {
-      const failure = Failure(status: FailureStatus.HttpMisc);
-      const msg = 'msgmsgmsgPLEASE';
-
-      when(() => getIt<UnauthHttpClient>().basicHttpErrorHandler(any()))
-          .thenAnswer((_) async => failure);
-
-      final handler = Handler();
-
-      expect(
-          await handler.basicGqlErrorHandler(OperationResponse(
-              operationRequest: GFakeGqlReq(),
-              linkException: const FakeLinkException(
-                  HttpException(message: msg, statusCode: 200)))),
-          equals(failure));
-
-      verify(() => getIt<UnauthHttpClient>().basicHttpErrorHandler(any()))
-          .called(1);
-    });
-
     test('should write all gql errors to custom error', () async {
       const msgs = ['first message hi', 'im the second one', 'finally last'];
 
@@ -121,8 +100,8 @@ void main() {
     });
 
     test('should return connectivity check failure if no errors', () async {
-      when(() => getIt<UnauthHttpClient>().isConnected())
-          .thenAnswer((_) async => false);
+      when(() => getIt<Connectivity>().checkConnectivity())
+          .thenAnswer((_) async => ConnectivityResult.none);
 
       final handler = Handler();
 
@@ -133,9 +112,9 @@ void main() {
     });
 
     test('should return unknown if all else fails', () async {
-      when(() => getIt<UnauthHttpClient>().isConnected())
-          .thenAnswer((_) async => true);
-      when(() => getIt<UnauthHttpClient>().getReq('/ping'))
+      when(() => getIt<Connectivity>().checkConnectivity())
+          .thenAnswer((_) async => ConnectivityResult.wifi);
+      when(() => getIt<http.Client>().get(any()))
           .thenAnswer((_) async => http.Response('b', 200));
 
       final handler = Handler();

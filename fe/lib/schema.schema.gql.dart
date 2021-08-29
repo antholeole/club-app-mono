@@ -831,6 +831,20 @@ class Ggroups_update_column extends EnumClass {
       _$ggroupsUpdateColumnValueOf(name);
 }
 
+class GIdentityProvider extends EnumClass {
+  const GIdentityProvider._(String name) : super(name);
+
+  static const GIdentityProvider Debug = _$gIdentityProviderDebug;
+
+  static const GIdentityProvider Google = _$gIdentityProviderGoogle;
+
+  static Serializer<GIdentityProvider> get serializer =>
+      _$gIdentityProviderSerializer;
+  static BuiltSet<GIdentityProvider> get values => _$gIdentityProviderValues;
+  static GIdentityProvider valueOf(String name) =>
+      _$gIdentityProviderValueOf(name);
+}
+
 abstract class Gmessages_aggregate_order_by
     implements
         Built<Gmessages_aggregate_order_by,

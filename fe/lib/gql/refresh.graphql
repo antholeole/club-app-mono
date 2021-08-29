@@ -1,0 +1,5 @@
+mutation Refresh($refreshToken: String!, $userId: uuid!) {
+  authenticate(IdentityProvider: $identity_provider, idToken: $id_token) {
+    accessToken
+  }
+}

@@ -2,17 +2,16 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:fe/data/models/group.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/service_locator.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:fe/services/local_data/token_manager.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
-import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gql_exec/gql_exec.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:fe/gql/query_self_group_preview.data.gql.dart';
 import 'package:fe/gql/query_self_group_preview.var.gql.dart';
@@ -46,7 +45,7 @@ void main() {
     blocTest<MainCubit, MainState>(
         'should clear local data and logout with no error on no error',
         setUp: () {
-          when(() => getIt<LocalFileStore>().clear())
+          when(() => getIt<LocalFileStore>().delete(LocalStorageType.LocalUser))
               .thenAnswer((_) async => null);
 
           when(() => getIt<FlutterSecureStorage>().deleteAll())
@@ -59,7 +58,7 @@ void main() {
         act: (cubit) => cubit.logOut(),
         expect: () => [MainState.logOut()],
         verify: (c) => [
-              getIt<LocalFileStore>().clear,
+              () => getIt<LocalFileStore>().delete(LocalStorageType.LocalUser),
               getIt<FlutterSecureStorage>().deleteAll,
               getIt<TokenManager>().delete
             ].forEach((fn) => verify(() => fn()).called(1)));
@@ -67,7 +66,7 @@ void main() {
     blocTest<MainCubit, MainState>(
         'should clear local data and logout with error on error',
         setUp: () {
-          when(() => getIt<LocalFileStore>().clear())
+          when(() => getIt<LocalFileStore>().delete(LocalStorageType.LocalUser))
               .thenAnswer((_) async => null);
 
           when(() => getIt<FlutterSecureStorage>().deleteAll())
@@ -80,7 +79,7 @@ void main() {
         act: (cubit) => cubit.logOut(withError: errorMessage),
         expect: () => [MainState.logOut(withError: errorMessage)],
         verify: (c) => [
-              getIt<LocalFileStore>().clear,
+              () => getIt<LocalFileStore>().delete(LocalStorageType.LocalUser),
               getIt<FlutterSecureStorage>().deleteAll,
               getIt<TokenManager>().delete
             ].forEach((fn) => verify(() => fn()).called(1)));
@@ -99,15 +98,8 @@ void main() {
     blocTest<MainCubit, MainState>('should emit failure on fatal error',
         setUp: () {
           stubGqlResponse<GQuerySelfGroupsPreviewData,
-                  GQuerySelfGroupsPreviewVars>(getIt<Client>(),
-              errors: (_) => [
-                    const GraphQLError(
-                      message: errorMessage,
-                    )
-                  ]);
-
-          when(() => getIt<Handler>().basicGqlErrorHandler(any()))
-              .thenAnswer((_) async => fatalFailure);
+                  GQuerySelfGroupsPreviewVars>(getIt<AuthGqlClient>(),
+              error: (_) => fatalFailure);
         },
         build: () => MainCubit(),
         act: (cubit) => cubit.initalizeMainPage(),
@@ -116,36 +108,29 @@ void main() {
     blocTest<MainCubit, MainState>('should query from cache on non-fatal error',
         setUp: () {
           stubGqlResponse<GQuerySelfGroupsPreviewData,
-                  GQuerySelfGroupsPreviewVars>(getIt<Client>(),
+                  GQuerySelfGroupsPreviewVars>(getIt<AuthGqlClient>(),
               requestMatcher: isA<
                       OperationRequest<GQuerySelfGroupsPreviewData,
                           GQuerySelfGroupsPreviewVars>>()
                   .having((req) => req.fetchPolicy, 'fetch policy',
                       equals(FetchPolicy.NetworkOnly)),
-              errors: (_) => [
-                    const GraphQLError(
-                      message: errorMessage,
-                    )
-                  ]);
-
-          when(() => getIt<Handler>().basicGqlErrorHandler(any())).thenAnswer(
-              (_) async => const Failure(
+              error: (_) => const Failure(
                   status: FailureStatus.GQLMisc, message: 'i am not fatal'));
 
           stubGqlResponse<GQuerySelfGroupsPreviewData,
-                  GQuerySelfGroupsPreviewVars>(getIt<Client>(),
+                  GQuerySelfGroupsPreviewVars>(getIt<AuthGqlClient>(),
               requestMatcher: isA<
                       OperationRequest<GQuerySelfGroupsPreviewData,
                           GQuerySelfGroupsPreviewVars>>()
                   .having((req) => req.fetchPolicy, 'fetch policy',
                       equals(FetchPolicy.CacheOnly)),
               data: (_) =>
-                  GQuerySelfGroupsPreviewData.fromJson({'user_to_group': []}));
+                  GQuerySelfGroupsPreviewData.fromJson({'user_to_group': []})!);
         },
         build: () => MainCubit(),
         act: (cubit) => cubit.initalizeMainPage(),
         expect: () => [MainState.groupless()],
-        verify: (_) => verify(() => getIt<Client>().request(any(
+        verify: (_) => verify(() => getIt<AuthGqlClient>().request(any(
             that: isA<
                     OperationRequest<GQuerySelfGroupsPreviewData,
                         GQuerySelfGroupsPreviewVars>>()
@@ -156,7 +141,7 @@ void main() {
       'should emit first group on multiple groups',
       setUp: () {
         stubGqlResponse<GQuerySelfGroupsPreviewData,
-                GQuerySelfGroupsPreviewVars>(getIt<Client>(),
+                GQuerySelfGroupsPreviewVars>(getIt<AuthGqlClient>(),
             data: (_) => GQuerySelfGroupsPreviewData.fromJson({
                   'user_to_group': [
                     {
@@ -174,7 +159,7 @@ void main() {
                       'admin': true
                     }
                   ]
-                }));
+                })!);
       },
       build: () => MainCubit(),
       act: (cubit) {
@@ -187,9 +172,9 @@ void main() {
       'should emit groupless on no group',
       setUp: () {
         stubGqlResponse<GQuerySelfGroupsPreviewData,
-                GQuerySelfGroupsPreviewVars>(getIt<Client>(),
+                GQuerySelfGroupsPreviewVars>(getIt<AuthGqlClient>(),
             data: (_) =>
-                GQuerySelfGroupsPreviewData.fromJson({'user_to_group': []}));
+                GQuerySelfGroupsPreviewData.fromJson({'user_to_group': []})!);
       },
       build: () => MainCubit(),
       act: (cubit) {

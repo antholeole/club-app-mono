@@ -1,6 +1,38 @@
-actions: []
+actions:
+- name: authenticate
+  definition:
+    kind: synchronous
+    handler: '{{WEBHOOK_URL}}/api/auth/'
+    headers:
+    - name: WEBHOOK_SECRET_KEY
+      value_from_env: WEBHOOK_SECRET_KEY
+  permissions:
+  - role: unauthenticated
+- name: refreshAccessToken
+  definition:
+    kind: synchronous
+    handler: '{{WEBHOOK_URL}}/api/auth/refresh'
+    forward_client_headers: true
+    headers:
+    - name: WEBHOOK_SECRET_KEY
+      value_from_env: WEBHOOK_SECRET_KEY
+  permissions:
+  - role: unauthenticated
 custom_types:
-  enums: []
-  input_objects: []
-  objects: []
+  enums:
+  - name: IdentityProvider
+    values:
+    - description: null
+      is_deprecated: null
+      value: Debug
+    - description: null
+      is_deprecated: null
+      value: Google
+  input_objects:
+  - name: RefreshRequest
+  objects:
+  - name: SampleOutput
+  - name: accessToken
+  - name: AccessToken
+  - name: AuthenticationResponse
   scalars: []

@@ -1,13 +1,12 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:fe/config.dart';
-import 'package:fe/services/clients/gql_client/gql_client.dart';
-import 'package:fe/services/clients/http_client/unauth_http_client.dart';
-import 'package:fe/services/clients/ws_client/ws_client.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
+import 'package:fe/services/clients/gql_client/unauth_gql_client.dart';
 import 'package:fe/services/local_data/image_handler.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
 import 'package:fe/services/local_data/token_manager.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:fe/stdlib/errors/handler.dart';
-import 'package:ferry/ferry.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
@@ -26,6 +25,8 @@ void setupLocator({required bool isProd}) {
     getIt.registerSingleton<Config>(DevConfig());
   }
 
+  getIt.registerSingleton<Connectivity>(Connectivity());
+
   getIt.registerSingleton<GoogleSignIn>(GoogleSignIn(
     scopes: [],
   ));
@@ -37,18 +38,17 @@ void setupLocator({required bool isProd}) {
       .registerSingletonAsync<SharedPreferences>(SharedPreferences.getInstance);
   getIt.registerSingleton(ImageHandler());
   getIt.registerSingleton<http.Client>(http.Client());
-  getIt.registerSingleton<UnauthHttpClient>(UnauthHttpClient());
   getIt.registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
   getIt.registerSingleton<LocalFileStore>(LocalFileStore());
   getIt.registerSingleton<Handler>(Handler());
+  getIt.registerSingletonAsync<UnauthGqlClient>(() => UnauthGqlClient.build());
 
   getIt.registerSingletonWithDependencies<LocalUserService>(
       () => LocalUserService(),
       dependsOn: [SharedPreferences]);
   getIt.registerSingletonWithDependencies<TokenManager>(() => TokenManager(),
-      dependsOn: [LocalUserService]);
-  getIt.registerSingletonAsync<Client>(() => buildGqlClient(),
-      dependsOn: [TokenManager]);
-  getIt.registerSingletonWithDependencies(() => WsClient(),
+      dependsOn: [LocalUserService, UnauthGqlClient]);
+
+  getIt.registerSingletonAsync<AuthGqlClient>(() => AuthGqlClient.build(),
       dependsOn: [TokenManager]);
 }

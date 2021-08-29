@@ -1,13 +1,12 @@
 {
   "name": "infra",
   "version": "1.0.0",
-  "description": "A container for both infra and infra-mocks/ws-api-gateway",
+  "description": "A container for infra mocks",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "ws-dev": "npm run --prefix ./infra-mocks/ws-api-gateway dev",
     "worker-dev": "npm run --prefix ./worker dev",
     "s3-dev": "cd infra-mocks/s3 && make dev",
-    "dev": "concurrently -c \"green.bold,cyan.bold,#FFB6C1.bold\" -n \"WORKER,API-GATEWAY,S3\" \"npm:worker-dev\" \"npm:ws-dev\" \"npm:s3-dev\""
+    "dev": "concurrently -c \"green.bold,#FFB6C1.bold\" -n \"WORKER,S3\" \"npm:worker-dev\" \"npm:s3-dev\""
   },
   "author": "",
   "license": "ISC",

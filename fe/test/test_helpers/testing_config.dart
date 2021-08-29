@@ -7,9 +7,6 @@ class TestingConfig extends Config {
       : _needAutoEvents = needAutoEvents;
 
   @override
-  String get connectionUrl => 'not_real';
-
-  @override
   String get gqlUrl => 'not_real_gql';
 
   @override
@@ -22,11 +19,11 @@ class TestingConfig extends Config {
   bool get refreshLocalCacheOnReload => true;
 
   @override
-  bool get memoryCache => true;
-
-  @override
   String get wsUrl => 'ws://localhost:8175';
 
   @override
   bool get testing => !_needAutoEvents;
+
+  @override
+  String get hasuraUrl => 'unreal';
 }

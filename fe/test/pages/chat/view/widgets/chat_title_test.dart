@@ -8,15 +8,16 @@ import 'package:fe/pages/scaffold/cubit/channels_bottom_sheet_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/page_cubit.dart';
 import 'package:fe/providers/user_provider.dart';
 import 'package:fe/service_locator.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
+import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/theme/flippable_icon.dart';
-import 'package:ferry/ferry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fe/gql/query_self_threads_in_group.data.gql.dart';
 import 'package:fe/gql/query_self_threads_in_group.var.gql.dart';
-import 'package:gql_exec/gql_exec.dart';
 import 'package:mocktail/mocktail.dart';
 import '../../../../test_helpers/fixtures/group.dart';
 import '../../../../test_helpers/fixtures/mocks.dart';
@@ -67,8 +68,8 @@ void main() {
           .thenAnswer((invocation) async => null);
 
       stubGqlResponse<GQuerySelfThreadsInGroupData,
-              GQuerySelfThreadsInGroupVars>(getIt<Client>(),
-          errors: (_) => [const GraphQLError(message: 'hi')]);
+              GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
+          error: (_) => const Failure(status: FailureStatus.GQLMisc));
 
       await tester.pumpApp(UserProvider(
         user: User(
