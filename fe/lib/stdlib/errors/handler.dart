@@ -1,7 +1,7 @@
+import 'package:connectivity/connectivity.dart';
+import 'package:fe/config.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/service_locator.dart';
-import 'package:fe/services/clients/http_client/http_client.dart';
-import 'package:fe/services/clients/http_client/unauth_http_client.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
 import 'package:fe/stdlib/errors/failure.dart';
@@ -9,16 +9,19 @@ import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
 
 class Handler {
-  final UnauthHttpClient _unauthHttpClient = getIt<UnauthHttpClient>();
+  final http.Client _client = getIt<http.Client>();
+  final Config _config = getIt<Config>();
+  final Connectivity _connectivity = getIt<Connectivity>();
 
   Future<void> reportUnknown(Object e) async {
     debugPrint(e.toString());
   }
 
   Future<Failure?> checkConnectivity() async {
-    if (!(await _unauthHttpClient.isConnected())) {
+    if (!(await isConnected())) {
       return const Failure(status: FailureStatus.NoConn);
     }
 
@@ -28,25 +31,28 @@ class Handler {
     }
   }
 
-  Future<bool> hasServerConnection() async {
-    try {
-      await _unauthHttpClient.getReq('/ping');
-      return true;
-    } catch (e) {
+  Future<bool> isConnected() async {
+    var connectivityResult = await (_connectivity.checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
       return false;
+    } else {
+      return true;
     }
+  }
+
+  Future<bool> hasServerConnection() async {
+    final resp = await _client
+        .get(Uri(host: _config.hasuraUrl, pathSegments: ['healthz']));
+
+    return resp.statusCode == 200;
   }
 
   Future<Failure> basicGqlErrorHandler(OperationResponse resp) async {
     final errors = resp.graphqlErrors;
 
-    if (resp.linkException != null) {
-      if (resp.linkException!.originalException is Failure) {
-        return resp.linkException!.originalException;
-      } else if (resp.linkException!.originalException is HttpException) {
-        return _unauthHttpClient
-            .basicHttpErrorHandler(resp.linkException!.originalException);
-      }
+    if (resp.linkException != null &&
+        resp.linkException!.originalException is Failure) {
+      return resp.linkException!.originalException;
     }
 
     if (errors != null) {

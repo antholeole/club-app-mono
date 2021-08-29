@@ -3,20 +3,19 @@ import 'package:fe/data/models/group.dart';
 import 'package:fe/pages/groups/cubit/update_groups_cubit.dart';
 import 'package:fe/pages/groups/view/widgets/group_settings.dart';
 import 'package:fe/service_locator.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
-import 'package:ferry/ferry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fe/gql/query_users_in_group.data.gql.dart';
 import 'package:fe/gql/query_users_in_group.var.gql.dart';
-import 'package:gql_exec/gql_exec.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../../../test_helpers/fixtures/mocks.dart';
@@ -68,7 +67,7 @@ void main() {
           initialState: UpdateGroupsState.fetched({}));
 
       stubGqlResponse<GQueryUsersInGroupData, GQueryUsersInGroupVars>(
-          getIt<Client>(),
+          getIt<AuthGqlClient>(),
           data: (_) => GQueryUsersInGroupData.fromJson({'user_to_group': []})!);
 
       await tester.pumpApp(wrapWithDependencies(GroupSettings(
@@ -90,7 +89,7 @@ void main() {
         });
 
         stubGqlResponse<GQueryUsersInGroupData, GQueryUsersInGroupVars>(
-            getIt<Client>(),
+            getIt<AuthGqlClient>(),
             data: (_) =>
                 GQueryUsersInGroupData.fromJson({'user_to_group': []})!);
 
@@ -126,7 +125,7 @@ void main() {
 
       testWidgets('should toast on leave group prompting', (tester) async {
         stubGqlResponse<GQueryUsersInGroupData, GQueryUsersInGroupVars>(
-            getIt<Client>(),
+            getIt<AuthGqlClient>(),
             data: (_) =>
                 GQueryUsersInGroupData.fromJson({'user_to_group': []})!);
 
@@ -163,11 +162,8 @@ void main() {
 
       testWidgets('should toast error on leave group failed', (tester) async {
         stubGqlResponse<GQueryUsersInGroupData, GQueryUsersInGroupVars>(
-            getIt<Client>(),
-            errors: (_) => [const GraphQLError(message: failureMessage)]);
-
-        when(() => getIt<Handler>().basicGqlErrorHandler(any())).thenAnswer(
-            (_) async => const Failure(
+            getIt<AuthGqlClient>(),
+            error: (_) => const Failure(
                 status: FailureStatus.GQLMisc, message: failureMessage));
 
         whenListen(mockToasterCubit, Stream<ToasterState>.fromIterable([]));
@@ -201,7 +197,7 @@ void main() {
 
       setUp(() {
         stubGqlResponse<GQueryUsersInGroupData, GQueryUsersInGroupVars>(
-            getIt<Client>(),
+            getIt<AuthGqlClient>(),
             data: (_) =>
                 GQueryUsersInGroupData.fromJson({'user_to_group': []})!);
 
@@ -287,7 +283,7 @@ void main() {
         final usernames = ['Anthony', 'Yu Ming'];
 
         stubGqlResponse<GQueryUsersInGroupData, GQueryUsersInGroupVars>(
-            getIt<Client>(),
+            getIt<AuthGqlClient>(),
             data: (_) => GQueryUsersInGroupData.fromJson({
                   'user_to_group': [
                     {
@@ -327,8 +323,9 @@ void main() {
       testWidgets('should display error on error fetching users',
           (tester) async {
         stubGqlResponse<GQueryUsersInGroupData, GQueryUsersInGroupVars>(
-            getIt<Client>(),
-            errors: (_) => [const GraphQLError(message: failureMessage)]);
+            getIt<AuthGqlClient>(),
+            error: (_) => const Failure(
+                status: FailureStatus.GQLMisc, message: failureMessage));
 
         when(() => getIt<Handler>().basicGqlErrorHandler(any())).thenAnswer(
             (_) async => const Failure(status: FailureStatus.GQLMisc));

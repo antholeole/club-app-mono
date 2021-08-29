@@ -1,25 +1,43 @@
 import { StatusError } from 'itty-router-extras'
-import {  ValidationError, Failcode } from 'runtypes'
 import { errorHandler } from '../../src/helpers/error_handler'
 
 
+const mockDebugGetter = jest.fn()
+jest.mock('../../src/constants', () => ({
+   ...jest.requireActual('../../src/constants'),
+   get DEBUG() {
+      return mockDebugGetter()
+   },
+}))
+
+
 describe('test error handler', () => {
-    test('should convert validation error to 400', () => {
-            expect(errorHandler(new ValidationError({
-                message: '',
-                code: Failcode.CONSTRAINT_FAILED,
-                success: false
-            })).status).toEqual(400)
-    })
+   const statusMessage = 'message'
 
+   test('debug should throw', async () => {
+      mockDebugGetter.mockReturnValue(true)
 
-    test('should convert status error error with input status type', () => {
-        for (const statusCode of [400, 401, 500, 12930123, 510, 504, 402]) {
-            expect(errorHandler(new StatusError(statusCode)).status).toEqual(statusCode)
-        }
-    })
+      expect(() => errorHandler(new Error(statusMessage)))
+         .toThrow(new Error(statusMessage))
+   })
 
-    test('should rethrow unhandeled error type', () => {
-        expect(() => errorHandler(new Error())).toThrow(Error())
-    })
+   test('should return 400 on unknown error', async () => {
+      mockDebugGetter.mockReturnValue(false)
+
+      expect(await errorHandler(new Error(statusMessage)).json()).toEqual({
+         'message': statusMessage,
+         'code': 400
+      })
+   })
+
+   test('should status and message on statusError', async () => {
+      const statusCode = 415
+
+      mockDebugGetter.mockReturnValue(false)
+
+      expect(await errorHandler(new StatusError(statusCode, statusMessage)).json()).toEqual({
+         'message': statusMessage,
+         'code': statusCode
+      })
+   })
 })

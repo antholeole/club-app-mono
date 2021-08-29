@@ -1,4 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:fe/data/json/backend_access_tokens.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/chat/cubit/chat_cubit.dart';
@@ -7,12 +8,13 @@ import 'package:fe/pages/groups/cubit/update_groups_cubit.dart';
 import 'package:fe/pages/login/cubit/login_cubit.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/pages/profile/cubit/name_change_cubit.dart';
+import 'package:fe/gql/fake/fake.req.gql.dart';
 import 'package:fe/pages/scaffold/cubit/channels_bottom_sheet_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/page_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/scaffold_cubit.dart';
 import 'package:fe/pages/splash/cubit/splash_cubit.dart';
-import 'package:fe/services/clients/http_client/unauth_http_client.dart';
-import 'package:fe/services/clients/ws_client/ws_client.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
+import 'package:fe/services/clients/gql_client/unauth_gql_client.dart';
 import 'package:fe/services/local_data/image_handler.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
 import 'package:fe/services/local_data/token_manager.dart';
@@ -209,13 +211,13 @@ class MockLocalUserService extends Mock implements LocalUserService {}
 
 class MockFlutterSecureStorage extends Mock implements FlutterSecureStorage {}
 
-class MockGqlClient extends Mock implements Client {
-  MockGqlClient._();
+class MockClient extends Mock implements Client {
+  MockClient._();
 
-  factory MockGqlClient.getMock() {
+  factory MockClient.getMock() {
     registerFallbackValue(FakeRequest());
     registerFallbackValue(FakeResponse());
-    return MockGqlClient._();
+    return MockClient._();
   }
 }
 
@@ -283,7 +285,21 @@ class FakeGoogleSignInAuthentication implements GoogleSignInAuthentication {
   String? get serverAuthCode => 'ad123123';
 }
 
-class MockUnauthHttpClient extends Mock implements UnauthHttpClient {}
+class MockGqlClient extends Mock implements AuthGqlClient {
+  MockGqlClient._();
+
+  factory MockGqlClient.getMock() {
+    final MockGqlClient mockGqlClient = MockGqlClient._();
+
+    registerFallbackValue<OperationRequest>(GFakeGqlReq());
+
+    return mockGqlClient;
+  }
+}
+
+class MockUnauthGqlClient extends Mock implements UnauthGqlClient {}
+
+class MockConnectivity extends Mock implements Connectivity {}
 
 class MockHttpClient extends Mock implements http.Client {
   MockHttpClient._();
@@ -298,23 +314,6 @@ class MockHttpClient extends Mock implements http.Client {
 }
 
 class MockBaseRequest extends Fake implements http.BaseRequest {}
-
-class MockWsClient extends Mock implements WsClient {
-  MockWsClient._();
-
-  factory MockWsClient.getMock() {
-    final client = MockWsClient._();
-    when(() => client.initalize()).thenAnswer((invocation) async => null);
-    return client;
-  }
-
-  void emptyStub() {
-    when(() => connectionState).thenAnswer((_) => const Stream.empty());
-    when(() => failureStream).thenAnswer((_) => const Stream.empty());
-    when(() => messageStream).thenAnswer((_) => const Stream.empty());
-    when(() => close()).thenAnswer((_) async => null);
-  }
-}
 
 class FakeImageProvider extends Mock implements ImageProvider {}
 

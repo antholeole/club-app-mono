@@ -1,7 +1,5 @@
-import 'package:fe/data/ws_message/message_message.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/pages/chat/view/widgets/chat_input/send_button.dart';
-import 'package:fe/services/clients/ws_client/ws_client.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
 import 'package:fe/stdlib/errors/failure.dart';
@@ -22,7 +20,6 @@ class ChatBar extends StatefulWidget {
 }
 
 class _ChatBarState extends State<ChatBar> {
-  final WsClient _wsClient = getIt<WsClient>();
   final Handler _handler = getIt<Handler>();
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
@@ -104,7 +101,6 @@ class _ChatBarState extends State<ChatBar> {
         _loadingSend = true;
       });
 
-      _wsClient.send(WsMessageMessage(message: _controller.text, toId: to));
       _controller.clear();
     } on Failure catch (f) {
       _handler.handleFailure(f, context);

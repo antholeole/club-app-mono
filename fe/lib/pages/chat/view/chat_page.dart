@@ -100,8 +100,10 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
     return MultiBlocListener(
         listeners: [
           BlocListener<MainCubit, MainState>(listener: (context, state) {
-            context.read<ThreadCubit>().newGroup(state.group!);
-            currentGroup = state.group;
+            if (state.group != null) {
+              context.read<ThreadCubit>().newGroup(state.group!);
+              currentGroup = state.group;
+            }
           }),
           BlocListener<PageCubit, PageState>(listener: (context, state) {
             state.join((_) => null, (cps) {

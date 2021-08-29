@@ -13,6 +13,18 @@ directive @cached(
   refresh: Boolean! = false
 ) on QUERY
 
+type AccessToken {
+  accessToken: String!
+}
+
+type AuthenticationResponse {
+  accessToken: String!
+  email: String
+  id: uuid!
+  name: String!
+  refreshToken: String!
+}
+
 """
 Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
 """
@@ -730,6 +742,11 @@ enum groups_update_column {
   id
 }
 
+enum IdentityProvider {
+  Debug
+  Google
+}
+
 """
 columns and relationships of "messages"
 """
@@ -986,6 +1003,8 @@ enum messages_update_column {
 
 """mutation root"""
 type mutation_root {
+  authenticate(idToken: String!, identityProvider: IdentityProvider!): AuthenticationResponse
+
   """
   delete data from the table: "group_join_tokens"
   """
@@ -1230,6 +1249,7 @@ type mutation_root {
     """on conflict condition"""
     on_conflict: users_on_conflict
   ): users
+  refreshAccessToken(refreshToken: String!): AccessToken
 
   """
   update data of the table: "group_join_tokens"

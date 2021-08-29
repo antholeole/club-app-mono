@@ -1,19 +1,20 @@
 import { StatusError, json } from 'itty-router-extras'
-import { AcessTokenRequest, RefreshRequest } from './types'
-import type { Static } from 'runtypes'
+import { IAccessTokenRequest, IRefreshRequest } from './types'
 import { generateAccessToken, getFakeIdentifier, IIdentifier, verifyIdTokenWithGoogle } from './helpers'
 import { addUser, getUserBySub } from './gql_queries'
 import { cryptoRandomString } from '../../helpers/crypto'
 import { getDecryptedKV, putEncryptedKV } from 'encrypt-workers-kv'
+import { IActionInput } from '../../helpers/action_input'
 
-export const registerRoute = async (tokens: Static<typeof AcessTokenRequest>): Promise<Response> => {
+export const registerRoute = async (req: IActionInput<IAccessTokenRequest>): Promise<Response> => {
     let identifier: IIdentifier
-    switch (tokens.from) {
+    switch (req.input.identityProvider) {
         case 'Google':
-            identifier = await verifyIdTokenWithGoogle(tokens.idToken)
+            identifier = await verifyIdTokenWithGoogle(req.input.idToken)
             break
         case 'Debug':
-            identifier = getFakeIdentifier(tokens.idToken)
+            console.log(req.input.idToken)
+            identifier = getFakeIdentifier(req.input.idToken)
     }
 
     let user = await getUserBySub(identifier.sub)
@@ -30,26 +31,28 @@ export const registerRoute = async (tokens: Static<typeof AcessTokenRequest>): P
     return json({
         accessToken: aToken,
         refreshToken: refreshUnhashed,
-        ...user,
+        id: user.id,
+        email: user.email,
+        name: user.name
     })
 }
 
-export const refreshRoute = async (refreshParams: Static<typeof RefreshRequest>): Promise<Response> => {
+export const refreshRoute = async (input: IActionInput<IRefreshRequest>): Promise<Response> => {
     let decryptedHash: ArrayBuffer
     try {
-        decryptedHash = await getDecryptedKV(REFRESH_TOKENS, refreshParams.userId, SECRET)
+        decryptedHash = await getDecryptedKV(REFRESH_TOKENS, input.input.userId, SECRET)
     } catch (e: unknown) {
         // eslint-disable-next-line @typescript-eslint/ban-types
         if ((e as object).constructor.name == 'NotFoundError') {
-            throw new StatusError(404, `user with id ${refreshParams.userId} not found`)
+            throw new StatusError(404, `user with id ${input.input.userId} not found`)
         } else {
             throw e
         }
     }
 
-    if (new TextDecoder().decode(decryptedHash) === refreshParams.refreshToken) {
-        return new Response(generateAccessToken(refreshParams.userId))
+    if (new TextDecoder().decode(decryptedHash) === input.input.refreshToken) {
+        return new Response(generateAccessToken(input.input.userId))
     } else {
-        throw new StatusError(402, `invalid refresh token ${refreshParams.refreshToken}`) //returns 402 to avoid loop
+        throw new StatusError(402, `invalid refresh token ${input.input.refreshToken}`) //returns 402 to avoid loop
     }
 }
