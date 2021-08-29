@@ -1,4 +1,3 @@
-import 'package:fe/data/ws_message/message_message.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/pages/chat/view/widgets/chat_input/send_button.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';

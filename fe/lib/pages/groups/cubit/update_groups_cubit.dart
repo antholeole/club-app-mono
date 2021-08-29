@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fe/data/models/group.dart';
-import 'package:fe/services/clients/gql_client/gql_client.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/helpers/random_string.dart';
 import 'package:fe/gql/remove_self_from_group.req.gql.dart';
@@ -22,7 +22,7 @@ part 'data_carriers/groups_page_group.dart';
 
 class UpdateGroupsCubit extends Cubit<UpdateGroupsState> {
   final LocalUserService _localUserService = getIt<LocalUserService>();
-  final _gqlClient = getIt<GqlClient>();
+  final _gqlClient = getIt<AuthGqlClient>();
   final Config config = getIt<Config>();
 
   UpdateGroupsCubit() : super(UpdateGroupsState.fetchingGroups()) {

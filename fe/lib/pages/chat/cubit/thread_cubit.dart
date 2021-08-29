@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:fe/data/models/group.dart';
 import 'package:fe/data/models/thread.dart';
-import 'package:fe/services/clients/gql_client/gql_client.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:ferry/ferry.dart';
@@ -19,7 +19,7 @@ export 'thread_state.dart';
 
 class ThreadCubit extends Cubit<ThreadState> {
   final _sharedPrefrences = getIt<SharedPreferences>();
-  final _gqlClient = getIt<GqlClient>();
+  final _gqlClient = getIt<AuthGqlClient>();
   final _localUserService = getIt<LocalUserService>();
   final _config = getIt<Config>();
 

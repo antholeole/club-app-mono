@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:fe/data/models/message.dart';
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/data/models/user.dart';
-import 'package:fe/services/clients/gql_client/gql_client.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:meta/meta.dart';
 import 'package:fe/gql/query_messages_in_thread.req.gql.dart';
@@ -15,7 +15,7 @@ import '../../../service_locator.dart';
 part 'chat_state.dart';
 
 class ChatCubit extends Cubit<ChatState> {
-  final _gqlClient = getIt<GqlClient>();
+  final _gqlClient = getIt<AuthGqlClient>();
 
   ChatCubit() : super(ChatState.inital());
 

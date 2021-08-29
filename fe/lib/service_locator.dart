@@ -1,5 +1,6 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:fe/config.dart';
-import 'package:fe/services/clients/gql_client/gql_client.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/services/clients/gql_client/unauth_gql_client.dart';
 import 'package:fe/services/local_data/image_handler.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
@@ -24,6 +25,8 @@ void setupLocator({required bool isProd}) {
     getIt.registerSingleton<Config>(DevConfig());
   }
 
+  getIt.registerSingleton<Connectivity>(Connectivity());
+
   getIt.registerSingleton<GoogleSignIn>(GoogleSignIn(
     scopes: [],
   ));
@@ -46,6 +49,6 @@ void setupLocator({required bool isProd}) {
   getIt.registerSingletonWithDependencies<TokenManager>(() => TokenManager(),
       dependsOn: [LocalUserService, UnauthGqlClient]);
 
-  getIt.registerSingletonAsync<GqlClient>(() => GqlClient.build(),
+  getIt.registerSingletonAsync<AuthGqlClient>(() => AuthGqlClient.build(),
       dependsOn: [TokenManager]);
 }

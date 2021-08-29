@@ -1,11 +1,10 @@
-import 'package:fe/services/clients/gql_client/gql_client.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
+import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:ferry/ferry.dart';
 import 'package:ferry/typed_links.dart';
-import 'package:ferry_flutter/ferry_flutter.dart';
 import 'package:flutter/material.dart';
-
 import '../../service_locator.dart';
 
 class GqlOperation<TData, TVars> extends StatefulWidget {
@@ -29,7 +28,7 @@ class GqlOperation<TData, TVars> extends StatefulWidget {
 
 class _GqlOperationState<TData, TVars>
     extends State<GqlOperation<TData, TVars>> {
-  final _client = getIt<GqlClient>();
+  final _client = getIt<AuthGqlClient>();
   final _handler = getIt<Handler>();
   TData? _resultFromCache;
 
@@ -47,18 +46,19 @@ class _GqlOperationState<TData, TVars>
       return _buildLoader();
     }
 
-    return Operation(
-      operationRequest: widget.operationRequest!,
-      builder: (BuildContext context, OperationResponse<TData, TVars>? response,
-          Object? error) {
-        if (response!.loading) {
+    return FutureBuilder<TData>(
+      future: widget.operationRequest != null
+          ? _client.request(widget.operationRequest!)
+          : null,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
           return _buildLoader();
         }
 
-        if (response.hasErrors) {
-          _handler.basicGqlErrorHandler(response).then((f) {
-            _handler.handleFailure(f, context, withPrefix: widget.errorText);
-          });
+        if (snapshot.error is Failure) {
+          _handler.handleFailure(snapshot.error as Failure, context,
+              withPrefix: widget.errorText);
+
           return _resultFromCache != null
               ? widget.onResponse(_resultFromCache!)
               : widget.error ??
@@ -68,11 +68,10 @@ class _GqlOperationState<TData, TVars>
                   );
         }
 
-        _resultFromCache = response.data;
-
-        return widget.onResponse(response.data!);
+        final response = snapshot.data;
+        _resultFromCache = response;
+        return widget.onResponse(response!);
       },
-      client: _client.innerClient,
     );
   }
 

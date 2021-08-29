@@ -3,6 +3,7 @@ import 'package:fe/data/models/message.dart';
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/pages/chat/cubit/chat_cubit.dart';
 import 'package:fe/service_locator.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/errors/handler.dart';
@@ -10,9 +11,7 @@ import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/gql/query_messages_in_thread.var.gql.dart';
 import 'package:fe/gql/query_messages_in_thread.data.gql.dart';
 import 'package:fe/gql/query_messages_in_thread.req.gql.dart';
-import 'package:ferry/ferry.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gql_exec/gql_exec.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:uuid/uuid.dart';
 
@@ -59,15 +58,22 @@ void main() {
       blocTest<ChatCubit, ChatState>('should emit failure on failure',
           setUp: () {
             stubGqlResponse<GQueryMessagesInThreadData,
-                    GQueryMessagesInThreadVars>(getIt<Client>(),
-                errors: (_) => [const GraphQLError(message: mockError)]);
+                    GQueryMessagesInThreadVars>(getIt<AuthGqlClient>(),
+                error: (_) => const Failure(
+                    status: FailureStatus.GQLMisc, message: mockError));
 
             when(() => getIt<Handler>().basicGqlErrorHandler(any())).thenAnswer(
                 (_) async => const Failure(
                     status: FailureStatus.GQLMisc, message: mockError));
           },
           build: () => ChatCubit(),
-          act: (cubit) => cubit.getChats(mockThread, DateTime(1)),
+          act: (cubit) {
+            try {
+              cubit.getChats(mockThread, DateTime(1));
+            } catch (e) {
+              print(e);
+            }
+          },
           expect: () => [
                 ChatState.failure(const Failure(
                     status: FailureStatus.GQLMisc, message: mockError))
@@ -81,7 +87,7 @@ void main() {
         'should emit fetched message on fetched messages',
         setUp: () {
           stubGqlResponse<GQueryMessagesInThreadData,
-                  GQueryMessagesInThreadVars>(getIt<Client>(),
+                  GQueryMessagesInThreadVars>(getIt<AuthGqlClient>(),
               requestMatcher: isA<GQueryMessagesInThreadReq>(),
               data: (_) => GQueryMessagesInThreadData.fromJson({
                     'messages': [
@@ -106,7 +112,7 @@ void main() {
         'should emit empty fetched message on no fetched messages',
         setUp: () {
           stubGqlResponse<GQueryMessagesInThreadData,
-                  GQueryMessagesInThreadVars>(getIt<Client>(),
+                  GQueryMessagesInThreadVars>(getIt<AuthGqlClient>(),
               data: (_) =>
                   GQueryMessagesInThreadData.fromJson({'messages': []})!);
         },

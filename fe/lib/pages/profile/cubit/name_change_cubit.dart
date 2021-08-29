@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fe/data/models/user.dart';
-import 'package:fe/services/clients/gql_client/gql_client.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
@@ -17,7 +17,7 @@ class NameChangeCubit extends Cubit<NameChangeState> {
   static const String REGEX_FAIL_COPY =
       'Please make sure new name does not contain any special characters and is 3 or more letters.';
 
-  final _gqlClient = getIt<GqlClient>();
+  final _gqlClient = getIt<AuthGqlClient>();
   final _localUserService = getIt<LocalUserService>();
 
   NameChangeCubit() : super(NameChangeState.notChanging());

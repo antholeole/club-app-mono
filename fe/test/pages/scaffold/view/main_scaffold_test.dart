@@ -1,17 +1,12 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
-import 'package:fe/config.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/data_carriers/main_scaffold_parts.dart';
 import 'package:fe/pages/scaffold/cubit/page_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/scaffold_cubit.dart' as sc;
 import 'package:fe/pages/scaffold/view/main_scaffold.dart';
 import 'package:fe/pages/scaffold/view/widgets/drawers/left_drawer/club_drawer.dart';
-import 'package:fe/service_locator.dart';
-import 'package:fe/services/clients/ws_client/ws_client.dart';
-import 'package:fe/services/local_data/local_user_service.dart';
-import 'package:ferry/ferry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,12 +19,10 @@ import '../../../test_helpers/pump_app.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../../test_helpers/stub_cubit_stream.dart';
-import '../../../test_helpers/testing_config.dart';
 
 void main() {
   MockScaffoldCubit mockScaffoldCubit = MockScaffoldCubit.getMock();
   MockMainCubit mockMainCubit = MockMainCubit.getMock();
-  MockWsClient mockWsClient = MockWsClient.getMock();
   MockPageCubit mockPageCubit = MockPageCubit.getMock();
 
   Widget wrapWithDependencies(Widget child) {
@@ -49,10 +42,6 @@ void main() {
     );
   }
 
-  setUpAll(() {
-    getIt.registerSingleton<WsClient>(mockWsClient);
-  });
-
   setUp(() async {
     await registerAllMockServices();
     <MockCubit>[mockPageCubit, mockMainCubit, mockScaffoldCubit]
@@ -60,9 +49,6 @@ void main() {
       reset(cubit);
       patchCubitClose(cubit);
     });
-
-    reset(mockWsClient);
-    mockWsClient.emptyStub();
 
     whenListen(mockMainCubit, Stream<MainState>.fromIterable([]),
         initialState: MainState.withGroup(mockGroupNotAdmin));
@@ -99,14 +85,6 @@ void main() {
 
   group('scaffoldState', () {
     testWidgets('drawer should open on click', (tester) async {
-      final mockConfig = TestingConfig();
-      final mockLocalUserService = MockLocalUserService();
-      final mockGqlClient = MockGqlClient.getMock();
-
-      getIt.registerSingleton<LocalUserService>(mockLocalUserService);
-      getIt.registerSingleton<Client>(mockGqlClient);
-      getIt.registerSingleton<Config>(mockConfig);
-
       whenListen(
         mockScaffoldCubit,
         Stream<sc.ScaffoldState>.fromIterable([]),

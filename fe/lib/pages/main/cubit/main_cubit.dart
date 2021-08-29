@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fe/data/models/group.dart';
-import 'package:fe/services/clients/gql_client/gql_client.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
 import 'package:fe/services/local_data/token_manager.dart';
 import 'package:fe/stdlib/errors/failure.dart';
@@ -19,7 +19,7 @@ import '../../../service_locator.dart';
 part 'main_state.dart';
 
 class MainCubit extends Cubit<MainState> {
-  final _gqlClient = getIt<GqlClient>();
+  final _gqlClient = getIt<AuthGqlClient>();
   final _localUserService = getIt<LocalUserService>();
   final _localFileStore = getIt<LocalFileStore>();
   final _secureStorage = getIt<FlutterSecureStorage>();

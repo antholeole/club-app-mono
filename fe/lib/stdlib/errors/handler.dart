@@ -14,6 +14,7 @@ import 'package:http/http.dart' as http;
 class Handler {
   final http.Client _client = getIt<http.Client>();
   final Config _config = getIt<Config>();
+  final Connectivity _connectivity = getIt<Connectivity>();
 
   Future<void> reportUnknown(Object e) async {
     debugPrint(e.toString());
@@ -31,7 +32,7 @@ class Handler {
   }
 
   Future<bool> isConnected() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
+    var connectivityResult = await (_connectivity.checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
       return false;
     } else {
