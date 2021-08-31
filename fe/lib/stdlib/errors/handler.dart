@@ -41,8 +41,7 @@ class Handler {
   }
 
   Future<bool> hasServerConnection() async {
-    final resp = await _client
-        .get(Uri(host: _config.hasuraUrl, pathSegments: ['healthz']));
+    final resp = await _client.get(Uri.parse('${_config.hasuraUrl}/healthz'));
 
     return resp.statusCode == 200;
   }
@@ -76,7 +75,9 @@ class Handler {
   void handleFailure(Failure f, BuildContext context,
       {String? withPrefix, bool toast = true}) {
     if (f.status.fatal) {
-      context.read<MainCubit>().logOut(withError: f.message);
+      context
+          .read<MainCubit>()
+          .logOut(withError: f.message ?? f.status.message);
     } else {
       String errorString = f.message ?? f.status.message;
 

@@ -9,13 +9,20 @@ import 'package:fe/gql/fake/fake.data.gql.dart'
     show GFakeGqlData, GFakeGqlData_group_join_tokens;
 import 'package:fe/gql/fake/fake.req.gql.dart' show GFakeGqlReq;
 import 'package:fe/gql/fake/fake.var.gql.dart' show GFakeGqlVars;
-import 'package:fe/gql/insert_message.data.gql.dart'
+import 'package:fe/gql/get_messages.data.gql.dart'
     show
         GGetMessagesData,
         GGetMessagesData_messages,
         GGetMessagesData_messages_user;
-import 'package:fe/gql/insert_message.req.gql.dart' show GGetMessagesReq;
-import 'package:fe/gql/insert_message.var.gql.dart' show GGetMessagesVars;
+import 'package:fe/gql/get_messages.req.gql.dart' show GGetMessagesReq;
+import 'package:fe/gql/get_messages.var.gql.dart' show GGetMessagesVars;
+import 'package:fe/gql/insert_message.data.gql.dart'
+    show
+        GInsertMessageData,
+        GInsertMessageData_insert_messages,
+        GInsertMessageData_insert_messages_returning;
+import 'package:fe/gql/insert_message.req.gql.dart' show GInsertMessageReq;
+import 'package:fe/gql/insert_message.var.gql.dart' show GInsertMessageVars;
 import 'package:fe/gql/query_all_groups_conditional_join_token.data.gql.dart'
     show
         GQueryAllGroupsConditionalJoinTokenData,
@@ -80,7 +87,7 @@ import 'package:fe/gql/query_verify_self_in_thread.req.gql.dart'
 import 'package:fe/gql/query_verify_self_in_thread.var.gql.dart'
     show GQueryVerifySelfInThreadVars;
 import 'package:fe/gql/refresh.data.gql.dart'
-    show GRefreshData, GRefreshData_authenticate;
+    show GRefreshData, GRefreshData_refreshAccessToken;
 import 'package:fe/gql/refresh.req.gql.dart' show GRefreshReq;
 import 'package:fe/gql/refresh.var.gql.dart' show GRefreshVars;
 import 'package:fe/gql/remove_self_from_group.data.gql.dart'
@@ -226,6 +233,11 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GGetMessagesReq,
   GGetMessagesVars,
   GIdentityProvider,
+  GInsertMessageData,
+  GInsertMessageData_insert_messages,
+  GInsertMessageData_insert_messages_returning,
+  GInsertMessageReq,
+  GInsertMessageVars,
   GQueryAllGroupsConditionalJoinTokenData,
   GQueryAllGroupsConditionalJoinTokenData_admin_groups,
   GQueryAllGroupsConditionalJoinTokenData_admin_groups_group,
@@ -263,7 +275,7 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GQueryVerifySelfInThreadReq,
   GQueryVerifySelfInThreadVars,
   GRefreshData,
-  GRefreshData_authenticate,
+  GRefreshData_refreshAccessToken,
   GRefreshReq,
   GRefreshVars,
   GRemoveSelfFromGroupData,

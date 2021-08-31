@@ -66,7 +66,7 @@ class TokenManager {
         ..vars.refreshToken = refreshToken
         ..fetchPolicy = FetchPolicy.NetworkOnly));
 
-      final token = resp.authenticate!.accessToken;
+      final token = resp.refreshAccessToken!.accessToken;
 
       await _writeAccessToken(token);
       return token;

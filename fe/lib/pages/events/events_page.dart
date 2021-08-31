@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:fe/data/models/group.dart';
 import 'package:fe/pages/scaffold/cubit/data_carriers/main_scaffold_parts.dart';
 import 'package:fe/pages/scaffold/cubit/page_cubit.dart';
@@ -26,7 +27,7 @@ class EventsPage extends StatefulWidget {
                 context.read<ToasterCubit>().add(Toast.customExpire(
                     message: '${UuidType.generate().uuid}',
                     type: ToastType.Error,
-                    expireAt: DateTime.now().add(const Duration(seconds: 3))));
+                    expireAt: clock.now().add(const Duration(seconds: 3))));
               }),
           ActionButton(
               icon: Icons.baby_changing_station_outlined,

@@ -25,7 +25,7 @@ class ChatPage extends StatelessWidget {
           color: Colors.red,
         ),
         titleBarWidget: GestureDetector(
-            onTap: () => ChannelsBottomSheet.show(context),
+            onTap: () => context.read<PageCubit>().bottomSheet(context),
             child: ChatTitle(chatProviderContext: context)));
   }
 
@@ -115,11 +115,7 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
         ],
         child: FooterLayout(
           footer: const KeyboardAttachable(child: ChatBar()),
-          child: thread != null
-              ? Chats(
-                  thread: thread,
-                )
-              : Container(),
+          child: thread != null ? const Chats() : Container(),
         ));
   }
 

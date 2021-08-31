@@ -4,6 +4,7 @@ import 'package:fe/data/models/thread.dart';
 import 'package:fe/pages/chat/cubit/chat_cubit.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
+import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/errors/handler.dart';
@@ -13,6 +14,9 @@ import 'package:fe/gql/query_messages_in_thread.data.gql.dart';
 import 'package:fe/gql/query_messages_in_thread.req.gql.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:fe/gql/insert_message.req.gql.dart';
+import 'package:fe/gql/insert_message.data.gql.dart';
+import 'package:fe/gql/insert_message.var.gql.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../test_helpers/get_it_helpers.dart';
@@ -120,6 +124,33 @@ void main() {
         act: (cubit) => cubit.getChats(mockThread, DateTime(1)),
         expect: () => [ChatState.fetchedMessages([], null)],
       );
+    });
+
+    group('send message', () {
+      blocTest<ChatCubit, ChatState>('should make gql call',
+          setUp: () {
+            when(() => getIt<LocalUserService>().getLoggedInUserId())
+                .thenAnswer((_) async => UuidType.generate());
+
+            stubGqlResponse<GInsertMessageData, GInsertMessageVars>(
+                getIt<AuthGqlClient>(),
+                data: (_) => GInsertMessageData.fromJson({
+                      'insert_messages': {
+                        'returning': [
+                          {'created_at': '2021-08-30T14:53:11.4021+00:00'}
+                        ]
+                      }
+                    })!);
+          },
+          build: () => ChatCubit(),
+          act: (cubit) {
+            cubit.sendMessage(UuidType.generate(), 'hi');
+          },
+          expect: () => [],
+          verify: (_) {
+            verify(() => getIt<AuthGqlClient>()
+                .request(any(that: isA<GInsertMessageReq>())));
+          });
     });
   });
 }

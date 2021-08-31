@@ -1,4 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:clock/clock.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
@@ -20,7 +21,7 @@ void main() {
   final fakeToastExpires = Toast.customExpire(
       message: 'hi',
       type: ToastType.Success,
-      expireAt: DateTime.now().add(const Duration(seconds: 3)),
+      expireAt: clock.now().add(const Duration(seconds: 3)),
       id: UuidType.generate());
 
   setUp(() {
@@ -40,7 +41,7 @@ void main() {
             cubit.add(fakeToastExpires);
             async.elapse(fakeToastExpires.expireAt!
                 .add(const Duration(seconds: 2))
-                .difference(DateTime.now()));
+                .difference(clock.now()));
           });
         },
         expect: () => [ToasterState()..add(fakeToastExpires), ToasterState()]);

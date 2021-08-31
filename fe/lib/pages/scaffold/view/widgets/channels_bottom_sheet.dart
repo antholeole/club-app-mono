@@ -88,7 +88,7 @@ class ChannelsBottomSheet extends StatelessWidget {
                         GqlOperation(
                             operationRequest: GQuerySelfThreadsInGroupReq((q) =>
                                 q
-                                  ..fetchPolicy = FetchPolicy.CacheAndNetwork
+                                  ..fetchPolicy = FetchPolicy.NetworkOnly
                                   ..vars.groupId = _currentGroup.id
                                   ..vars.userId =
                                       UserProvider.of(_providerReadableContext)

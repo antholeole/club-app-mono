@@ -11,17 +11,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:clock/clock.dart';
 
 import '../../../../../service_locator.dart';
 import 'message/chat_page_message_display.dart';
 import 'message/hold_overlay/message_overlay.dart';
 
 class Chats extends StatefulWidget {
-  final Thread _thread;
+  static const String ERROR_COPY = 'There was an error while fetching chats.';
+  static const String NO_MESSAGES_COPY = 'No messages yet.';
+  static const String NO_THREAD_COPY = 'No thread selected.';
 
-  const Chats({Key? key, required Thread thread})
-      : _thread = thread,
-        super(key: key);
+  const Chats({Key? key}) : super(key: key);
 
   @override
   _ChatsState createState() => _ChatsState();
@@ -32,27 +33,15 @@ class _ChatsState extends State<Chats> {
 
   OverlayEntry? _currentMessageOverlay;
 
-  late PagingController<DateTime, Message> _pagingController;
+  void Function(DateTime)? _currentPageListener;
+
+  final _pagingController = PagingController<DateTime, Message>(
+      firstPageKey: clock.now().add(const Duration(hours: 5)));
 
   @override
   void didChangeDependencies() {
-    _setupPagingController();
+    _setupPagingController(context.read<ThreadCubit>().state.thread);
     super.didChangeDependencies();
-  }
-
-  @override
-  void initState() {
-    _setupPagingController();
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(Chats oldWidget) {
-    if (oldWidget._thread != widget._thread) {
-      _setupPagingController();
-    }
-
-    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -61,18 +50,27 @@ class _ChatsState extends State<Chats> {
     super.dispose();
   }
 
-  void _setupPagingController() {
-    _pagingController = PagingController(
-        firstPageKey: DateTime.now().add(const Duration(hours: 5)),
-        invisibleItemsThreshold: 3);
-    _pagingController.addPageRequestListener(
-        (before) => context.read<ChatCubit>().getChats(widget._thread, before));
+  void _setupPagingController(Thread? thread) {
+    if (_currentPageListener != null) {
+      _pagingController.removePageRequestListener(_currentPageListener!);
+    }
+
+    if (thread != null) {
+      _currentPageListener =
+          (before) => context.read<ChatCubit>().getChats(thread, before);
+
+      _pagingController.addPageRequestListener(_currentPageListener!);
+    }
+
+    _pagingController.refresh();
+
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<ThreadCubit, ThreadState>(
-        listener: (context, _) => _pagingController.refresh(),
+        listener: (context, state) => _setupPagingController(state.thread),
         child: Container(
           decoration: BoxDecoration(color: Colors.grey.shade50),
           child: BlocListener<ChatCubit, ChatState>(
@@ -89,10 +87,11 @@ class _ChatsState extends State<Chats> {
               reverse: true,
               pagingController: _pagingController,
               builderDelegate: PagedChildBuilderDelegate<Message>(
-                firstPageErrorIndicatorBuilder: _buildFirstPageError,
+                firstPageErrorIndicatorBuilder: _buildError,
                 noItemsFoundIndicatorBuilder: _buildNoChats,
                 newPageProgressIndicatorBuilder: _buildLoading,
                 firstPageProgressIndicatorBuilder: _buildLoading,
+                newPageErrorIndicatorBuilder: _buildError,
                 itemBuilder: (context, message, index) {
                   return ChatPageMessageDisplay(
                     message: message,
@@ -106,7 +105,7 @@ class _ChatsState extends State<Chats> {
         ));
   }
 
-  Widget _buildFirstPageError(BuildContext context) {
+  Widget _buildError(BuildContext context) {
     return Center(
         child: Column(
       mainAxisSize: MainAxisSize.min,
@@ -116,7 +115,7 @@ class _ChatsState extends State<Chats> {
           child: SizedBox(
             width: 250,
             child: Text(
-              'There was an error while fetching chats.',
+              Chats.ERROR_COPY,
               textAlign: TextAlign.center,
             ),
           ),
@@ -134,9 +133,10 @@ class _ChatsState extends State<Chats> {
     final copy = [];
 
     if (context.read<ThreadCubit>().state.thread != null) {
-      copy.addAll(['No messages yet.', 'Send one to start the conversation!']);
+      copy.addAll(
+          [Chats.NO_MESSAGES_COPY, 'Send one to start the conversation!']);
     } else {
-      copy.add('No thread selected.');
+      copy.add(Chats.NO_THREAD_COPY);
     }
 
     return Padding(

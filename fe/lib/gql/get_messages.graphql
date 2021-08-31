@@ -1,0 +1,28 @@
+query GetMessages(
+  $threadId: uuid!,
+  $after: timestamptz!
+) {
+  messages(
+    limit: 20,
+    order_by: {
+      created_at: desc
+    },
+    where: {
+      thread_id: {
+        _eq: $threadId,
+      },
+      created_at: {
+        _gt: $after
+      }
+    }
+  ) {
+   created_at,
+    message,
+    user {
+      name,
+      profile_picture
+    },
+    is_image,
+    updated_at
+  }
+}

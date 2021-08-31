@@ -22,6 +22,7 @@ insert_permissions:
                 _eq: X-Hasura-User-Id
     columns:
     - message
+    - thread_id
     - user_sent
   role: user
 select_permissions:

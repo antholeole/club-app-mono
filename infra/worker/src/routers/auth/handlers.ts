@@ -51,7 +51,7 @@ export const refreshRoute = async (input: IActionInput<IRefreshRequest>): Promis
     }
 
     if (new TextDecoder().decode(decryptedHash) === input.input.refreshToken) {
-        return new Response(generateAccessToken(input.input.userId))
+        return json({ accessToken: generateAccessToken(input.input.userId) })
     } else {
         throw new StatusError(402, `invalid refresh token ${input.input.refreshToken}`) //returns 402 to avoid loop
     }

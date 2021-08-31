@@ -17,10 +17,10 @@ abstract class Config {
 
 class DevConfig extends Config {
   @override
-  String get hasuraUrl => '127.0.0.1:8080';
+  String get hasuraUrl => 'http://localhost:8080';
 
   @override
-  String get gqlUrl => 'http://127.0.0.1:8080/v1/graphql';
+  String get gqlUrl => 'http://localhost:8080/v1/graphql';
 
   @override
   String get wsUrl => 'ws://127.0.0.1:5000';

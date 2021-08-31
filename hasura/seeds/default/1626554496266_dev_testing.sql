@@ -74,13 +74,19 @@ INSERT INTO public.group_threads(id, group_id, name)
     VALUES ('6481f35f-e444-494b-a980-c0a420384c61', '56610d26-d62d-4628-8c08-eabf7ab7e8ad', 'Meetups');
 
 INSERT INTO public.group_threads(id, group_id, name)
+    VALUES ('79feb08f-6591-4e90-9f7c-d96b7244359c', '56610d26-d62d-4628-8c08-eabf7ab7e8ad', 'Another meetups');
+
+INSERT INTO public.group_threads(id, group_id, name)
     VALUES ('78447a0c-6f41-4a6f-b0a6-002d1a64d903', '56610d26-d62d-4628-8c08-eabf7ab7e8ad', 'Dungeon Masters');
 
 /* and general thread for sports ball */
 INSERT INTO public.group_threads(id, group_id, name)
     VALUES ('d1aa84a0-37d6-46e8-819f-206cc285b17f', 'b454d579-c4d2-403c-95cd-ac8dbc97476a', 'General');
 
-/* add self, ming and brittany to the Meetup group of D&D */
+/* add self, ming and brittany to the theads of D&D */
+INSERT INTO public.user_to_thread(user_id, thread_id)
+    VALUES ('04c9b164-8535-4ae0-a091-9681a425b935', '79feb08f-6591-4e90-9f7c-d96b7244359c');
+
 INSERT INTO public.user_to_thread(user_id, thread_id)
     VALUES ('04c9b164-8535-4ae0-a091-9681a425b935', '6481f35f-e444-494b-a980-c0a420384c61');
 
@@ -97,7 +103,6 @@ INSERT INTO public.user_to_thread(user_id, thread_id)
 INSERT INTO public.messages(user_sent, message, thread_id)
     VALUES ('d3ac2f6b-e56f-47d2-9121-c5444b959a3f', 'eaque rerum! Provident similique accusantium', '6481f35f-e444-494b-a980-c0a420384c61');
     
-
 INSERT INTO public.messages(user_sent, message, thread_id)
     VALUES ('a1e459f1-b3aa-4e47-a3c7-cf6f7ff8f19f', 'hi there! Im', '6481f35f-e444-494b-a980-c0a420384c61');
 

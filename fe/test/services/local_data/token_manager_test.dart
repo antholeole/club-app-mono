@@ -109,7 +109,7 @@ void main() {
       stubGqlResponse<GRefreshData, GRefreshVars>(
         getIt<UnauthGqlClient>(),
         data: (_) => GRefreshData.fromJson({
-          'authenticate': {'accessToken': aToken}
+          'refreshAccessToken': {'accessToken': aToken}
         })!,
       );
 

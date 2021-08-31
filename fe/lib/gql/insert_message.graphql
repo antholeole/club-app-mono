@@ -1,28 +1,11 @@
-query GetMessages(
-  $threadId: uuid!,
-  $after: timestamptz!
-) {
-  messages(
-    limit: 20,
-    order_by: {
-      created_at: desc
-    },
-    where: {
-      thread_id: {
-        _eq: $threadId,
-      },
-      created_at: {
-        _gt: $after
-      }
+mutation InsertMessage($message: String!, $threadId: uuid!, $selfId: uuid!) {
+  insert_messages(objects: {
+    message: $message,
+    thread_id: $threadId,
+    user_sent: $selfId
+  }) {
+    returning {
+      created_at
     }
-  ) {
-   created_at,
-    message,
-    user {
-      name,
-      profile_picture
-    },
-    is_image,
-    updated_at
   }
 }

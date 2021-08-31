@@ -1,3 +1,4 @@
+import 'package:fe/pages/chat/cubit/chat_cubit.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/pages/chat/view/widgets/chat_input/send_button.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
@@ -100,6 +101,8 @@ class _ChatBarState extends State<ChatBar> {
       setState(() {
         _loadingSend = true;
       });
+
+      await context.read<ChatCubit>().sendMessage(to, _controller.text);
 
       _controller.clear();
     } on Failure catch (f) {
