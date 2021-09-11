@@ -76,9 +76,11 @@ class _GqlOperationState<TData, TVars>
   }
 
   Widget _buildLoader() {
-    return widget.loader ??
-        const Loader(
-          size: 12,
-        );
+    return Center(
+      child: widget.loader ??
+          const Loader(
+            size: 12,
+          ),
+    );
   }
 }

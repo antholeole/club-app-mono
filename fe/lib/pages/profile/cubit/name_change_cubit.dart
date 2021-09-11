@@ -36,7 +36,7 @@ class NameChangeCubit extends Cubit<NameChangeState> {
     if (!_nameChangeRegex.hasMatch(newName)) {
       emit(NameChangeState.failure(const Failure(
           message: NameChangeCubit.REGEX_FAIL_COPY,
-          status: FailureStatus.RegexFail)));
+          status: FailureStatus.Custom)));
       return;
     }
 

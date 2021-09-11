@@ -7,23 +7,23 @@ class TestingConfig extends Config {
       : _needAutoEvents = needAutoEvents;
 
   @override
-  String get gqlUrl => 'not_real_gql';
-
-  @override
-  bool get httpIsSecure => false;
-
-  @override
   bool get playTaxingAnimations => true;
 
   @override
   bool get refreshLocalCacheOnReload => true;
 
   @override
-  String get wsUrl => 'ws://localhost:8175';
-
-  @override
   bool get testing => !_needAutoEvents;
 
   @override
-  String get hasuraUrl => 'unreal';
+  List<String> get gqlPathSegments => throw UnimplementedError();
+
+  @override
+  String get hasuraHost => throw UnimplementedError();
+
+  @override
+  int? get hasuraPort => throw UnimplementedError();
+
+  @override
+  bool get transportIsSecure => throw UnimplementedError();
 }

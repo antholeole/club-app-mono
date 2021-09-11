@@ -144,7 +144,7 @@ void main() {
           },
           build: () => ChatCubit(),
           act: (cubit) {
-            cubit.sendMessage(UuidType.generate(), 'hi');
+            cubit.sendMessage('hi');
           },
           expect: () => [],
           verify: (_) {

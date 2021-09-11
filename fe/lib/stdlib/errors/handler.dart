@@ -41,7 +41,11 @@ class Handler {
   }
 
   Future<bool> hasServerConnection() async {
-    final resp = await _client.get(Uri.parse('${_config.hasuraUrl}/healthz'));
+    final resp = await _client.get(Uri(
+        host: _config.hasuraHost,
+        pathSegments: ['healthz'],
+        port: _config.hasuraPort,
+        scheme: _config.transportIsSecure ? 'https' : 'http'));
 
     return resp.statusCode == 200;
   }
@@ -49,9 +53,10 @@ class Handler {
   Future<Failure> basicGqlErrorHandler(OperationResponse resp) async {
     final errors = resp.graphqlErrors;
 
-    if (resp.linkException != null &&
-        resp.linkException!.originalException is Failure) {
-      return resp.linkException!.originalException;
+    if (resp.linkException != null) {
+      if (resp.linkException!.originalException is Failure) {
+        return resp.linkException!.originalException;
+      }
     }
 
     if (errors != null) {

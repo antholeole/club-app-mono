@@ -9,6 +9,7 @@ import 'package:fe/gql/refresh.req.gql.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 import 'local_file_store.dart';
 import 'local_user_service.dart';
@@ -49,6 +50,19 @@ class TokenManager {
     _tokenCache = serializedToken;
 
     return serializedToken;
+  }
+
+  /// returns true if the token is valid with some buffer time.
+  /// required in siutations where there is no bounce back if the token
+  /// is expired (i.e. WS connection)
+  Future<bool> tokenIsValid() async {
+    final token = await read();
+
+    if (token == null) {
+      return false;
+    } else {
+      return JwtDecoder.getRemainingTime(token).inSeconds > 10;
+    }
   }
 
   Future<String> refresh() async {

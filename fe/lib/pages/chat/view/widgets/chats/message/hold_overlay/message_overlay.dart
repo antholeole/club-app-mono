@@ -2,10 +2,10 @@ import 'package:fe/data/models/message.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
 import 'package:fe/stdlib/helpers/size_provider.dart';
-import 'package:fe/stdlib/helpers/to_display_datetime.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import '../simple_message_display.dart';
 import 'message_options.dart';
@@ -115,7 +115,8 @@ class _MessageOverlayState extends State<MessageOverlay>
                   child: Padding(
                     padding: const EdgeInsets.only(top: 5.0, right: 12.0),
                     child: Text(
-                      toDisplayDateTime(widget.message.createdAt),
+                      DateFormat("EEE, MMM d 'a't h:mm a")
+                          .format(widget.message.createdAt),
                       textAlign: TextAlign.right,
                       style: Theme.of(context)
                           .textTheme
@@ -125,7 +126,7 @@ class _MessageOverlayState extends State<MessageOverlay>
                   ),
                 ),
               ),
-              SimpleMessageDisplay(
+              SimpleMessageDisplay.fromMessage(
                 withPadding: false,
                 message: widget.message,
               ),

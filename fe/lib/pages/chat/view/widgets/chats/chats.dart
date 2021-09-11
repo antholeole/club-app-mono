@@ -1,17 +1,18 @@
 import 'dart:ui';
 
 import 'package:fe/data/models/message.dart';
-import 'package:fe/data/models/thread.dart';
-import 'package:fe/pages/chat/cubit/chat_cubit.dart';
+import 'package:fe/pages/chat/bloc/chat_bloc.dart';
+import 'package:fe/pages/chat/cubit/send_cubit.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
+import 'package:fe/pages/chat/view/widgets/chats/message/sending_message.dart';
+import 'package:fe/providers/user_provider.dart';
+import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:fe/stdlib/theme/pill_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:clock/clock.dart';
 
 import '../../../../../service_locator.dart';
 import 'message/chat_page_message_display.dart';
@@ -31,81 +32,86 @@ class Chats extends StatefulWidget {
 class _ChatsState extends State<Chats> {
   final _handler = getIt<Handler>();
 
+  final _scrollController = ScrollController();
+
   OverlayEntry? _currentMessageOverlay;
 
-  void Function(DateTime)? _currentPageListener;
-
-  final _pagingController = PagingController<DateTime, Message>(
-      firstPageKey: clock.now().add(const Duration(hours: 5)));
-
   @override
-  void didChangeDependencies() {
-    _setupPagingController(context.read<ThreadCubit>().state.thread);
-    super.didChangeDependencies();
+  void initState() {
+    _scrollController.addListener(_onScroll);
+    super.initState();
   }
 
   @override
   void dispose() {
-    _pagingController.dispose();
+    _scrollController.dispose();
     super.dispose();
-  }
-
-  void _setupPagingController(Thread? thread) {
-    if (_currentPageListener != null) {
-      _pagingController.removePageRequestListener(_currentPageListener!);
-    }
-
-    if (thread != null) {
-      _currentPageListener =
-          (before) => context.read<ChatCubit>().getChats(thread, before);
-
-      _pagingController.addPageRequestListener(_currentPageListener!);
-    }
-
-    _pagingController.refresh();
-
-    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ThreadCubit, ThreadState>(
-        listener: (context, state) => _setupPagingController(state.thread),
-        child: Container(
-          decoration: BoxDecoration(color: Colors.grey.shade50),
-          child: BlocListener<ChatCubit, ChatState>(
-            listener: (context, state) => state.join(
-                (_) => null,
-                (cfm) =>
-                    _pagingController.appendPage(cfm.messages, cfm.lastSentAt),
-                (cfmf) {
-              _pagingController.error = cfmf.failure;
-              _handler.handleFailure(cfmf.failure, context,
-                  withPrefix: 'failed fetching messages');
-            }),
-            child: PagedListView<DateTime, Message>(
-              reverse: true,
-              pagingController: _pagingController,
-              builderDelegate: PagedChildBuilderDelegate<Message>(
-                firstPageErrorIndicatorBuilder: _buildError,
-                noItemsFoundIndicatorBuilder: _buildNoChats,
-                newPageProgressIndicatorBuilder: _buildLoading,
-                firstPageProgressIndicatorBuilder: _buildLoading,
-                newPageErrorIndicatorBuilder: _buildError,
-                itemBuilder: (context, message, index) {
-                  return ChatPageMessageDisplay(
-                    message: message,
-                    onHeld: (message, layerLink) =>
-                        _onTappedMessage(message, layerLink, context),
-                  );
-                },
-              ),
-            ),
-          ),
-        ));
+    return Container(
+      decoration: BoxDecoration(color: Colors.grey.shade50),
+      child: BlocBuilder<SendCubit, List<SendState>>(
+        builder: (_, unsents) => BlocConsumer<ChatBloc, ChatState>(
+          listener: (_, chatState) => chatState.join(
+              (_) => null,
+              (fmf) => _handler.handleFailure(fmf.failure, context),
+              (_) => null,
+              (_) => null),
+          builder: (_, state) => state.join(
+              (fm) => _buildChats(fm, unsents),
+              (fmf) => _buildError(fmf.failure),
+              (_) => _buildLoading(),
+              (_) => _buildNoThread()),
+        ),
+      ),
+    );
   }
 
-  Widget _buildError(BuildContext context) {
+  Widget _buildChats(FetchedMessages messagesState, List<SendState> unsents) {
+    int itemCount;
+
+    if (messagesState.messages.isEmpty && unsents.isEmpty) {
+      return _buildNoChats();
+    }
+
+    if (messagesState.hasReachedMax) {
+      itemCount = messagesState.messages.length;
+    } else {
+      itemCount = messagesState.messages.length + 1;
+    }
+
+    itemCount += unsents.length;
+
+    return ListView.builder(
+        reverse: true,
+        controller: _scrollController,
+        itemCount: itemCount,
+        itemBuilder: (context, i) {
+          if (i < unsents.length) {
+            return SendingMessageDisplay(
+                sendState: unsents[unsents.length - 1 - i]);
+          }
+
+          if (i >= messagesState.messages.length + unsents.length) {
+            context.read<ChatBloc>().add(const FetchMessagesEvent());
+            return const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Loader(),
+            );
+          }
+
+          final message = messagesState.messages[i - unsents.length];
+          return ChatPageMessageDisplay(
+              message: message,
+              sentBySelf: message.user.id == UserProvider.of(context).user.id,
+              onHeld: (message, layerLink) =>
+                  _onTappedMessage(message, layerLink, context));
+        });
+  }
+
+  Widget _buildError(Failure failure) {
     return Center(
         child: Column(
       mainAxisSize: MainAxisSize.min,
@@ -122,14 +128,14 @@ class _ChatsState extends State<Chats> {
         ),
         PillButton(
           text: 'retry',
-          onClick: () => _pagingController.retryLastFailedRequest(),
+          onClick: () => context.read<ChatBloc>().add(const RetryEvent()),
           icon: Icons.refresh,
         ),
       ],
     ));
   }
 
-  Widget _buildNoChats(BuildContext context) {
+  Widget _buildNoChats() {
     final copy = [];
 
     if (context.read<ThreadCubit>().state.thread != null) {
@@ -149,7 +155,11 @@ class _ChatsState extends State<Chats> {
     );
   }
 
-  Widget _buildLoading(BuildContext _) {
+  Widget _buildNoThread() {
+    return const Center(child: Text('no thread selected'));
+  }
+
+  Widget _buildLoading() {
     return const Center(child: Loader());
   }
 
@@ -175,5 +185,11 @@ class _ChatsState extends State<Chats> {
     );
     HapticFeedback.lightImpact();
     Overlay.of(context)!.insert(_currentMessageOverlay!);
+  }
+
+  void _onScroll() {
+    final chatCubit = context.read<ChatBloc>();
+
+    chatCubit.appendingNewMessages = _scrollController.offset <= 0;
   }
 }

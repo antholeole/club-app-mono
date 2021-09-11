@@ -1,7 +1,7 @@
 import 'package:fe/data/models/group.dart';
-import 'package:fe/pages/chat/cubit/chat_cubit.dart';
+import 'package:fe/pages/chat/bloc/chat_bloc.dart';
+import 'package:fe/pages/chat/cubit/send_cubit.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
-import 'package:fe/pages/scaffold/view/widgets/channels_bottom_sheet.dart';
 import 'package:fe/pages/chat/view/widgets/chat_input/chat_bar.dart';
 import 'package:fe/pages/chat/view/widgets/chat_title.dart';
 import 'package:fe/pages/chat/view/widgets/chats/chats.dart';
@@ -16,7 +16,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ChatPage extends StatelessWidget {
   final Group group;
 
-  const ChatPage({required this.group});
+  late final ThreadCubit _threadCubit;
+  late final ChatBloc _chatCubit;
+
+  ChatPage({required this.group}) {
+    _threadCubit = ThreadCubit(group: group);
+    _chatCubit = ChatBloc(threadCubit: _threadCubit);
+  }
 
   static MainScaffoldParts scaffoldWidgets(BuildContext context) {
     return MainScaffoldParts(
@@ -34,11 +40,14 @@ class ChatPage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => ThreadCubit(group: group),
+          create: (_) => _threadCubit,
         ),
         BlocProvider(
-          create: (_) => ChatCubit(),
+          create: (_) => _chatCubit,
         ),
+        BlocProvider(
+            create: (_) =>
+                SendCubit(threadCubit: _threadCubit, chatCubit: _chatCubit))
       ],
       child: const ChatView(),
     );

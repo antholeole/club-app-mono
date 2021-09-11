@@ -16,6 +16,13 @@ import 'package:fe/gql/get_messages.data.gql.dart'
         GGetMessagesData_messages_user;
 import 'package:fe/gql/get_messages.req.gql.dart' show GGetMessagesReq;
 import 'package:fe/gql/get_messages.var.gql.dart' show GGetMessagesVars;
+import 'package:fe/gql/get_new_messages.data.gql.dart'
+    show
+        GGetNewMessagesData,
+        GGetNewMessagesData_messages,
+        GGetNewMessagesData_messages_user;
+import 'package:fe/gql/get_new_messages.req.gql.dart' show GGetNewMessagesReq;
+import 'package:fe/gql/get_new_messages.var.gql.dart' show GGetNewMessagesVars;
 import 'package:fe/gql/insert_message.data.gql.dart'
     show
         GInsertMessageData,
@@ -232,6 +239,11 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GGetMessagesData_messages_user,
   GGetMessagesReq,
   GGetMessagesVars,
+  GGetNewMessagesData,
+  GGetNewMessagesData_messages,
+  GGetNewMessagesData_messages_user,
+  GGetNewMessagesReq,
+  GGetNewMessagesVars,
   GIdentityProvider,
   GInsertMessageData,
   GInsertMessageData_insert_messages,

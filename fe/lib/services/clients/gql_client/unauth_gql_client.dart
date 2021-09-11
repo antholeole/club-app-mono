@@ -16,8 +16,16 @@ class UnauthGqlClient extends GqlClient {
   UnauthGqlClient._({required Client client}) : _client = client;
 
   static Future<UnauthGqlClient> build() async {
-    final link =
-        HttpLink(getIt<Config>().gqlUrl, httpClient: getIt<http.Client>());
+    final config = getIt<Config>();
+
+    final link = HttpLink(
+        Uri(
+                host: config.hasuraHost,
+                pathSegments: config.gqlPathSegments,
+                port: config.hasuraPort,
+                scheme: config.transportIsSecure ? 'https' : 'http')
+            .toString(),
+        httpClient: getIt<http.Client>());
 
     return UnauthGqlClient._(
         client: Client(link: link, cache: await buildCache(memoryCache: true)));
