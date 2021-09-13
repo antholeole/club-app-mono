@@ -12,7 +12,7 @@ query QueryMessagesInThread(
         _eq: $threadId,
       },
       created_at: {
-        _lt: $before
+        _lte: $before
       }
     }
   ) {

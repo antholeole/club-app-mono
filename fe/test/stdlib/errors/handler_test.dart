@@ -133,8 +133,8 @@ void main() {
     const nonFatal = Failure(status: FailureStatus.ServersDown);
 
     setUp(() {
-      resetMockCubit(mockMainCubit);
-      resetMockCubit(mockToasterCubit);
+      resetMockBloc(mockMainCubit);
+      resetMockBloc(mockToasterCubit);
     });
 
     testWidgets('should log out if fatal error', (tester) async {

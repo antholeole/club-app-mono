@@ -5,6 +5,9 @@ enum EdgeFetchState { NotFetching, Fetching, ErrorFetching }
 @immutable
 class ChatState extends Union4Impl<FetchedMessages, FetchMessagesFailure,
     FetchMessagesLoading, NoThread> {
+  @override
+  String toString() => join((a) => a, (b) => b, (c) => c, (d) => d).toString();
+
   static const unions = Quartet<FetchedMessages, FetchMessagesFailure,
       FetchMessagesLoading, NoThread>();
 

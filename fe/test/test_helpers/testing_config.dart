@@ -16,14 +16,14 @@ class TestingConfig extends Config {
   bool get testing => !_needAutoEvents;
 
   @override
-  List<String> get gqlPathSegments => throw UnimplementedError();
+  List<String> get gqlPathSegments => ['asd', 'asda'];
 
   @override
-  String get hasuraHost => throw UnimplementedError();
+  String get hasuraHost => 'adsa';
 
   @override
-  int? get hasuraPort => throw UnimplementedError();
+  int? get hasuraPort => 8000;
 
   @override
-  bool get transportIsSecure => throw UnimplementedError();
+  bool get transportIsSecure => false;
 }

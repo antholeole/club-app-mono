@@ -8,6 +8,7 @@ import 'package:fe/pages/chat/view/widgets/chats/message/sending_message.dart';
 import 'package:fe/providers/user_provider.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/handler.dart';
+import 'package:fe/stdlib/errors/unreachable_state.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:fe/stdlib/theme/pill_button.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +64,7 @@ class _ChatsState extends State<Chats> {
               (fm) => _buildChats(fm, unsents),
               (fmf) => _buildError(fmf.failure),
               (_) => _buildLoading(),
-              (_) => _buildNoThread()),
+              (_) => throw UnreachableStateError(_)),
         ),
       ),
     );
@@ -103,6 +104,7 @@ class _ChatsState extends State<Chats> {
           }
 
           final message = messagesState.messages[i - unsents.length];
+
           return ChatPageMessageDisplay(
               message: message,
               sentBySelf: message.user.id == UserProvider.of(context).user.id,
@@ -153,10 +155,6 @@ class _ChatsState extends State<Chats> {
             .toList(),
       ),
     );
-  }
-
-  Widget _buildNoThread() {
-    return const Center(child: Text('no thread selected'));
   }
 
   Widget _buildLoading() {

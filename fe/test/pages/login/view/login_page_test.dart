@@ -56,7 +56,7 @@ void main() {
     }
 
     setUp(() {
-      resetMockCubit(mockLoginCubit);
+      resetMockBloc(mockLoginCubit);
     });
 
     testWidgets('should render login buttons on inital', (tester) async {

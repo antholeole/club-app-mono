@@ -43,7 +43,7 @@ void main() {
         expect: () => [
               NameChangeState.changing(),
               NameChangeState.failure(const Failure(
-                  status: FailureStatus.RegexFail,
+                  status: FailureStatus.Custom,
                   message: NameChangeCubit.REGEX_FAIL_COPY))
             ],
         verify: (_) => verifyNever(() => caller.call()));

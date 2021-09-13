@@ -21,6 +21,7 @@ t-clean:
 	'lib/gql/*' \
 	'lib/schema.graphql' \
 	'lib/**/*_state.dart' \
+	'lib/**/*_event.dart' \
 	'lib/*.gql.g.dart' \
 	'lib/*.gql.dart' \
 	'lib/config.dart' \

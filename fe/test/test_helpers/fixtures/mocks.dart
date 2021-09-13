@@ -2,7 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:fe/data/json/backend_access_tokens.dart';
 import 'package:fe/data/models/user.dart';
-import 'package:fe/pages/chat/cubit/chat_cubit.dart';
+import 'package:fe/pages/chat/bloc/chat_bloc.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/pages/groups/cubit/update_groups_cubit.dart';
 import 'package:fe/pages/login/cubit/login_cubit.dart';
@@ -45,7 +45,7 @@ class MockUpdateGroupsCubit extends MockCubit<UpdateGroupsState>
   factory MockUpdateGroupsCubit.getMock() {
     registerFallbackValue(UpdateGroupsState.fetchingGroups());
     final cubit = MockUpdateGroupsCubit._();
-    resetMockCubit(cubit);
+    resetMockBloc(cubit);
     return cubit;
   }
 }
@@ -114,14 +114,15 @@ class MockThreadCubit extends MockCubit<ThreadState> implements ThreadCubit {
   }
 }
 
-class MockChatCubit extends MockCubit<ChatState> implements ChatCubit {
-  MockChatCubit._();
+class MockChatBloc extends MockBloc<ChatEvent, ChatState> implements ChatBloc {
+  MockChatBloc._();
 
-  factory MockChatCubit.getMock() {
-    registerFallbackValue(ChatState.inital());
-    final cubit = MockChatCubit._();
-    when(() => cubit.close()).thenAnswer((invocation) async => null);
-    return cubit;
+  factory MockChatBloc.getMock() {
+    registerFallbackValue(ChatState.loading());
+    registerFallbackValue(const FetchMessagesEvent());
+    final bloc = MockChatBloc._();
+    when(() => bloc.close()).thenAnswer((invocation) async => null);
+    return bloc;
   }
 }
 

@@ -74,7 +74,7 @@ void main() {
       }
 
       setUp(() {
-        resetMockCubit(mockChatBottomSheetCubit);
+        resetMockBloc(mockChatBottomSheetCubit);
         registerAllMockServices();
       });
 

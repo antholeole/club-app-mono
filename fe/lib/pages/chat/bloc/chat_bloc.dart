@@ -8,12 +8,13 @@ import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
+import 'package:ferry/ferry.dart';
 import 'package:meta/meta.dart';
 import 'package:fe/gql/get_new_messages.req.gql.dart';
 import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
-import 'package:fe/gql/query_messages_in_thread.req.gql.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
+import 'package:fe/gql/query_messages_in_thread.req.gql.dart';
 import 'package:fe/gql/query_messages_in_thread.data.gql.dart';
 
 import '../../../service_locator.dart';
@@ -36,9 +37,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<RetryEvent>((_, emit) => _retry(emit));
     on<FetchMessagesEvent>((event, emit) => _fetchMessages(emit),
         transformer: droppable());
-
     on<_ThreadChangeEvent>((event, emit) => _switchThread(emit));
     _threadCubit.stream.listen((event) => add(_ThreadChangeEvent()));
+    add(_ThreadChangeEvent());
   }
 
   Stream<Iterable<Message>> get _newMessageStream {
@@ -63,10 +64,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     final before = state.join((fm) => fm.messages.last.createdAt, (_) => null,
             (_) => null, (_) => null) ??
-        clock.now().add(const Duration(hours: 5));
+        clock.hoursFromNow(5);
 
     try {
       resp = await _gqlClient.request(GQueryMessagesInThreadReq((q) => q
+        ..fetchPolicy = FetchPolicy.NetworkOnly
         ..vars.before = before
         ..vars.threadId = _threadCubit.state.thread?.id));
     } on Failure catch (f) {
@@ -91,8 +93,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         state.join((fm) => fm.messages, (_) => [], (_) => [], (_) => []);
 
     final hasReachedMax = chats.length < SINGLE_QUERY_LIMIT;
-
-    print(oldMessages.length + chats.length);
 
     emit(ChatState.fetchedMessages(FetchedMessages(
         messages: _combineMessages(oldMessages, chats),

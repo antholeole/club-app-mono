@@ -33,8 +33,8 @@ void main() {
 
   setUp(() {
     registerAllMockServices(needCubitAutoEvents: true);
-    resetMockCubit(mockMainCubit);
-    resetMockCubit(mockUpdateGroupsCubit);
+    resetMockBloc(mockMainCubit);
+    resetMockBloc(mockUpdateGroupsCubit);
   });
 
   Widget wrapWithDependencies(Widget child) {

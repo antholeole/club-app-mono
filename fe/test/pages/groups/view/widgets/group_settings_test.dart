@@ -56,8 +56,8 @@ void main() {
   setUp(() {
     registerAllMockServices();
 
-    resetMockCubit(mockUpdateGroupsCubit);
-    resetMockCubit(mockToasterCubit);
+    resetMockBloc(mockUpdateGroupsCubit);
+    resetMockBloc(mockToasterCubit);
   });
 
   group('group settings', () {

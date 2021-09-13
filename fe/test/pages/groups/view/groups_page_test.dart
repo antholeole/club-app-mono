@@ -82,8 +82,8 @@ void main() {
     }
 
     setUp(() {
-      resetMockCubit(mockUpdateGroupsCubit);
-      resetMockCubit(mockToasterCubit);
+      resetMockBloc(mockUpdateGroupsCubit);
+      resetMockBloc(mockToasterCubit);
 
       whenListen(
         mockToasterCubit,

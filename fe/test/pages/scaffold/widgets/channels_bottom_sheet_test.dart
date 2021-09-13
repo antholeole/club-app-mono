@@ -87,9 +87,9 @@ void main() {
     }
 
     setUp(() async {
-      resetMockCubit(mockMainCubit);
-      resetMockCubit(mockThreadCubit);
-      resetMockCubit(mockChatBottomSheetCubit);
+      resetMockBloc(mockMainCubit);
+      resetMockBloc(mockThreadCubit);
+      resetMockBloc(mockChatBottomSheetCubit);
 
       await registerAllMockServices();
 
@@ -247,7 +247,7 @@ void main() {
     });
 
     testWidgets('should say no group on no group', (tester) async {
-      resetMockCubit(mockMainCubit);
+      resetMockBloc(mockMainCubit);
       whenListen(mockMainCubit, Stream<MainState>.fromIterable([]),
           initialState: MainState.groupless());
 

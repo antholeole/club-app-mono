@@ -10,20 +10,23 @@ import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
 import 'package:fe/gql/insert_message.req.gql.dart';
 
 part 'send_state.dart';
 
 class SendCubit extends Cubit<List<SendState>> {
-  final ThreadCubit _threadCubit;
-  final ChatBloc _chatCubit;
+  static const NO_THREAD_SELECTED_COPY = 'No thread selected!';
 
-  SendCubit({required ThreadCubit threadCubit, required ChatBloc chatCubit})
+  final ThreadCubit _threadCubit;
+  final ChatBloc _chatBloc;
+
+  SendCubit({required ThreadCubit threadCubit, required ChatBloc chatBloc})
       : _threadCubit = threadCubit,
-        _chatCubit = chatCubit,
-        super([]);
+        _chatBloc = chatBloc,
+        super([]) {
+    _threadCubit.stream.listen((event) => emit([]));
+  }
 
   final _gqlClient = getIt<AuthGqlClient>();
   final _localUserService = getIt<LocalUserService>();
@@ -33,7 +36,7 @@ class SendCubit extends Cubit<List<SendState>> {
 
     if (currentThreadId == null) {
       throw const Failure(
-          status: FailureStatus.Custom, message: 'No thread selected!');
+          status: FailureStatus.Custom, message: NO_THREAD_SELECTED_COPY);
     }
 
     final sendingMessage = SendingMessage(message: message);
@@ -74,7 +77,7 @@ class SendCubit extends Cubit<List<SendState>> {
     }
 
     // ignore: unawaited_futures
-    _chatCubit.stream
+    _chatBloc.stream
         .firstWhere((element) => element.join(
             (fm) => fm.messages.any((msg) => msg.id == sendingMessage.id),
             (_) => false,

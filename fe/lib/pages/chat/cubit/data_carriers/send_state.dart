@@ -1,22 +1,26 @@
-part of 'send_cubit.dart';
+import 'package:equatable/equatable.dart';
+import 'package:fe/pages/chat/cubit/data_carriers/sending_message.dart';
+import 'package:fe/stdlib/errors/failure.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
 
 @immutable
-class SendState extends Union2Impl<Sending, FailureSending> {
+class MessageSendState extends Union2Impl<Sending, FailureSending> {
   @override
   String toString() => join((a) => a, (b) => b).toString();
 
   static const unions = Doublet<Sending, FailureSending>();
 
-  SendState._(Union2<Sending, FailureSending> union) : super(union);
+  MessageSendState._(Union2<Sending, FailureSending> union) : super(union);
 
-  factory SendState.sending({required SendingMessage message}) =>
-      SendState._(unions.first(Sending(message: message)));
+  factory MessageSendState.sending({required SendingMessage message}) =>
+      MessageSendState._(unions.first(Sending(message: message)));
 
-  factory SendState.failure(
+  factory MessageSendState.failure(
           {required Failure failure,
           required SendingMessage message,
           required Future<void> Function() resend}) =>
-      SendState._(unions.second(
+      MessageSendState._(unions.second(
           FailureSending(failure: failure, message: message, resend: resend)));
 
   SendingMessage get message => join((s) => s.message, (sf) => sf.message);

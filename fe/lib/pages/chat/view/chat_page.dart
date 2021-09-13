@@ -17,11 +17,11 @@ class ChatPage extends StatelessWidget {
   final Group group;
 
   late final ThreadCubit _threadCubit;
-  late final ChatBloc _chatCubit;
+  late final ChatBloc _chatBloc;
 
   ChatPage({required this.group}) {
     _threadCubit = ThreadCubit(group: group);
-    _chatCubit = ChatBloc(threadCubit: _threadCubit);
+    _chatBloc = ChatBloc(threadCubit: _threadCubit);
   }
 
   static MainScaffoldParts scaffoldWidgets(BuildContext context) {
@@ -43,11 +43,8 @@ class ChatPage extends StatelessWidget {
           create: (_) => _threadCubit,
         ),
         BlocProvider(
-          create: (_) => _chatCubit,
-        ),
-        BlocProvider(
-            create: (_) =>
-                SendCubit(threadCubit: _threadCubit, chatCubit: _chatCubit))
+          create: (_) => _chatBloc,
+        )
       ],
       child: const ChatView(),
     );
@@ -104,7 +101,6 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     threadCubit = context.read<ThreadCubit>();
     pageCubit = context.read<PageCubit>();
-    final thread = context.watch<ThreadCubit>().state.thread;
 
     return MultiBlocListener(
         listeners: [
@@ -122,9 +118,18 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
             });
           }),
         ],
-        child: FooterLayout(
-          footer: const KeyboardAttachable(child: ChatBar()),
-          child: thread != null ? const Chats() : Container(),
+        child: BlocBuilder<ThreadCubit, ThreadState>(
+          builder: (context, state) => state.join(
+              (_) => Container(),
+              (_) => BlocProvider<SendCubit>(
+                    create: (_) => SendCubit(
+                        threadCubit: context.read<ThreadCubit>(),
+                        chatBloc: context.read<ChatBloc>()),
+                    child: const FooterLayout(
+                      footer: KeyboardAttachable(child: ChatBar()),
+                      child: Chats(),
+                    ),
+                  )),
         ));
   }
 

@@ -41,9 +41,9 @@ void main() {
     });
 
     setUp(() {
-      resetMockCubit(mockChatBottomSheetCubit);
-      resetMockCubit(mockThreadCubit);
-      resetMockCubit(mockPageCubit);
+      resetMockBloc(mockChatBottomSheetCubit);
+      resetMockBloc(mockThreadCubit);
+      resetMockBloc(mockPageCubit);
     });
     testWidgets(
         'clicking on flippable icon should bring up thread bottom sheet',

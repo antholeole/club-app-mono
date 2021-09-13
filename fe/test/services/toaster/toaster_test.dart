@@ -24,7 +24,7 @@ void main() {
   }
 
   setUp(() {
-    resetMockCubit(mockToasterCubit);
+    resetMockBloc(mockToasterCubit);
   });
 
   testWidgets('should display new toast on new toast', (tester) async {

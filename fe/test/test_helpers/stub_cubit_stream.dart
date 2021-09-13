@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
 
-StreamController stubCubitStream<S>(MockCubit<S> mockCubit, {S? initialState}) {
+StreamController<S> stubCubitStream<S>(MockCubit<S> mockCubit,
+    {S? initialState}) {
   final cubitController = StreamController<S>.broadcast();
 
   whenListen(

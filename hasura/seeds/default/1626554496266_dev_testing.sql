@@ -100,6 +100,11 @@ INSERT INTO public.user_to_thread(user_id, thread_id)
 /* britb d3ac2f6b-e56f-47d2-9121-c5444b959a3f */
 /* charles a1e459f1-b3aa-4e47-a3c7-cf6f7ff8f19f */
 
+/* 
+we have an issue here: if we send more than 20 messages at the same exact MS, it breaks the UI.
+Not good :/
+*/
+
 INSERT INTO public.messages(user_sent, message, thread_id)
     VALUES ('d3ac2f6b-e56f-47d2-9121-c5444b959a3f', 'eaque rerum! Provident similique accusantium', '6481f35f-e444-494b-a980-c0a420384c61');
     
@@ -168,27 +173,4 @@ INSERT INTO public.messages(user_sent, message, thread_id)
 INSERT INTO public.messages(user_sent, message, thread_id)
     VALUES ('d3ac2f6b-e56f-47d2-9121-c5444b959a3f', 'eaque rerum! Provident similique accusantium', '6481f35f-e444-494b-a980-c0a420384c61');
 
-INSERT INTO public.messages(user_sent, message, thread_id)
-    VALUES ('d3ac2f6b-e56f-47d2-9121-c5444b959a3f', 'eaque rerum! Provident similique accusantium', '6481f35f-e444-494b-a980-c0a420384c61');
-
-INSERT INTO public.messages(user_sent, message, thread_id)
-    VALUES ('d3ac2f6b-e56f-47d2-9121-c5444b959a3f', 'eaque rerum! Provident similique accusantium', '6481f35f-e444-494b-a980-c0a420384c61');
-
-INSERT INTO public.messages(user_sent, message, thread_id)
-    VALUES ('d3ac2f6b-e56f-47d2-9121-c5444b959a3f', 'eaque rerum! Provident similique accusantium', '6481f35f-e444-494b-a980-c0a420384c61');
-
-INSERT INTO public.messages(user_sent, message, thread_id)
-    VALUES ('d3ac2f6b-e56f-47d2-9121-c5444b959a3f', 'eaque rerum! Provident similique accusantium', '6481f35f-e444-494b-a980-c0a420384c61');
-
-INSERT INTO public.messages(user_sent, message, thread_id)
-    VALUES ('d3ac2f6b-e56f-47d2-9121-c5444b959a3f', 'eaque rerum! Provident similique accusantium', '6481f35f-e444-494b-a980-c0a420384c61');
-
-INSERT INTO public.messages(user_sent, message, thread_id)
-    VALUES ('d3ac2f6b-e56f-47d2-9121-c5444b959a3f', 'eaque rerum! Provident similique accusantium', '6481f35f-e444-494b-a980-c0a420384c61');
-
-INSERT INTO public.messages(user_sent, message, thread_id)
-    VALUES ('d3ac2f6b-e56f-47d2-9121-c5444b959a3f', 'eaque rerum! Provident similique accusantium', '6481f35f-e444-494b-a980-c0a420384c61');
-
-INSERT INTO public.messages(user_sent, message, thread_id)
-    VALUES ('d3ac2f6b-e56f-47d2-9121-c5444b959a3f', 'eaque rerum! Provident similique accusantium', '6481f35f-e444-494b-a980-c0a420384c61');
 

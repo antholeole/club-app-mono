@@ -67,8 +67,7 @@ void main() {
     }
 
     setUp(() {
-      <MockCubit>[mockNameChangeCubit, mockToasterCubit]
-          .forEach(resetMockCubit);
+      <MockCubit>[mockNameChangeCubit, mockToasterCubit].forEach(resetMockBloc);
     });
 
     testWidgets('should display users name', (tester) async {
