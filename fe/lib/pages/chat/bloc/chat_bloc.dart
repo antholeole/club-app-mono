@@ -62,15 +62,18 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   Future<void> _fetchMessages(Emitter<ChatState> emit) async {
     GQueryMessagesInThreadData resp;
 
-    final before = state.join((fm) => fm.messages.last.createdAt, (_) => null,
-            (_) => null, (_) => null) ??
+    final before = state.join((fm) {
+          if (fm.messages.isNotEmpty) {
+            return fm.messages.last.createdAt;
+          }
+        }, (_) => null, (_) => null, (_) => null) ??
         clock.hoursFromNow(5);
 
     try {
       resp = await _gqlClient.request(GQueryMessagesInThreadReq((q) => q
         ..fetchPolicy = FetchPolicy.NetworkOnly
         ..vars.before = before
-        ..vars.threadId = _threadCubit.state.thread?.id));
+        ..vars.threadId = _threadCubit.state.thread!.id));
     } on Failure catch (f) {
       emit(ChatState.failure(f));
       return;
@@ -108,10 +111,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       return;
     }
 
+    await _fetchMessages(emit);
+
     await _subscription?.cancel();
     _subscription = _newMessageStream.listen(_onNewMessage);
-
-    await _fetchMessages(emit);
   }
 
   Future<void> _retry(Emitter<ChatState> emit) async {

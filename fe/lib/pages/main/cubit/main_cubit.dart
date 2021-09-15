@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fe/data/models/group.dart';
+import 'package:fe/data/models/user.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
 import 'package:fe/services/local_data/token_manager.dart';

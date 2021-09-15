@@ -147,12 +147,15 @@ class _ChatsState extends State<Chats> {
       copy.add(Chats.NO_THREAD_COPY);
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: copy
-            .map((e) => Text(e, style: Theme.of(context).textTheme.caption))
-            .toList(),
+    return Container(
+      width: double.infinity,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: Column(
+          children: copy
+              .map((e) => Text(e, style: Theme.of(context).textTheme.caption))
+              .toList(),
+        ),
       ),
     );
   }

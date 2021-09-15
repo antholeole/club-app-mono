@@ -7,7 +7,6 @@ import 'package:fe/service_locator.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:fe/stdlib/errors/failure.dart';
-import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter/material.dart';
 import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
@@ -16,8 +15,6 @@ import 'package:fe/gql/insert_message.req.gql.dart';
 part 'send_state.dart';
 
 class SendCubit extends Cubit<List<SendState>> {
-  static const NO_THREAD_SELECTED_COPY = 'No thread selected!';
-
   final ThreadCubit _threadCubit;
   final ChatBloc _chatBloc;
 
@@ -32,12 +29,7 @@ class SendCubit extends Cubit<List<SendState>> {
   final _localUserService = getIt<LocalUserService>();
 
   Future<void> send(String message) async {
-    final currentThreadId = _threadCubit.state.thread?.id;
-
-    if (currentThreadId == null) {
-      throw const Failure(
-          status: FailureStatus.Custom, message: NO_THREAD_SELECTED_COPY);
-    }
+    final currentThreadId = _threadCubit.state.thread!.id;
 
     final sendingMessage = SendingMessage(message: message);
 
@@ -78,12 +70,15 @@ class SendCubit extends Cubit<List<SendState>> {
 
     // ignore: unawaited_futures
     _chatBloc.stream
-        .firstWhere((element) => element.join(
-            (fm) => fm.messages.any((msg) => msg.id == sendingMessage.id),
-            (_) => false,
-            (_) => false,
-            (_) => false))
-        .then((value) => emit(List.of(state
+        .firstWhere(
+            (element) => element.join(
+                (fm) => fm.messages.any((msg) => msg.id == sendingMessage.id),
+                (_) => false,
+                (_) => false,
+                (_) => false),
+            //dummy or else prevents state errors when app closes and no stream was found.
+            orElse: () => ChatState.loading())
+        .then((_) => emit(List.of(state
             .where((msgState) => msgState.message.id != sendingMessage.id))));
   }
 }

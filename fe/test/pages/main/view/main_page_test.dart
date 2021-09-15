@@ -156,7 +156,7 @@ void main() {
           (tester) async {
         const loggedOutKey = Key('imloggedout');
         final mockMainCubitStream =
-            stubCubitStream(mockMainCubit, initialState: MainState.loading());
+            stubBlocStream(mockMainCubit, initialState: MainState.loading());
 
         whenListen(mockPageCubit, Stream<PageState>.fromIterable([]),
             initialState: PageState.eventPage());
@@ -188,7 +188,7 @@ void main() {
           (tester) async {
         const loggedOutKey = Key('imloggedout');
         final mockMainCubitStream =
-            stubCubitStream(mockMainCubit, initialState: MainState.loading());
+            stubBlocStream(mockMainCubit, initialState: MainState.loading());
 
         whenListen(mockPageCubit, Stream<PageState>.fromIterable([]),
             initialState: PageState.eventPage());

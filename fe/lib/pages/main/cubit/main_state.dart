@@ -1,17 +1,18 @@
 part of 'main_cubit.dart';
 
-class MainState extends Union5Impl<MainLoading, MainLoadFailure, MainGroupless,
-    MainWithGroup, MainLogOut> {
+class MainState extends Union6Impl<MainLoading, MainLoadFailure, MainGroupless,
+    MainWithGroup, MainLogOut, MainDm> {
   @override
-  String toString() => join((a) => a.toString(), (b) => b.toString(),
-      (c) => c.toString(), (d) => d.toString(), (e) => e.toString());
+  String toString() =>
+      join((a) => a, (b) => b, (c) => c, (d) => d, (e) => e, (f) => f)
+          .toString();
 
-  static const unions = Quintet<MainLoading, MainLoadFailure, MainGroupless,
-      MainWithGroup, MainLogOut>();
+  static const unions = Sextet<MainLoading, MainLoadFailure, MainGroupless,
+      MainWithGroup, MainLogOut, MainDm>();
 
   MainState._(
-      Union5<MainLoading, MainLoadFailure, MainGroupless, MainWithGroup,
-              MainLogOut>
+      Union6<MainLoading, MainLoadFailure, MainGroupless, MainWithGroup,
+              MainLogOut, MainDm>
           union)
       : super(union);
 
@@ -29,9 +30,12 @@ class MainState extends Union5Impl<MainLoading, MainLoadFailure, MainGroupless,
   factory MainState.logOut({String? withError}) =>
       MainState._(unions.fifth(MainLogOut(withError: withError)));
 
+  factory MainState.dm({required User withUser}) =>
+      MainState._(unions.sixth(MainDm(withUser: withUser)));
+
   Group? get group {
-    return join((_) => null, (_) => null, (_) => null, (mpwgs) => mpwgs.group,
-        (_) => null);
+    return join((_) => null, (_) => null, (_) => null, (mpwg) => mpwg.group,
+        (_) => null, (_) => null);
   }
 }
 
@@ -48,7 +52,16 @@ class MainLoadFailure extends Equatable {
   const MainLoadFailure({required this.failure});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [failure];
+}
+
+class MainDm extends Equatable {
+  final User withUser;
+
+  const MainDm({required this.withUser});
+
+  @override
+  List<Object?> get props => [withUser];
 }
 
 class MainGroupless extends Equatable {

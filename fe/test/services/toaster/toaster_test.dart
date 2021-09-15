@@ -28,7 +28,7 @@ void main() {
   });
 
   testWidgets('should display new toast on new toast', (tester) async {
-    final stream = stubCubitStream<ToasterState>(mockToasterCubit,
+    final stream = stubBlocStream<ToasterState>(mockToasterCubit,
         initialState: ToasterState());
 
     await tester
@@ -42,7 +42,7 @@ void main() {
   });
 
   testWidgets('should remove on remove toast', (tester) async {
-    final stream = stubCubitStream<ToasterState>(mockToasterCubit,
+    final stream = stubBlocStream<ToasterState>(mockToasterCubit,
         initialState: ToasterState()
           ..add(Toast(message: testMsg, type: ToastType.Success)));
 

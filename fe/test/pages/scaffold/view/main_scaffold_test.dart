@@ -106,7 +106,7 @@ void main() {
       const IconData actionButtonIcon = Icons.ac_unit;
       final MockCaller mockCaller = MockCaller();
 
-      final scaffoldCubitController = stubCubitStream(mockScaffoldCubit,
+      final scaffoldCubitController = stubBlocStream(mockScaffoldCubit,
           initialState: const sc.ScaffoldInitial());
 
       await tester

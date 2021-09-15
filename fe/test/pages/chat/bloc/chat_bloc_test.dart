@@ -32,14 +32,46 @@ void main() {
   late StreamController<ThreadState> mockThreadCubitController;
 
   setUp(() {
-    mockThreadCubitController = stubCubitStream<ThreadState>(mockThreadCubit,
-        initialState: ThreadState.noThread());
+    mockThreadCubitController = stubBlocStream<ThreadState>(mockThreadCubit,
+        initialState: ThreadState.thread(fakeThread));
     registerAllMockServices();
   });
 
   tearDown(() {
     resetMockBloc(mockThreadCubit);
   });
+
+  blocTest<ChatBloc, ChatState>(
+      'should call fetch messages API on inital render',
+      setUp: () {
+        stubGqlResponse<GQueryMessagesInThreadData, GQueryMessagesInThreadVars>(
+            getIt<AuthGqlClient>(),
+            data: (_) =>
+                GQueryMessagesInThreadData.fromJson({'messages': []})!);
+
+        when(() => getIt<AuthGqlClient>()
+                .stream(any(that: isA<GGetNewMessagesReq>())))
+            .thenAnswer(
+                (invocation) => const Stream<GGetNewMessagesData>.empty());
+      },
+      build: () => ChatBloc(threadCubit: mockThreadCubit),
+      expect: () => [
+            ChatState.loading(),
+            ChatState.fetchedMessages(
+                const FetchedMessages(messages: [], hasReachedMax: true)),
+          ],
+      verify: (_) {
+        verify(() => getIt<AuthGqlClient>().request(any(
+            that: isA<GQueryMessagesInThreadReq>().having(
+                (req) => req.vars.threadId,
+                'thread id',
+                equals(fakeThread.id))))).called(1); //inital, secondary calls
+        verify(() => getIt<AuthGqlClient>().stream(any(
+            that: isA<GGetNewMessagesReq>().having(
+                (req) => req.vars.threadId,
+                'thread id',
+                equals(fakeThread.id))))).called(1); //inital, secondary calls
+      });
 
   group('switch thread', () {
     blocTest<ChatBloc, ChatState>('should call fetch messages API',
@@ -58,6 +90,10 @@ void main() {
         act: (_) =>
             mockThreadCubitController.add(ThreadState.thread(fakeThread)),
         expect: () => [
+              //inital thread -> switch thread
+              ChatState.loading(),
+              ChatState.fetchedMessages(
+                  const FetchedMessages(messages: [], hasReachedMax: true)),
               ChatState.loading(),
               ChatState.fetchedMessages(
                   const FetchedMessages(messages: [], hasReachedMax: true)),
@@ -67,10 +103,12 @@ void main() {
               that: isA<GQueryMessagesInThreadReq>().having(
                   (req) => req.vars.threadId,
                   'thread id',
-                  equals(fakeThread.id))))).called(1);
+                  equals(fakeThread.id))))).called(2); //inital, secondary calls
           verify(() => getIt<AuthGqlClient>().stream(any(
-              that: isA<GGetNewMessagesReq>().having((req) => req.vars.threadId,
-                  'thread id', equals(fakeThread.id))))).called(1);
+              that: isA<GGetNewMessagesReq>().having(
+                  (req) => req.vars.threadId,
+                  'thread id',
+                  equals(fakeThread.id))))).called(2); //inital, secondary calls
         });
 
     blocTest('should switch to no thread if thread === null',
@@ -97,10 +135,11 @@ void main() {
           bloc.add(const RetryEvent());
         },
         verify: (_) => verify(() => getIt<AuthGqlClient>().request(any(
-            that: isA<GQueryMessagesInThreadReq>().having(
-                (req) => req.vars.threadId,
-                'thread id',
-                equals(fakeThread.id))))).called(2));
+                that: isA<GQueryMessagesInThreadReq>().having(
+                    (req) => req.vars.threadId,
+                    'thread id',
+                    equals(fakeThread.id)))))
+            .called(3)); //inital call (has thread) -> first call -> retry call
   });
 
   group('fetch messages', () {
@@ -127,6 +166,7 @@ void main() {
         build: () => ChatBloc(threadCubit: mockThreadCubit),
         act: (bloc) => bloc.add(const FetchMessagesEvent()),
         expect: () => [
+              ChatState.loading(),
               isA<ChatState>().having(
                   (cs) => cs.join(
                       (fm) => fm, (_) => null, (_) => null, (_) => null),
@@ -155,6 +195,7 @@ void main() {
           bloc.add(const FetchMessagesEvent());
         },
         expect: () => [
+              ChatState.loading(),
               isA<ChatState>().having(
                   (cs) => cs.join(
                       (fm) => fm, (_) => null, (_) => null, (_) => null),
@@ -206,14 +247,62 @@ void main() {
                 (req) => req.vars.before, 'before', hoursAgo)))).called(1));
 
     blocTest<ChatBloc, ChatState>('should emit failure on failure fetching',
-        setUp: () => stubGqlResponse<GQueryMessagesInThreadData,
-                GQueryMessagesInThreadVars>(getIt<AuthGqlClient>(),
-            error: (_) => const Failure(status: FailureStatus.GQLMisc)),
+        setUp: () {
+          stubGqlResponse<GQueryMessagesInThreadData,
+                  GQueryMessagesInThreadVars>(getIt<AuthGqlClient>(),
+              error: (_) => const Failure(status: FailureStatus.GQLMisc));
+        },
         build: () => ChatBloc(threadCubit: mockThreadCubit),
         act: (bloc) => bloc.add(const FetchMessagesEvent()),
-        expect: () =>
-            [ChatState.failure(const Failure(status: FailureStatus.GQLMisc))]);
+        expect: () => [
+              ChatState.loading(),
+              ChatState.failure(const Failure(status: FailureStatus.GQLMisc))
+            ]);
   });
 
-  //todo test emitting new messages when they fix breakpoints.....
+  final newMessageController = StreamController<GGetNewMessagesData>();
+  final message = Message(
+      user: User(name: 'bob', id: UuidType.generate()),
+      id: UuidType.generate(),
+      message: 'a',
+      isImage: false,
+      createdAt: clock.now(),
+      updatedAt: clock.now());
+  blocTest<ChatBloc, ChatState>('should emit new message on new message',
+      setUp: () {
+        stubGqlResponse<GQueryMessagesInThreadData, GQueryMessagesInThreadVars>(
+            getIt<AuthGqlClient>(),
+            data: (_) =>
+                GQueryMessagesInThreadData.fromJson({'messages': []})!);
+
+        when(() => getIt<AuthGqlClient>()
+                .stream(any(that: isA<GGetNewMessagesReq>())))
+            .thenAnswer((_) => newMessageController.stream);
+      },
+      build: () => ChatBloc(threadCubit: mockThreadCubit),
+      act: (bloc) async {
+        newMessageController.add(GGetNewMessagesData.fromJson({
+          'messages': [
+            {
+              'created_at': message.createdAt.toString(),
+              'message': message.message,
+              'id': message.id.uuid,
+              'user': {
+                'name': message.user.name,
+                'profile_picture': message.user.profilePictureUrl,
+                'id': message.user.id.uuid
+              },
+              'is_image': false,
+              'updated_at': message.updatedAt.toString()
+            },
+          ]
+        })!);
+        await Future.delayed(const Duration(milliseconds: 5));
+      },
+      expect: () => [
+            ChatState.loading(),
+            ChatState.fetchedMessages(
+                const FetchedMessages(messages: [], hasReachedMax: true)),
+            ChatState.fetchedMessages(FetchedMessages(messages: [message])),
+          ]);
 }

@@ -65,14 +65,16 @@ class MainView extends StatelessWidget {
                   _handler.handleFailure(mplf.failure, bcContext, toast: false),
               (_) => null,
               (_) => null,
-              (mplo) => _logOut(context, withError: mplo.withError));
+              (mplo) => _logOut(context, withError: mplo.withError),
+              (_) => null);
         },
         builder: (bcContext, state) => state.join(
             (_) => _buildLoading(),
             (_) => _buildErrorScreen(bcContext),
             (_) => _buildGroupless(),
             (mpwg) => _buildContent(bcContext, mpwg.group),
-            (_) => _buildErrorScreen(bcContext)),
+            (_) => _buildErrorScreen(bcContext),
+            (_) => const Text('DM')),
       ),
     ));
   }

@@ -128,7 +128,7 @@ void main() {
       whenListen(mockChatBottomSheetCubit, Stream<bool>.fromIterable([]),
           initialState: false);
 
-      final threadController = stubCubitStream(mockThreadCubit,
+      final threadController = stubBlocStream(mockThreadCubit,
           initialState: ThreadState.thread(fakeThread));
 
       await tester.pumpApp(MultiBlocProvider(
@@ -153,7 +153,7 @@ void main() {
 
     testWidgets('should flip when bottom sheet opens', (tester) async {
       final chatBottomSheetCubitController =
-          stubCubitStream(mockChatBottomSheetCubit, initialState: false);
+          stubBlocStream(mockChatBottomSheetCubit, initialState: false);
 
       whenListen(mockThreadCubit, Stream<ThreadState>.fromIterable([]),
           initialState: ThreadState.thread(fakeThread));
