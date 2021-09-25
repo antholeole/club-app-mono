@@ -1,5 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:fe/data/models/group.dart';
+import 'package:fe/data/models/club.dart';
 import 'package:fe/pages/groups/cubit/update_groups_cubit.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
@@ -81,7 +81,7 @@ void main() {
                   groupId: GroupsPageGroup(
                       leaveState: LeavingState.notLeaving(),
                       joinTokenState: JoinTokenState.adminWithToken(joinToken),
-                      group: Group(admin: true, id: groupId, name: groupName))
+                      club: Club(admin: true, id: groupId, name: groupName))
                 })
               ]);
 
@@ -110,7 +110,7 @@ void main() {
                   groupId: GroupsPageGroup(
                       leaveState: LeavingState.notLeaving(),
                       joinTokenState: JoinTokenState.notAdmin(),
-                      group: Group(admin: false, id: groupId, name: groupName))
+                      club: Club(admin: false, id: groupId, name: groupName))
                 })
               ]);
     });
@@ -122,7 +122,7 @@ void main() {
                 groupId: GroupsPageGroup(
                     joinTokenState: JoinTokenState.adminWithToken(null),
                     leaveState: LeavingState.notLeaving(),
-                    group: Group(admin: true, id: groupId, name: groupName))
+                    club: Club(admin: true, id: groupId, name: groupName))
               }),
           setUp: () {
             stubGqlResponse<GUpsertGroupJoinTokenData,
@@ -137,7 +137,7 @@ void main() {
                   groupId: GroupsPageGroup(
                       joinTokenState: JoinTokenState.adminLoading(),
                       leaveState: LeavingState.notLeaving(),
-                      group: Group(admin: true, id: groupId, name: groupName))
+                      club: Club(admin: true, id: groupId, name: groupName))
                 }),
                 UpdateGroupsState.failure(const Failure(
                     status: FailureStatus.GQLMisc, message: failureMessage))
@@ -150,7 +150,7 @@ void main() {
                 groupId: GroupsPageGroup(
                     joinTokenState: JoinTokenState.adminWithToken(null),
                     leaveState: LeavingState.notLeaving(),
-                    group: Group(admin: true, id: groupId, name: groupName))
+                    club: Club(admin: true, id: groupId, name: groupName))
               }),
           setUp: () {
             stubGqlResponse<GUpsertGroupJoinTokenData,
@@ -176,14 +176,14 @@ void main() {
                   groupId: GroupsPageGroup(
                       joinTokenState: JoinTokenState.adminLoading(),
                       leaveState: LeavingState.notLeaving(),
-                      group: Group(admin: true, id: groupId, name: groupName))
+                      club: Club(admin: true, id: groupId, name: groupName))
                 }),
                 UpdateGroupsState.fetched({
                   groupId: GroupsPageGroup(
                       joinTokenState:
                           JoinTokenState.adminWithToken(capturedNewJoinToken),
                       leaveState: LeavingState.notLeaving(),
-                      group: Group(admin: true, id: groupId, name: groupName))
+                      club: Club(admin: true, id: groupId, name: groupName))
                 }),
               ]);
 
@@ -193,7 +193,7 @@ void main() {
                 groupId: GroupsPageGroup(
                     joinTokenState: JoinTokenState.adminWithToken('a token'),
                     leaveState: LeavingState.notLeaving(),
-                    group: Group(admin: true, id: groupId, name: groupName))
+                    club: Club(admin: true, id: groupId, name: groupName))
               }),
           setUp: () {
             stubGqlResponse<GUpsertGroupJoinTokenData,
@@ -209,13 +209,13 @@ void main() {
                   groupId: GroupsPageGroup(
                       joinTokenState: JoinTokenState.adminLoading(),
                       leaveState: LeavingState.notLeaving(),
-                      group: Group(admin: true, id: groupId, name: groupName))
+                      club: Club(admin: true, id: groupId, name: groupName))
                 }),
                 UpdateGroupsState.fetched({
                   groupId: GroupsPageGroup(
                       joinTokenState: JoinTokenState.adminWithToken(null),
                       leaveState: LeavingState.notLeaving(),
-                      group: Group(admin: true, id: groupId, name: groupName))
+                      club: Club(admin: true, id: groupId, name: groupName))
                 }),
               ]);
     });
@@ -233,7 +233,7 @@ void main() {
                 groupId: GroupsPageGroup(
                     joinTokenState: JoinTokenState.adminWithToken('a token'),
                     leaveState: LeavingState.notLeaving(),
-                    group: Group(admin: true, id: groupId, name: groupName))
+                    club: Club(admin: true, id: groupId, name: groupName))
               }),
           build: () => UpdateGroupsCubit(),
           act: (cubit) => cubit.leaveGroup(groupId, caller.call),
@@ -269,7 +269,7 @@ void main() {
                 groupId: GroupsPageGroup(
                     joinTokenState: JoinTokenState.adminWithToken(null),
                     leaveState: LeavingState.notLeaving(),
-                    group: Group(admin: true, id: groupId, name: groupName))
+                    club: Club(admin: true, id: groupId, name: groupName))
               }),
           build: () => UpdateGroupsCubit(),
           act: (cubit) async {
@@ -294,7 +294,7 @@ void main() {
                   groupId: GroupsPageGroup(
                       joinTokenState: JoinTokenState.adminWithToken(null),
                       leaveState: LeavingState.leaving(),
-                      group: Group(admin: true, id: groupId, name: groupName))
+                      club: Club(admin: true, id: groupId, name: groupName))
                 }),
                 UpdateGroupsState.fetched({})
               ],
@@ -322,7 +322,7 @@ void main() {
                 groupId: GroupsPageGroup(
                     joinTokenState: JoinTokenState.adminWithToken(null),
                     leaveState: LeavingState.notLeaving(),
-                    group: Group(admin: true, id: groupId, name: groupName))
+                    club: Club(admin: true, id: groupId, name: groupName))
               }),
           build: () => UpdateGroupsCubit(),
           act: (cubit) async {
@@ -347,7 +347,7 @@ void main() {
                   groupId: GroupsPageGroup(
                       joinTokenState: JoinTokenState.adminWithToken(null),
                       leaveState: LeavingState.leaving(),
-                      group: Group(admin: true, id: groupId, name: groupName))
+                      club: Club(admin: true, id: groupId, name: groupName))
                 }),
                 UpdateGroupsState.fetched({
                   groupId: GroupsPageGroup(
@@ -355,7 +355,7 @@ void main() {
                       leaveState: LeavingState.failure(const Failure(
                           status: FailureStatus.GQLMisc,
                           message: failureMessage)),
-                      group: Group(admin: true, id: groupId, name: groupName))
+                      club: Club(admin: true, id: groupId, name: groupName))
                 })
               ]);
     });

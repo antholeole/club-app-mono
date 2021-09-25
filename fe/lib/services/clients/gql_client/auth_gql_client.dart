@@ -1,7 +1,6 @@
 import 'package:fe/services/clients/gql_client/gql_client.dart';
 import 'package:fe/services/clients/gql_client/refresh_link.dart';
 import 'package:fe/services/local_data/token_manager.dart';
-import 'package:fe/stdlib/errors/handler.dart';
 import 'package:ferry/ferry.dart';
 import 'package:gql_http_link/gql_http_link.dart';
 import 'package:gql_link/gql_link.dart';
@@ -15,11 +14,7 @@ import '../../../service_locator.dart';
 import 'cache.dart';
 
 class AuthGqlClient extends GqlClient {
-  final _handler = getIt<Handler>();
-
-  final Client _client;
-
-  AuthGqlClient._({required Client client}) : _client = client;
+  AuthGqlClient._({required Client client}) : super(client: client);
 
   static Future<AuthGqlClient> build() async {
     final config = getIt<Config>();
@@ -62,30 +57,5 @@ class AuthGqlClient extends GqlClient {
     return AuthGqlClient._(
         client:
             Client(link: link, cache: await buildCache(memoryCache: false)));
-  }
-
-  Cache get cache => _client.cache;
-  Client get innerClient => _client;
-
-  @override
-  Future<TData> request<TData, TVars>(
-      OperationRequest<TData, TVars> request) async {
-    final resp = await _client.request(request).first;
-
-    if (resp.hasErrors) {
-      throw await _handler.basicGqlErrorHandler(resp);
-    }
-
-    return resp.data!;
-  }
-
-  Stream<TData> stream<TData, TVars>(OperationRequest<TData, TVars> request) {
-    return _client.request(request).asyncMap((resp) async {
-      if (resp.hasErrors) {
-        throw await _handler.basicGqlErrorHandler(resp);
-      } else {
-        return resp.data!;
-      }
-    });
   }
 }

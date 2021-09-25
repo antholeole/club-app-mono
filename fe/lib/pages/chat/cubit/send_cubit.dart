@@ -53,11 +53,13 @@ class SendCubit extends Cubit<List<SendState>> {
     final selfId = await _localUserService.getLoggedInUserId();
 
     try {
-      await _gqlClient.request(GInsertMessageReq((q) => q
-        ..vars.message = sendingMessage.message
-        ..vars.selfId = selfId
-        ..vars.messageId = sendingMessage.id
-        ..vars.threadId = threadId));
+      await _gqlClient
+          .request(GInsertMessageReq((q) => q
+            ..vars.message = sendingMessage.message
+            ..vars.selfId = selfId
+            ..vars.messageId = sendingMessage.id
+            ..vars.threadId = threadId))
+          .first;
     } on Failure catch (f) {
       _replaceSendState(
         SendState.failure(

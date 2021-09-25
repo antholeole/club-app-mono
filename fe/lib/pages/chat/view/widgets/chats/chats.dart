@@ -5,7 +5,7 @@ import 'package:fe/pages/chat/bloc/chat_bloc.dart';
 import 'package:fe/pages/chat/cubit/send_cubit.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/pages/chat/view/widgets/chats/message/sending_message.dart';
-import 'package:fe/providers/user_provider.dart';
+import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/errors/unreachable_state.dart';
@@ -107,7 +107,7 @@ class _ChatsState extends State<Chats> {
 
           return ChatPageMessageDisplay(
               message: message,
-              sentBySelf: message.user.id == UserProvider.of(context).user.id,
+              sentBySelf: message.user.id == context.read<UserCubit>().user.id,
               onHeld: (message, layerLink) =>
                   _onTappedMessage(message, layerLink, context));
         });

@@ -44,7 +44,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   Stream<Iterable<Message>> get _newMessageStream {
     return _gqlClient
-        .stream(GGetNewMessagesReq(
+        .request(GGetNewMessagesReq(
             (q) => q..vars.threadId = _threadCubit.state.thread?.id))
         .map((resp) => resp.messages.map((data) => Message(
               user: User(
@@ -55,7 +55,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
               message: data.message,
               isImage: data.is_image,
               createdAt: data.created_at,
-              updatedAt: data.updated_at ?? data.created_at,
+              updatedAt: data.updated_at,
             )));
   }
 
@@ -70,10 +70,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         clock.hoursFromNow(5);
 
     try {
-      resp = await _gqlClient.request(GQueryMessagesInThreadReq((q) => q
-        ..fetchPolicy = FetchPolicy.NetworkOnly
-        ..vars.before = before
-        ..vars.threadId = _threadCubit.state.thread!.id));
+      resp = await _gqlClient
+          .request(GQueryMessagesInThreadReq((q) => q
+            ..fetchPolicy = FetchPolicy.NetworkOnly
+            ..vars.before = before
+            ..vars.threadId = _threadCubit.state.thread!.id))
+          .first;
     } on Failure catch (f) {
       emit(ChatState.failure(f));
       return;
@@ -82,7 +84,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     final chats = resp.messages
         .map((message) => Message(
             isImage: message.is_image,
-            updatedAt: message.updated_at ?? message.created_at,
+            updatedAt: message.updated_at,
             id: message.id,
             user: User(
                 name: message.user.name,

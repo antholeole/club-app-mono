@@ -1,5 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:fe/data/models/group.dart';
+import 'package:fe/data/models/club.dart';
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/chat/cubit/thread_state.dart';
@@ -37,7 +37,7 @@ void main() {
     group('bottom sheet', () {
       final fakeUser = User(id: UuidType.generate(), name: 'hann');
       final fakeGroup =
-          Group(id: UuidType.generate(), name: 'group', admin: false);
+          Club(id: UuidType.generate(), name: 'group', admin: false);
       final fakeThread = Thread(name: 'fake thread', id: UuidType.generate());
 
       const notBottomSheetKey = Key('notbottomsheetlmfao');

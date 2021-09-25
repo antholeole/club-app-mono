@@ -66,7 +66,7 @@ void main() {
 
       final client = await AuthGqlClient.build();
 
-      await client.request(GFakeGqlReq());
+      await client.request(GFakeGqlReq()).first;
 
       verify(() => getIt<TokenManager>().refresh()).called(1);
       expect(httpCallCount, equals(2),

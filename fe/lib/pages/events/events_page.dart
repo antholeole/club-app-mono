@@ -1,5 +1,5 @@
 import 'package:clock/clock.dart';
-import 'package:fe/data/models/group.dart';
+import 'package:fe/data/models/club.dart';
 import 'package:fe/pages/scaffold/cubit/data_carriers/main_scaffold_parts.dart';
 import 'package:fe/pages/scaffold/cubit/page_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/scaffold_cubit.dart';
@@ -11,9 +11,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EventsPage extends StatefulWidget {
   // ignore: unused_field
-  final Group? _group;
+  final Club? _group;
 
-  const EventsPage({Group? group}) : _group = group;
+  const EventsPage({Club? group}) : _group = group;
 
   @override
   _EventsPageState createState() => _EventsPageState();

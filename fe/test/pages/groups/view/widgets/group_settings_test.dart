@@ -1,7 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:fe/data/models/group.dart';
-import 'package:fe/pages/groups/cubit/update_groups_cubit.dart';
-import 'package:fe/pages/groups/view/widgets/group_settings.dart';
+import 'package:fe/data/models/club.dart';
+import 'package:fe/pages/groups/view/widgets/groups_tabs/club/club_settings.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
@@ -30,7 +29,7 @@ void main() {
 
   const String failureMessage = 'asdasda';
 
-  final fakeGroup = Group(
+  final fakeGroup = Club(
       id: UuidType('25bf07c0-c24a-4c27-a739-ba1039a711a8'),
       name: 'group name',
       admin: false);
@@ -71,8 +70,8 @@ void main() {
           data: (_) => GQueryUsersInGroupData.fromJson({'user_to_group': []})!);
 
       await tester.pumpApp(wrapWithDependencies(GroupSettings(
-          group: GroupsPageGroup(
-              group: fakeGroup,
+          club: GroupsPageGroup(
+              club: fakeGroup,
               leaveState: LeavingState.notLeaving(),
               joinTokenState: JoinTokenState.notAdmin()))));
       await tester.pumpAndSettle();
@@ -100,7 +99,7 @@ void main() {
             Stream<UpdateGroupsState>.fromIterable([
               UpdateGroupsState.fetched({
                 fakeGroup.id: GroupsPageGroup(
-                    group: fakeGroup,
+                    club: fakeGroup,
                     joinTokenState: JoinTokenState.notAdmin(),
                     leaveState: LeavingState.notLeaving()),
               })
@@ -108,8 +107,8 @@ void main() {
             initialState: UpdateGroupsState.fetched({}));
 
         await tester.pumpApp(wrapWithDependencies(GroupSettings(
-            group: GroupsPageGroup(
-                group: fakeGroup,
+            club: GroupsPageGroup(
+                club: fakeGroup,
                 leaveState: LeavingState.notLeaving(),
                 joinTokenState: JoinTokenState.notAdmin()))));
         await tester.tap(find.text(GroupSettings.LEAVE_GROUP));
@@ -136,7 +135,7 @@ void main() {
             Stream<UpdateGroupsState>.fromIterable([
               UpdateGroupsState.fetched({
                 fakeGroup.id: GroupsPageGroup(
-                    group: fakeGroup,
+                    club: fakeGroup,
                     joinTokenState: JoinTokenState.notAdmin(),
                     leaveState: LeavingState.prompting(
                         accepted: () async {}, rejected: () {})),
@@ -145,8 +144,8 @@ void main() {
             initialState: UpdateGroupsState.fetched({}));
 
         await tester.pumpApp(wrapWithDependencies(GroupSettings(
-            group: GroupsPageGroup(
-                group: fakeGroup,
+            club: GroupsPageGroup(
+                club: fakeGroup,
                 leaveState: LeavingState.notLeaving(),
                 joinTokenState: JoinTokenState.notAdmin()))));
 
@@ -172,14 +171,14 @@ void main() {
             mockUpdateGroupsCubit, Stream<UpdateGroupsState>.fromIterable([]),
             initialState: UpdateGroupsState.fetched({
               fakeGroup.id: GroupsPageGroup(
-                  group: fakeGroup,
+                  club: fakeGroup,
                   joinTokenState: JoinTokenState.notAdmin(),
                   leaveState: LeavingState.notLeaving()),
             }));
 
         await tester.pumpApp(wrapWithDependencies(GroupSettings(
-            group: GroupsPageGroup(
-                group: fakeGroup,
+            club: GroupsPageGroup(
+                club: fakeGroup,
                 leaveState: LeavingState.notLeaving(),
                 joinTokenState: JoinTokenState.notAdmin()))));
 
@@ -208,9 +207,8 @@ void main() {
 
       testWidgets('should display join token on admin', (tester) async {
         await tester.pumpApp(wrapWithDependencies(GroupSettings(
-            group: GroupsPageGroup(
-                group:
-                    Group(admin: true, id: fakeGroup.id, name: fakeGroup.name),
+            club: GroupsPageGroup(
+                club: Club(admin: true, id: fakeGroup.id, name: fakeGroup.name),
                 joinTokenState:
                     JoinTokenState.adminWithToken(initalFakeJoinToken),
                 leaveState: LeavingState.notLeaving()))));
@@ -222,9 +220,8 @@ void main() {
 
       testWidgets('should none on admin but no join token', (tester) async {
         await tester.pumpApp(wrapWithDependencies(GroupSettings(
-            group: GroupsPageGroup(
-                group:
-                    Group(admin: true, id: fakeGroup.id, name: fakeGroup.name),
+            club: GroupsPageGroup(
+                club: Club(admin: true, id: fakeGroup.id, name: fakeGroup.name),
                 joinTokenState: JoinTokenState.adminWithToken(null),
                 leaveState: LeavingState.notLeaving()))));
 
@@ -239,9 +236,8 @@ void main() {
             .thenAnswer((invocation) async => null);
 
         await tester.pumpApp(wrapWithDependencies(GroupSettings(
-            group: GroupsPageGroup(
-                group:
-                    Group(admin: true, id: fakeGroup.id, name: fakeGroup.name),
+            club: GroupsPageGroup(
+                club: Club(admin: true, id: fakeGroup.id, name: fakeGroup.name),
                 joinTokenState:
                     JoinTokenState.adminWithToken(initalFakeJoinToken),
                 leaveState: LeavingState.notLeaving()))));
@@ -262,9 +258,8 @@ void main() {
             .thenAnswer((invocation) async => null);
 
         await tester.pumpApp(wrapWithDependencies(GroupSettings(
-            group: GroupsPageGroup(
-                group:
-                    Group(admin: true, id: fakeGroup.id, name: fakeGroup.name),
+            club: GroupsPageGroup(
+                club: Club(admin: true, id: fakeGroup.id, name: fakeGroup.name),
                 joinTokenState:
                     JoinTokenState.adminWithToken(initalFakeJoinToken),
                 leaveState: LeavingState.notLeaving()))));
@@ -308,9 +303,8 @@ void main() {
             initialState: UpdateGroupsState.fetched({}));
 
         await tester.pumpApp(wrapWithDependencies(GroupSettings(
-            group: GroupsPageGroup(
-                group:
-                    Group(admin: true, id: fakeGroup.id, name: fakeGroup.name),
+            club: GroupsPageGroup(
+                club: Club(admin: true, id: fakeGroup.id, name: fakeGroup.name),
                 joinTokenState: JoinTokenState.adminWithToken(null),
                 leaveState: LeavingState.notLeaving()))));
 
@@ -338,9 +332,8 @@ void main() {
             initialState: ToasterState());
 
         await tester.pumpApp(wrapWithDependencies(GroupSettings(
-            group: GroupsPageGroup(
-                group:
-                    Group(admin: true, id: fakeGroup.id, name: fakeGroup.name),
+            club: GroupsPageGroup(
+                club: Club(admin: true, id: fakeGroup.id, name: fakeGroup.name),
                 joinTokenState: JoinTokenState.adminWithToken(null),
                 leaveState: LeavingState.notLeaving()))));
 

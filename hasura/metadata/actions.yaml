@@ -8,7 +8,16 @@ actions:
       value_from_env: WEBHOOK_SECRET_KEY
   permissions:
   - role: unauthenticated
-- name: refreshAccessToken
+- name: get_or_create_dm
+  definition:
+    kind: synchronous
+    handler: '{{WEBHOOK_URL}}/api/chat/getOrCreateDm'
+    headers:
+    - name: WEBHOOK_SECRET_KEY
+      value_from_env: WEBHOOK_SECRET_KEY
+  permissions:
+  - role: user
+- name: refresh_access_token
   definition:
     kind: synchronous
     handler: '{{WEBHOOK_URL}}/api/auth/refresh'
@@ -35,4 +44,5 @@ custom_types:
   - name: accessToken
   - name: AccessToken
   - name: AuthenticationResponse
+  - name: ThreadResponse
   scalars: []

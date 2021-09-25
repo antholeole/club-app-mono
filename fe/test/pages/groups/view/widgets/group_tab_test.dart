@@ -1,8 +1,8 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:fe/data/models/group.dart';
+import 'package:fe/data/models/club.dart';
 import 'package:fe/pages/groups/cubit/update_groups_cubit.dart';
-import 'package:fe/pages/groups/view/widgets/group_settings.dart';
-import 'package:fe/pages/groups/view/widgets/group_tab.dart';
+import 'package:fe/pages/groups/view/widgets/groups_tabs/club/club_settings.dart';
+import 'package:fe/pages/groups/view/widgets/groups_tabs/club/club_tab.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
@@ -27,7 +27,7 @@ void main() {
   final mockUpdateGroupsCubit = MockUpdateGroupsCubit.getMock();
 
   final fakeGroupPageGroup = GroupsPageGroup(
-      group: Group(id: UuidType.generate(), name: 'fake', admin: false),
+      club: Club(id: UuidType.generate(), name: 'fake', admin: false),
       joinTokenState: JoinTokenState.notAdmin(),
       leaveState: LeavingState.notLeaving());
 
@@ -53,12 +53,12 @@ void main() {
 
   void stubEmpty() {
     whenListen(mockMainCubit, Stream<MainState>.fromIterable([]),
-        initialState: MainState.withGroup(fakeGroupPageGroup.group));
+        initialState: MainState.withGroup(fakeGroupPageGroup.club));
 
     whenListen(
         mockUpdateGroupsCubit, Stream<UpdateGroupsState>.fromIterable([]),
         initialState: UpdateGroupsState.fetched(
-            {fakeGroupPageGroup.group.id: fakeGroupPageGroup}));
+            {fakeGroupPageGroup.club.id: fakeGroupPageGroup}));
 
     stubGqlResponse<GQueryUsersInGroupData, GQueryUsersInGroupVars>(
         getIt<AuthGqlClient>(),
@@ -70,9 +70,9 @@ void main() {
       stubEmpty();
 
       await tester
-          .pumpApp(wrapWithDependencies(GroupTab(group: fakeGroupPageGroup)));
+          .pumpApp(wrapWithDependencies(ClubTab(club: fakeGroupPageGroup)));
 
-      expect(find.text(fakeGroupPageGroup.group.name), findsOneWidget);
+      expect(find.text(fakeGroupPageGroup.club.name), findsOneWidget);
     });
 
     testWidgets('should not display groups settings by default',
@@ -80,7 +80,7 @@ void main() {
       stubEmpty();
 
       await tester
-          .pumpApp(wrapWithDependencies(GroupTab(group: fakeGroupPageGroup)));
+          .pumpApp(wrapWithDependencies(ClubTab(club: fakeGroupPageGroup)));
 
       expect(find.byType(GroupSettings), findsNothing);
     });
@@ -89,7 +89,7 @@ void main() {
       stubEmpty();
 
       await tester
-          .pumpApp(wrapWithDependencies(GroupTab(group: fakeGroupPageGroup)));
+          .pumpApp(wrapWithDependencies(ClubTab(club: fakeGroupPageGroup)));
       await tester.tap(find.byType(FlippableIcon));
       await tester.pumpAndSettle();
 
@@ -100,7 +100,7 @@ void main() {
       stubEmpty();
 
       await tester
-          .pumpApp(wrapWithDependencies(GroupTab(group: fakeGroupPageGroup)));
+          .pumpApp(wrapWithDependencies(ClubTab(club: fakeGroupPageGroup)));
       await tester.tap(find.byType(FlippableIcon));
       await tester.pumpAndSettle();
       await tester.tap(find.byType(FlippableIcon));
@@ -113,12 +113,12 @@ void main() {
       stubEmpty();
 
       await tester
-          .pumpApp(wrapWithDependencies(GroupTab(group: fakeGroupPageGroup)));
+          .pumpApp(wrapWithDependencies(ClubTab(club: fakeGroupPageGroup)));
 
       await tester.tap(find.byType(TextButton));
       await tester.pumpAndSettle();
 
-      verify(() => mockMainCubit.setGroup(fakeGroupPageGroup.group)).called(1);
+      verify(() => mockMainCubit.setGroup(fakeGroupPageGroup.club)).called(1);
     });
   });
 }

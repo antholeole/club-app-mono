@@ -9,11 +9,7 @@ import 'cache.dart';
 import 'gql_client.dart';
 
 class UnauthGqlClient extends GqlClient {
-  final _handler = getIt<Handler>();
-
-  final Client _client;
-
-  UnauthGqlClient._({required Client client}) : _client = client;
+  UnauthGqlClient._({required Client client}) : super(client: client);
 
   static Future<UnauthGqlClient> build() async {
     final config = getIt<Config>();
@@ -29,17 +25,5 @@ class UnauthGqlClient extends GqlClient {
 
     return UnauthGqlClient._(
         client: Client(link: link, cache: await buildCache(memoryCache: true)));
-  }
-
-  @override
-  Future<TData> request<TData, TVars>(
-      OperationRequest<TData, TVars> request) async {
-    final resp = await _client.request(request).first;
-
-    if (resp.hasErrors) {
-      throw await _handler.basicGqlErrorHandler(resp);
-    }
-
-    return resp.data!;
   }
 }

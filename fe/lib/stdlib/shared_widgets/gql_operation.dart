@@ -12,6 +12,7 @@ class GqlOperation<TData, TVars> extends StatefulWidget {
   final Widget? loader;
   final String? errorText;
   final Widget? error;
+
   final Widget Function(TData) onResponse;
 
   const GqlOperation(
@@ -46,33 +47,35 @@ class _GqlOperationState<TData, TVars>
       return _buildLoader();
     }
 
-    return FutureBuilder<TData>(
-      future: widget.operationRequest != null
-          ? _client.request(widget.operationRequest!)
-          : null,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
-          return _buildLoader();
-        }
+    return StreamBuilder<TData>(
+        stream: widget.operationRequest != null
+            ? _client.request(widget.operationRequest!)
+            : null,
+        builder: _builder);
+  }
 
-        if (snapshot.error is Failure) {
-          _handler.handleFailure(snapshot.error as Failure, context,
-              withPrefix: widget.errorText);
+  Widget _builder(BuildContext context, AsyncSnapshot<TData> snapshot) {
+    if (snapshot.connectionState != ConnectionState.active &&
+        snapshot.connectionState != ConnectionState.done) {
+      return _buildLoader();
+    }
 
-          return _resultFromCache != null
-              ? widget.onResponse(_resultFromCache!)
-              : widget.error ??
-                  Text(
-                    widget.errorText ?? 'error',
-                    style: const TextStyle(color: Colors.red),
-                  );
-        }
+    if (snapshot.error is Failure) {
+      _handler.handleFailure(snapshot.error as Failure, context,
+          withPrefix: widget.errorText);
 
-        final response = snapshot.data;
-        _resultFromCache = response;
-        return widget.onResponse(response!);
-      },
-    );
+      return _resultFromCache != null
+          ? widget.onResponse(_resultFromCache!)
+          : widget.error ??
+              Text(
+                widget.errorText ?? 'error',
+                style: const TextStyle(color: Colors.red),
+              );
+    }
+
+    final response = snapshot.data;
+    _resultFromCache = response;
+    return widget.onResponse(response!);
   }
 
   Widget _buildLoader() {

@@ -1,5 +1,5 @@
 mutation Refresh($refreshToken: String!, $userId: uuid!) {
-  refreshAccessToken(refreshToken: $refreshToken, userId:$userId) {
+  refresh_access_token(refreshToken: $refreshToken, userId:$userId) {
     accessToken
   }
 }

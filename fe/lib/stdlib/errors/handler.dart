@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:connectivity/connectivity.dart';
 import 'package:fe/config.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
@@ -22,12 +24,12 @@ class Handler {
 
   Future<Failure?> checkConnectivity() async {
     if (!(await isConnected())) {
-      return const Failure(status: FailureStatus.NoConn);
+      return Failure(status: FailureStatus.NoConn);
     }
 
     final hasServerConnection = await this.hasServerConnection();
     if (!hasServerConnection) {
-      return const Failure(status: FailureStatus.ServersDown);
+      return Failure(status: FailureStatus.ServersDown);
     }
   }
 
@@ -41,13 +43,16 @@ class Handler {
   }
 
   Future<bool> hasServerConnection() async {
-    final resp = await _client.get(Uri(
-        host: _config.hasuraHost,
-        pathSegments: ['healthz'],
-        port: _config.hasuraPort,
-        scheme: _config.transportIsSecure ? 'https' : 'http'));
-
-    return resp.statusCode == 200;
+    try {
+      final resp = await _client.get(Uri(
+          host: _config.hasuraHost,
+          pathSegments: ['healthz'],
+          port: _config.hasuraPort,
+          scheme: _config.transportIsSecure ? 'https' : 'http'));
+      return resp.statusCode == 200;
+    } on SocketException catch (_) {
+      return false;
+    }
   }
 
   Future<Failure> basicGqlErrorHandler(OperationResponse resp) async {
@@ -74,17 +79,15 @@ class Handler {
       return disconnectedFailure;
     }
 
-    return const Failure(status: FailureStatus.Unknown);
+    return Failure(status: FailureStatus.Unknown);
   }
 
   void handleFailure(Failure f, BuildContext context,
       {String? withPrefix, bool toast = true}) {
     if (f.status.fatal) {
-      context
-          .read<MainCubit>()
-          .logOut(withError: f.message ?? f.status.message);
+      context.read<MainCubit>().logOut(withError: f.message);
     } else {
-      String errorString = f.message ?? f.status.message;
+      String errorString = f.message;
 
       if (withPrefix != null) {
         errorString = withPrefix + ': ' + errorString;

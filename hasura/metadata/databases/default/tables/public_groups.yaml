@@ -14,7 +14,7 @@ array_relationships:
     foreign_key_constraint_on:
       column: group_id
       table:
-        name: group_threads
+        name: threads
         schema: public
 - name: user_to_groups
   using:

@@ -51,7 +51,7 @@ class _MainScaffoldState extends State<MainScaffold> {
 
   Widget? _buildBottomNav(MainCubit cubit) {
     return cubit.state.join((_) => null, (_) => null, (_) => null,
-        (p0) => const BottomNav(), (_) => null, (p0) => const Text('DM BRO'));
+        (p0) => const BottomNav(), (_) => null, (_) => null);
   }
 
   List<Widget> _buildContextButtons(List<ActionButton> actionButtons) {
@@ -79,13 +79,13 @@ class _MainScaffoldState extends State<MainScaffold> {
                 children: [
                   if (titleBarWidget != null) titleBarWidget,
                   Text(
-                    mpwg.group.name,
+                    mpwg.club.name,
                     style: Theme.of(context).textTheme.caption,
                   ),
                 ],
               ),
           (_) => Container(),
-          (_) => Container()),
+          (mpwdm) => titleBarWidget!),
     );
   }
 }

@@ -1,9 +1,10 @@
 import 'package:fe/pages/chat/cubit/send_cubit.dart';
 import 'package:fe/pages/chat/view/widgets/chats/message/simple_message_display.dart';
-import 'package:fe/providers/user_provider.dart';
+import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/src/provider.dart';
 
 class SendingMessageDisplay extends StatelessWidget {
   final SendState _sendState;
@@ -26,7 +27,7 @@ class SendingMessageDisplay extends StatelessWidget {
                 BlendMode.lighten,
               ),
               child: SimpleMessageDisplay(
-                sender: UserProvider.of(context).user,
+                sender: context.read<UserCubit>().user,
                 message: _sendState.message.message,
                 sentBySelf: true,
               ),

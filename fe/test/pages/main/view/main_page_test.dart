@@ -1,5 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:fe/data/models/group.dart';
+import 'package:fe/data/models/club.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/flows/app_state.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
@@ -31,7 +31,7 @@ import '../../../test_helpers/stub_cubit_stream.dart';
 void main() {
   final fakeUser = User(name: 'mock user', id: UuidType.generate());
   final fakeGroup =
-      Group(id: UuidType.generate(), name: 'my group', admin: false);
+      Club(id: UuidType.generate(), name: 'my group', admin: false);
   const failureMessage = 'failurefailure';
 
   setUpAll(() {

@@ -1,18 +1,18 @@
 part of 'main_cubit.dart';
 
 class MainState extends Union6Impl<MainLoading, MainLoadFailure, MainGroupless,
-    MainWithGroup, MainLogOut, MainDm> {
+    MainWithClub, MainLogOut, MainWithDm> {
   @override
   String toString() =>
       join((a) => a, (b) => b, (c) => c, (d) => d, (e) => e, (f) => f)
           .toString();
 
   static const unions = Sextet<MainLoading, MainLoadFailure, MainGroupless,
-      MainWithGroup, MainLogOut, MainDm>();
+      MainWithClub, MainLogOut, MainWithDm>();
 
   MainState._(
-      Union6<MainLoading, MainLoadFailure, MainGroupless, MainWithGroup,
-              MainLogOut, MainDm>
+      Union6<MainLoading, MainLoadFailure, MainGroupless, MainWithClub,
+              MainLogOut, MainWithDm>
           union)
       : super(union);
 
@@ -24,18 +24,18 @@ class MainState extends Union6Impl<MainLoading, MainLoadFailure, MainGroupless,
   factory MainState.groupless() =>
       MainState._(unions.third(const MainGroupless()));
 
-  factory MainState.withGroup(Group group) =>
-      MainState._(unions.fourth(MainWithGroup(group: group)));
+  factory MainState.withClub(Club group) =>
+      MainState._(unions.fourth(MainWithClub(club: group)));
 
   factory MainState.logOut({String? withError}) =>
       MainState._(unions.fifth(MainLogOut(withError: withError)));
 
-  factory MainState.dm({required User withUser}) =>
-      MainState._(unions.sixth(MainDm(withUser: withUser)));
+  factory MainState.withDm({required Dm dm}) =>
+      MainState._(unions.sixth(MainWithDm(dm)));
 
-  Group? get group {
-    return join((_) => null, (_) => null, (_) => null, (mpwg) => mpwg.group,
-        (_) => null, (_) => null);
+  UuidType? get groupId {
+    return join((_) => null, (_) => null, (_) => null, (mpwg) => mpwg.club.id,
+        (_) => null, (dm) => dm.dm.id);
   }
 }
 
@@ -55,13 +55,13 @@ class MainLoadFailure extends Equatable {
   List<Object?> get props => [failure];
 }
 
-class MainDm extends Equatable {
-  final User withUser;
+class MainWithDm extends Equatable {
+  final Dm dm;
 
-  const MainDm({required this.withUser});
+  const MainWithDm(this.dm);
 
   @override
-  List<Object?> get props => [withUser];
+  List<Object?> get props => [dm];
 }
 
 class MainGroupless extends Equatable {
@@ -71,13 +71,13 @@ class MainGroupless extends Equatable {
   List<Object?> get props => [];
 }
 
-class MainWithGroup extends Equatable {
-  final Group group;
+class MainWithClub extends Equatable {
+  final Club club;
 
-  const MainWithGroup({required this.group});
+  const MainWithClub({required this.club});
 
   @override
-  List<Object?> get props => [group];
+  List<Object?> get props => [club];
 }
 
 class MainLogOut extends Equatable {

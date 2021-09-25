@@ -1,5 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:fe/data/models/group.dart';
+import 'package:fe/data/models/club.dart';
 import 'package:fe/pages/groups/cubit/update_groups_cubit.dart';
 import 'package:fe/pages/groups/view/groups_page.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
@@ -129,7 +129,7 @@ void main() {
 
     testWidgets('should display clubs on clubs', (tester) async {
       final mockMainCubit = MockMainCubit.getMock();
-      final group = Group(admin: false, id: groupId, name: groupName);
+      final group = Club(admin: false, id: groupId, name: groupName);
 
       stubGqlResponse<GQueryUsersInGroupData, GQueryUsersInGroupVars>(
           getIt<AuthGqlClient>(),
@@ -143,7 +143,7 @@ void main() {
           Stream<UpdateGroupsState>.fromIterable([
             UpdateGroupsState.fetched({
               groupId: GroupsPageGroup(
-                  group: group,
+                  club: group,
                   joinTokenState: JoinTokenState.notAdmin(),
                   leaveState: LeavingState.notLeaving())
             })

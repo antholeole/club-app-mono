@@ -2,7 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
-import 'package:fe/pages/chat/view/widgets/chat_title.dart';
+import 'package:fe/pages/chat/view/widgets/title/club_chat_title.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/channels_bottom_sheet_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/page_cubit.dart';

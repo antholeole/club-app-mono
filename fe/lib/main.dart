@@ -9,6 +9,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 void main() async {
   setupLocator(isProd: false);
+  await asyncStartup();
   runApp(MyApp());
 }
 
@@ -16,8 +17,7 @@ Future<void> asyncStartup() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Future.wait([
-    SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
   ]);
 }
 

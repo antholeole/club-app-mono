@@ -71,21 +71,23 @@ class TokenManager {
     UuidType userId = await _localUserService.getLoggedInUserId();
 
     if (refreshToken == null) {
-      throw const Failure(status: FailureStatus.RefreshFail);
+      throw Failure(status: FailureStatus.RefreshFail);
     }
 
     try {
-      final resp = await _unauthClient.request(GRefreshReq((q) => q
-        ..vars.userId = userId
-        ..vars.refreshToken = refreshToken
-        ..fetchPolicy = FetchPolicy.NetworkOnly));
+      final resp = await _unauthClient
+          .request(GRefreshReq((q) => q
+            ..vars.userId = userId
+            ..vars.refreshToken = refreshToken
+            ..fetchPolicy = FetchPolicy.NetworkOnly))
+          .first;
 
-      final token = resp.refreshAccessToken!.accessToken;
+      final token = resp.refresh_access_token!.accessToken;
 
       await _writeAccessToken(token);
       return token;
     } on Failure catch (_) {
-      throw const Failure(status: FailureStatus.RefreshFail);
+      throw Failure(status: FailureStatus.RefreshFail);
     }
   }
 
