@@ -1,0 +1,9 @@
+mutation ReactToMessage($selfId: uuid!, $messageId: uuid!, $reaction: message_reaction_types_enum!) {
+  insert_message_reactions_one(object: {
+    message_id: $messageId,
+    reaction_type: $reaction,
+    user_id: $selfId
+  }) {
+    id
+  }
+}

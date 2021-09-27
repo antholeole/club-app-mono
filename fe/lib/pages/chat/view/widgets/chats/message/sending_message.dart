@@ -1,6 +1,9 @@
+import 'package:clock/clock.dart';
+import 'package:fe/data/models/message.dart';
 import 'package:fe/pages/chat/cubit/send_cubit.dart';
-import 'package:fe/pages/chat/view/widgets/chats/message/simple_message_display.dart';
+import 'package:fe/pages/chat/view/widgets/chats/message/message_display.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
+import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +19,7 @@ class SendingMessageDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: SimpleMessageDisplay.SELF_SENT_COLOR,
+      color: MessageDisplay.SELF_SENT_COLOR,
       child: Row(
         children: [
           Flexible(
@@ -26,9 +29,14 @@ class SendingMessageDisplay extends StatelessWidget {
                 Colors.grey.shade600,
                 BlendMode.lighten,
               ),
-              child: SimpleMessageDisplay(
-                sender: context.read<UserCubit>().user,
-                message: _sendState.message.message,
+              child: MessageDisplay(
+                message: Message(
+                    user: context.read<UserCubit>().user,
+                    id: UuidType.generate(), //does't matter
+                    message: _sendState.message.message,
+                    isImage: false,
+                    createdAt: clock.now(),
+                    updatedAt: clock.now()),
                 sentBySelf: true,
               ),
             ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'message_overlay.dart';
+import 'message_options_overlay.dart';
 
 class MessageOption {
   final IconData icon;
@@ -26,13 +26,13 @@ class MessageOptions extends StatelessWidget {
 
       if (i == 0 && i == _options.length - 1) {
         borderRadius = const BorderRadius.all(
-            Radius.circular(MessageOverlay.BORDER_RADIUS));
+            Radius.circular(MessageOptionsOverlay.BORDER_RADIUS));
       } else if (i == 0) {
         borderRadius = const BorderRadius.vertical(
-            top: Radius.circular(MessageOverlay.BORDER_RADIUS));
+            top: Radius.circular(MessageOptionsOverlay.BORDER_RADIUS));
       } else if (i == _options.length - 1) {
         borderRadius = const BorderRadius.vertical(
-            bottom: Radius.circular(MessageOverlay.BORDER_RADIUS));
+            bottom: Radius.circular(MessageOptionsOverlay.BORDER_RADIUS));
       } else {
         borderRadius = BorderRadius.zero;
       }

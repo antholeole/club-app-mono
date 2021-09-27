@@ -20,6 +20,13 @@ subscription GetNewMessages(
       profile_picture,
       id
     },
+    message_reactions {
+      reaction_type,
+      id,
+      user {
+        id
+      }
+    },
     is_image,
     updated_at
   }

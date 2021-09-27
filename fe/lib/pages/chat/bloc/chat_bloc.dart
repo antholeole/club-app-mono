@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:clock/clock.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fe/data/models/message.dart';
+import 'package:fe/data/models/reaction.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
@@ -51,6 +52,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
                   id: data.user.id,
                   name: data.user.name,
                   profilePictureUrl: data.user.profile_picture),
+              reactions: data.message_reactions
+                  .map((reaction) => Reaction(
+                      type: ReactionEmoji.fromGql(reaction.reaction_type),
+                      id: reaction.id,
+                      likedBy: reaction.user.id))
+                  .toList(),
               id: data.id,
               message: data.message,
               isImage: data.is_image,
@@ -90,6 +97,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
                 name: message.user.name,
                 profilePictureUrl: message.user.profile_picture,
                 id: message.user.id),
+            reactions: message.message_reactions
+                .map((reaction) => Reaction(
+                    type: ReactionEmoji.fromGql(reaction.reaction_type),
+                    id: reaction.id,
+                    likedBy: reaction.user.id))
+                .toList(),
             message: message.message,
             createdAt: message.created_at))
         .toList();
@@ -124,18 +137,17 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   void _onNewMessage(Iterable<Message> messages) {
+    final state = this.state;
     final fm = state.join((fm) => fm, (_) => null, (_) => null, (_) => null);
 
     if (appendingNewMessages) {
       emit(ChatState.fetchedMessages(FetchedMessages(
-          messages: _combineMessages(messages, fm?.messages ?? []),
-          bottomFetchState: fm?.bottomFetchState ?? EdgeFetchState.NotFetching,
-          topFetchState: fm?.topFetchState ?? EdgeFetchState.NotFetching)));
+          messages: _combineMessages(messages, fm?.messages ?? []))));
     }
   }
 
   List<Message> _combineMessages(
           Iterable<Message> oldMessages, Iterable<Message> newMessages) =>
-      List.from({...oldMessages, ...newMessages})
+      List.from({...newMessages, ...oldMessages})
         ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 }

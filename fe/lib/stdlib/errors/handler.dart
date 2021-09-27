@@ -94,14 +94,10 @@ class Handler {
       }
 
       if (toast) {
-        //if we're in a build, wait for the build tocomplete
-        //to avoid errors.
-        WidgetsBinding.instance!.addPostFrameCallback((_) {
-          context.read<ToasterCubit>().add(Toast(
-                message: errorString,
-                type: ToastType.Error,
-              ));
-        });
+        context.read<ToasterCubit>().add(Toast(
+              message: errorString,
+              type: ToastType.Error,
+            ));
       }
     }
   }

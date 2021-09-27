@@ -2,6 +2,13 @@ table:
   name: users
   schema: public
 array_relationships:
+- name: message_reactions
+  using:
+    foreign_key_constraint_on:
+      column: user_id
+      table:
+        name: message_reactions
+        schema: public
 - name: messages
   using:
     foreign_key_constraint_on:

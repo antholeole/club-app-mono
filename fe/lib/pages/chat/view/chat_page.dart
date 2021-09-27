@@ -1,6 +1,7 @@
 import 'package:fe/data/models/club.dart';
 import 'package:fe/data/models/group.dart';
 import 'package:fe/pages/chat/bloc/chat_bloc.dart';
+import 'package:fe/pages/chat/cubit/message_overlay_cubit.dart';
 import 'package:fe/pages/chat/cubit/send_cubit.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/pages/chat/view/widgets/chat_input/chat_bar.dart';
@@ -21,6 +22,8 @@ class ChatPage extends StatelessWidget {
 
   late final ThreadCubit _threadCubit;
   late final ChatBloc _chatBloc;
+
+  final ScrollController _scrollController = ScrollController();
 
   ChatPage({required this.group}) {
     _threadCubit = ThreadCubit(group: group);
@@ -65,7 +68,10 @@ class ChatPage extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => _chatBloc,
-        )
+        ),
+        BlocProvider(
+            create: (_) =>
+                MessageOverlayCubit(scrollController: _scrollController))
       ],
       child: const ChatView(),
     );

@@ -1,7 +1,5 @@
 part of 'chat_bloc.dart';
 
-enum EdgeFetchState { NotFetching, Fetching, ErrorFetching }
-
 @immutable
 class ChatState extends Union4Impl<FetchedMessages, FetchMessagesFailure,
     FetchMessagesLoading, NoThread> {
@@ -35,18 +33,10 @@ class FetchedMessages extends Equatable {
 
   final bool hasReachedMax;
 
-  final EdgeFetchState topFetchState;
-  final EdgeFetchState bottomFetchState;
-
-  const FetchedMessages(
-      {required this.messages,
-      this.hasReachedMax = false,
-      this.topFetchState = EdgeFetchState.NotFetching,
-      this.bottomFetchState = EdgeFetchState.NotFetching});
+  const FetchedMessages({required this.messages, this.hasReachedMax = false});
 
   @override
-  List<Object?> get props =>
-      [messages, topFetchState, bottomFetchState, hasReachedMax];
+  List<Object?> get props => [messages, hasReachedMax];
 }
 
 class FetchMessagesFailure extends Equatable {

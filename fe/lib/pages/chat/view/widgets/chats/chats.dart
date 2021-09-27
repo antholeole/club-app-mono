@@ -1,9 +1,10 @@
 import 'dart:ui';
 
-import 'package:fe/data/models/message.dart';
 import 'package:fe/pages/chat/bloc/chat_bloc.dart';
+import 'package:fe/pages/chat/cubit/message_overlay_cubit.dart';
 import 'package:fe/pages/chat/cubit/send_cubit.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
+import 'package:fe/pages/chat/view/widgets/chats/message/overlays/message_overlay_display.dart';
 import 'package:fe/pages/chat/view/widgets/chats/message/sending_message.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/stdlib/errors/failure.dart';
@@ -12,12 +13,10 @@ import 'package:fe/stdlib/errors/unreachable_state.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:fe/stdlib/theme/pill_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../service_locator.dart';
 import 'message/chat_page_message_display.dart';
-import 'message/hold_overlay/message_overlay.dart';
 
 class Chats extends StatefulWidget {
   static const String ERROR_COPY = 'There was an error while fetching chats.';
@@ -33,19 +32,21 @@ class Chats extends StatefulWidget {
 class _ChatsState extends State<Chats> {
   final _handler = getIt<Handler>();
 
-  final _scrollController = ScrollController();
-
-  OverlayEntry? _currentMessageOverlay;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
+    _scrollController = context.read<MessageOverlayCubit>().scrollController;
     _scrollController.addListener(_onScroll);
     super.initState();
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    context
+        .read<MessageOverlayCubit>()
+        .scrollController
+        .removeListener(_onScroll);
     super.dispose();
   }
 
@@ -85,32 +86,33 @@ class _ChatsState extends State<Chats> {
 
     itemCount += unsents.length;
 
-    return ListView.builder(
-        reverse: true,
-        controller: _scrollController,
-        itemCount: itemCount,
-        itemBuilder: (context, i) {
-          if (i < unsents.length) {
-            return SendingMessageDisplay(
-                sendState: unsents[unsents.length - 1 - i]);
-          }
+    return MessageOverlayDisplay(
+      child: ListView.builder(
+          reverse: true,
+          controller: _scrollController,
+          itemCount: itemCount,
+          itemBuilder: (context, i) {
+            if (i < unsents.length) {
+              return SendingMessageDisplay(
+                  sendState: unsents[unsents.length - 1 - i]);
+            }
 
-          if (i >= messagesState.messages.length + unsents.length) {
-            context.read<ChatBloc>().add(const FetchMessagesEvent());
-            return const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Loader(),
-            );
-          }
+            if (i >= messagesState.messages.length + unsents.length) {
+              context.read<ChatBloc>().add(const FetchMessagesEvent());
+              return const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Loader(),
+              );
+            }
 
-          final message = messagesState.messages[i - unsents.length];
+            final message = messagesState.messages[i - unsents.length];
 
-          return ChatPageMessageDisplay(
-              message: message,
-              sentBySelf: message.user.id == context.read<UserCubit>().user.id,
-              onHeld: (message, layerLink) =>
-                  _onTappedMessage(message, layerLink, context));
-        });
+            return ChatPageMessageDisplay(
+                message: message,
+                sentBySelf:
+                    message.user.id == context.read<UserCubit>().user.id);
+          }),
+    );
   }
 
   Widget _buildError(Failure failure) {
@@ -162,30 +164,6 @@ class _ChatsState extends State<Chats> {
 
   Widget _buildLoading() {
     return const Center(child: Loader());
-  }
-
-  void _onTappedMessage(Message message, LayerLink link, BuildContext context) {
-    FocusScope.of(context).requestFocus();
-    if (_currentMessageOverlay != null) {
-      _currentMessageOverlay!.remove();
-    }
-
-    _currentMessageOverlay = OverlayEntry(
-      opaque: false,
-      maintainState: true,
-      builder: (_) => Scaffold(
-        backgroundColor: Colors.transparent,
-        body: MessageOverlay(
-            dismissSelf: () {
-              _currentMessageOverlay!.remove();
-              _currentMessageOverlay = null;
-            },
-            link: link,
-            message: message),
-      ),
-    );
-    HapticFeedback.lightImpact();
-    Overlay.of(context)!.insert(_currentMessageOverlay!);
   }
 
   void _onScroll() {

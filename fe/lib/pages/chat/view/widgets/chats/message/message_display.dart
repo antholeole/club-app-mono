@@ -3,31 +3,17 @@ import 'package:fe/data/models/user.dart';
 import 'package:fe/stdlib/shared_widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
 
-class SimpleMessageDisplay extends StatelessWidget {
+class MessageDisplay extends StatelessWidget {
   static const SELF_SENT_COLOR = Color(0xffE5F0F6);
 
   static const double padding = 8.0;
 
   final User _sender;
   final String _message;
-
   final bool _withPadding;
-
   final Color _color;
 
-  const SimpleMessageDisplay(
-      {required User sender,
-      required String message,
-      bool withPadding = true,
-      Key? key,
-      bool sentBySelf = false})
-      : _message = message,
-        _sender = sender,
-        _withPadding = withPadding,
-        _color = sentBySelf ? SELF_SENT_COLOR : Colors.white,
-        super(key: key);
-
-  SimpleMessageDisplay.fromMessage(
+  MessageDisplay(
       {required Message message,
       bool withPadding = true,
       Key? key,
@@ -43,7 +29,8 @@ class SimpleMessageDisplay extends StatelessWidget {
     return Container(
       color: _color,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: _withPadding ? padding : 0.0),
+        padding: EdgeInsets.symmetric(
+            horizontal: _withPadding ? MessageDisplay.padding : 0.0),
         child: ListTile(
           leading: UserAvatar(
             name: _sender.name,

@@ -5,7 +5,6 @@ abstract class Config {
   String get hasuraHost;
   List<String> get gqlPathSegments;
   bool get transportIsSecure;
-  bool get playTaxingAnimations;
   bool get refreshLocalCacheOnReload;
 
   //use in exclusive cases where
@@ -26,9 +25,6 @@ class DevConfig extends Config {
   bool get transportIsSecure => false;
 
   @override
-  bool get playTaxingAnimations => true;
-
-  @override
   bool get refreshLocalCacheOnReload => false;
 
   @override
@@ -47,9 +43,6 @@ class ProdConfig extends Config {
 
   @override
   bool get transportIsSecure => true;
-
-  @override
-  bool get playTaxingAnimations => true;
 
   @override
   bool get refreshLocalCacheOnReload => false;

@@ -23,6 +23,16 @@ query QueryMessagesInThread(
       profile_picture,
       id
     },
+  	message_reactions {
+      reaction_type,
+      id,
+      message_reaction_type {
+        reaction_type
+      },
+      user {
+        id
+      }
+    },
     is_image,
     updated_at,
     id

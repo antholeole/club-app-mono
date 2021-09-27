@@ -480,6 +480,379 @@ enum IdentityProvider {
 }
 
 """
+columns and relationships of "message_reaction_types"
+"""
+type message_reaction_types {
+  description: String
+  reaction_type: String!
+}
+
+"""
+aggregated selection of "message_reaction_types"
+"""
+type message_reaction_types_aggregate {
+  aggregate: message_reaction_types_aggregate_fields
+  nodes: [message_reaction_types!]!
+}
+
+"""
+aggregate fields of "message_reaction_types"
+"""
+type message_reaction_types_aggregate_fields {
+  count(columns: [message_reaction_types_select_column!], distinct: Boolean): Int!
+  max: message_reaction_types_max_fields
+  min: message_reaction_types_min_fields
+}
+
+"""
+Boolean expression to filter rows from the table "message_reaction_types". All fields are combined with a logical 'AND'.
+"""
+input message_reaction_types_bool_exp {
+  _and: [message_reaction_types_bool_exp!]
+  _not: message_reaction_types_bool_exp
+  _or: [message_reaction_types_bool_exp!]
+  description: String_comparison_exp
+  reaction_type: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "message_reaction_types"
+"""
+enum message_reaction_types_constraint {
+  """unique or primary key constraint"""
+  message_reaction_types_pkey
+}
+
+enum message_reaction_types_enum {
+  """😡"""
+  ANGRY
+
+  """😭"""
+  CRY
+
+  """😂"""
+  LAUGH
+
+  """❤️"""
+  LIKE
+
+  """😮"""
+  WOW
+}
+
+"""
+Boolean expression to compare columns of type "message_reaction_types_enum". All fields are combined with logical 'AND'.
+"""
+input message_reaction_types_enum_comparison_exp {
+  _eq: message_reaction_types_enum
+  _in: [message_reaction_types_enum!]
+  _is_null: Boolean
+  _neq: message_reaction_types_enum
+  _nin: [message_reaction_types_enum!]
+}
+
+"""
+input type for inserting data into table "message_reaction_types"
+"""
+input message_reaction_types_insert_input {
+  description: String
+  reaction_type: String
+}
+
+"""aggregate max on columns"""
+type message_reaction_types_max_fields {
+  description: String
+  reaction_type: String
+}
+
+"""aggregate min on columns"""
+type message_reaction_types_min_fields {
+  description: String
+  reaction_type: String
+}
+
+"""
+response of any mutation on the table "message_reaction_types"
+"""
+type message_reaction_types_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [message_reaction_types!]!
+}
+
+"""
+input type for inserting object relation for remote table "message_reaction_types"
+"""
+input message_reaction_types_obj_rel_insert_input {
+  data: message_reaction_types_insert_input!
+
+  """on conflict condition"""
+  on_conflict: message_reaction_types_on_conflict
+}
+
+"""
+on conflict condition type for table "message_reaction_types"
+"""
+input message_reaction_types_on_conflict {
+  constraint: message_reaction_types_constraint!
+  update_columns: [message_reaction_types_update_column!]! = []
+  where: message_reaction_types_bool_exp
+}
+
+"""Ordering options when selecting data from "message_reaction_types"."""
+input message_reaction_types_order_by {
+  description: order_by
+  reaction_type: order_by
+}
+
+"""primary key columns input for table: message_reaction_types"""
+input message_reaction_types_pk_columns_input {
+  reaction_type: String!
+}
+
+"""
+select columns of table "message_reaction_types"
+"""
+enum message_reaction_types_select_column {
+  """column name"""
+  description
+
+  """column name"""
+  reaction_type
+}
+
+"""
+input type for updating data in table "message_reaction_types"
+"""
+input message_reaction_types_set_input {
+  description: String
+  reaction_type: String
+}
+
+"""
+update columns of table "message_reaction_types"
+"""
+enum message_reaction_types_update_column {
+  """column name"""
+  description
+
+  """column name"""
+  reaction_type
+}
+
+"""
+'id' is just for identification purposes; reaction_type, user_id, and message_id all serve as a PK combined.
+
+
+columns and relationships of "message_reactions"
+
+"""
+type message_reactions {
+  id: uuid!
+
+  """An object relationship"""
+  message: messages!
+  message_id: uuid!
+
+  """An object relationship"""
+  message_reaction_type: message_reaction_types!
+  reaction_type: message_reaction_types_enum!
+
+  """An object relationship"""
+  user: users!
+  user_id: uuid!
+}
+
+"""
+aggregated selection of "message_reactions"
+"""
+type message_reactions_aggregate {
+  aggregate: message_reactions_aggregate_fields
+  nodes: [message_reactions!]!
+}
+
+"""
+aggregate fields of "message_reactions"
+"""
+type message_reactions_aggregate_fields {
+  count(columns: [message_reactions_select_column!], distinct: Boolean): Int!
+  max: message_reactions_max_fields
+  min: message_reactions_min_fields
+}
+
+"""
+order by aggregate values of table "message_reactions"
+"""
+input message_reactions_aggregate_order_by {
+  count: order_by
+  max: message_reactions_max_order_by
+  min: message_reactions_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "message_reactions"
+"""
+input message_reactions_arr_rel_insert_input {
+  data: [message_reactions_insert_input!]!
+
+  """on conflict condition"""
+  on_conflict: message_reactions_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "message_reactions". All fields are combined with a logical 'AND'.
+"""
+input message_reactions_bool_exp {
+  _and: [message_reactions_bool_exp!]
+  _not: message_reactions_bool_exp
+  _or: [message_reactions_bool_exp!]
+  id: uuid_comparison_exp
+  message: messages_bool_exp
+  message_id: uuid_comparison_exp
+  message_reaction_type: message_reaction_types_bool_exp
+  reaction_type: message_reaction_types_enum_comparison_exp
+  user: users_bool_exp
+  user_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "message_reactions"
+"""
+enum message_reactions_constraint {
+  """unique or primary key constraint"""
+  message_reactions_pkey
+}
+
+"""
+input type for inserting data into table "message_reactions"
+"""
+input message_reactions_insert_input {
+  id: uuid
+  message: messages_obj_rel_insert_input
+  message_id: uuid
+  message_reaction_type: message_reaction_types_obj_rel_insert_input
+  reaction_type: message_reaction_types_enum
+  user: users_obj_rel_insert_input
+  user_id: uuid
+}
+
+"""aggregate max on columns"""
+type message_reactions_max_fields {
+  id: uuid
+  message_id: uuid
+  user_id: uuid
+}
+
+"""
+order by max() on columns of table "message_reactions"
+"""
+input message_reactions_max_order_by {
+  id: order_by
+  message_id: order_by
+  user_id: order_by
+}
+
+"""aggregate min on columns"""
+type message_reactions_min_fields {
+  id: uuid
+  message_id: uuid
+  user_id: uuid
+}
+
+"""
+order by min() on columns of table "message_reactions"
+"""
+input message_reactions_min_order_by {
+  id: order_by
+  message_id: order_by
+  user_id: order_by
+}
+
+"""
+response of any mutation on the table "message_reactions"
+"""
+type message_reactions_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [message_reactions!]!
+}
+
+"""
+on conflict condition type for table "message_reactions"
+"""
+input message_reactions_on_conflict {
+  constraint: message_reactions_constraint!
+  update_columns: [message_reactions_update_column!]! = []
+  where: message_reactions_bool_exp
+}
+
+"""Ordering options when selecting data from "message_reactions"."""
+input message_reactions_order_by {
+  id: order_by
+  message: messages_order_by
+  message_id: order_by
+  message_reaction_type: message_reaction_types_order_by
+  reaction_type: order_by
+  user: users_order_by
+  user_id: order_by
+}
+
+"""primary key columns input for table: message_reactions"""
+input message_reactions_pk_columns_input {
+  message_id: uuid!
+  reaction_type: message_reaction_types_enum!
+  user_id: uuid!
+}
+
+"""
+select columns of table "message_reactions"
+"""
+enum message_reactions_select_column {
+  """column name"""
+  id
+
+  """column name"""
+  message_id
+
+  """column name"""
+  reaction_type
+
+  """column name"""
+  user_id
+}
+
+"""
+input type for updating data in table "message_reactions"
+"""
+input message_reactions_set_input {
+  id: uuid
+  message_id: uuid
+  reaction_type: message_reaction_types_enum
+  user_id: uuid
+}
+
+"""
+update columns of table "message_reactions"
+"""
+enum message_reactions_update_column {
+  """column name"""
+  id
+
+  """column name"""
+  message_id
+
+  """column name"""
+  reaction_type
+
+  """column name"""
+  user_id
+}
+
+"""
 columns and relationships of "messages"
 """
 type messages {
@@ -491,6 +864,42 @@ type messages {
   id: uuid!
   is_image: Boolean!
   message: String!
+
+  """An array relationship"""
+  message_reactions(
+    """distinct select on columns"""
+    distinct_on: [message_reactions_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [message_reactions_order_by!]
+
+    """filter the rows returned"""
+    where: message_reactions_bool_exp
+  ): [message_reactions!]!
+
+  """An aggregate relationship"""
+  message_reactions_aggregate(
+    """distinct select on columns"""
+    distinct_on: [message_reactions_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [message_reactions_order_by!]
+
+    """filter the rows returned"""
+    where: message_reactions_bool_exp
+  ): message_reactions_aggregate!
   thread_id: uuid!
   updated_at: timestamptz!
 
@@ -548,6 +957,7 @@ input messages_bool_exp {
   id: uuid_comparison_exp
   is_image: Boolean_comparison_exp
   message: String_comparison_exp
+  message_reactions: message_reactions_bool_exp
   thread_id: uuid_comparison_exp
   updated_at: timestamptz_comparison_exp
   user: users_bool_exp
@@ -572,6 +982,7 @@ input messages_insert_input {
   id: uuid
   is_image: Boolean
   message: String
+  message_reactions: message_reactions_arr_rel_insert_input
   thread_id: uuid
   updated_at: timestamptz
   user: users_obj_rel_insert_input
@@ -634,6 +1045,16 @@ type messages_mutation_response {
 }
 
 """
+input type for inserting object relation for remote table "messages"
+"""
+input messages_obj_rel_insert_input {
+  data: messages_insert_input!
+
+  """on conflict condition"""
+  on_conflict: messages_on_conflict
+}
+
+"""
 on conflict condition type for table "messages"
 """
 input messages_on_conflict {
@@ -650,6 +1071,7 @@ input messages_order_by {
   id: order_by
   is_image: order_by
   message: order_by
+  message_reactions_aggregate: message_reactions_aggregate_order_by
   thread_id: order_by
   updated_at: order_by
   user: users_order_by
@@ -762,6 +1184,32 @@ type mutation_root {
   delete single row from the table: "groups"
   """
   delete_groups_by_pk(id: uuid!): groups
+
+  """
+  delete data from the table: "message_reaction_types"
+  """
+  delete_message_reaction_types(
+    """filter the rows which have to be deleted"""
+    where: message_reaction_types_bool_exp!
+  ): message_reaction_types_mutation_response
+
+  """
+  delete single row from the table: "message_reaction_types"
+  """
+  delete_message_reaction_types_by_pk(reaction_type: String!): message_reaction_types
+
+  """
+  delete data from the table: "message_reactions"
+  """
+  delete_message_reactions(
+    """filter the rows which have to be deleted"""
+    where: message_reactions_bool_exp!
+  ): message_reactions_mutation_response
+
+  """
+  delete single row from the table: "message_reactions"
+  """
+  delete_message_reactions_by_pk(message_id: uuid!, reaction_type: message_reaction_types_enum!, user_id: uuid!): message_reactions
 
   """
   delete data from the table: "messages"
@@ -880,6 +1328,50 @@ type mutation_root {
     """on conflict condition"""
     on_conflict: groups_on_conflict
   ): groups
+
+  """
+  insert data into the table: "message_reaction_types"
+  """
+  insert_message_reaction_types(
+    """the rows to be inserted"""
+    objects: [message_reaction_types_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: message_reaction_types_on_conflict
+  ): message_reaction_types_mutation_response
+
+  """
+  insert a single row into the table: "message_reaction_types"
+  """
+  insert_message_reaction_types_one(
+    """the row to be inserted"""
+    object: message_reaction_types_insert_input!
+
+    """on conflict condition"""
+    on_conflict: message_reaction_types_on_conflict
+  ): message_reaction_types
+
+  """
+  insert data into the table: "message_reactions"
+  """
+  insert_message_reactions(
+    """the rows to be inserted"""
+    objects: [message_reactions_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: message_reactions_on_conflict
+  ): message_reactions_mutation_response
+
+  """
+  insert a single row into the table: "message_reactions"
+  """
+  insert_message_reactions_one(
+    """the row to be inserted"""
+    object: message_reactions_insert_input!
+
+    """on conflict condition"""
+    on_conflict: message_reactions_on_conflict
+  ): message_reactions
 
   """
   insert data into the table: "messages"
@@ -1047,6 +1539,46 @@ type mutation_root {
     _set: groups_set_input
     pk_columns: groups_pk_columns_input!
   ): groups
+
+  """
+  update data of the table: "message_reaction_types"
+  """
+  update_message_reaction_types(
+    """sets the columns of the filtered rows to the given values"""
+    _set: message_reaction_types_set_input
+
+    """filter the rows which have to be updated"""
+    where: message_reaction_types_bool_exp!
+  ): message_reaction_types_mutation_response
+
+  """
+  update single row of the table: "message_reaction_types"
+  """
+  update_message_reaction_types_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: message_reaction_types_set_input
+    pk_columns: message_reaction_types_pk_columns_input!
+  ): message_reaction_types
+
+  """
+  update data of the table: "message_reactions"
+  """
+  update_message_reactions(
+    """sets the columns of the filtered rows to the given values"""
+    _set: message_reactions_set_input
+
+    """filter the rows which have to be updated"""
+    where: message_reactions_bool_exp!
+  ): message_reactions_mutation_response
+
+  """
+  update single row of the table: "message_reactions"
+  """
+  update_message_reactions_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: message_reactions_set_input
+    pk_columns: message_reactions_pk_columns_input!
+  ): message_reactions
 
   """
   update data of the table: "messages"
@@ -1265,6 +1797,92 @@ type query_root {
 
   """fetch data from the table: "groups" using primary key columns"""
   groups_by_pk(id: uuid!): groups
+
+  """
+  fetch data from the table: "message_reaction_types"
+  """
+  message_reaction_types(
+    """distinct select on columns"""
+    distinct_on: [message_reaction_types_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [message_reaction_types_order_by!]
+
+    """filter the rows returned"""
+    where: message_reaction_types_bool_exp
+  ): [message_reaction_types!]!
+
+  """
+  fetch aggregated fields from the table: "message_reaction_types"
+  """
+  message_reaction_types_aggregate(
+    """distinct select on columns"""
+    distinct_on: [message_reaction_types_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [message_reaction_types_order_by!]
+
+    """filter the rows returned"""
+    where: message_reaction_types_bool_exp
+  ): message_reaction_types_aggregate!
+
+  """
+  fetch data from the table: "message_reaction_types" using primary key columns
+  """
+  message_reaction_types_by_pk(reaction_type: String!): message_reaction_types
+
+  """An array relationship"""
+  message_reactions(
+    """distinct select on columns"""
+    distinct_on: [message_reactions_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [message_reactions_order_by!]
+
+    """filter the rows returned"""
+    where: message_reactions_bool_exp
+  ): [message_reactions!]!
+
+  """An aggregate relationship"""
+  message_reactions_aggregate(
+    """distinct select on columns"""
+    distinct_on: [message_reactions_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [message_reactions_order_by!]
+
+    """filter the rows returned"""
+    where: message_reactions_bool_exp
+  ): message_reactions_aggregate!
+
+  """
+  fetch data from the table: "message_reactions" using primary key columns
+  """
+  message_reactions_by_pk(message_id: uuid!, reaction_type: message_reaction_types_enum!, user_id: uuid!): message_reactions
 
   """An array relationship"""
   messages(
@@ -1786,6 +2404,92 @@ type subscription_root {
 
   """fetch data from the table: "groups" using primary key columns"""
   groups_by_pk(id: uuid!): groups
+
+  """
+  fetch data from the table: "message_reaction_types"
+  """
+  message_reaction_types(
+    """distinct select on columns"""
+    distinct_on: [message_reaction_types_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [message_reaction_types_order_by!]
+
+    """filter the rows returned"""
+    where: message_reaction_types_bool_exp
+  ): [message_reaction_types!]!
+
+  """
+  fetch aggregated fields from the table: "message_reaction_types"
+  """
+  message_reaction_types_aggregate(
+    """distinct select on columns"""
+    distinct_on: [message_reaction_types_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [message_reaction_types_order_by!]
+
+    """filter the rows returned"""
+    where: message_reaction_types_bool_exp
+  ): message_reaction_types_aggregate!
+
+  """
+  fetch data from the table: "message_reaction_types" using primary key columns
+  """
+  message_reaction_types_by_pk(reaction_type: String!): message_reaction_types
+
+  """An array relationship"""
+  message_reactions(
+    """distinct select on columns"""
+    distinct_on: [message_reactions_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [message_reactions_order_by!]
+
+    """filter the rows returned"""
+    where: message_reactions_bool_exp
+  ): [message_reactions!]!
+
+  """An aggregate relationship"""
+  message_reactions_aggregate(
+    """distinct select on columns"""
+    distinct_on: [message_reactions_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [message_reactions_order_by!]
+
+    """filter the rows returned"""
+    where: message_reactions_bool_exp
+  ): message_reactions_aggregate!
+
+  """
+  fetch data from the table: "message_reactions" using primary key columns
+  """
+  message_reactions_by_pk(message_id: uuid!, reaction_type: message_reaction_types_enum!, user_id: uuid!): message_reactions
 
   """An array relationship"""
   messages(
@@ -2742,6 +3446,42 @@ type users {
   id: uuid!
 
   """An array relationship"""
+  message_reactions(
+    """distinct select on columns"""
+    distinct_on: [message_reactions_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [message_reactions_order_by!]
+
+    """filter the rows returned"""
+    where: message_reactions_bool_exp
+  ): [message_reactions!]!
+
+  """An aggregate relationship"""
+  message_reactions_aggregate(
+    """distinct select on columns"""
+    distinct_on: [message_reactions_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [message_reactions_order_by!]
+
+    """filter the rows returned"""
+    where: message_reactions_bool_exp
+  ): message_reactions_aggregate!
+
+  """An array relationship"""
   messages(
     """distinct select on columns"""
     distinct_on: [messages_select_column!]
@@ -2879,6 +3619,7 @@ input users_bool_exp {
   _or: [users_bool_exp!]
   email: String_comparison_exp
   id: uuid_comparison_exp
+  message_reactions: message_reactions_bool_exp
   messages: messages_bool_exp
   name: String_comparison_exp
   profile_picture: String_comparison_exp
@@ -2904,6 +3645,7 @@ input type for inserting data into table "users"
 input users_insert_input {
   email: String
   id: uuid
+  message_reactions: message_reactions_arr_rel_insert_input
   messages: messages_arr_rel_insert_input
   name: String
   profile_picture: String
@@ -2964,6 +3706,7 @@ input users_on_conflict {
 input users_order_by {
   email: order_by
   id: order_by
+  message_reactions_aggregate: message_reactions_aggregate_order_by
   messages_aggregate: messages_aggregate_order_by
   name: order_by
   profile_picture: order_by

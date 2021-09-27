@@ -7,20 +7,20 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-import '../simple_message_display.dart';
+import '../../message_display.dart';
 import 'message_options.dart';
 
 const Duration _ANIMATION_DURATION = Duration(milliseconds: 75);
 const int _EDGE_INSETS_PADDING = 20;
 
-class MessageOverlay extends StatefulWidget {
+class MessageOptionsOverlay extends StatefulWidget {
   static const BORDER_RADIUS = 8.0;
   final LayerLink link;
   final Message message;
 
   final void Function() dismissSelf;
 
-  const MessageOverlay(
+  const MessageOptionsOverlay(
       {Key? key,
       required this.dismissSelf,
       required this.link,
@@ -28,10 +28,10 @@ class MessageOverlay extends StatefulWidget {
       : super(key: key);
 
   @override
-  _MessageOverlayState createState() => _MessageOverlayState();
+  _MessageOptionsOverlayState createState() => _MessageOptionsOverlayState();
 }
 
-class _MessageOverlayState extends State<MessageOverlay>
+class _MessageOptionsOverlayState extends State<MessageOptionsOverlay>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation _colorAnimation;
@@ -94,8 +94,8 @@ class _MessageOverlayState extends State<MessageOverlay>
         offset: Offset(0, -topSectionHeight - verticalOffset),
         link: widget.link,
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: SimpleMessageDisplay.padding),
+          padding:
+              const EdgeInsets.symmetric(horizontal: MessageDisplay.padding),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             key: renderKey,
@@ -111,7 +111,8 @@ class _MessageOverlayState extends State<MessageOverlay>
                   decoration: const BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(MessageOverlay.BORDER_RADIUS))),
+                          top: Radius.circular(
+                              MessageOptionsOverlay.BORDER_RADIUS))),
                   child: Padding(
                     padding: const EdgeInsets.only(top: 5.0, right: 12.0),
                     child: Text(
@@ -126,16 +127,17 @@ class _MessageOverlayState extends State<MessageOverlay>
                   ),
                 ),
               ),
-              SimpleMessageDisplay.fromMessage(
+              MessageDisplay(
                 withPadding: false,
                 message: widget.message,
               ),
               Container(
-                height: MessageOverlay.BORDER_RADIUS,
+                height: MessageOptionsOverlay.BORDER_RADIUS,
                 decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.vertical(
-                        bottom: Radius.circular(MessageOverlay.BORDER_RADIUS))),
+                        bottom: Radius.circular(
+                            MessageOptionsOverlay.BORDER_RADIUS))),
               ),
               SizeTransition(
                 axisAlignment: 1.0,
