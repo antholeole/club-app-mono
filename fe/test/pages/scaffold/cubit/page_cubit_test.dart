@@ -4,10 +4,10 @@ import 'package:fe/data/models/thread.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/chat/cubit/thread_state.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
+import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/channels_bottom_sheet_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/page_cubit.dart';
 import 'package:fe/pages/scaffold/view/widgets/channels_bottom_sheet.dart';
-import 'package:fe/providers/user_provider.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
@@ -49,10 +49,10 @@ void main() {
           PageCubit cubit, WidgetTester tester) async {
         BuildContext? retContext;
 
-        await tester.pumpApp(UserProvider(
-          user: fakeUser,
-          child: MultiBlocProvider(
+        await tester.pumpApp(
+          MultiBlocProvider(
             providers: [
+              BlocProvider<UserCubit>(create: (_) => UserCubit(fakeUser)),
               BlocProvider<MainCubit>(create: (_) => mockMainCubit),
               BlocProvider<ChatBottomSheetCubit>(
                 create: (_) => mockChatBottomSheetCubit,
@@ -68,7 +68,7 @@ void main() {
               );
             }),
           ),
-        ));
+        );
 
         return retContext!;
       }
@@ -98,7 +98,7 @@ void main() {
         whenListen(mockChatBottomSheetCubit, Stream<bool>.fromIterable([]),
             initialState: false);
         whenListen(mockMainCubit, const Stream<MainState>.empty(),
-            initialState: MainState.withGroup(fakeGroup));
+            initialState: MainState.withClub(fakeGroup));
         whenListen(mockThreadCubit, const Stream<ThreadState>.empty(),
             initialState: ThreadState.thread(fakeThread));
 
@@ -138,7 +138,7 @@ void main() {
         whenListen(mockChatBottomSheetCubit, Stream<bool>.fromIterable([]),
             initialState: false);
         whenListen(mockMainCubit, const Stream<MainState>.empty(),
-            initialState: MainState.withGroup(fakeGroup));
+            initialState: MainState.withClub(fakeGroup));
         whenListen(mockThreadCubit, const Stream<ThreadState>.empty(),
             initialState: ThreadState.thread(fakeThread));
 
@@ -178,7 +178,7 @@ void main() {
         whenListen(mockChatBottomSheetCubit, Stream<bool>.fromIterable([]),
             initialState: false);
         whenListen(mockMainCubit, const Stream<MainState>.empty(),
-            initialState: MainState.withGroup(fakeGroup));
+            initialState: MainState.withClub(fakeGroup));
 
         final pageCubit = PageCubit();
 
@@ -212,7 +212,7 @@ void main() {
         whenListen(mockChatBottomSheetCubit, Stream<bool>.fromIterable([]),
             initialState: false);
         whenListen(mockMainCubit, const Stream<MainState>.empty(),
-            initialState: MainState.withGroup(fakeGroup));
+            initialState: MainState.withClub(fakeGroup));
 
         final List<PageState> emittedStates = [];
         final pageCubit = PageCubit();

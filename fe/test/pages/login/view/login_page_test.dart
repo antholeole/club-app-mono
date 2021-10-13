@@ -84,8 +84,8 @@ void main() {
       whenListen(
           mockLoginCubit,
           Stream<LoginState>.fromIterable([
-            LoginState.failure(const Failure(
-                status: FailureStatus.Unknown, message: failureMessage))
+            LoginState.failure(
+                Failure(status: FailureStatus.Unknown, message: failureMessage))
           ]),
           initialState: LoginState.loading());
 

@@ -51,7 +51,7 @@ void main() {
     });
 
     whenListen(mockMainCubit, Stream<MainState>.fromIterable([]),
-        initialState: MainState.withGroup(mockGroupNotAdmin));
+        initialState: MainState.withClub(mockGroupNotAdmin));
 
     whenListen(mockPageCubit, Stream<PageState>.fromIterable([]),
         initialState: PageState.eventPage());

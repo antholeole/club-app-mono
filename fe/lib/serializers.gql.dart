@@ -29,7 +29,8 @@ import 'package:fe/gql/get_new_reactions.data.gql.dart'
     show
         GGetNewReactionsData,
         GGetNewReactionsData_message_reactions,
-        GGetNewReactionsData_message_reactions_message;
+        GGetNewReactionsData_message_reactions_message,
+        GGetNewReactionsData_message_reactions_user;
 import 'package:fe/gql/get_new_reactions.req.gql.dart' show GGetNewReactionsReq;
 import 'package:fe/gql/get_new_reactions.var.gql.dart'
     show GGetNewReactionsVars;
@@ -50,6 +51,15 @@ import 'package:fe/gql/query_group_join_token.req.gql.dart'
     show GQueryGroupJoinTokenReq;
 import 'package:fe/gql/query_group_join_token.var.gql.dart'
     show GQueryGroupJoinTokenVars;
+import 'package:fe/gql/query_likers_names.data.gql.dart'
+    show
+        GQueryLikersNamesData,
+        GQueryLikersNamesData_message_reactions,
+        GQueryLikersNamesData_message_reactions_user;
+import 'package:fe/gql/query_likers_names.req.gql.dart'
+    show GQueryLikersNamesReq;
+import 'package:fe/gql/query_likers_names.var.gql.dart'
+    show GQueryLikersNamesVars;
 import 'package:fe/gql/query_messages_in_thread.data.gql.dart'
     show
         GQueryMessagesInThreadData,
@@ -303,6 +313,7 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GGetNewReactionsData,
   GGetNewReactionsData_message_reactions,
   GGetNewReactionsData_message_reactions_message,
+  GGetNewReactionsData_message_reactions_user,
   GGetNewReactionsReq,
   GGetNewReactionsVars,
   GGetOrCreateDmData,
@@ -319,6 +330,11 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GQueryGroupJoinTokenData_group_join_tokens,
   GQueryGroupJoinTokenReq,
   GQueryGroupJoinTokenVars,
+  GQueryLikersNamesData,
+  GQueryLikersNamesData_message_reactions,
+  GQueryLikersNamesData_message_reactions_user,
+  GQueryLikersNamesReq,
+  GQueryLikersNamesVars,
   GQueryMessagesInThreadData,
   GQueryMessagesInThreadData_messages,
   GQueryMessagesInThreadData_messages_message_reactions,

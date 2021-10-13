@@ -131,15 +131,13 @@ class _ReactionDisplayState extends State<ReactionDisplay>
 
   Future<void> _onReacted() async {
     try {
-      final resp = await _authGqlClient
+      await _authGqlClient
           .request(GUpsertReactionReq((q) => q
             ..vars.deleted = widget._selfReacted
             ..vars.messageId = widget._messageId
             ..vars.selfId = widget._userId
             ..vars.reaction = widget._reactionType.gql))
           .first;
-
-      print(resp.insert_message_reactions_one?.deleted);
     } on Failure catch (f) {
       _handler.handleFailure(f, context,
           withPrefix: 'failed reacting to message');

@@ -24,7 +24,8 @@ subscription GetNewMessages(
       reaction_type,
       id,
       user {
-        id
+        id,
+        name
       }
     },
     is_image,

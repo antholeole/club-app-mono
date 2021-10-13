@@ -35,7 +35,9 @@ class ChannelsBottomSheet extends StatelessWidget {
               providerReadableContext: context,
             ));
 
-    context.read<ChatBottomSheetCubit>().setState(false);
+    //in cases where the logout is forced by the bottom sheet,
+    //this will fail and thus needs to be nullable.
+    context.read<ChatBottomSheetCubit?>()?.setState(false);
 
     return thread;
   }
@@ -87,6 +89,7 @@ class ChannelsBottomSheet extends StatelessWidget {
                               color: Colors.grey.shade700),
                         ),
                         GqlOperation(
+                            providerReadableContext: _providerReadableContext,
                             operationRequest: GQuerySelfThreadsInGroupReq((q) =>
                                 q
                                   ..fetchPolicy = FetchPolicy.CacheAndNetwork

@@ -12,7 +12,10 @@ subscription GetNewReactions(
     }
     }) {
     created_at,
-    user_id,
+    user {
+      id,
+      name
+    },
     reaction_type,
     deleted,
     message {

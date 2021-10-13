@@ -37,7 +37,7 @@ void main() {
       final handler = Handler();
 
       expect(await handler.checkConnectivity(),
-          equals(const Failure(status: FailureStatus.NoConn)));
+          equals(Failure(status: FailureStatus.NoConn)));
     });
 
     test('should return servers down if ping request fails', () async {
@@ -49,7 +49,7 @@ void main() {
       final handler = Handler();
 
       expect(await handler.checkConnectivity(),
-          equals(const Failure(status: FailureStatus.ServersDown)));
+          equals(Failure(status: FailureStatus.ServersDown)));
     });
 
     test('should return null if has both connections', () async {
@@ -68,14 +68,14 @@ void main() {
     group('link exception', () {
       test('inner exception is failure should return unwrapped failure',
           () async {
-        const failure = Failure(status: FailureStatus.Unknown);
+        final failure = Failure(status: FailureStatus.Unknown);
 
         final handler = Handler();
 
         expect(
             await handler.basicGqlErrorHandler(OperationResponse(
                 operationRequest: GFakeGqlReq(),
-                linkException: const FakeLinkException(failure))),
+                linkException: FakeLinkException(failure))),
             equals(failure));
       });
     });
@@ -108,7 +108,7 @@ void main() {
       expect(
           await handler.basicGqlErrorHandler(
               OperationResponse(operationRequest: GFakeGqlReq())),
-          equals(const Failure(status: FailureStatus.NoConn)));
+          equals(Failure(status: FailureStatus.NoConn)));
     });
 
     test('should return unknown if all else fails', () async {
@@ -122,7 +122,7 @@ void main() {
       expect(
           await handler.basicGqlErrorHandler(
               OperationResponse(operationRequest: GFakeGqlReq())),
-          equals(const Failure(status: FailureStatus.Unknown)));
+          equals(Failure(status: FailureStatus.Unknown)));
     });
   });
 
@@ -130,7 +130,7 @@ void main() {
     final mockMainCubit = MockMainCubit.getMock();
     final mockToasterCubit = MockToasterCubit.getMock();
 
-    const nonFatal = Failure(status: FailureStatus.ServersDown);
+    final nonFatal = Failure(status: FailureStatus.ServersDown);
 
     setUp(() {
       resetMockBloc(mockMainCubit);
@@ -138,7 +138,7 @@ void main() {
     });
 
     testWidgets('should log out if fatal error', (tester) async {
-      const fatalFailure = Failure(status: FailureStatus.RefreshFail);
+      final fatalFailure = Failure(status: FailureStatus.RefreshFail);
       final handler = Handler();
       late BuildContext context;
 
@@ -247,7 +247,7 @@ void main() {
       testWidgets('should default to status message', (tester) async {
         expect(
             await getMessage(
-                const Failure(status: FailureStatus.ServersDown), tester),
+                Failure(status: FailureStatus.ServersDown), tester),
             equals(FailureStatus.ServersDown.message));
       });
 
@@ -256,8 +256,7 @@ void main() {
 
         expect(
             await getMessage(
-                const Failure(
-                    status: FailureStatus.ServersDown, message: message),
+                Failure(status: FailureStatus.ServersDown, message: message),
                 tester),
             equals(message));
       });
@@ -267,8 +266,7 @@ void main() {
         const prefix = 'pfx';
 
         final message = await getMessage(
-            const Failure(status: FailureStatus.ServersDown, message: string),
-            tester,
+            Failure(status: FailureStatus.ServersDown, message: string), tester,
             prefix: prefix);
 
         expect(message, contains(string));

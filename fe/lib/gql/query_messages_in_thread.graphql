@@ -30,7 +30,8 @@ query QueryMessagesInThread(
         reaction_type
       },
       user {
-        id
+        id,
+        name
       }
     },
     is_image,

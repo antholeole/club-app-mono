@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:fe/data/models/user.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/schema.schema.gql.dart' show Gmessage_reaction_types_enum;
 
@@ -7,7 +8,7 @@ enum ReactionType { Like, Laugh, Wow, Cry, Angry }
 class Reaction extends Equatable {
   final ReactionType type;
   final UuidType id;
-  final UuidType likedBy;
+  final User likedBy;
   final UuidType messageId;
 
   const Reaction(

@@ -36,7 +36,7 @@ void main() {
 
   setUpAll(() {
     registerFallbackValue(FakeBuildContext());
-    registerFallbackValue(const Failure(status: FailureStatus.GQLMisc));
+    registerFallbackValue(Failure(status: FailureStatus.GQLMisc));
   });
 
   setUp(() async {
@@ -57,7 +57,7 @@ void main() {
     final mockToasterCubit = MockToasterCubit.getMock();
     final mockScaffoldCubit = MockScaffoldCubit.getMock();
 
-    const fakeFailure = Failure(status: FailureStatus.GQLMisc);
+    final fakeFailure = Failure(status: FailureStatus.GQLMisc);
 
     Widget wrapWithDependencies(Widget child) {
       return MultiBlocProvider(
@@ -128,7 +128,7 @@ void main() {
       whenListen(mockPageCubit, Stream<PageState>.fromIterable([]),
           initialState: PageState.eventPage());
       whenListen(mockMainCubit, Stream<MainState>.fromIterable([]),
-          initialState: MainState.withGroup(fakeGroup));
+          initialState: MainState.withClub(fakeGroup));
       whenListen(mockScaffoldCubit, Stream<sc.ScaffoldState>.fromIterable([]),
           initialState: const sc.ScaffoldInitial());
 

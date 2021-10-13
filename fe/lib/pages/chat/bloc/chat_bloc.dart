@@ -44,7 +44,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     on<_ThreadChangeEvent>((event, emit) => _switchThread(emit));
     _threadCubit.stream.listen((event) => add(_ThreadChangeEvent()));
-    add(_ThreadChangeEvent());
     on<_NewMessageEvent>((event, emit) => emit(ChatState.fetchedMessages(
         FetchedMessages.withNewMessage(
             old: state.join((fm) => fm, (_) => null, (_) => null, (_) => null)!,
@@ -58,7 +57,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       for (final reactionData in reactions.message_reactions) {
         final reaction = Reaction(
             messageId: reactionData.message.id,
-            likedBy: reactionData.user_id,
+            likedBy:
+                User(name: reactionData.user.name, id: reactionData.user.id),
             id: reactionData.id,
             type: ReactionEmoji.fromGql(reactionData.reaction_type));
 
@@ -96,7 +96,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
                     messageId: data.id,
                     type: ReactionEmoji.fromGql(reaction.reaction_type),
                     id: reaction.id,
-                    likedBy: reaction.user.id))
+                    likedBy:
+                        User(id: reaction.user.id, name: reaction.user.name)))
               },
               id: data.id,
               message: data.message,
@@ -149,7 +150,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
                   type: ReactionEmoji.fromGql(reaction.reaction_type),
                   id: reaction.id,
                   messageId: message.id,
-                  likedBy: reaction.user.id))
+                  likedBy:
+                      User(name: reaction.user.name, id: reaction.user.id)))
             },
             message: message.message,
             createdAt: message.created_at))
@@ -195,6 +197,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     // ignore: unawaited_futures
     Future.wait(_subscriptions.map((e) => e.cancel()));
 
+    _subscriptions.clear();
     _subscriptions.addAll([
       _newMessageStream(newThread.id).listen(
           (newMessage) => add(_NewMessageEvent(newMessage: newMessage))),

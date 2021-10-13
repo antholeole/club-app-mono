@@ -42,7 +42,7 @@ void main() {
         act: (cubit) => cubit.changeName(newName + ']', caller.call),
         expect: () => [
               NameChangeState.changing(),
-              NameChangeState.failure(const Failure(
+              NameChangeState.failure(Failure(
                   status: FailureStatus.Custom,
                   message: NameChangeCubit.REGEX_FAIL_COPY))
             ],
@@ -53,14 +53,13 @@ void main() {
         setUp: () {
           stubGqlResponse<GUpdateSelfNameData, GUpdateSelfNameVars>(
               getIt<AuthGqlClient>(),
-              error: (_) => const Failure(status: FailureStatus.GQLMisc));
+              error: (_) => Failure(status: FailureStatus.GQLMisc));
         },
         build: () => NameChangeCubit(),
         act: (cubit) => cubit.changeName(newName, caller.call),
         expect: () => [
               NameChangeState.changing(),
-              NameChangeState.failure(
-                  const Failure(status: FailureStatus.GQLMisc))
+              NameChangeState.failure(Failure(status: FailureStatus.GQLMisc))
             ],
         verify: (_) => verifyNever(() => caller.call()));
 

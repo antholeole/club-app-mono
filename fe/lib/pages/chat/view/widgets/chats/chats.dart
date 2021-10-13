@@ -61,11 +61,13 @@ class _ChatsState extends State<Chats> {
               (fmf) => _handler.handleFailure(fmf.failure, context),
               (_) => null,
               (_) => null),
-          builder: (_, state) => state.join(
-              (fm) => _buildChats(fm, unsents),
-              (fmf) => _buildError(fmf.failure),
-              (_) => _buildLoading(),
-              (_) => throw UnreachableStateError(_)),
+          builder: (_, state) {
+            return state.join(
+                (fm) => _buildChats(fm, unsents),
+                (fmf) => _buildError(fmf.failure),
+                (_) => _buildLoading(),
+                (_) => throw UnreachableStateError(_));
+          },
         ),
       ),
     );

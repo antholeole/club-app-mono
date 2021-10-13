@@ -4,7 +4,6 @@ import 'package:fe/data/json/backend_access_tokens.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/chat/bloc/chat_bloc.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
-import 'package:fe/pages/groups/cubit/update_groups_cubit.dart';
 import 'package:fe/pages/login/cubit/login_cubit.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/pages/profile/cubit/name_change_cubit.dart';
@@ -34,21 +33,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-import '../reset_mock_bloc.dart';
-
 class FakeBuildContext extends Fake implements BuildContext {}
-
-class MockUpdateGroupsCubit extends MockCubit<UpdateGroupsState>
-    implements UpdateGroupsCubit {
-  MockUpdateGroupsCubit._();
-
-  factory MockUpdateGroupsCubit.getMock() {
-    registerFallbackValue(UpdateGroupsState.fetchingGroups());
-    final cubit = MockUpdateGroupsCubit._();
-    resetMockBloc(cubit);
-    return cubit;
-  }
-}
 
 class MockNameChangeCubit extends MockCubit<NameChangeState>
     implements NameChangeCubit {
@@ -333,7 +318,7 @@ class MockHandler extends Mock implements Handler {
   factory MockHandler.getMock() {
     final handler = MockHandler._();
     registerFallbackValue(FakeBuildContext());
-    registerFallbackValue(const Failure(status: FailureStatus.GQLMisc));
+    registerFallbackValue(Failure(status: FailureStatus.GQLMisc));
     return handler;
   }
 }

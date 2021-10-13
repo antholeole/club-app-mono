@@ -11,12 +11,12 @@ void stubGqlResponse<TData, TVars>(GqlClient client,
       data != null || error != null, 'one of data or errors must be provided');
 
   if (data != null) {
-    when(() => client.request(any(that: requestMatcher)))
-        .thenAnswer((invocation) async => data.call(invocation));
+    when(() => client.request(any(that: requestMatcher))).thenAnswer(
+        (invocation) => Stream.fromIterable([data.call(invocation)]));
   }
 
   if (error != null) {
     when(() => client.request(any(that: requestMatcher)))
-        .thenAnswer((invocation) async => throw error(invocation));
+        .thenAnswer((invocation) => throw error(invocation));
   }
 }

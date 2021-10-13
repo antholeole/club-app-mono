@@ -37,8 +37,8 @@ void main() {
   group('set group', () {
     blocTest<MainCubit, MainState>('should emit new group',
         build: () => MainCubit(),
-        act: (cubit) => cubit.setGroup(fakeGroup1),
-        expect: () => [MainState.withGroup(fakeGroup1)]);
+        act: (cubit) => cubit.setClub(fakeGroup1),
+        expect: () => [MainState.withClub(fakeGroup1)]);
   });
 
   group('log out', () {
@@ -87,7 +87,7 @@ void main() {
 
   group('initalize main page', () {
     final userId = UuidType.generate();
-    const fatalFailure =
+    final fatalFailure =
         Failure(status: FailureStatus.RefreshFail, message: 'i am fatal');
 
     setUp(() {
@@ -114,7 +114,7 @@ void main() {
                           GQuerySelfGroupsPreviewVars>>()
                   .having((req) => req.fetchPolicy, 'fetch policy',
                       equals(FetchPolicy.NetworkOnly)),
-              error: (_) => const Failure(
+              error: (_) => Failure(
                   status: FailureStatus.GQLMisc, message: 'i am not fatal'));
 
           stubGqlResponse<GQuerySelfGroupsPreviewData,
@@ -165,7 +165,7 @@ void main() {
       act: (cubit) {
         cubit.initalizeMainPage();
       },
-      expect: () => [MainState.withGroup(fakeGroup1)],
+      expect: () => [MainState.withClub(fakeGroup1)],
     );
 
     blocTest<MainCubit, MainState>(

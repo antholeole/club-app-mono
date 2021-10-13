@@ -1,9 +1,9 @@
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/groups/view/groups_page.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
+import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/pages/profile/view/profile_page.dart';
 import 'package:fe/pages/scaffold/view/widgets/drawers/left_drawer/club_drawer.dart';
-import 'package:fe/providers/user_provider.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,7 +22,7 @@ void main() {
       BlocProvider<MainCubit>(
         create: (_) => mockMainCubit,
       )
-    ], child: UserProvider(user: fakeUser, child: child));
+    ], child: BlocProvider(create: (_) => UserCubit(fakeUser), child: child));
   }
 
   setUp(() {

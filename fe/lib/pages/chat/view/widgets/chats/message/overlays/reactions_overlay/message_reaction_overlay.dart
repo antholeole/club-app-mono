@@ -108,7 +108,7 @@ class _MessageReactionOverlayState extends State<MessageReactionOverlay>
   bool _getReacted(ReactionType reaction) {
     for (final existingReaction in widget._message.reactions) {
       if (existingReaction.type == reaction &&
-          existingReaction.likedBy == widget._selfId) {
+          existingReaction.likedBy.id == widget._selfId) {
         return true;
       }
     }

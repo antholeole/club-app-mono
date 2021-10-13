@@ -8,6 +8,9 @@ import 'package:flutter/material.dart';
 import '../../service_locator.dart';
 
 class GqlOperation<TData, TVars> extends StatefulWidget {
+  //overrides the lookup context in contexts where widget in inserted
+  //in the tree where it cannot access the main cubits.
+  final BuildContext? _providerReadableContext;
   final OperationRequest<TData, TVars>? operationRequest;
   final Widget? loader;
   final String? errorText;
@@ -20,7 +23,9 @@ class GqlOperation<TData, TVars> extends StatefulWidget {
       required this.onResponse,
       this.loader,
       this.error,
-      this.errorText});
+      BuildContext? providerReadableContext,
+      this.errorText})
+      : _providerReadableContext = providerReadableContext;
 
   @override
   _GqlOperationState<TData, TVars> createState() =>
@@ -61,7 +66,8 @@ class _GqlOperationState<TData, TVars>
     }
 
     if (snapshot.error is Failure) {
-      _handler.handleFailure(snapshot.error as Failure, context,
+      _handler.handleFailure(
+          snapshot.error as Failure, widget._providerReadableContext ?? context,
           withPrefix: widget.errorText);
 
       return _resultFromCache != null

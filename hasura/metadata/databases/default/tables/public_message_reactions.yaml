@@ -47,8 +47,9 @@ select_permissions:
         group_thread:
           user_to_threads:
             user:
-              id:
-                _eq: X-Hasura-User-Id
+              user_to_threads:
+                user_id:
+                  _eq: X-Hasura-User-Id
   role: user
 update_permissions:
 - permission:

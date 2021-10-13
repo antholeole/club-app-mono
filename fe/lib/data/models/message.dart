@@ -39,14 +39,16 @@ class Message extends Equatable {
   }
 
   Message copyWithoutReaction(Reaction removedReaction) {
+    final newReactions = Set.of(reactions.toList());
+    newReactions.remove(removedReaction);
+
     return Message(
         user: user,
         id: id,
         message: message,
         isImage: isImage,
         createdAt: createdAt,
-        reactions: reactions
-          ..removeWhere((reaction) => reaction.id == removedReaction.id),
+        reactions: newReactions,
         updatedAt: updatedAt);
   }
 }
