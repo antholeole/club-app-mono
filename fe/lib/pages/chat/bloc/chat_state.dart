@@ -29,11 +29,45 @@ class ChatState extends Union4Impl<FetchedMessages, FetchMessagesFailure,
 
 @immutable
 class FetchedMessages extends Equatable {
-  final List<Message> messages;
-
+  final Map<UuidType, Message> _messages;
   final bool hasReachedMax;
 
-  const FetchedMessages({required this.messages, this.hasReachedMax = false});
+  Iterable<Message> get messages => _messages.values.toList()
+    ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+  FetchedMessages({required List<Message> messages, this.hasReachedMax = false})
+      : _messages = Map.fromEntries(
+            messages.map((message) => MapEntry(message.id, message)));
+
+  FetchedMessages.withNewReaction(
+      {required FetchedMessages old, required Reaction newReaction})
+      : hasReachedMax = old.hasReachedMax,
+        _messages = Map.fromEntries([
+          ...old._messages.entries,
+          MapEntry(
+              newReaction.messageId,
+              old._messages[newReaction.messageId]!
+                  .copyWithNewReaction(newReaction))
+        ]);
+
+  FetchedMessages.withNewMessage(
+      {required FetchedMessages old, required Message newMessage})
+      : hasReachedMax = old.hasReachedMax,
+        _messages = Map.fromEntries(
+            [...old._messages.entries, MapEntry(newMessage.id, newMessage)]);
+
+  FetchedMessages.withoutReaction(
+      {required FetchedMessages old, required Reaction deletedReaction})
+      : hasReachedMax = old.hasReachedMax,
+        _messages = Map.from(old._messages) {
+    final newMessage = _messages[deletedReaction.messageId]
+        ?.copyWithoutReaction(deletedReaction);
+    if (newMessage != null) {
+      _messages[deletedReaction.messageId] = newMessage;
+    }
+  }
+
+  Message? getMessage(UuidType messageId) => _messages[messageId];
 
   @override
   List<Object?> get props => [messages, hasReachedMax];

@@ -10,7 +10,7 @@ class Message extends Equatable {
   final DateTime updatedAt;
   final bool isImage;
   final UuidType id;
-  final List<Reaction> reactions;
+  final Set<Reaction> reactions;
 
   bool get updated => updatedAt != createdAt;
 
@@ -18,12 +18,35 @@ class Message extends Equatable {
       {required this.user,
       required this.id,
       required this.message,
-      List<Reaction>? reactions,
+      Set<Reaction>? reactions,
       required this.isImage,
       required this.createdAt,
       required this.updatedAt})
-      : reactions = reactions ?? const [];
+      : reactions = reactions ?? const {};
 
   @override
   List<Object?> get props => [id, reactions];
+
+  Message copyWithNewReaction(Reaction newReaction) {
+    return Message(
+        user: user,
+        id: id,
+        message: message,
+        isImage: isImage,
+        createdAt: createdAt,
+        reactions: {...reactions, newReaction},
+        updatedAt: updatedAt);
+  }
+
+  Message copyWithoutReaction(Reaction removedReaction) {
+    return Message(
+        user: user,
+        id: id,
+        message: message,
+        isImage: isImage,
+        createdAt: createdAt,
+        reactions: reactions
+          ..removeWhere((reaction) => reaction.id == removedReaction.id),
+        updatedAt: updatedAt);
+  }
 }

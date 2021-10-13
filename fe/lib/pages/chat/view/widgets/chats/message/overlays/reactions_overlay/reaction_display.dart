@@ -5,8 +5,7 @@ import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter/material.dart';
-import 'package:fe/gql/react_to_message.req.gql.dart';
-import 'package:fe/gql/unreact_to_mesage.req.gql.dart';
+import 'package:fe/gql/upsert_reaction.req.gql.dart';
 
 import '../../../../../../../../service_locator.dart';
 
@@ -132,21 +131,15 @@ class _ReactionDisplayState extends State<ReactionDisplay>
 
   Future<void> _onReacted() async {
     try {
-      if (widget._selfReacted) {
-        await _authGqlClient
-            .request(GUnreactToMessageReq((g) => g
-              ..vars.messageId = widget._messageId
-              ..vars.selfId = widget._userId
-              ..vars.reaction = widget._reactionType.gql))
-            .first;
-      } else {
-        await _authGqlClient
-            .request(GReactToMessageReq((g) => g
-              ..vars.messageId = widget._messageId
-              ..vars.selfId = widget._userId
-              ..vars.reaction = widget._reactionType.gql))
-            .first;
-      }
+      final resp = await _authGqlClient
+          .request(GUpsertReactionReq((q) => q
+            ..vars.deleted = widget._selfReacted
+            ..vars.messageId = widget._messageId
+            ..vars.selfId = widget._userId
+            ..vars.reaction = widget._reactionType.gql))
+          .first;
+
+      print(resp.insert_message_reactions_one?.deleted);
     } on Failure catch (f) {
       _handler.handleFailure(f, context,
           withPrefix: 'failed reacting to message');

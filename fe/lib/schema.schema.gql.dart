@@ -873,11 +873,14 @@ abstract class Gmessage_reactions_bool_exp
   Gmessage_reactions_bool_exp? get G_not;
   @BuiltValueField(wireName: '_or')
   BuiltList<Gmessage_reactions_bool_exp>? get G_or;
+  Gtimestamptz_comparison_exp? get created_at;
+  GBoolean_comparison_exp? get deleted;
   Guuid_comparison_exp? get id;
   Gmessages_bool_exp? get message;
   Guuid_comparison_exp? get message_id;
   Gmessage_reaction_types_bool_exp? get message_reaction_type;
   Gmessage_reaction_types_enum_comparison_exp? get reaction_type;
+  Gtimestamptz_comparison_exp? get updated_at;
   Gusers_bool_exp? get user;
   Guuid_comparison_exp? get user_id;
   static Serializer<Gmessage_reactions_bool_exp> get serializer =>
@@ -913,11 +916,14 @@ abstract class Gmessage_reactions_insert_input
           [Function(Gmessage_reactions_insert_inputBuilder b) updates]) =
       _$Gmessage_reactions_insert_input;
 
+  DateTime? get created_at;
+  bool? get deleted;
   _i2.UuidType? get id;
   Gmessages_obj_rel_insert_input? get message;
   _i2.UuidType? get message_id;
   Gmessage_reaction_types_obj_rel_insert_input? get message_reaction_type;
   Gmessage_reaction_types_enum? get reaction_type;
+  DateTime? get updated_at;
   Gusers_obj_rel_insert_input? get user;
   _i2.UuidType? get user_id;
   static Serializer<Gmessage_reactions_insert_input> get serializer =>
@@ -940,8 +946,10 @@ abstract class Gmessage_reactions_max_order_by
           [Function(Gmessage_reactions_max_order_byBuilder b) updates]) =
       _$Gmessage_reactions_max_order_by;
 
+  Gorder_by? get created_at;
   Gorder_by? get id;
   Gorder_by? get message_id;
+  Gorder_by? get updated_at;
   Gorder_by? get user_id;
   static Serializer<Gmessage_reactions_max_order_by> get serializer =>
       _$gmessageReactionsMaxOrderBySerializer;
@@ -963,8 +971,10 @@ abstract class Gmessage_reactions_min_order_by
           [Function(Gmessage_reactions_min_order_byBuilder b) updates]) =
       _$Gmessage_reactions_min_order_by;
 
+  Gorder_by? get created_at;
   Gorder_by? get id;
   Gorder_by? get message_id;
+  Gorder_by? get updated_at;
   Gorder_by? get user_id;
   static Serializer<Gmessage_reactions_min_order_by> get serializer =>
       _$gmessageReactionsMinOrderBySerializer;
@@ -1007,11 +1017,14 @@ abstract class Gmessage_reactions_order_by
           [Function(Gmessage_reactions_order_byBuilder b) updates]) =
       _$Gmessage_reactions_order_by;
 
+  Gorder_by? get created_at;
+  Gorder_by? get deleted;
   Gorder_by? get id;
   Gmessages_order_by? get message;
   Gorder_by? get message_id;
   Gmessage_reaction_types_order_by? get message_reaction_type;
   Gorder_by? get reaction_type;
+  Gorder_by? get updated_at;
   Gusers_order_by? get user;
   Gorder_by? get user_id;
   static Serializer<Gmessage_reactions_order_by> get serializer =>
@@ -1050,6 +1063,12 @@ abstract class Gmessage_reactions_pk_columns_input
 class Gmessage_reactions_select_column extends EnumClass {
   const Gmessage_reactions_select_column._(String name) : super(name);
 
+  static const Gmessage_reactions_select_column created_at =
+      _$gmessageReactionsSelectColumncreated_at;
+
+  static const Gmessage_reactions_select_column deleted =
+      _$gmessageReactionsSelectColumndeleted;
+
   static const Gmessage_reactions_select_column id =
       _$gmessageReactionsSelectColumnid;
 
@@ -1058,6 +1077,9 @@ class Gmessage_reactions_select_column extends EnumClass {
 
   static const Gmessage_reactions_select_column reaction_type =
       _$gmessageReactionsSelectColumnreaction_type;
+
+  static const Gmessage_reactions_select_column updated_at =
+      _$gmessageReactionsSelectColumnupdated_at;
 
   static const Gmessage_reactions_select_column user_id =
       _$gmessageReactionsSelectColumnuser_id;
@@ -1080,9 +1102,12 @@ abstract class Gmessage_reactions_set_input
           [Function(Gmessage_reactions_set_inputBuilder b) updates]) =
       _$Gmessage_reactions_set_input;
 
+  DateTime? get created_at;
+  bool? get deleted;
   _i2.UuidType? get id;
   _i2.UuidType? get message_id;
   Gmessage_reaction_types_enum? get reaction_type;
+  DateTime? get updated_at;
   _i2.UuidType? get user_id;
   static Serializer<Gmessage_reactions_set_input> get serializer =>
       _$gmessageReactionsSetInputSerializer;
@@ -1096,6 +1121,12 @@ abstract class Gmessage_reactions_set_input
 class Gmessage_reactions_update_column extends EnumClass {
   const Gmessage_reactions_update_column._(String name) : super(name);
 
+  static const Gmessage_reactions_update_column created_at =
+      _$gmessageReactionsUpdateColumncreated_at;
+
+  static const Gmessage_reactions_update_column deleted =
+      _$gmessageReactionsUpdateColumndeleted;
+
   static const Gmessage_reactions_update_column id =
       _$gmessageReactionsUpdateColumnid;
 
@@ -1104,6 +1135,9 @@ class Gmessage_reactions_update_column extends EnumClass {
 
   static const Gmessage_reactions_update_column reaction_type =
       _$gmessageReactionsUpdateColumnreaction_type;
+
+  static const Gmessage_reactions_update_column updated_at =
+      _$gmessageReactionsUpdateColumnupdated_at;
 
   static const Gmessage_reactions_update_column user_id =
       _$gmessageReactionsUpdateColumnuser_id;

@@ -1,0 +1,23 @@
+subscription GetNewReactions(
+  $threadId: uuid!,
+) {
+  message_reactions(limit: 20, order_by: {
+    updated_at: desc
+  },
+    where: {
+     	    message: {
+      thread_id: {
+        _eq: $threadId
+      } 
+    }
+    }) {
+    created_at,
+    user_id,
+    reaction_type,
+    deleted,
+    message {
+      id
+    },
+    id
+  }
+}

@@ -24,7 +24,10 @@ insert_permissions:
                   _eq: X-Hasura-User-Id
       - user_id:
           _eq: X-Hasura-User-Id
+      - deleted:
+          _eq: false
     columns:
+    - deleted
     - message_id
     - reaction_type
     - user_id
@@ -32,9 +35,12 @@ insert_permissions:
 select_permissions:
 - permission:
     columns:
+    - created_at
+    - deleted
     - id
     - message_id
     - reaction_type
+    - updated_at
     - user_id
     filter:
       message:
@@ -44,10 +50,12 @@ select_permissions:
               id:
                 _eq: X-Hasura-User-Id
   role: user
-delete_permissions:
+update_permissions:
 - permission:
+    check: {}
+    columns:
+    - deleted
     filter:
-      user:
-        id:
-          _eq: X-Hasura-User-Id
+      user_id:
+        _eq: X-Hasura-User-Id
   role: user

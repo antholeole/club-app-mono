@@ -34,19 +34,19 @@ class _ChatsState extends State<Chats> {
 
   late ScrollController _scrollController;
 
+  late MessageOverlayCubit _messsageOverlayCubit;
+
   @override
   void initState() {
-    _scrollController = context.read<MessageOverlayCubit>().scrollController;
+    _messsageOverlayCubit = context.read<MessageOverlayCubit>();
+    _scrollController = _messsageOverlayCubit.scrollController;
     _scrollController.addListener(_onScroll);
     super.initState();
   }
 
   @override
   void dispose() {
-    context
-        .read<MessageOverlayCubit>()
-        .scrollController
-        .removeListener(_onScroll);
+    _messsageOverlayCubit.scrollController.removeListener(_onScroll);
     super.dispose();
   }
 
@@ -105,7 +105,7 @@ class _ChatsState extends State<Chats> {
               );
             }
 
-            final message = messagesState.messages[i - unsents.length];
+            final message = messagesState.messages.toList()[i - unsents.length];
 
             return ChatPageMessageDisplay(
                 message: message,

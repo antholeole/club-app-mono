@@ -8,15 +8,16 @@ class Reaction extends Equatable {
   final ReactionType type;
   final UuidType id;
   final UuidType likedBy;
+  final UuidType messageId;
 
-  const Reaction({
-    required this.type,
-    required this.id,
-    required this.likedBy,
-  });
+  const Reaction(
+      {required this.type,
+      required this.id,
+      required this.likedBy,
+      required this.messageId});
 
   @override
-  List<Object?> get props => [type, id, likedBy];
+  List<Object?> get props => [type, id, likedBy, messageId];
 }
 
 extension ReactionEmoji on ReactionType {

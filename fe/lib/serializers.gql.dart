@@ -25,6 +25,14 @@ import 'package:fe/gql/get_new_messages.data.gql.dart'
         GGetNewMessagesData_messages_user;
 import 'package:fe/gql/get_new_messages.req.gql.dart' show GGetNewMessagesReq;
 import 'package:fe/gql/get_new_messages.var.gql.dart' show GGetNewMessagesVars;
+import 'package:fe/gql/get_new_reactions.data.gql.dart'
+    show
+        GGetNewReactionsData,
+        GGetNewReactionsData_message_reactions,
+        GGetNewReactionsData_message_reactions_message;
+import 'package:fe/gql/get_new_reactions.req.gql.dart' show GGetNewReactionsReq;
+import 'package:fe/gql/get_new_reactions.var.gql.dart'
+    show GGetNewReactionsVars;
 import 'package:fe/gql/get_or_create_dm.data.gql.dart'
     show GGetOrCreateDmData, GGetOrCreateDmData_get_or_create_dm;
 import 'package:fe/gql/get_or_create_dm.req.gql.dart' show GGetOrCreateDmReq;
@@ -104,10 +112,6 @@ import 'package:fe/gql/query_verify_self_in_thread.req.gql.dart'
     show GQueryVerifySelfInThreadReq;
 import 'package:fe/gql/query_verify_self_in_thread.var.gql.dart'
     show GQueryVerifySelfInThreadVars;
-import 'package:fe/gql/react_to_message.data.gql.dart'
-    show GReactToMessageData, GReactToMessageData_insert_message_reactions_one;
-import 'package:fe/gql/react_to_message.req.gql.dart' show GReactToMessageReq;
-import 'package:fe/gql/react_to_message.var.gql.dart' show GReactToMessageVars;
 import 'package:fe/gql/refresh.data.gql.dart'
     show GRefreshData, GRefreshData_refresh_access_token;
 import 'package:fe/gql/refresh.req.gql.dart' show GRefreshReq;
@@ -120,14 +124,6 @@ import 'package:fe/gql/remove_self_from_group.req.gql.dart'
     show GRemoveSelfFromGroupReq;
 import 'package:fe/gql/remove_self_from_group.var.gql.dart'
     show GRemoveSelfFromGroupVars;
-import 'package:fe/gql/unreact_to_mesage.data.gql.dart'
-    show
-        GUnreactToMessageData,
-        GUnreactToMessageData_delete_message_reactions_by_pk;
-import 'package:fe/gql/unreact_to_mesage.req.gql.dart'
-    show GUnreactToMessageReq;
-import 'package:fe/gql/unreact_to_mesage.var.gql.dart'
-    show GUnreactToMessageVars;
 import 'package:fe/gql/update_self_name.data.gql.dart'
     show GUpdateSelfNameData, GUpdateSelfNameData_update_users_by_pk;
 import 'package:fe/gql/update_self_name.req.gql.dart' show GUpdateSelfNameReq;
@@ -140,6 +136,10 @@ import 'package:fe/gql/upsert_group_join_token.req.gql.dart'
     show GUpsertGroupJoinTokenReq;
 import 'package:fe/gql/upsert_group_join_token.var.gql.dart'
     show GUpsertGroupJoinTokenVars;
+import 'package:fe/gql/upsert_reaction.data.gql.dart'
+    show GUpsertReactionData, GUpsertReactionData_insert_message_reactions_one;
+import 'package:fe/gql/upsert_reaction.req.gql.dart' show GUpsertReactionReq;
+import 'package:fe/gql/upsert_reaction.var.gql.dart' show GUpsertReactionVars;
 import 'package:fe/schema.schema.gql.dart'
     show
         GBoolean_comparison_exp,
@@ -300,6 +300,11 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GGetNewMessagesData_messages_user,
   GGetNewMessagesReq,
   GGetNewMessagesVars,
+  GGetNewReactionsData,
+  GGetNewReactionsData_message_reactions,
+  GGetNewReactionsData_message_reactions_message,
+  GGetNewReactionsReq,
+  GGetNewReactionsVars,
   GGetOrCreateDmData,
   GGetOrCreateDmData_get_or_create_dm,
   GGetOrCreateDmReq,
@@ -353,10 +358,6 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GQueryVerifySelfInThreadData_threads_aggregate_aggregate,
   GQueryVerifySelfInThreadReq,
   GQueryVerifySelfInThreadVars,
-  GReactToMessageData,
-  GReactToMessageData_insert_message_reactions_one,
-  GReactToMessageReq,
-  GReactToMessageVars,
   GRefreshData,
   GRefreshData_refresh_access_token,
   GRefreshReq,
@@ -366,10 +367,6 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GRemoveSelfFromGroupReq,
   GRemoveSelfFromGroupVars,
   GString_comparison_exp,
-  GUnreactToMessageData,
-  GUnreactToMessageData_delete_message_reactions_by_pk,
-  GUnreactToMessageReq,
-  GUnreactToMessageVars,
   GUpdateSelfNameData,
   GUpdateSelfNameData_update_users_by_pk,
   GUpdateSelfNameReq,
@@ -378,6 +375,10 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GUpsertGroupJoinTokenData_insert_group_join_tokens_one,
   GUpsertGroupJoinTokenReq,
   GUpsertGroupJoinTokenVars,
+  GUpsertReactionData,
+  GUpsertReactionData_insert_message_reactions_one,
+  GUpsertReactionReq,
+  GUpsertReactionVars,
   Ggroup_base_fieldsData,
   Ggroup_base_fieldsReq,
   Ggroup_base_fieldsVars,

@@ -650,6 +650,8 @@ columns and relationships of "message_reactions"
 
 """
 type message_reactions {
+  created_at: timestamptz
+  deleted: Boolean!
   id: uuid!
 
   """An object relationship"""
@@ -659,6 +661,7 @@ type message_reactions {
   """An object relationship"""
   message_reaction_type: message_reaction_types!
   reaction_type: message_reaction_types_enum!
+  updated_at: timestamptz
 
   """An object relationship"""
   user: users!
@@ -708,11 +711,14 @@ input message_reactions_bool_exp {
   _and: [message_reactions_bool_exp!]
   _not: message_reactions_bool_exp
   _or: [message_reactions_bool_exp!]
+  created_at: timestamptz_comparison_exp
+  deleted: Boolean_comparison_exp
   id: uuid_comparison_exp
   message: messages_bool_exp
   message_id: uuid_comparison_exp
   message_reaction_type: message_reaction_types_bool_exp
   reaction_type: message_reaction_types_enum_comparison_exp
+  updated_at: timestamptz_comparison_exp
   user: users_bool_exp
   user_id: uuid_comparison_exp
 }
@@ -729,19 +735,24 @@ enum message_reactions_constraint {
 input type for inserting data into table "message_reactions"
 """
 input message_reactions_insert_input {
+  created_at: timestamptz
+  deleted: Boolean
   id: uuid
   message: messages_obj_rel_insert_input
   message_id: uuid
   message_reaction_type: message_reaction_types_obj_rel_insert_input
   reaction_type: message_reaction_types_enum
+  updated_at: timestamptz
   user: users_obj_rel_insert_input
   user_id: uuid
 }
 
 """aggregate max on columns"""
 type message_reactions_max_fields {
+  created_at: timestamptz
   id: uuid
   message_id: uuid
+  updated_at: timestamptz
   user_id: uuid
 }
 
@@ -749,15 +760,19 @@ type message_reactions_max_fields {
 order by max() on columns of table "message_reactions"
 """
 input message_reactions_max_order_by {
+  created_at: order_by
   id: order_by
   message_id: order_by
+  updated_at: order_by
   user_id: order_by
 }
 
 """aggregate min on columns"""
 type message_reactions_min_fields {
+  created_at: timestamptz
   id: uuid
   message_id: uuid
+  updated_at: timestamptz
   user_id: uuid
 }
 
@@ -765,8 +780,10 @@ type message_reactions_min_fields {
 order by min() on columns of table "message_reactions"
 """
 input message_reactions_min_order_by {
+  created_at: order_by
   id: order_by
   message_id: order_by
+  updated_at: order_by
   user_id: order_by
 }
 
@@ -792,11 +809,14 @@ input message_reactions_on_conflict {
 
 """Ordering options when selecting data from "message_reactions"."""
 input message_reactions_order_by {
+  created_at: order_by
+  deleted: order_by
   id: order_by
   message: messages_order_by
   message_id: order_by
   message_reaction_type: message_reaction_types_order_by
   reaction_type: order_by
+  updated_at: order_by
   user: users_order_by
   user_id: order_by
 }
@@ -813,6 +833,12 @@ select columns of table "message_reactions"
 """
 enum message_reactions_select_column {
   """column name"""
+  created_at
+
+  """column name"""
+  deleted
+
+  """column name"""
   id
 
   """column name"""
@@ -820,6 +846,9 @@ enum message_reactions_select_column {
 
   """column name"""
   reaction_type
+
+  """column name"""
+  updated_at
 
   """column name"""
   user_id
@@ -829,9 +858,12 @@ enum message_reactions_select_column {
 input type for updating data in table "message_reactions"
 """
 input message_reactions_set_input {
+  created_at: timestamptz
+  deleted: Boolean
   id: uuid
   message_id: uuid
   reaction_type: message_reaction_types_enum
+  updated_at: timestamptz
   user_id: uuid
 }
 
@@ -840,6 +872,12 @@ update columns of table "message_reactions"
 """
 enum message_reactions_update_column {
   """column name"""
+  created_at
+
+  """column name"""
+  deleted
+
+  """column name"""
   id
 
   """column name"""
@@ -847,6 +885,9 @@ enum message_reactions_update_column {
 
   """column name"""
   reaction_type
+
+  """column name"""
+  updated_at
 
   """column name"""
   user_id

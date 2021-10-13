@@ -1,5 +1,0 @@
-mutation UnreactToMessage($selfId: uuid!, $messageId: uuid!, $reaction: message_reaction_types_enum!) {
-  delete_message_reactions_by_pk(message_id: $messageId, user_id: $selfId, reaction_type: $reaction) {
-    id
-  }
-}
