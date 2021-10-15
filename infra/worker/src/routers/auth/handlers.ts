@@ -13,8 +13,8 @@ export const registerRoute = async (req: IActionInput<IAccessTokenRequest>): Pro
             identifier = await verifyIdTokenWithGoogle(req.input.idToken)
             break
         case 'Debug':
-            console.log(req.input.idToken)
             identifier = getFakeIdentifier(req.input.idToken)
+            break
     }
 
     let user = await getUserBySub(identifier.sub)

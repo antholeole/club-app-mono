@@ -147,18 +147,21 @@ describe('auth routes', () => {
                         sub: userSub
                     }))
 
-                    const verifyStub = jest.spyOn(authHelpers, 'verifyIdTokenWithGoogle')
+                    const verifyStub = jest.spyOn(authHelpers, 'getFakeIdentifier')
 
-                    verifyStub.mockReturnValue(Promise.resolve({
+                    verifyStub.mockReturnValue({
                         name: userName,
                         sub: userSub,
-                    }))
+                    })
 
                     await registerRoute({
                         action: 'adasd',
                         input: {
-                            identityProvider: 'Google',
-                            idToken: 'fake.id.token'
+                            identityProvider: 'Debug',
+                            idToken: JSON.stringify({
+                                'name': 'hi',
+                                'sub': 'blah'
+                            })
                         },
                         session_variables: {}
                     })
