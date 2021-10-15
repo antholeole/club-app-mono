@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fe/services/clients/gql_client/gql_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,11 +14,11 @@ void stubGqlResponse<TData, TVars>(GqlClient client,
 
   if (data != null) {
     when(() => client.request(any(that: requestMatcher))).thenAnswer(
-        (invocation) => Stream.fromIterable([data.call(invocation)]));
+        (invocation) => Stream<TData>.fromIterable([data.call(invocation)]));
   }
 
   if (error != null) {
     when(() => client.request(any(that: requestMatcher)))
-        .thenAnswer((invocation) => throw error(invocation));
+        .thenAnswer((invocation) => Stream<TData>.error(error(invocation)));
   }
 }

@@ -1,7 +1,6 @@
 import 'package:fe/data/models/dm.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
-import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/shared_widgets/user_avatar.dart';

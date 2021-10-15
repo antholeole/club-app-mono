@@ -105,8 +105,7 @@ void main() {
         (tester) async {
       stubGqlResponse<GQuerySelfThreadsInGroupData,
               GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
-          data: (_) =>
-              GQuerySelfThreadsInGroupData.fromJson({'group_threads': []})!);
+          data: (_) => GQuerySelfThreadsInGroupData.fromJson({'threads': []})!);
 
       await tester.pumpApp(build());
       await show(tester);
@@ -120,8 +119,7 @@ void main() {
         (tester) async {
       stubGqlResponse<GQuerySelfThreadsInGroupData,
               GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
-          data: (_) =>
-              GQuerySelfThreadsInGroupData.fromJson({'group_threads': []})!);
+          data: (_) => GQuerySelfThreadsInGroupData.fromJson({'threads': []})!);
 
       await tester.pumpApp(build());
       await show(tester);
@@ -160,7 +158,7 @@ void main() {
       stubGqlResponse<GQuerySelfThreadsInGroupData,
               GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
           data: (_) => GQuerySelfThreadsInGroupData.fromJson({
-                'group_threads': [
+                'threads': [
                   {
                     'name': thread1Name,
                     'id': '348af35f-4444-494b-a980-c0a420384c61'
@@ -176,6 +174,8 @@ void main() {
       await show(tester);
       await tester.pump();
 
+      debugDumpApp();
+
       await expectLater(find.text(thread1Name), findsOneWidget);
       await expectLater(find.text(thread2Name), findsOneWidget);
 
@@ -189,7 +189,7 @@ void main() {
       stubGqlResponse<GQuerySelfThreadsInGroupData,
               GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
           data: (_) => GQuerySelfThreadsInGroupData.fromJson({
-                'group_threads': [
+                'threads': [
                   fakeThread.toJson(),
                   {
                     'name': 'fake name 2',

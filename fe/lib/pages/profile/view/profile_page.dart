@@ -1,4 +1,3 @@
-import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/pages/profile/cubit/name_change_cubit.dart';

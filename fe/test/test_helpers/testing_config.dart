@@ -7,9 +7,6 @@ class TestingConfig extends Config {
       : _needAutoEvents = needAutoEvents;
 
   @override
-  bool get playTaxingAnimations => true;
-
-  @override
   bool get refreshLocalCacheOnReload => true;
 
   @override

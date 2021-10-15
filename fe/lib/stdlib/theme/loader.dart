@@ -1,9 +1,6 @@
-import 'package:fe/config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
-import '../../service_locator.dart';
 
 class Loader extends StatefulWidget {
   final double _size;

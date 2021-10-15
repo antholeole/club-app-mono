@@ -86,7 +86,7 @@ void main() {
                 GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
             requestMatcher: isA<GQuerySelfThreadsInGroupReq>(),
             data: (_) => GQuerySelfThreadsInGroupData.fromJson({
-                  'group_threads': [
+                  'threads': [
                     fakeThread.toJson(),
                     {
                       'name': 'thread2',
@@ -126,7 +126,7 @@ void main() {
                 GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
             requestMatcher: isA<GQuerySelfThreadsInGroupReq>(),
             data: (_) => GQuerySelfThreadsInGroupData.fromJson({
-                  'group_threads': [
+                  'threads': [
                     fakeThread.toJson(),
                     {
                       'name': 'thread2',
@@ -166,7 +166,7 @@ void main() {
                 GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
             requestMatcher: isA<GQuerySelfThreadsInGroupReq>(),
             data: (_) => GQuerySelfThreadsInGroupData.fromJson({
-                  'group_threads': [
+                  'threads': [
                     fakeThread.toJson(),
                     {
                       'name': 'thread2',
@@ -200,7 +200,7 @@ void main() {
                 GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
             requestMatcher: isA<GQuerySelfThreadsInGroupReq>(),
             data: (_) => GQuerySelfThreadsInGroupData.fromJson({
-                  'group_threads': [
+                  'threads': [
                     fakeThread.toJson(),
                     {
                       'name': 'thread2',

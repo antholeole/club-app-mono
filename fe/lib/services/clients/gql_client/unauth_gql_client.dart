@@ -1,4 +1,3 @@
-import 'package:fe/stdlib/errors/handler.dart';
 import 'package:ferry/ferry.dart';
 import 'package:gql_http_link/gql_http_link.dart';
 import 'package:http/http.dart' as http;
