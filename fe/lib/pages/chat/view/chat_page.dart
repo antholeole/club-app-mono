@@ -51,7 +51,6 @@ class ChatPage extends StatelessWidget {
               onTap: () => context.read<PageCubit>().bottomSheet(context),
               child: ClubChatTitle(
                 thread: thread,
-                shouldBeOpen: context.read<PageCubit>().isClosed,
                 onClick: () => context.read<PageCubit>().bottomSheet(context),
               )));
     } else {
