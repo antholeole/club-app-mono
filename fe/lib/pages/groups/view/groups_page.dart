@@ -1,7 +1,7 @@
 import 'package:fe/data/models/club.dart';
 import 'package:fe/data/models/dm.dart';
 import 'package:fe/data/models/user.dart';
-import 'package:fe/pages/groups/view/cubit/group_req_cubit.dart';
+import 'package:fe/pages/groups/cubit/group_req_cubit.dart';
 import 'package:fe/pages/groups/view/widgets/groups_tabs/club/club_tab.dart';
 import 'package:fe/pages/groups/view/widgets/groups_tabs/dm/dm_tab.dart';
 import 'package:fe/pages/groups/view/widgets/groups_tabs/groups_tab.dart';

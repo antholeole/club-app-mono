@@ -1,5 +1,5 @@
 import 'package:fe/data/models/club.dart';
-import 'package:fe/pages/groups/view/cubit/group_req_cubit.dart';
+import 'package:fe/pages/groups/cubit/group_req_cubit.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
@@ -17,20 +17,13 @@ import 'package:fe/gql/remove_self_from_group.var.gql.dart';
 
 import '../../../../../service_locator.dart';
 
-class LeaveGroupButton extends StatefulWidget {
+class LeaveGroupButton extends StatelessWidget {
+  final _gqlClient = getIt<AuthGqlClient>();
+
   @visibleForTesting
   static const String LEAVE_GROUP = 'leave group';
 
-  const LeaveGroupButton({Key? key}) : super(key: key);
-
-  @override
-  _LeaveGroupButtonState createState() => _LeaveGroupButtonState();
-}
-
-class _LeaveGroupButtonState extends State<LeaveGroupButton> {
-  final _gqlClient = getIt<AuthGqlClient>();
-
-  bool leaving = false;
+  LeaveGroupButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -43,16 +36,13 @@ class _LeaveGroupButtonState extends State<LeaveGroupButton> {
           message: "Are you sure you'd like to leave ${group.name}?",
           expire: false,
           action: ToastAction(
-              action: () => _leaveGroup(group), actionText: 'Leave Group'))),
+              action: () => _leaveGroup(group, context),
+              actionText: 'Leave Group'))),
       color: Colors.red,
     );
   }
 
-  Future<void> _leaveGroup(Club group) async {
-    setState(() {
-      leaving = true;
-    });
-
+  Future<void> _leaveGroup(Club group, BuildContext context) async {
     try {
       await _gqlClient
           .request<GRemoveSelfFromGroupData, GRemoveSelfFromGroupVars>(
@@ -67,12 +57,6 @@ class _LeaveGroupButtonState extends State<LeaveGroupButton> {
       await context.read<MainCubit>().initalizeMainPage();
     } on Failure catch (f) {
       getIt<Handler>().handleFailure(f, context);
-
-      setState(() {
-        leaving = false;
-      });
     }
-
-    // no need to call set state here - if we left, this widget is disposed anyway
   }
 }

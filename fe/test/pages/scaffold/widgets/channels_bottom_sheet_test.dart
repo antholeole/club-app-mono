@@ -173,9 +173,6 @@ void main() {
       await tester.pumpWidget(build());
       await show(tester);
       await tester.pump();
-
-      debugDumpApp();
-
       await expectLater(find.text(thread1Name), findsOneWidget);
       await expectLater(find.text(thread2Name), findsOneWidget);
 

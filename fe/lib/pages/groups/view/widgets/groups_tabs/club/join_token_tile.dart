@@ -1,9 +1,11 @@
 import 'package:fe/data/models/club.dart';
-import 'package:fe/pages/groups/view/cubit/group_req_cubit.dart';
+import 'package:fe/pages/groups/cubit/group_req_cubit.dart';
+
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/random_string.dart';
+import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/theme/tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,14 +23,12 @@ class JoinTokenTile extends StatelessWidget {
   @visibleForTesting
   static const String NO_JOIN_TOKEN_TEXT = 'No Join Token.';
 
-  final String? _joinToken;
-
-  JoinTokenTile({String? joinToken, Key? key})
-      : _joinToken = joinToken,
-        super(key: key);
+  JoinTokenTile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final group = context.read<Club>();
+
     return Column(
       children: [
         Tile(
@@ -37,18 +37,20 @@ class JoinTokenTile extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(_joinToken ?? NO_JOIN_TOKEN_TEXT),
+                Text(group.joinToken ?? NO_JOIN_TOKEN_TEXT),
                 Row(
                   children: [
                     GestureDetector(
-                      onTap: () => _updateToken(context, delete: false),
+                      onTap: () => _updateToken(context,
+                          clubId: group.id, delete: false),
                       child: Icon(
                         Icons.refresh,
                         color: Colors.blue.shade300,
                       ),
                     ),
                     GestureDetector(
-                      onTap: () => _updateToken(context, delete: true),
+                      onTap: () =>
+                          _updateToken(context, clubId: group.id, delete: true),
                       child: Icon(
                         Icons.delete,
                         color: Colors.red.shade300,
@@ -65,14 +67,12 @@ class JoinTokenTile extends StatelessWidget {
   }
 
   Future<void> _updateToken(BuildContext context,
-      {required bool delete}) async {
-    final group = context.read<Club>();
-
+      {required UuidType clubId, required bool delete}) async {
     try {
       await _gqlClient
           .request<GUpsertGroupJoinTokenData, GUpsertGroupJoinTokenVars>(
               GUpsertGroupJoinTokenReq((q) => q
-                ..vars.group_id = group.id
+                ..vars.group_id = clubId
                 ..vars.new_token = delete ? null : generateRandomString(10)))
           .first;
       context.read<GroupReqCubit>().refresh();

@@ -20,11 +20,8 @@ class GroupSettings extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         const Users(),
-        if (group.admin)
-          JoinTokenTile(
-            joinToken: group.joinToken,
-          ),
-        const LeaveGroupButton(),
+        if (group.admin) JoinTokenTile(),
+        LeaveGroupButton(),
       ],
     );
   }

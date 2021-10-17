@@ -2,6 +2,8 @@ import 'package:fe/data/models/dm.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
+import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/shared_widgets/user_avatar.dart';
 import 'package:fe/stdlib/theme/tile.dart';
@@ -44,14 +46,18 @@ class UserTile extends StatelessWidget {
   }
 
   Future<void> _createNewDm(UuidType withUser, BuildContext context) async {
-    final thread = await _gqlClient
-        .request(GGetOrCreateDmReq((q) => q..vars.withUserId = withUser))
-        .first;
+    try {
+      final thread = await _gqlClient
+          .request(GGetOrCreateDmReq((q) => q..vars.withUserId = withUser))
+          .first;
 
-    context
-        .read<MainCubit>()
-        .setDm(Dm(id: thread.get_or_create_dm!.id, users: [_user]));
+      context
+          .read<MainCubit>()
+          .setDm(Dm(id: thread.get_or_create_dm!.id, users: [_user]));
 
-    Navigator.of(context).pop();
+      Navigator.of(context).pop();
+    } on Failure catch (f) {
+      getIt<Handler>().handleFailure(f, context);
+    }
   }
 }

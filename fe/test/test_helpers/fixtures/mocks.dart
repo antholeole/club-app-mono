@@ -4,6 +4,7 @@ import 'package:fe/data/json/backend_access_tokens.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/chat/bloc/chat_bloc.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
+import 'package:fe/pages/groups/cubit/group_req_cubit.dart';
 import 'package:fe/pages/login/cubit/login_cubit.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/pages/profile/cubit/name_change_cubit.dart';
@@ -31,6 +32,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fe/gql/query_self_groups.req.gql.dart';
 import 'package:http/http.dart' as http;
 
 class FakeBuildContext extends Fake implements BuildContext {}
@@ -132,6 +134,20 @@ class MockMainCubit extends MockCubit<MainState> implements MainCubit {
 }
 
 class MockMainState extends Fake implements MainState {}
+
+class MockGroupReqCubit extends MockCubit<GQuerySelfGroupsReq>
+    implements GroupReqCubit {
+  MockGroupReqCubit._();
+
+  factory MockGroupReqCubit.getMock() {
+    registerFallbackValue(
+        GQuerySelfGroupsReq((q) => q..vars.selfId = UuidType.generate()));
+
+    final cubit = MockGroupReqCubit._();
+
+    return cubit;
+  }
+}
 
 class MockChatBottomSheetCubit extends MockCubit<bool>
     implements ChatBottomSheetCubit {

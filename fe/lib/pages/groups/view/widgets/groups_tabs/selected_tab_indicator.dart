@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 class SelectedTabIndicator extends StatelessWidget {
-  final bool _selected;
+  @visibleForTesting
+  final bool selected;
   final double _height;
 
   const SelectedTabIndicator(
-      {Key? key, required double height, required bool selected})
+      {Key? key, required double height, required this.selected})
       : _height = height,
-        _selected = selected,
         super(key: key);
 
   @override
@@ -15,7 +15,7 @@ class SelectedTabIndicator extends StatelessWidget {
     return Container(
       width: 4,
       height: _height,
-      color: _selected ? Colors.redAccent.shade100 : Colors.transparent,
+      color: selected ? Colors.redAccent.shade100 : Colors.transparent,
     );
   }
 }
