@@ -24,10 +24,7 @@ class MessageOptions extends StatelessWidget {
     for (int i = 0; i < _options.length; i++) {
       late BorderRadiusGeometry borderRadius;
 
-      if (i == 0 && i == _options.length - 1) {
-        borderRadius = const BorderRadius.all(
-            Radius.circular(MessageOptionsOverlay.BORDER_RADIUS));
-      } else if (i == 0) {
+      if (i == 0) {
         borderRadius = const BorderRadius.vertical(
             top: Radius.circular(MessageOptionsOverlay.BORDER_RADIUS));
       } else if (i == _options.length - 1) {

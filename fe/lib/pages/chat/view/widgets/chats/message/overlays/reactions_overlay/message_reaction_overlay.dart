@@ -117,10 +117,6 @@ class _MessageReactionOverlayState extends State<MessageReactionOverlay>
   }
 
   void _onScroll() {
-    final leaderLayer = widget._link.leader;
-    if (leaderLayer == null) {
-      widget._dismissSelf();
-      return;
-    }
+    widget._dismissSelf();
   }
 }

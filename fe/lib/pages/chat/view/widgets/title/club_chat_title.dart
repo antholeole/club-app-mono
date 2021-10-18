@@ -20,7 +20,7 @@ class ClubChatTitle extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.balcony, color: Colors.transparent),
+          Container(),
           ChatTitle(
             thread: _thread,
           ),
