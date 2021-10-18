@@ -346,3 +346,5 @@ class _Caller {
 
 //allows us to pass in arbitrary methods, verifying that this was called
 class MockCaller extends Mock implements _Caller {}
+
+class MockScrollController extends Mock implements ScrollController {}
