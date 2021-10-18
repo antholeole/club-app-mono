@@ -25,7 +25,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:fe/gql/query_self_groups.data.gql.dart';
 import 'package:fe/gql/query_self_groups.var.gql.dart';
 
-import '../../../test_helpers/stub_cubit_stream.dart';
+import '../../../test_helpers/stub_bloc_stream.dart';
 import '../../../test_helpers/stub_gql_response.dart';
 
 void main() {

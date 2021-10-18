@@ -38,17 +38,17 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ChatBloc({required ThreadCubit threadCubit})
       : _threadCubit = threadCubit,
         super(ChatState.loading()) {
-    on<RetryEvent>((_, emit) => _retry(emit));
     on<FetchMessagesEvent>((event, emit) => _fetchMessages(emit),
         transformer: droppable());
-
-    on<_ThreadChangeEvent>((event, emit) => _switchThread(emit));
-    _threadCubit.stream.listen((event) => add(_ThreadChangeEvent()));
+    on<ThreadChangeEvent>((event, emit) => _switchThread(emit));
+    _threadCubit.stream.listen((event) => add(ThreadChangeEvent()));
     on<_NewMessageEvent>((event, emit) => emit(ChatState.fetchedMessages(
         FetchedMessages.withNewMessage(
             old: state.join((fm) => fm, (_) => null, (_) => null, (_) => null)!,
             newMessage: event.newMessage))));
     on<_UpdatedReactionEvent>(_handleUpdatedReaction);
+
+    add(ThreadChangeEvent());
   }
 
   Stream<_UpdatedReactionEvent> _newReactionsStream(UuidType threadId) async* {
@@ -70,12 +70,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           continue;
         }
 
-        if (reactionData.deleted &&
-            message.reactions.lookup(reaction) != null) {
+        if (reactionData.deleted && message.reactions.contains(reaction)) {
           yield _UpdatedReactionEvent(
               updatedReaction: reaction, deleted: reactionData.deleted);
         } else if (!reactionData.deleted &&
-            message.reactions.lookup(reaction) == null) {
+            !message.reactions.contains(reaction)) {
           yield _UpdatedReactionEvent(
               updatedReaction: reaction, deleted: reactionData.deleted);
         }
@@ -185,28 +184,23 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   Future<void> _switchThread(Emitter<ChatState> emit) async {
     final newThread = _threadCubit.state.thread;
-    emit(ChatState.loading());
+
+    _subscriptions.clear();
 
     if (newThread == null) {
       emit(ChatState.noThread());
       return;
     }
 
+    emit(ChatState.loading());
+
     await _fetchMessages(emit);
 
-    // ignore: unawaited_futures
-    Future.wait(_subscriptions.map((e) => e.cancel()));
-
-    _subscriptions.clear();
     _subscriptions.addAll([
       _newMessageStream(newThread.id).listen(
           (newMessage) => add(_NewMessageEvent(newMessage: newMessage))),
       _newReactionsStream(newThread.id)
           .listen((updatedReactionEvent) => add(updatedReactionEvent))
     ]);
-  }
-
-  Future<void> _retry(Emitter<ChatState> emit) async {
-    await _switchThread(emit);
   }
 }

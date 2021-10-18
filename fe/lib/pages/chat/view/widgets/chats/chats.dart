@@ -134,7 +134,7 @@ class _ChatsState extends State<Chats> {
         ),
         PillButton(
           text: 'retry',
-          onClick: () => context.read<ChatBloc>().add(const RetryEvent()),
+          onClick: () => context.read<ChatBloc>().add(ThreadChangeEvent()),
           icon: Icons.refresh,
         ),
       ],

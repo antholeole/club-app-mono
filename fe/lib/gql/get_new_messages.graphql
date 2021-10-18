@@ -10,7 +10,7 @@ subscription GetNewMessages(
         _eq: $threadId,
       },
     },
-    limit: 20
+    limit: 10
   ) {
    created_at,
     message,

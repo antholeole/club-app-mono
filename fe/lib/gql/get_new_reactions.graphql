@@ -1,11 +1,11 @@
 subscription GetNewReactions(
   $threadId: uuid!,
 ) {
-  message_reactions(limit: 20, order_by: {
+  message_reactions(limit: 5, order_by: {
     updated_at: desc
   },
     where: {
-     	    message: {
+     	message: {
       thread_id: {
         _eq: $threadId
       } 

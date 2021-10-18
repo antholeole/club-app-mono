@@ -16,7 +16,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../../test_helpers/fixtures/mocks.dart';
 import '../../../test_helpers/get_it_helpers.dart';
 import '../../../test_helpers/pump_app.dart';
-import '../../../test_helpers/stub_cubit_stream.dart';
+import '../../../test_helpers/stub_bloc_stream.dart';
 import '../../../test_helpers/stub_gql_response.dart';
 
 void main() {

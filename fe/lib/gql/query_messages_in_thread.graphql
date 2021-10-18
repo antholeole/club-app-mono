@@ -26,9 +26,6 @@ query QueryMessagesInThread(
   	message_reactions {
       reaction_type,
       id,
-      message_reaction_type {
-        reaction_type
-      },
       user {
         id,
         name
