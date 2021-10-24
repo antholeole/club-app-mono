@@ -8,10 +8,14 @@ import 'package:flutter/material.dart';
 import '../../service_locator.dart';
 
 class GqlOperation<TData, TVars> extends StatefulWidget {
+  //overrides the lookup context in contexts where widget in inserted
+  //in the tree where it cannot access the main cubits.
+  final BuildContext? _providerReadableContext;
   final OperationRequest<TData, TVars>? operationRequest;
   final Widget? loader;
   final String? errorText;
   final Widget? error;
+
   final Widget Function(TData) onResponse;
 
   const GqlOperation(
@@ -19,7 +23,9 @@ class GqlOperation<TData, TVars> extends StatefulWidget {
       required this.onResponse,
       this.loader,
       this.error,
-      this.errorText});
+      BuildContext? providerReadableContext,
+      this.errorText})
+      : _providerReadableContext = providerReadableContext;
 
   @override
   _GqlOperationState<TData, TVars> createState() =>
@@ -46,39 +52,44 @@ class _GqlOperationState<TData, TVars>
       return _buildLoader();
     }
 
-    return FutureBuilder<TData>(
-      future: widget.operationRequest != null
-          ? _client.request(widget.operationRequest!)
-          : null,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
-          return _buildLoader();
-        }
+    return StreamBuilder<TData>(
+        stream: widget.operationRequest != null
+            ? _client.request(widget.operationRequest!)
+            : null,
+        builder: _builder);
+  }
 
-        if (snapshot.error is Failure) {
-          _handler.handleFailure(snapshot.error as Failure, context,
-              withPrefix: widget.errorText);
+  Widget _builder(BuildContext context, AsyncSnapshot<TData> snapshot) {
+    if (snapshot.connectionState != ConnectionState.active &&
+        snapshot.connectionState != ConnectionState.done) {
+      return _buildLoader();
+    }
 
-          return _resultFromCache != null
-              ? widget.onResponse(_resultFromCache!)
-              : widget.error ??
-                  Text(
-                    widget.errorText ?? 'error',
-                    style: const TextStyle(color: Colors.red),
-                  );
-        }
+    if (snapshot.error is Failure) {
+      _handler.handleFailure(
+          snapshot.error as Failure, widget._providerReadableContext ?? context,
+          withPrefix: widget.errorText);
 
-        final response = snapshot.data;
-        _resultFromCache = response;
-        return widget.onResponse(response!);
-      },
-    );
+      return _resultFromCache != null
+          ? widget.onResponse(_resultFromCache!)
+          : widget.error ??
+              Text(
+                widget.errorText ?? 'error',
+                style: const TextStyle(color: Colors.red),
+              );
+    }
+
+    final response = snapshot.data;
+    _resultFromCache = response;
+    return widget.onResponse(response!);
   }
 
   Widget _buildLoader() {
-    return widget.loader ??
-        const Loader(
-          size: 12,
-        );
+    return Center(
+      child: widget.loader ??
+          const Loader(
+            size: 12,
+          ),
+    );
   }
 }

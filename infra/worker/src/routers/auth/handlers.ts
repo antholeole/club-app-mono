@@ -13,8 +13,8 @@ export const registerRoute = async (req: IActionInput<IAccessTokenRequest>): Pro
             identifier = await verifyIdTokenWithGoogle(req.input.idToken)
             break
         case 'Debug':
-            console.log(req.input.idToken)
             identifier = getFakeIdentifier(req.input.idToken)
+            break
     }
 
     let user = await getUserBySub(identifier.sub)
@@ -51,7 +51,7 @@ export const refreshRoute = async (input: IActionInput<IRefreshRequest>): Promis
     }
 
     if (new TextDecoder().decode(decryptedHash) === input.input.refreshToken) {
-        return new Response(generateAccessToken(input.input.userId))
+        return json({ accessToken: generateAccessToken(input.input.userId) })
     } else {
         throw new StatusError(402, `invalid refresh token ${input.input.refreshToken}`) //returns 402 to avoid loop
     }

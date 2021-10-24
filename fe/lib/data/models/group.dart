@@ -1,23 +1,12 @@
 import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:fe/stdlib/helpers/uuid_type.dart';
 
-import '../../stdlib/helpers/uuid_type.dart';
-
-part 'group.g.dart';
-
-@JsonSerializable()
-@CustomUuidConverter()
 class Group extends Equatable {
-  final UuidType id;
   final String name;
-  final bool admin;
+  final UuidType id;
 
-  const Group({required this.id, required this.name, required this.admin});
-
-  factory Group.fromJson(Map<String, dynamic> json) => _$GroupFromJson(json);
-
-  Map<String, dynamic> toJson() => _$GroupToJson(this);
+  const Group({required this.name, required this.id});
 
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [name, id];
 }

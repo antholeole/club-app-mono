@@ -9,6 +9,7 @@ import 'package:fe/gql/refresh.req.gql.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 import 'local_file_store.dart';
 import 'local_user_service.dart';
@@ -51,27 +52,42 @@ class TokenManager {
     return serializedToken;
   }
 
+  /// returns true if the token is valid with some buffer time.
+  /// required in siutations where there is no bounce back if the token
+  /// is expired (i.e. WS connection)
+  Future<bool> tokenIsValid() async {
+    final token = await read();
+
+    if (token == null) {
+      return false;
+    } else {
+      return JwtDecoder.getRemainingTime(token).inSeconds > 10;
+    }
+  }
+
   Future<String> refresh() async {
     final refreshToken = await _refreshToken;
 
     UuidType userId = await _localUserService.getLoggedInUserId();
 
     if (refreshToken == null) {
-      throw const Failure(status: FailureStatus.RefreshFail);
+      throw Failure(status: FailureStatus.RefreshFail);
     }
 
     try {
-      final resp = await _unauthClient.request(GRefreshReq((q) => q
-        ..vars.userId = userId
-        ..vars.refreshToken = refreshToken
-        ..fetchPolicy = FetchPolicy.NetworkOnly));
+      final resp = await _unauthClient
+          .request(GRefreshReq((q) => q
+            ..vars.userId = userId
+            ..vars.refreshToken = refreshToken
+            ..fetchPolicy = FetchPolicy.NetworkOnly))
+          .first;
 
-      final token = resp.authenticate!.accessToken;
+      final token = resp.refresh_access_token!.accessToken;
 
       await _writeAccessToken(token);
       return token;
     } on Failure catch (_) {
-      throw const Failure(status: FailureStatus.RefreshFail);
+      throw Failure(status: FailureStatus.RefreshFail);
     }
   }
 

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:connectivity/connectivity.dart';
 import 'package:fe/config.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
@@ -22,12 +24,12 @@ class Handler {
 
   Future<Failure?> checkConnectivity() async {
     if (!(await isConnected())) {
-      return const Failure(status: FailureStatus.NoConn);
+      return Failure(status: FailureStatus.NoConn);
     }
 
     final hasServerConnection = await this.hasServerConnection();
     if (!hasServerConnection) {
-      return const Failure(status: FailureStatus.ServersDown);
+      return Failure(status: FailureStatus.ServersDown);
     }
   }
 
@@ -41,18 +43,25 @@ class Handler {
   }
 
   Future<bool> hasServerConnection() async {
-    final resp = await _client
-        .get(Uri(host: _config.hasuraUrl, pathSegments: ['healthz']));
-
-    return resp.statusCode == 200;
+    try {
+      final resp = await _client.get(Uri(
+          host: _config.hasuraHost,
+          pathSegments: ['healthz'],
+          port: _config.hasuraPort,
+          scheme: _config.transportIsSecure ? 'https' : 'http'));
+      return resp.statusCode == 200;
+    } on SocketException catch (_) {
+      return false;
+    }
   }
 
   Future<Failure> basicGqlErrorHandler(OperationResponse resp) async {
     final errors = resp.graphqlErrors;
 
-    if (resp.linkException != null &&
-        resp.linkException!.originalException is Failure) {
-      return resp.linkException!.originalException;
+    if (resp.linkException != null) {
+      if (resp.linkException!.originalException is Failure) {
+        return resp.linkException!.originalException;
+      }
     }
 
     if (errors != null) {
@@ -70,7 +79,7 @@ class Handler {
       return disconnectedFailure;
     }
 
-    return const Failure(status: FailureStatus.Unknown);
+    return Failure(status: FailureStatus.Unknown);
   }
 
   void handleFailure(Failure f, BuildContext context,
@@ -78,21 +87,17 @@ class Handler {
     if (f.status.fatal) {
       context.read<MainCubit>().logOut(withError: f.message);
     } else {
-      String errorString = f.message ?? f.status.message;
+      String errorString = f.message;
 
       if (withPrefix != null) {
         errorString = withPrefix + ': ' + errorString;
       }
 
       if (toast) {
-        //if we're in a build, wait for the build tocomplete
-        //to avoid errors.
-        WidgetsBinding.instance!.addPostFrameCallback((_) {
-          context.read<ToasterCubit>().add(Toast(
-                message: errorString,
-                type: ToastType.Error,
-              ));
-        });
+        context.read<ToasterCubit>().add(Toast(
+              message: errorString,
+              type: ToastType.Error,
+            ));
       }
     }
   }

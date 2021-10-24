@@ -22,7 +22,7 @@ void main() {
   }
 
   setUp(() async {
-    resetMockCubit(mockPageCubit);
+    resetMockBloc(mockPageCubit);
     await registerAllMockServices();
   });
 

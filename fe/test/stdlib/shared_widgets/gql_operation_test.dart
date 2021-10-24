@@ -39,7 +39,8 @@ void main() {
 
       when(() =>
               getIt<AuthGqlClient>().request<GFakeGqlData, GFakeGqlVars>(any()))
-          .thenAnswer((_) async => (await respCompleter.future).data!);
+          .thenAnswer((_) =>
+              Stream.fromFuture(respCompleter.future.then((rc) => rc.data!)));
     });
 
     tearDown(() {
@@ -73,7 +74,7 @@ void main() {
   });
 
   group('on error', () {
-    const fakeFailure = Failure(status: FailureStatus.GQLMisc);
+    final fakeFailure = Failure(status: FailureStatus.GQLMisc);
 
     testWidgets('should call basic GQL error handler', (tester) async {
       stubGqlResponse<GFakeGqlData, GFakeGqlVars>(getIt<AuthGqlClient>(),

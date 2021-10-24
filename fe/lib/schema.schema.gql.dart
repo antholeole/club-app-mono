@@ -333,312 +333,6 @@ class Ggroup_join_tokens_update_column extends EnumClass {
       _$ggroupJoinTokensUpdateColumnValueOf(name);
 }
 
-abstract class Ggroup_threads_aggregate_order_by
-    implements
-        Built<Ggroup_threads_aggregate_order_by,
-            Ggroup_threads_aggregate_order_byBuilder> {
-  Ggroup_threads_aggregate_order_by._();
-
-  factory Ggroup_threads_aggregate_order_by(
-          [Function(Ggroup_threads_aggregate_order_byBuilder b) updates]) =
-      _$Ggroup_threads_aggregate_order_by;
-
-  Gorder_by? get count;
-  Ggroup_threads_max_order_by? get max;
-  Ggroup_threads_min_order_by? get min;
-  static Serializer<Ggroup_threads_aggregate_order_by> get serializer =>
-      _$ggroupThreadsAggregateOrderBySerializer;
-  Map<String, dynamic> toJson() => (_i1.serializers
-          .serializeWith(Ggroup_threads_aggregate_order_by.serializer, this)
-      as Map<String, dynamic>);
-  static Ggroup_threads_aggregate_order_by? fromJson(
-          Map<String, dynamic> json) =>
-      _i1.serializers
-          .deserializeWith(Ggroup_threads_aggregate_order_by.serializer, json);
-}
-
-abstract class Ggroup_threads_arr_rel_insert_input
-    implements
-        Built<Ggroup_threads_arr_rel_insert_input,
-            Ggroup_threads_arr_rel_insert_inputBuilder> {
-  Ggroup_threads_arr_rel_insert_input._();
-
-  factory Ggroup_threads_arr_rel_insert_input(
-          [Function(Ggroup_threads_arr_rel_insert_inputBuilder b) updates]) =
-      _$Ggroup_threads_arr_rel_insert_input;
-
-  BuiltList<Ggroup_threads_insert_input> get data;
-  Ggroup_threads_on_conflict? get on_conflict;
-  static Serializer<Ggroup_threads_arr_rel_insert_input> get serializer =>
-      _$ggroupThreadsArrRelInsertInputSerializer;
-  Map<String, dynamic> toJson() => (_i1.serializers
-          .serializeWith(Ggroup_threads_arr_rel_insert_input.serializer, this)
-      as Map<String, dynamic>);
-  static Ggroup_threads_arr_rel_insert_input? fromJson(
-          Map<String, dynamic> json) =>
-      _i1.serializers.deserializeWith(
-          Ggroup_threads_arr_rel_insert_input.serializer, json);
-}
-
-abstract class Ggroup_threads_bool_exp
-    implements Built<Ggroup_threads_bool_exp, Ggroup_threads_bool_expBuilder> {
-  Ggroup_threads_bool_exp._();
-
-  factory Ggroup_threads_bool_exp(
-          [Function(Ggroup_threads_bool_expBuilder b) updates]) =
-      _$Ggroup_threads_bool_exp;
-
-  @BuiltValueField(wireName: '_and')
-  BuiltList<Ggroup_threads_bool_exp>? get G_and;
-  @BuiltValueField(wireName: '_not')
-  Ggroup_threads_bool_exp? get G_not;
-  @BuiltValueField(wireName: '_or')
-  BuiltList<Ggroup_threads_bool_exp>? get G_or;
-  Ggroups_bool_exp? get group;
-  Guuid_comparison_exp? get group_id;
-  Guuid_comparison_exp? get id;
-  Gmessages_bool_exp? get messages;
-  GString_comparison_exp? get name;
-  Guser_to_thread_bool_exp? get user_to_threads;
-  static Serializer<Ggroup_threads_bool_exp> get serializer =>
-      _$ggroupThreadsBoolExpSerializer;
-  Map<String, dynamic> toJson() =>
-      (_i1.serializers.serializeWith(Ggroup_threads_bool_exp.serializer, this)
-          as Map<String, dynamic>);
-  static Ggroup_threads_bool_exp? fromJson(Map<String, dynamic> json) =>
-      _i1.serializers.deserializeWith(Ggroup_threads_bool_exp.serializer, json);
-}
-
-class Ggroup_threads_constraint extends EnumClass {
-  const Ggroup_threads_constraint._(String name) : super(name);
-
-  static const Ggroup_threads_constraint group_threads_pkey =
-      _$ggroupThreadsConstraintgroup_threads_pkey;
-
-  static Serializer<Ggroup_threads_constraint> get serializer =>
-      _$ggroupThreadsConstraintSerializer;
-  static BuiltSet<Ggroup_threads_constraint> get values =>
-      _$ggroupThreadsConstraintValues;
-  static Ggroup_threads_constraint valueOf(String name) =>
-      _$ggroupThreadsConstraintValueOf(name);
-}
-
-abstract class Ggroup_threads_insert_input
-    implements
-        Built<Ggroup_threads_insert_input, Ggroup_threads_insert_inputBuilder> {
-  Ggroup_threads_insert_input._();
-
-  factory Ggroup_threads_insert_input(
-          [Function(Ggroup_threads_insert_inputBuilder b) updates]) =
-      _$Ggroup_threads_insert_input;
-
-  Ggroups_obj_rel_insert_input? get group;
-  _i2.UuidType? get group_id;
-  _i2.UuidType? get id;
-  Gmessages_arr_rel_insert_input? get messages;
-  String? get name;
-  Guser_to_thread_arr_rel_insert_input? get user_to_threads;
-  static Serializer<Ggroup_threads_insert_input> get serializer =>
-      _$ggroupThreadsInsertInputSerializer;
-  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
-      Ggroup_threads_insert_input.serializer, this) as Map<String, dynamic>);
-  static Ggroup_threads_insert_input? fromJson(Map<String, dynamic> json) =>
-      _i1.serializers
-          .deserializeWith(Ggroup_threads_insert_input.serializer, json);
-}
-
-abstract class Ggroup_threads_max_order_by
-    implements
-        Built<Ggroup_threads_max_order_by, Ggroup_threads_max_order_byBuilder> {
-  Ggroup_threads_max_order_by._();
-
-  factory Ggroup_threads_max_order_by(
-          [Function(Ggroup_threads_max_order_byBuilder b) updates]) =
-      _$Ggroup_threads_max_order_by;
-
-  Gorder_by? get group_id;
-  Gorder_by? get id;
-  Gorder_by? get name;
-  static Serializer<Ggroup_threads_max_order_by> get serializer =>
-      _$ggroupThreadsMaxOrderBySerializer;
-  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
-      Ggroup_threads_max_order_by.serializer, this) as Map<String, dynamic>);
-  static Ggroup_threads_max_order_by? fromJson(Map<String, dynamic> json) =>
-      _i1.serializers
-          .deserializeWith(Ggroup_threads_max_order_by.serializer, json);
-}
-
-abstract class Ggroup_threads_min_order_by
-    implements
-        Built<Ggroup_threads_min_order_by, Ggroup_threads_min_order_byBuilder> {
-  Ggroup_threads_min_order_by._();
-
-  factory Ggroup_threads_min_order_by(
-          [Function(Ggroup_threads_min_order_byBuilder b) updates]) =
-      _$Ggroup_threads_min_order_by;
-
-  Gorder_by? get group_id;
-  Gorder_by? get id;
-  Gorder_by? get name;
-  static Serializer<Ggroup_threads_min_order_by> get serializer =>
-      _$ggroupThreadsMinOrderBySerializer;
-  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
-      Ggroup_threads_min_order_by.serializer, this) as Map<String, dynamic>);
-  static Ggroup_threads_min_order_by? fromJson(Map<String, dynamic> json) =>
-      _i1.serializers
-          .deserializeWith(Ggroup_threads_min_order_by.serializer, json);
-}
-
-abstract class Ggroup_threads_obj_rel_insert_input
-    implements
-        Built<Ggroup_threads_obj_rel_insert_input,
-            Ggroup_threads_obj_rel_insert_inputBuilder> {
-  Ggroup_threads_obj_rel_insert_input._();
-
-  factory Ggroup_threads_obj_rel_insert_input(
-          [Function(Ggroup_threads_obj_rel_insert_inputBuilder b) updates]) =
-      _$Ggroup_threads_obj_rel_insert_input;
-
-  Ggroup_threads_insert_input get data;
-  Ggroup_threads_on_conflict? get on_conflict;
-  static Serializer<Ggroup_threads_obj_rel_insert_input> get serializer =>
-      _$ggroupThreadsObjRelInsertInputSerializer;
-  Map<String, dynamic> toJson() => (_i1.serializers
-          .serializeWith(Ggroup_threads_obj_rel_insert_input.serializer, this)
-      as Map<String, dynamic>);
-  static Ggroup_threads_obj_rel_insert_input? fromJson(
-          Map<String, dynamic> json) =>
-      _i1.serializers.deserializeWith(
-          Ggroup_threads_obj_rel_insert_input.serializer, json);
-}
-
-abstract class Ggroup_threads_on_conflict
-    implements
-        Built<Ggroup_threads_on_conflict, Ggroup_threads_on_conflictBuilder> {
-  Ggroup_threads_on_conflict._();
-
-  factory Ggroup_threads_on_conflict(
-          [Function(Ggroup_threads_on_conflictBuilder b) updates]) =
-      _$Ggroup_threads_on_conflict;
-
-  Ggroup_threads_constraint get constraint;
-  BuiltList<Ggroup_threads_update_column> get update_columns;
-  Ggroup_threads_bool_exp? get where;
-  static Serializer<Ggroup_threads_on_conflict> get serializer =>
-      _$ggroupThreadsOnConflictSerializer;
-  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
-      Ggroup_threads_on_conflict.serializer, this) as Map<String, dynamic>);
-  static Ggroup_threads_on_conflict? fromJson(Map<String, dynamic> json) =>
-      _i1.serializers
-          .deserializeWith(Ggroup_threads_on_conflict.serializer, json);
-}
-
-abstract class Ggroup_threads_order_by
-    implements Built<Ggroup_threads_order_by, Ggroup_threads_order_byBuilder> {
-  Ggroup_threads_order_by._();
-
-  factory Ggroup_threads_order_by(
-          [Function(Ggroup_threads_order_byBuilder b) updates]) =
-      _$Ggroup_threads_order_by;
-
-  Ggroups_order_by? get group;
-  Gorder_by? get group_id;
-  Gorder_by? get id;
-  Gmessages_aggregate_order_by? get messages_aggregate;
-  Gorder_by? get name;
-  Guser_to_thread_aggregate_order_by? get user_to_threads_aggregate;
-  static Serializer<Ggroup_threads_order_by> get serializer =>
-      _$ggroupThreadsOrderBySerializer;
-  Map<String, dynamic> toJson() =>
-      (_i1.serializers.serializeWith(Ggroup_threads_order_by.serializer, this)
-          as Map<String, dynamic>);
-  static Ggroup_threads_order_by? fromJson(Map<String, dynamic> json) =>
-      _i1.serializers.deserializeWith(Ggroup_threads_order_by.serializer, json);
-}
-
-abstract class Ggroup_threads_pk_columns_input
-    implements
-        Built<Ggroup_threads_pk_columns_input,
-            Ggroup_threads_pk_columns_inputBuilder> {
-  Ggroup_threads_pk_columns_input._();
-
-  factory Ggroup_threads_pk_columns_input(
-          [Function(Ggroup_threads_pk_columns_inputBuilder b) updates]) =
-      _$Ggroup_threads_pk_columns_input;
-
-  _i2.UuidType get id;
-  static Serializer<Ggroup_threads_pk_columns_input> get serializer =>
-      _$ggroupThreadsPkColumnsInputSerializer;
-  Map<String, dynamic> toJson() => (_i1.serializers
-          .serializeWith(Ggroup_threads_pk_columns_input.serializer, this)
-      as Map<String, dynamic>);
-  static Ggroup_threads_pk_columns_input? fromJson(Map<String, dynamic> json) =>
-      _i1.serializers
-          .deserializeWith(Ggroup_threads_pk_columns_input.serializer, json);
-}
-
-class Ggroup_threads_select_column extends EnumClass {
-  const Ggroup_threads_select_column._(String name) : super(name);
-
-  static const Ggroup_threads_select_column group_id =
-      _$ggroupThreadsSelectColumngroup_id;
-
-  static const Ggroup_threads_select_column id = _$ggroupThreadsSelectColumnid;
-
-  @BuiltValueEnumConst(wireName: 'name')
-  static const Ggroup_threads_select_column Gname =
-      _$ggroupThreadsSelectColumnGname;
-
-  static Serializer<Ggroup_threads_select_column> get serializer =>
-      _$ggroupThreadsSelectColumnSerializer;
-  static BuiltSet<Ggroup_threads_select_column> get values =>
-      _$ggroupThreadsSelectColumnValues;
-  static Ggroup_threads_select_column valueOf(String name) =>
-      _$ggroupThreadsSelectColumnValueOf(name);
-}
-
-abstract class Ggroup_threads_set_input
-    implements
-        Built<Ggroup_threads_set_input, Ggroup_threads_set_inputBuilder> {
-  Ggroup_threads_set_input._();
-
-  factory Ggroup_threads_set_input(
-          [Function(Ggroup_threads_set_inputBuilder b) updates]) =
-      _$Ggroup_threads_set_input;
-
-  _i2.UuidType? get group_id;
-  _i2.UuidType? get id;
-  String? get name;
-  static Serializer<Ggroup_threads_set_input> get serializer =>
-      _$ggroupThreadsSetInputSerializer;
-  Map<String, dynamic> toJson() =>
-      (_i1.serializers.serializeWith(Ggroup_threads_set_input.serializer, this)
-          as Map<String, dynamic>);
-  static Ggroup_threads_set_input? fromJson(Map<String, dynamic> json) =>
-      _i1.serializers
-          .deserializeWith(Ggroup_threads_set_input.serializer, json);
-}
-
-class Ggroup_threads_update_column extends EnumClass {
-  const Ggroup_threads_update_column._(String name) : super(name);
-
-  static const Ggroup_threads_update_column group_id =
-      _$ggroupThreadsUpdateColumngroup_id;
-
-  static const Ggroup_threads_update_column id = _$ggroupThreadsUpdateColumnid;
-
-  @BuiltValueEnumConst(wireName: 'name')
-  static const Ggroup_threads_update_column Gname =
-      _$ggroupThreadsUpdateColumnGname;
-
-  static Serializer<Ggroup_threads_update_column> get serializer =>
-      _$ggroupThreadsUpdateColumnSerializer;
-  static BuiltSet<Ggroup_threads_update_column> get values =>
-      _$ggroupThreadsUpdateColumnValues;
-  static Ggroup_threads_update_column valueOf(String name) =>
-      _$ggroupThreadsUpdateColumnValueOf(name);
-}
-
 abstract class Ggroups_bool_exp
     implements Built<Ggroups_bool_exp, Ggroups_bool_expBuilder> {
   Ggroups_bool_exp._();
@@ -654,7 +348,7 @@ abstract class Ggroups_bool_exp
   BuiltList<Ggroups_bool_exp>? get G_or;
   Ggroup_join_tokens_bool_exp? get group_join_tokens;
   GString_comparison_exp? get group_name;
-  Ggroup_threads_bool_exp? get group_threads;
+  Gthreads_bool_exp? get group_threads;
   Guuid_comparison_exp? get id;
   Guser_to_group_bool_exp? get user_to_groups;
   static Serializer<Ggroups_bool_exp> get serializer =>
@@ -688,7 +382,7 @@ abstract class Ggroups_insert_input
 
   Ggroup_join_tokens_arr_rel_insert_input? get group_join_tokens;
   String? get group_name;
-  Ggroup_threads_arr_rel_insert_input? get group_threads;
+  Gthreads_arr_rel_insert_input? get group_threads;
   _i2.UuidType? get id;
   Guser_to_group_arr_rel_insert_input? get user_to_groups;
   static Serializer<Ggroups_insert_input> get serializer =>
@@ -749,7 +443,7 @@ abstract class Ggroups_order_by
 
   Ggroup_join_tokens_aggregate_order_by? get group_join_tokens_aggregate;
   Gorder_by? get group_name;
-  Ggroup_threads_aggregate_order_by? get group_threads_aggregate;
+  Gthreads_aggregate_order_by? get group_threads_aggregate;
   Gorder_by? get id;
   Guser_to_group_aggregate_order_by? get user_to_groups_aggregate;
   static Serializer<Ggroups_order_by> get serializer =>
@@ -845,6 +539,617 @@ class GIdentityProvider extends EnumClass {
       _$gIdentityProviderValueOf(name);
 }
 
+abstract class Gmessage_reaction_types_bool_exp
+    implements
+        Built<Gmessage_reaction_types_bool_exp,
+            Gmessage_reaction_types_bool_expBuilder> {
+  Gmessage_reaction_types_bool_exp._();
+
+  factory Gmessage_reaction_types_bool_exp(
+          [Function(Gmessage_reaction_types_bool_expBuilder b) updates]) =
+      _$Gmessage_reaction_types_bool_exp;
+
+  @BuiltValueField(wireName: '_and')
+  BuiltList<Gmessage_reaction_types_bool_exp>? get G_and;
+  @BuiltValueField(wireName: '_not')
+  Gmessage_reaction_types_bool_exp? get G_not;
+  @BuiltValueField(wireName: '_or')
+  BuiltList<Gmessage_reaction_types_bool_exp>? get G_or;
+  GString_comparison_exp? get description;
+  GString_comparison_exp? get reaction_type;
+  static Serializer<Gmessage_reaction_types_bool_exp> get serializer =>
+      _$gmessageReactionTypesBoolExpSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers
+          .serializeWith(Gmessage_reaction_types_bool_exp.serializer, this)
+      as Map<String, dynamic>);
+  static Gmessage_reaction_types_bool_exp? fromJson(
+          Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gmessage_reaction_types_bool_exp.serializer, json);
+}
+
+class Gmessage_reaction_types_constraint extends EnumClass {
+  const Gmessage_reaction_types_constraint._(String name) : super(name);
+
+  static const Gmessage_reaction_types_constraint message_reaction_types_pkey =
+      _$gmessageReactionTypesConstraintmessage_reaction_types_pkey;
+
+  static Serializer<Gmessage_reaction_types_constraint> get serializer =>
+      _$gmessageReactionTypesConstraintSerializer;
+  static BuiltSet<Gmessage_reaction_types_constraint> get values =>
+      _$gmessageReactionTypesConstraintValues;
+  static Gmessage_reaction_types_constraint valueOf(String name) =>
+      _$gmessageReactionTypesConstraintValueOf(name);
+}
+
+class Gmessage_reaction_types_enum extends EnumClass {
+  const Gmessage_reaction_types_enum._(String name) : super(name);
+
+  static const Gmessage_reaction_types_enum ANGRY =
+      _$gmessageReactionTypesEnumANGRY;
+
+  static const Gmessage_reaction_types_enum CRY =
+      _$gmessageReactionTypesEnumCRY;
+
+  static const Gmessage_reaction_types_enum LAUGH =
+      _$gmessageReactionTypesEnumLAUGH;
+
+  static const Gmessage_reaction_types_enum LIKE =
+      _$gmessageReactionTypesEnumLIKE;
+
+  static const Gmessage_reaction_types_enum WOW =
+      _$gmessageReactionTypesEnumWOW;
+
+  static Serializer<Gmessage_reaction_types_enum> get serializer =>
+      _$gmessageReactionTypesEnumSerializer;
+  static BuiltSet<Gmessage_reaction_types_enum> get values =>
+      _$gmessageReactionTypesEnumValues;
+  static Gmessage_reaction_types_enum valueOf(String name) =>
+      _$gmessageReactionTypesEnumValueOf(name);
+}
+
+abstract class Gmessage_reaction_types_enum_comparison_exp
+    implements
+        Built<Gmessage_reaction_types_enum_comparison_exp,
+            Gmessage_reaction_types_enum_comparison_expBuilder> {
+  Gmessage_reaction_types_enum_comparison_exp._();
+
+  factory Gmessage_reaction_types_enum_comparison_exp(
+      [Function(Gmessage_reaction_types_enum_comparison_expBuilder b)
+          updates]) = _$Gmessage_reaction_types_enum_comparison_exp;
+
+  @BuiltValueField(wireName: '_eq')
+  Gmessage_reaction_types_enum? get G_eq;
+  @BuiltValueField(wireName: '_in')
+  BuiltList<Gmessage_reaction_types_enum>? get G_in;
+  @BuiltValueField(wireName: '_is_null')
+  bool? get G_is_null;
+  @BuiltValueField(wireName: '_neq')
+  Gmessage_reaction_types_enum? get G_neq;
+  @BuiltValueField(wireName: '_nin')
+  BuiltList<Gmessage_reaction_types_enum>? get G_nin;
+  static Serializer<Gmessage_reaction_types_enum_comparison_exp>
+      get serializer => _$gmessageReactionTypesEnumComparisonExpSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
+          Gmessage_reaction_types_enum_comparison_exp.serializer, this)
+      as Map<String, dynamic>);
+  static Gmessage_reaction_types_enum_comparison_exp? fromJson(
+          Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(
+          Gmessage_reaction_types_enum_comparison_exp.serializer, json);
+}
+
+abstract class Gmessage_reaction_types_insert_input
+    implements
+        Built<Gmessage_reaction_types_insert_input,
+            Gmessage_reaction_types_insert_inputBuilder> {
+  Gmessage_reaction_types_insert_input._();
+
+  factory Gmessage_reaction_types_insert_input(
+          [Function(Gmessage_reaction_types_insert_inputBuilder b) updates]) =
+      _$Gmessage_reaction_types_insert_input;
+
+  String? get description;
+  String? get reaction_type;
+  static Serializer<Gmessage_reaction_types_insert_input> get serializer =>
+      _$gmessageReactionTypesInsertInputSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers
+          .serializeWith(Gmessage_reaction_types_insert_input.serializer, this)
+      as Map<String, dynamic>);
+  static Gmessage_reaction_types_insert_input? fromJson(
+          Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(
+          Gmessage_reaction_types_insert_input.serializer, json);
+}
+
+abstract class Gmessage_reaction_types_obj_rel_insert_input
+    implements
+        Built<Gmessage_reaction_types_obj_rel_insert_input,
+            Gmessage_reaction_types_obj_rel_insert_inputBuilder> {
+  Gmessage_reaction_types_obj_rel_insert_input._();
+
+  factory Gmessage_reaction_types_obj_rel_insert_input(
+      [Function(Gmessage_reaction_types_obj_rel_insert_inputBuilder b)
+          updates]) = _$Gmessage_reaction_types_obj_rel_insert_input;
+
+  Gmessage_reaction_types_insert_input get data;
+  Gmessage_reaction_types_on_conflict? get on_conflict;
+  static Serializer<Gmessage_reaction_types_obj_rel_insert_input>
+      get serializer => _$gmessageReactionTypesObjRelInsertInputSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
+          Gmessage_reaction_types_obj_rel_insert_input.serializer, this)
+      as Map<String, dynamic>);
+  static Gmessage_reaction_types_obj_rel_insert_input? fromJson(
+          Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(
+          Gmessage_reaction_types_obj_rel_insert_input.serializer, json);
+}
+
+abstract class Gmessage_reaction_types_on_conflict
+    implements
+        Built<Gmessage_reaction_types_on_conflict,
+            Gmessage_reaction_types_on_conflictBuilder> {
+  Gmessage_reaction_types_on_conflict._();
+
+  factory Gmessage_reaction_types_on_conflict(
+          [Function(Gmessage_reaction_types_on_conflictBuilder b) updates]) =
+      _$Gmessage_reaction_types_on_conflict;
+
+  Gmessage_reaction_types_constraint get constraint;
+  BuiltList<Gmessage_reaction_types_update_column> get update_columns;
+  Gmessage_reaction_types_bool_exp? get where;
+  static Serializer<Gmessage_reaction_types_on_conflict> get serializer =>
+      _$gmessageReactionTypesOnConflictSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers
+          .serializeWith(Gmessage_reaction_types_on_conflict.serializer, this)
+      as Map<String, dynamic>);
+  static Gmessage_reaction_types_on_conflict? fromJson(
+          Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(
+          Gmessage_reaction_types_on_conflict.serializer, json);
+}
+
+abstract class Gmessage_reaction_types_order_by
+    implements
+        Built<Gmessage_reaction_types_order_by,
+            Gmessage_reaction_types_order_byBuilder> {
+  Gmessage_reaction_types_order_by._();
+
+  factory Gmessage_reaction_types_order_by(
+          [Function(Gmessage_reaction_types_order_byBuilder b) updates]) =
+      _$Gmessage_reaction_types_order_by;
+
+  Gorder_by? get description;
+  Gorder_by? get reaction_type;
+  static Serializer<Gmessage_reaction_types_order_by> get serializer =>
+      _$gmessageReactionTypesOrderBySerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers
+          .serializeWith(Gmessage_reaction_types_order_by.serializer, this)
+      as Map<String, dynamic>);
+  static Gmessage_reaction_types_order_by? fromJson(
+          Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gmessage_reaction_types_order_by.serializer, json);
+}
+
+abstract class Gmessage_reaction_types_pk_columns_input
+    implements
+        Built<Gmessage_reaction_types_pk_columns_input,
+            Gmessage_reaction_types_pk_columns_inputBuilder> {
+  Gmessage_reaction_types_pk_columns_input._();
+
+  factory Gmessage_reaction_types_pk_columns_input(
+      [Function(Gmessage_reaction_types_pk_columns_inputBuilder b)
+          updates]) = _$Gmessage_reaction_types_pk_columns_input;
+
+  String get reaction_type;
+  static Serializer<Gmessage_reaction_types_pk_columns_input> get serializer =>
+      _$gmessageReactionTypesPkColumnsInputSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
+          Gmessage_reaction_types_pk_columns_input.serializer, this)
+      as Map<String, dynamic>);
+  static Gmessage_reaction_types_pk_columns_input? fromJson(
+          Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(
+          Gmessage_reaction_types_pk_columns_input.serializer, json);
+}
+
+class Gmessage_reaction_types_select_column extends EnumClass {
+  const Gmessage_reaction_types_select_column._(String name) : super(name);
+
+  static const Gmessage_reaction_types_select_column description =
+      _$gmessageReactionTypesSelectColumndescription;
+
+  static const Gmessage_reaction_types_select_column reaction_type =
+      _$gmessageReactionTypesSelectColumnreaction_type;
+
+  static Serializer<Gmessage_reaction_types_select_column> get serializer =>
+      _$gmessageReactionTypesSelectColumnSerializer;
+  static BuiltSet<Gmessage_reaction_types_select_column> get values =>
+      _$gmessageReactionTypesSelectColumnValues;
+  static Gmessage_reaction_types_select_column valueOf(String name) =>
+      _$gmessageReactionTypesSelectColumnValueOf(name);
+}
+
+abstract class Gmessage_reaction_types_set_input
+    implements
+        Built<Gmessage_reaction_types_set_input,
+            Gmessage_reaction_types_set_inputBuilder> {
+  Gmessage_reaction_types_set_input._();
+
+  factory Gmessage_reaction_types_set_input(
+          [Function(Gmessage_reaction_types_set_inputBuilder b) updates]) =
+      _$Gmessage_reaction_types_set_input;
+
+  String? get description;
+  String? get reaction_type;
+  static Serializer<Gmessage_reaction_types_set_input> get serializer =>
+      _$gmessageReactionTypesSetInputSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers
+          .serializeWith(Gmessage_reaction_types_set_input.serializer, this)
+      as Map<String, dynamic>);
+  static Gmessage_reaction_types_set_input? fromJson(
+          Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gmessage_reaction_types_set_input.serializer, json);
+}
+
+class Gmessage_reaction_types_update_column extends EnumClass {
+  const Gmessage_reaction_types_update_column._(String name) : super(name);
+
+  static const Gmessage_reaction_types_update_column description =
+      _$gmessageReactionTypesUpdateColumndescription;
+
+  static const Gmessage_reaction_types_update_column reaction_type =
+      _$gmessageReactionTypesUpdateColumnreaction_type;
+
+  static Serializer<Gmessage_reaction_types_update_column> get serializer =>
+      _$gmessageReactionTypesUpdateColumnSerializer;
+  static BuiltSet<Gmessage_reaction_types_update_column> get values =>
+      _$gmessageReactionTypesUpdateColumnValues;
+  static Gmessage_reaction_types_update_column valueOf(String name) =>
+      _$gmessageReactionTypesUpdateColumnValueOf(name);
+}
+
+abstract class Gmessage_reactions_aggregate_order_by
+    implements
+        Built<Gmessage_reactions_aggregate_order_by,
+            Gmessage_reactions_aggregate_order_byBuilder> {
+  Gmessage_reactions_aggregate_order_by._();
+
+  factory Gmessage_reactions_aggregate_order_by(
+          [Function(Gmessage_reactions_aggregate_order_byBuilder b) updates]) =
+      _$Gmessage_reactions_aggregate_order_by;
+
+  Gorder_by? get count;
+  Gmessage_reactions_max_order_by? get max;
+  Gmessage_reactions_min_order_by? get min;
+  static Serializer<Gmessage_reactions_aggregate_order_by> get serializer =>
+      _$gmessageReactionsAggregateOrderBySerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers
+          .serializeWith(Gmessage_reactions_aggregate_order_by.serializer, this)
+      as Map<String, dynamic>);
+  static Gmessage_reactions_aggregate_order_by? fromJson(
+          Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(
+          Gmessage_reactions_aggregate_order_by.serializer, json);
+}
+
+abstract class Gmessage_reactions_arr_rel_insert_input
+    implements
+        Built<Gmessage_reactions_arr_rel_insert_input,
+            Gmessage_reactions_arr_rel_insert_inputBuilder> {
+  Gmessage_reactions_arr_rel_insert_input._();
+
+  factory Gmessage_reactions_arr_rel_insert_input(
+      [Function(Gmessage_reactions_arr_rel_insert_inputBuilder b)
+          updates]) = _$Gmessage_reactions_arr_rel_insert_input;
+
+  BuiltList<Gmessage_reactions_insert_input> get data;
+  Gmessage_reactions_on_conflict? get on_conflict;
+  static Serializer<Gmessage_reactions_arr_rel_insert_input> get serializer =>
+      _$gmessageReactionsArrRelInsertInputSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
+          Gmessage_reactions_arr_rel_insert_input.serializer, this)
+      as Map<String, dynamic>);
+  static Gmessage_reactions_arr_rel_insert_input? fromJson(
+          Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(
+          Gmessage_reactions_arr_rel_insert_input.serializer, json);
+}
+
+abstract class Gmessage_reactions_bool_exp
+    implements
+        Built<Gmessage_reactions_bool_exp, Gmessage_reactions_bool_expBuilder> {
+  Gmessage_reactions_bool_exp._();
+
+  factory Gmessage_reactions_bool_exp(
+          [Function(Gmessage_reactions_bool_expBuilder b) updates]) =
+      _$Gmessage_reactions_bool_exp;
+
+  @BuiltValueField(wireName: '_and')
+  BuiltList<Gmessage_reactions_bool_exp>? get G_and;
+  @BuiltValueField(wireName: '_not')
+  Gmessage_reactions_bool_exp? get G_not;
+  @BuiltValueField(wireName: '_or')
+  BuiltList<Gmessage_reactions_bool_exp>? get G_or;
+  Gtimestamptz_comparison_exp? get created_at;
+  GBoolean_comparison_exp? get deleted;
+  Guuid_comparison_exp? get id;
+  Gmessages_bool_exp? get message;
+  Guuid_comparison_exp? get message_id;
+  Gmessage_reaction_types_bool_exp? get message_reaction_type;
+  Gmessage_reaction_types_enum_comparison_exp? get reaction_type;
+  Gtimestamptz_comparison_exp? get updated_at;
+  Gusers_bool_exp? get user;
+  Guuid_comparison_exp? get user_id;
+  static Serializer<Gmessage_reactions_bool_exp> get serializer =>
+      _$gmessageReactionsBoolExpSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
+      Gmessage_reactions_bool_exp.serializer, this) as Map<String, dynamic>);
+  static Gmessage_reactions_bool_exp? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gmessage_reactions_bool_exp.serializer, json);
+}
+
+class Gmessage_reactions_constraint extends EnumClass {
+  const Gmessage_reactions_constraint._(String name) : super(name);
+
+  static const Gmessage_reactions_constraint message_reactions_pkey =
+      _$gmessageReactionsConstraintmessage_reactions_pkey;
+
+  static Serializer<Gmessage_reactions_constraint> get serializer =>
+      _$gmessageReactionsConstraintSerializer;
+  static BuiltSet<Gmessage_reactions_constraint> get values =>
+      _$gmessageReactionsConstraintValues;
+  static Gmessage_reactions_constraint valueOf(String name) =>
+      _$gmessageReactionsConstraintValueOf(name);
+}
+
+abstract class Gmessage_reactions_insert_input
+    implements
+        Built<Gmessage_reactions_insert_input,
+            Gmessage_reactions_insert_inputBuilder> {
+  Gmessage_reactions_insert_input._();
+
+  factory Gmessage_reactions_insert_input(
+          [Function(Gmessage_reactions_insert_inputBuilder b) updates]) =
+      _$Gmessage_reactions_insert_input;
+
+  DateTime? get created_at;
+  bool? get deleted;
+  _i2.UuidType? get id;
+  Gmessages_obj_rel_insert_input? get message;
+  _i2.UuidType? get message_id;
+  Gmessage_reaction_types_obj_rel_insert_input? get message_reaction_type;
+  Gmessage_reaction_types_enum? get reaction_type;
+  DateTime? get updated_at;
+  Gusers_obj_rel_insert_input? get user;
+  _i2.UuidType? get user_id;
+  static Serializer<Gmessage_reactions_insert_input> get serializer =>
+      _$gmessageReactionsInsertInputSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers
+          .serializeWith(Gmessage_reactions_insert_input.serializer, this)
+      as Map<String, dynamic>);
+  static Gmessage_reactions_insert_input? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gmessage_reactions_insert_input.serializer, json);
+}
+
+abstract class Gmessage_reactions_max_order_by
+    implements
+        Built<Gmessage_reactions_max_order_by,
+            Gmessage_reactions_max_order_byBuilder> {
+  Gmessage_reactions_max_order_by._();
+
+  factory Gmessage_reactions_max_order_by(
+          [Function(Gmessage_reactions_max_order_byBuilder b) updates]) =
+      _$Gmessage_reactions_max_order_by;
+
+  Gorder_by? get created_at;
+  Gorder_by? get id;
+  Gorder_by? get message_id;
+  Gorder_by? get updated_at;
+  Gorder_by? get user_id;
+  static Serializer<Gmessage_reactions_max_order_by> get serializer =>
+      _$gmessageReactionsMaxOrderBySerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers
+          .serializeWith(Gmessage_reactions_max_order_by.serializer, this)
+      as Map<String, dynamic>);
+  static Gmessage_reactions_max_order_by? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gmessage_reactions_max_order_by.serializer, json);
+}
+
+abstract class Gmessage_reactions_min_order_by
+    implements
+        Built<Gmessage_reactions_min_order_by,
+            Gmessage_reactions_min_order_byBuilder> {
+  Gmessage_reactions_min_order_by._();
+
+  factory Gmessage_reactions_min_order_by(
+          [Function(Gmessage_reactions_min_order_byBuilder b) updates]) =
+      _$Gmessage_reactions_min_order_by;
+
+  Gorder_by? get created_at;
+  Gorder_by? get id;
+  Gorder_by? get message_id;
+  Gorder_by? get updated_at;
+  Gorder_by? get user_id;
+  static Serializer<Gmessage_reactions_min_order_by> get serializer =>
+      _$gmessageReactionsMinOrderBySerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers
+          .serializeWith(Gmessage_reactions_min_order_by.serializer, this)
+      as Map<String, dynamic>);
+  static Gmessage_reactions_min_order_by? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gmessage_reactions_min_order_by.serializer, json);
+}
+
+abstract class Gmessage_reactions_on_conflict
+    implements
+        Built<Gmessage_reactions_on_conflict,
+            Gmessage_reactions_on_conflictBuilder> {
+  Gmessage_reactions_on_conflict._();
+
+  factory Gmessage_reactions_on_conflict(
+          [Function(Gmessage_reactions_on_conflictBuilder b) updates]) =
+      _$Gmessage_reactions_on_conflict;
+
+  Gmessage_reactions_constraint get constraint;
+  BuiltList<Gmessage_reactions_update_column> get update_columns;
+  Gmessage_reactions_bool_exp? get where;
+  static Serializer<Gmessage_reactions_on_conflict> get serializer =>
+      _$gmessageReactionsOnConflictSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
+      Gmessage_reactions_on_conflict.serializer, this) as Map<String, dynamic>);
+  static Gmessage_reactions_on_conflict? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gmessage_reactions_on_conflict.serializer, json);
+}
+
+abstract class Gmessage_reactions_order_by
+    implements
+        Built<Gmessage_reactions_order_by, Gmessage_reactions_order_byBuilder> {
+  Gmessage_reactions_order_by._();
+
+  factory Gmessage_reactions_order_by(
+          [Function(Gmessage_reactions_order_byBuilder b) updates]) =
+      _$Gmessage_reactions_order_by;
+
+  Gorder_by? get created_at;
+  Gorder_by? get deleted;
+  Gorder_by? get id;
+  Gmessages_order_by? get message;
+  Gorder_by? get message_id;
+  Gmessage_reaction_types_order_by? get message_reaction_type;
+  Gorder_by? get reaction_type;
+  Gorder_by? get updated_at;
+  Gusers_order_by? get user;
+  Gorder_by? get user_id;
+  static Serializer<Gmessage_reactions_order_by> get serializer =>
+      _$gmessageReactionsOrderBySerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
+      Gmessage_reactions_order_by.serializer, this) as Map<String, dynamic>);
+  static Gmessage_reactions_order_by? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gmessage_reactions_order_by.serializer, json);
+}
+
+abstract class Gmessage_reactions_pk_columns_input
+    implements
+        Built<Gmessage_reactions_pk_columns_input,
+            Gmessage_reactions_pk_columns_inputBuilder> {
+  Gmessage_reactions_pk_columns_input._();
+
+  factory Gmessage_reactions_pk_columns_input(
+          [Function(Gmessage_reactions_pk_columns_inputBuilder b) updates]) =
+      _$Gmessage_reactions_pk_columns_input;
+
+  _i2.UuidType get message_id;
+  Gmessage_reaction_types_enum get reaction_type;
+  _i2.UuidType get user_id;
+  static Serializer<Gmessage_reactions_pk_columns_input> get serializer =>
+      _$gmessageReactionsPkColumnsInputSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers
+          .serializeWith(Gmessage_reactions_pk_columns_input.serializer, this)
+      as Map<String, dynamic>);
+  static Gmessage_reactions_pk_columns_input? fromJson(
+          Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(
+          Gmessage_reactions_pk_columns_input.serializer, json);
+}
+
+class Gmessage_reactions_select_column extends EnumClass {
+  const Gmessage_reactions_select_column._(String name) : super(name);
+
+  static const Gmessage_reactions_select_column created_at =
+      _$gmessageReactionsSelectColumncreated_at;
+
+  static const Gmessage_reactions_select_column deleted =
+      _$gmessageReactionsSelectColumndeleted;
+
+  static const Gmessage_reactions_select_column id =
+      _$gmessageReactionsSelectColumnid;
+
+  static const Gmessage_reactions_select_column message_id =
+      _$gmessageReactionsSelectColumnmessage_id;
+
+  static const Gmessage_reactions_select_column reaction_type =
+      _$gmessageReactionsSelectColumnreaction_type;
+
+  static const Gmessage_reactions_select_column updated_at =
+      _$gmessageReactionsSelectColumnupdated_at;
+
+  static const Gmessage_reactions_select_column user_id =
+      _$gmessageReactionsSelectColumnuser_id;
+
+  static Serializer<Gmessage_reactions_select_column> get serializer =>
+      _$gmessageReactionsSelectColumnSerializer;
+  static BuiltSet<Gmessage_reactions_select_column> get values =>
+      _$gmessageReactionsSelectColumnValues;
+  static Gmessage_reactions_select_column valueOf(String name) =>
+      _$gmessageReactionsSelectColumnValueOf(name);
+}
+
+abstract class Gmessage_reactions_set_input
+    implements
+        Built<Gmessage_reactions_set_input,
+            Gmessage_reactions_set_inputBuilder> {
+  Gmessage_reactions_set_input._();
+
+  factory Gmessage_reactions_set_input(
+          [Function(Gmessage_reactions_set_inputBuilder b) updates]) =
+      _$Gmessage_reactions_set_input;
+
+  DateTime? get created_at;
+  bool? get deleted;
+  _i2.UuidType? get id;
+  _i2.UuidType? get message_id;
+  Gmessage_reaction_types_enum? get reaction_type;
+  DateTime? get updated_at;
+  _i2.UuidType? get user_id;
+  static Serializer<Gmessage_reactions_set_input> get serializer =>
+      _$gmessageReactionsSetInputSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
+      Gmessage_reactions_set_input.serializer, this) as Map<String, dynamic>);
+  static Gmessage_reactions_set_input? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gmessage_reactions_set_input.serializer, json);
+}
+
+class Gmessage_reactions_update_column extends EnumClass {
+  const Gmessage_reactions_update_column._(String name) : super(name);
+
+  static const Gmessage_reactions_update_column created_at =
+      _$gmessageReactionsUpdateColumncreated_at;
+
+  static const Gmessage_reactions_update_column deleted =
+      _$gmessageReactionsUpdateColumndeleted;
+
+  static const Gmessage_reactions_update_column id =
+      _$gmessageReactionsUpdateColumnid;
+
+  static const Gmessage_reactions_update_column message_id =
+      _$gmessageReactionsUpdateColumnmessage_id;
+
+  static const Gmessage_reactions_update_column reaction_type =
+      _$gmessageReactionsUpdateColumnreaction_type;
+
+  static const Gmessage_reactions_update_column updated_at =
+      _$gmessageReactionsUpdateColumnupdated_at;
+
+  static const Gmessage_reactions_update_column user_id =
+      _$gmessageReactionsUpdateColumnuser_id;
+
+  static Serializer<Gmessage_reactions_update_column> get serializer =>
+      _$gmessageReactionsUpdateColumnSerializer;
+  static BuiltSet<Gmessage_reactions_update_column> get values =>
+      _$gmessageReactionsUpdateColumnValues;
+  static Gmessage_reactions_update_column valueOf(String name) =>
+      _$gmessageReactionsUpdateColumnValueOf(name);
+}
+
 abstract class Gmessages_aggregate_order_by
     implements
         Built<Gmessages_aggregate_order_by,
@@ -903,10 +1208,11 @@ abstract class Gmessages_bool_exp
   BuiltList<Gmessages_bool_exp>? get G_or;
   Gtimestamptz_comparison_exp? get created_at;
   GBoolean_comparison_exp? get deleted;
-  Ggroup_threads_bool_exp? get group_thread;
+  Gthreads_bool_exp? get group_thread;
   Guuid_comparison_exp? get id;
   GBoolean_comparison_exp? get is_image;
   GString_comparison_exp? get message;
+  Gmessage_reactions_bool_exp? get message_reactions;
   Guuid_comparison_exp? get thread_id;
   Gtimestamptz_comparison_exp? get updated_at;
   Gusers_bool_exp? get user;
@@ -944,10 +1250,11 @@ abstract class Gmessages_insert_input
 
   DateTime? get created_at;
   bool? get deleted;
-  Ggroup_threads_obj_rel_insert_input? get group_thread;
+  Gthreads_obj_rel_insert_input? get group_thread;
   _i2.UuidType? get id;
   bool? get is_image;
   String? get message;
+  Gmessage_reactions_arr_rel_insert_input? get message_reactions;
   _i2.UuidType? get thread_id;
   DateTime? get updated_at;
   Gusers_obj_rel_insert_input? get user;
@@ -1007,6 +1314,27 @@ abstract class Gmessages_min_order_by
       _i1.serializers.deserializeWith(Gmessages_min_order_by.serializer, json);
 }
 
+abstract class Gmessages_obj_rel_insert_input
+    implements
+        Built<Gmessages_obj_rel_insert_input,
+            Gmessages_obj_rel_insert_inputBuilder> {
+  Gmessages_obj_rel_insert_input._();
+
+  factory Gmessages_obj_rel_insert_input(
+          [Function(Gmessages_obj_rel_insert_inputBuilder b) updates]) =
+      _$Gmessages_obj_rel_insert_input;
+
+  Gmessages_insert_input get data;
+  Gmessages_on_conflict? get on_conflict;
+  static Serializer<Gmessages_obj_rel_insert_input> get serializer =>
+      _$gmessagesObjRelInsertInputSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
+      Gmessages_obj_rel_insert_input.serializer, this) as Map<String, dynamic>);
+  static Gmessages_obj_rel_insert_input? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gmessages_obj_rel_insert_input.serializer, json);
+}
+
 abstract class Gmessages_on_conflict
     implements Built<Gmessages_on_conflict, Gmessages_on_conflictBuilder> {
   Gmessages_on_conflict._();
@@ -1036,10 +1364,11 @@ abstract class Gmessages_order_by
 
   Gorder_by? get created_at;
   Gorder_by? get deleted;
-  Ggroup_threads_order_by? get group_thread;
+  Gthreads_order_by? get group_thread;
   Gorder_by? get id;
   Gorder_by? get is_image;
   Gorder_by? get message;
+  Gmessage_reactions_aggregate_order_by? get message_reactions_aggregate;
   Gorder_by? get thread_id;
   Gorder_by? get updated_at;
   Gusers_order_by? get user;
@@ -1180,6 +1509,109 @@ class Gorder_by extends EnumClass {
   static Gorder_by valueOf(String name) => _$gorderByValueOf(name);
 }
 
+abstract class Gsingle_dms_bool_exp
+    implements Built<Gsingle_dms_bool_exp, Gsingle_dms_bool_expBuilder> {
+  Gsingle_dms_bool_exp._();
+
+  factory Gsingle_dms_bool_exp(
+          [Function(Gsingle_dms_bool_expBuilder b) updates]) =
+      _$Gsingle_dms_bool_exp;
+
+  @BuiltValueField(wireName: '_and')
+  BuiltList<Gsingle_dms_bool_exp>? get G_and;
+  @BuiltValueField(wireName: '_not')
+  Gsingle_dms_bool_exp? get G_not;
+  @BuiltValueField(wireName: '_or')
+  BuiltList<Gsingle_dms_bool_exp>? get G_or;
+  Guuid_comparison_exp? get id;
+  GString_comparison_exp? get name;
+  Guser_to_thread_bool_exp? get users;
+  static Serializer<Gsingle_dms_bool_exp> get serializer =>
+      _$gsingleDmsBoolExpSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gsingle_dms_bool_exp.serializer, this)
+          as Map<String, dynamic>);
+  static Gsingle_dms_bool_exp? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(Gsingle_dms_bool_exp.serializer, json);
+}
+
+abstract class Gsingle_dms_insert_input
+    implements
+        Built<Gsingle_dms_insert_input, Gsingle_dms_insert_inputBuilder> {
+  Gsingle_dms_insert_input._();
+
+  factory Gsingle_dms_insert_input(
+          [Function(Gsingle_dms_insert_inputBuilder b) updates]) =
+      _$Gsingle_dms_insert_input;
+
+  _i2.UuidType? get id;
+  String? get name;
+  Guser_to_thread_arr_rel_insert_input? get users;
+  static Serializer<Gsingle_dms_insert_input> get serializer =>
+      _$gsingleDmsInsertInputSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gsingle_dms_insert_input.serializer, this)
+          as Map<String, dynamic>);
+  static Gsingle_dms_insert_input? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gsingle_dms_insert_input.serializer, json);
+}
+
+abstract class Gsingle_dms_order_by
+    implements Built<Gsingle_dms_order_by, Gsingle_dms_order_byBuilder> {
+  Gsingle_dms_order_by._();
+
+  factory Gsingle_dms_order_by(
+          [Function(Gsingle_dms_order_byBuilder b) updates]) =
+      _$Gsingle_dms_order_by;
+
+  Gorder_by? get id;
+  Gorder_by? get name;
+  Guser_to_thread_aggregate_order_by? get users_aggregate;
+  static Serializer<Gsingle_dms_order_by> get serializer =>
+      _$gsingleDmsOrderBySerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gsingle_dms_order_by.serializer, this)
+          as Map<String, dynamic>);
+  static Gsingle_dms_order_by? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(Gsingle_dms_order_by.serializer, json);
+}
+
+class Gsingle_dms_select_column extends EnumClass {
+  const Gsingle_dms_select_column._(String name) : super(name);
+
+  static const Gsingle_dms_select_column id = _$gsingleDmsSelectColumnid;
+
+  @BuiltValueEnumConst(wireName: 'name')
+  static const Gsingle_dms_select_column Gname = _$gsingleDmsSelectColumnGname;
+
+  static Serializer<Gsingle_dms_select_column> get serializer =>
+      _$gsingleDmsSelectColumnSerializer;
+  static BuiltSet<Gsingle_dms_select_column> get values =>
+      _$gsingleDmsSelectColumnValues;
+  static Gsingle_dms_select_column valueOf(String name) =>
+      _$gsingleDmsSelectColumnValueOf(name);
+}
+
+abstract class Gsingle_dms_set_input
+    implements Built<Gsingle_dms_set_input, Gsingle_dms_set_inputBuilder> {
+  Gsingle_dms_set_input._();
+
+  factory Gsingle_dms_set_input(
+          [Function(Gsingle_dms_set_inputBuilder b) updates]) =
+      _$Gsingle_dms_set_input;
+
+  _i2.UuidType? get id;
+  String? get name;
+  static Serializer<Gsingle_dms_set_input> get serializer =>
+      _$gsingleDmsSetInputSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gsingle_dms_set_input.serializer, this)
+          as Map<String, dynamic>);
+  static Gsingle_dms_set_input? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(Gsingle_dms_set_input.serializer, json);
+}
+
 abstract class GString_comparison_exp
     implements Built<GString_comparison_exp, GString_comparison_expBuilder> {
   GString_comparison_exp._();
@@ -1233,6 +1665,298 @@ abstract class GString_comparison_exp
           as Map<String, dynamic>);
   static GString_comparison_exp? fromJson(Map<String, dynamic> json) =>
       _i1.serializers.deserializeWith(GString_comparison_exp.serializer, json);
+}
+
+abstract class Gthreads_aggregate_order_by
+    implements
+        Built<Gthreads_aggregate_order_by, Gthreads_aggregate_order_byBuilder> {
+  Gthreads_aggregate_order_by._();
+
+  factory Gthreads_aggregate_order_by(
+          [Function(Gthreads_aggregate_order_byBuilder b) updates]) =
+      _$Gthreads_aggregate_order_by;
+
+  Gorder_by? get count;
+  Gthreads_max_order_by? get max;
+  Gthreads_min_order_by? get min;
+  static Serializer<Gthreads_aggregate_order_by> get serializer =>
+      _$gthreadsAggregateOrderBySerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
+      Gthreads_aggregate_order_by.serializer, this) as Map<String, dynamic>);
+  static Gthreads_aggregate_order_by? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gthreads_aggregate_order_by.serializer, json);
+}
+
+abstract class Gthreads_arr_rel_insert_input
+    implements
+        Built<Gthreads_arr_rel_insert_input,
+            Gthreads_arr_rel_insert_inputBuilder> {
+  Gthreads_arr_rel_insert_input._();
+
+  factory Gthreads_arr_rel_insert_input(
+          [Function(Gthreads_arr_rel_insert_inputBuilder b) updates]) =
+      _$Gthreads_arr_rel_insert_input;
+
+  BuiltList<Gthreads_insert_input> get data;
+  Gthreads_on_conflict? get on_conflict;
+  static Serializer<Gthreads_arr_rel_insert_input> get serializer =>
+      _$gthreadsArrRelInsertInputSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
+      Gthreads_arr_rel_insert_input.serializer, this) as Map<String, dynamic>);
+  static Gthreads_arr_rel_insert_input? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gthreads_arr_rel_insert_input.serializer, json);
+}
+
+abstract class Gthreads_bool_exp
+    implements Built<Gthreads_bool_exp, Gthreads_bool_expBuilder> {
+  Gthreads_bool_exp._();
+
+  factory Gthreads_bool_exp([Function(Gthreads_bool_expBuilder b) updates]) =
+      _$Gthreads_bool_exp;
+
+  @BuiltValueField(wireName: '_and')
+  BuiltList<Gthreads_bool_exp>? get G_and;
+  @BuiltValueField(wireName: '_not')
+  Gthreads_bool_exp? get G_not;
+  @BuiltValueField(wireName: '_or')
+  BuiltList<Gthreads_bool_exp>? get G_or;
+  Ggroups_bool_exp? get group;
+  Guuid_comparison_exp? get group_id;
+  Guuid_comparison_exp? get id;
+  GBoolean_comparison_exp? get is_dm;
+  Gmessages_bool_exp? get messages;
+  GString_comparison_exp? get name;
+  Guser_to_thread_bool_exp? get user_to_threads;
+  static Serializer<Gthreads_bool_exp> get serializer =>
+      _$gthreadsBoolExpSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gthreads_bool_exp.serializer, this)
+          as Map<String, dynamic>);
+  static Gthreads_bool_exp? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(Gthreads_bool_exp.serializer, json);
+}
+
+class Gthreads_constraint extends EnumClass {
+  const Gthreads_constraint._(String name) : super(name);
+
+  static const Gthreads_constraint group_threads_pkey =
+      _$gthreadsConstraintgroup_threads_pkey;
+
+  static Serializer<Gthreads_constraint> get serializer =>
+      _$gthreadsConstraintSerializer;
+  static BuiltSet<Gthreads_constraint> get values => _$gthreadsConstraintValues;
+  static Gthreads_constraint valueOf(String name) =>
+      _$gthreadsConstraintValueOf(name);
+}
+
+abstract class Gthreads_insert_input
+    implements Built<Gthreads_insert_input, Gthreads_insert_inputBuilder> {
+  Gthreads_insert_input._();
+
+  factory Gthreads_insert_input(
+          [Function(Gthreads_insert_inputBuilder b) updates]) =
+      _$Gthreads_insert_input;
+
+  Ggroups_obj_rel_insert_input? get group;
+  _i2.UuidType? get group_id;
+  _i2.UuidType? get id;
+  bool? get is_dm;
+  Gmessages_arr_rel_insert_input? get messages;
+  String? get name;
+  Guser_to_thread_arr_rel_insert_input? get user_to_threads;
+  static Serializer<Gthreads_insert_input> get serializer =>
+      _$gthreadsInsertInputSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gthreads_insert_input.serializer, this)
+          as Map<String, dynamic>);
+  static Gthreads_insert_input? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(Gthreads_insert_input.serializer, json);
+}
+
+abstract class Gthreads_max_order_by
+    implements Built<Gthreads_max_order_by, Gthreads_max_order_byBuilder> {
+  Gthreads_max_order_by._();
+
+  factory Gthreads_max_order_by(
+          [Function(Gthreads_max_order_byBuilder b) updates]) =
+      _$Gthreads_max_order_by;
+
+  Gorder_by? get group_id;
+  Gorder_by? get id;
+  Gorder_by? get name;
+  static Serializer<Gthreads_max_order_by> get serializer =>
+      _$gthreadsMaxOrderBySerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gthreads_max_order_by.serializer, this)
+          as Map<String, dynamic>);
+  static Gthreads_max_order_by? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(Gthreads_max_order_by.serializer, json);
+}
+
+abstract class Gthreads_min_order_by
+    implements Built<Gthreads_min_order_by, Gthreads_min_order_byBuilder> {
+  Gthreads_min_order_by._();
+
+  factory Gthreads_min_order_by(
+          [Function(Gthreads_min_order_byBuilder b) updates]) =
+      _$Gthreads_min_order_by;
+
+  Gorder_by? get group_id;
+  Gorder_by? get id;
+  Gorder_by? get name;
+  static Serializer<Gthreads_min_order_by> get serializer =>
+      _$gthreadsMinOrderBySerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gthreads_min_order_by.serializer, this)
+          as Map<String, dynamic>);
+  static Gthreads_min_order_by? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(Gthreads_min_order_by.serializer, json);
+}
+
+abstract class Gthreads_obj_rel_insert_input
+    implements
+        Built<Gthreads_obj_rel_insert_input,
+            Gthreads_obj_rel_insert_inputBuilder> {
+  Gthreads_obj_rel_insert_input._();
+
+  factory Gthreads_obj_rel_insert_input(
+          [Function(Gthreads_obj_rel_insert_inputBuilder b) updates]) =
+      _$Gthreads_obj_rel_insert_input;
+
+  Gthreads_insert_input get data;
+  Gthreads_on_conflict? get on_conflict;
+  static Serializer<Gthreads_obj_rel_insert_input> get serializer =>
+      _$gthreadsObjRelInsertInputSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
+      Gthreads_obj_rel_insert_input.serializer, this) as Map<String, dynamic>);
+  static Gthreads_obj_rel_insert_input? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gthreads_obj_rel_insert_input.serializer, json);
+}
+
+abstract class Gthreads_on_conflict
+    implements Built<Gthreads_on_conflict, Gthreads_on_conflictBuilder> {
+  Gthreads_on_conflict._();
+
+  factory Gthreads_on_conflict(
+          [Function(Gthreads_on_conflictBuilder b) updates]) =
+      _$Gthreads_on_conflict;
+
+  Gthreads_constraint get constraint;
+  BuiltList<Gthreads_update_column> get update_columns;
+  Gthreads_bool_exp? get where;
+  static Serializer<Gthreads_on_conflict> get serializer =>
+      _$gthreadsOnConflictSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gthreads_on_conflict.serializer, this)
+          as Map<String, dynamic>);
+  static Gthreads_on_conflict? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(Gthreads_on_conflict.serializer, json);
+}
+
+abstract class Gthreads_order_by
+    implements Built<Gthreads_order_by, Gthreads_order_byBuilder> {
+  Gthreads_order_by._();
+
+  factory Gthreads_order_by([Function(Gthreads_order_byBuilder b) updates]) =
+      _$Gthreads_order_by;
+
+  Ggroups_order_by? get group;
+  Gorder_by? get group_id;
+  Gorder_by? get id;
+  Gorder_by? get is_dm;
+  Gmessages_aggregate_order_by? get messages_aggregate;
+  Gorder_by? get name;
+  Guser_to_thread_aggregate_order_by? get user_to_threads_aggregate;
+  static Serializer<Gthreads_order_by> get serializer =>
+      _$gthreadsOrderBySerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gthreads_order_by.serializer, this)
+          as Map<String, dynamic>);
+  static Gthreads_order_by? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(Gthreads_order_by.serializer, json);
+}
+
+abstract class Gthreads_pk_columns_input
+    implements
+        Built<Gthreads_pk_columns_input, Gthreads_pk_columns_inputBuilder> {
+  Gthreads_pk_columns_input._();
+
+  factory Gthreads_pk_columns_input(
+          [Function(Gthreads_pk_columns_inputBuilder b) updates]) =
+      _$Gthreads_pk_columns_input;
+
+  _i2.UuidType get id;
+  static Serializer<Gthreads_pk_columns_input> get serializer =>
+      _$gthreadsPkColumnsInputSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gthreads_pk_columns_input.serializer, this)
+          as Map<String, dynamic>);
+  static Gthreads_pk_columns_input? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gthreads_pk_columns_input.serializer, json);
+}
+
+class Gthreads_select_column extends EnumClass {
+  const Gthreads_select_column._(String name) : super(name);
+
+  static const Gthreads_select_column group_id = _$gthreadsSelectColumngroup_id;
+
+  static const Gthreads_select_column id = _$gthreadsSelectColumnid;
+
+  static const Gthreads_select_column is_dm = _$gthreadsSelectColumnis_dm;
+
+  @BuiltValueEnumConst(wireName: 'name')
+  static const Gthreads_select_column Gname = _$gthreadsSelectColumnGname;
+
+  static Serializer<Gthreads_select_column> get serializer =>
+      _$gthreadsSelectColumnSerializer;
+  static BuiltSet<Gthreads_select_column> get values =>
+      _$gthreadsSelectColumnValues;
+  static Gthreads_select_column valueOf(String name) =>
+      _$gthreadsSelectColumnValueOf(name);
+}
+
+abstract class Gthreads_set_input
+    implements Built<Gthreads_set_input, Gthreads_set_inputBuilder> {
+  Gthreads_set_input._();
+
+  factory Gthreads_set_input([Function(Gthreads_set_inputBuilder b) updates]) =
+      _$Gthreads_set_input;
+
+  _i2.UuidType? get group_id;
+  _i2.UuidType? get id;
+  bool? get is_dm;
+  String? get name;
+  static Serializer<Gthreads_set_input> get serializer =>
+      _$gthreadsSetInputSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gthreads_set_input.serializer, this)
+          as Map<String, dynamic>);
+  static Gthreads_set_input? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(Gthreads_set_input.serializer, json);
+}
+
+class Gthreads_update_column extends EnumClass {
+  const Gthreads_update_column._(String name) : super(name);
+
+  static const Gthreads_update_column group_id = _$gthreadsUpdateColumngroup_id;
+
+  static const Gthreads_update_column id = _$gthreadsUpdateColumnid;
+
+  static const Gthreads_update_column is_dm = _$gthreadsUpdateColumnis_dm;
+
+  @BuiltValueEnumConst(wireName: 'name')
+  static const Gthreads_update_column Gname = _$gthreadsUpdateColumnGname;
+
+  static Serializer<Gthreads_update_column> get serializer =>
+      _$gthreadsUpdateColumnSerializer;
+  static BuiltSet<Gthreads_update_column> get values =>
+      _$gthreadsUpdateColumnValues;
+  static Gthreads_update_column valueOf(String name) =>
+      _$gthreadsUpdateColumnValueOf(name);
 }
 
 abstract class Gtimestamptz_comparison_exp
@@ -1621,8 +2345,8 @@ abstract class Guser_to_thread_bool_exp
   Guser_to_thread_bool_exp? get G_not;
   @BuiltValueField(wireName: '_or')
   BuiltList<Guser_to_thread_bool_exp>? get G_or;
-  Ggroup_threads_bool_exp? get group_thread;
   Guuid_comparison_exp? get id;
+  Gthreads_bool_exp? get thread;
   Guuid_comparison_exp? get thread_id;
   Gusers_bool_exp? get user;
   Guuid_comparison_exp? get user_id;
@@ -1660,8 +2384,8 @@ abstract class Guser_to_thread_insert_input
           [Function(Guser_to_thread_insert_inputBuilder b) updates]) =
       _$Guser_to_thread_insert_input;
 
-  Ggroup_threads_obj_rel_insert_input? get group_thread;
   _i2.UuidType? get id;
+  Gthreads_obj_rel_insert_input? get thread;
   _i2.UuidType? get thread_id;
   Gusers_obj_rel_insert_input? get user;
   _i2.UuidType? get user_id;
@@ -1748,8 +2472,8 @@ abstract class Guser_to_thread_order_by
           [Function(Guser_to_thread_order_byBuilder b) updates]) =
       _$Guser_to_thread_order_by;
 
-  Ggroup_threads_order_by? get group_thread;
   Gorder_by? get id;
+  Gthreads_order_by? get thread;
   Gorder_by? get thread_id;
   Gusers_order_by? get user;
   Gorder_by? get user_id;
@@ -1860,6 +2584,7 @@ abstract class Gusers_bool_exp
   BuiltList<Gusers_bool_exp>? get G_or;
   GString_comparison_exp? get email;
   Guuid_comparison_exp? get id;
+  Gmessage_reactions_bool_exp? get message_reactions;
   Gmessages_bool_exp? get messages;
   GString_comparison_exp? get name;
   GString_comparison_exp? get profile_picture;
@@ -1899,6 +2624,7 @@ abstract class Gusers_insert_input
 
   String? get email;
   _i2.UuidType? get id;
+  Gmessage_reactions_arr_rel_insert_input? get message_reactions;
   Gmessages_arr_rel_insert_input? get messages;
   String? get name;
   String? get profile_picture;
@@ -1962,6 +2688,7 @@ abstract class Gusers_order_by
 
   Gorder_by? get email;
   Gorder_by? get id;
+  Gmessage_reactions_aggregate_order_by? get message_reactions_aggregate;
   Gmessages_aggregate_order_by? get messages_aggregate;
   Gorder_by? get name;
   Gorder_by? get profile_picture;

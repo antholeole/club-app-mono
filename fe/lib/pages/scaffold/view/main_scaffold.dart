@@ -27,28 +27,31 @@ class _MainScaffoldState extends State<MainScaffold> {
         context.watch<sc.ScaffoldCubit>().state.mainScaffoldParts;
 
     return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        centerTitle: true,
-        backwardsCompatibility: false,
-        backgroundColor: const Color(0xffFBFBFB),
-        foregroundColor: Colors.grey[900],
-        automaticallyImplyLeading: false,
-        title: _buildTitle(mainScaffoldParts.titleBarWidget),
-        leading: ScaffoldButton(
-            icon: Icons.menu,
-            onPressed: (sbContext) => Scaffold.of(sbContext).openDrawer()),
-        actions: _buildContextButtons(mainScaffoldParts.actionButtons),
-      ),
-      drawer: ClubDrawer(),
-      endDrawer: mainScaffoldParts.endDrawer,
-      backgroundColor: Colors.white,
-      body: GestureDetector(
-        onTap: FocusScope.of(context).unfocus,
-        child: widget._child,
-      ),
-      bottomNavigationBar: const BottomNav(),
-    );
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: const Color(0xffFBFBFB),
+          foregroundColor: Colors.grey[900],
+          automaticallyImplyLeading: false,
+          title: _buildTitle(mainScaffoldParts.titleBarWidget),
+          leading: ScaffoldButton(
+              icon: Icons.menu,
+              onPressed: (sbContext) => Scaffold.of(sbContext).openDrawer()),
+          actions: _buildContextButtons(mainScaffoldParts.actionButtons),
+        ),
+        drawer: ClubDrawer(),
+        endDrawer: mainScaffoldParts.endDrawer,
+        backgroundColor: Colors.white,
+        body: GestureDetector(
+          onTap: FocusScope.of(context).unfocus,
+          child: widget._child,
+        ),
+        bottomNavigationBar: _buildBottomNav(context.watch<MainCubit>()));
+  }
+
+  Widget? _buildBottomNav(MainCubit cubit) {
+    return cubit.state.join((_) => null, (_) => null, (_) => null,
+        (p0) => const BottomNav(), (_) => null, (_) => null);
   }
 
   List<Widget> _buildContextButtons(List<ActionButton> actionButtons) {
@@ -76,12 +79,13 @@ class _MainScaffoldState extends State<MainScaffold> {
                 children: [
                   if (titleBarWidget != null) titleBarWidget,
                   Text(
-                    mpwg.group.name,
+                    mpwg.club.name,
                     style: Theme.of(context).textTheme.caption,
                   ),
                 ],
               ),
-          (_) => Container()),
+          (_) => Container(),
+          (mpwdm) => titleBarWidget!),
     );
   }
 }

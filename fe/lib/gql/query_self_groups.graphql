@@ -1,0 +1,62 @@
+fragment group_base_fields on groups {
+    group_name,
+    id
+}
+
+query QuerySelfGroups($selfId: uuid!) {
+  admin_clubs: user_to_group(
+    where: {
+      admin: {
+      	_eq:true
+      },
+      user_id: {
+        _eq: $selfId
+      }
+    }
+  ) {
+    group {
+      ...group_base_fields,
+      group_join_tokens {
+        join_token
+      }
+    }
+  },
+    member_clubs: user_to_group(
+    where: {
+      admin: {
+      	_eq:false
+      },
+      user_id: {
+        _eq: $selfId
+      }
+    }
+  ) {
+    group {
+      ...group_base_fields
+    }
+  },
+  dms: user_to_thread(
+    where: {
+      user_id: {
+        _eq: $selfId
+      },
+      thread: {
+        is_dm: {
+          _eq: true
+        }
+      }
+    }
+  ) {
+    thread {
+      name,
+      id,
+      user_to_threads {
+        user {
+          id,
+          name,
+          profile_picture
+        }
+      }
+    }
+  }
+}

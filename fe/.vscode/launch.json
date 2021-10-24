@@ -6,6 +6,12 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug"
-          }
+          },
+          {
+            "name": "Flutter: Run all Tests",
+            "request": "launch",
+            "type": "dart",
+            "program": "./test/"
+           }
     ]
 }

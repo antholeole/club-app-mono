@@ -1,6 +1,6 @@
 import 'package:fe/pages/main/cubit/main_cubit.dart';
+import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/pages/profile/cubit/name_change_cubit.dart';
-import 'package:fe/providers/user_provider.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
 import 'package:fe/stdlib/errors/handler.dart';
@@ -37,16 +37,16 @@ class ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = UserProvider.of(context);
+    final user = context.watch<UserCubit>().user;
 
     return Column(
       children: [
         UserAvatar(
-          name: userProvider.user.name,
+          name: user.name,
           radius: 50,
         ),
         Text(
-          userProvider.user.name,
+          user.name,
           style: Theme.of(context).textTheme.headline5,
         ),
         Column(
@@ -119,7 +119,7 @@ class ProfileView extends StatelessWidget {
                       message: 'Sucessfully changed name!',
                       type: ToastType.Success,
                     ));
-                UserProvider.of(context).notifyUpdate();
+                context.read<UserCubit>().notifyUpdate();
               });
             },
             child: const Text(ProfileView.UPDATE_NAME_BUTTON_COPY),

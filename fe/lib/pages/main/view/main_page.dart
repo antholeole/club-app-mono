@@ -4,12 +4,12 @@ import 'package:fe/flows/app_state.dart';
 import 'package:fe/pages/chat/view/chat_page.dart';
 import 'package:fe/pages/events/events_page.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
+import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/pages/main/view/widgets/join_group_button.dart';
 import 'package:fe/pages/scaffold/cubit/channels_bottom_sheet_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/page_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/scaffold_cubit.dart';
 import 'package:fe/pages/scaffold/view/main_scaffold.dart';
-import 'package:fe/providers/user_provider.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
 import 'package:fe/stdlib/errors/handler.dart';
@@ -29,17 +29,15 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-        providers: [
-          //main cubits
-          BlocProvider(create: (_) => ScaffoldCubit()),
-          BlocProvider(create: (_) => PageCubit()),
-          BlocProvider(create: (_) => MainCubit()),
-          BlocProvider(create: (_) => ChatBottomSheetCubit()),
-        ],
-        child: UserProvider(
-          user: _user,
-          child: MainView(),
-        ));
+      providers: [
+        BlocProvider(create: (_) => ScaffoldCubit()),
+        BlocProvider(create: (_) => PageCubit()),
+        BlocProvider(create: (_) => MainCubit()),
+        BlocProvider(create: (_) => ChatBottomSheetCubit()),
+        BlocProvider(create: (_) => UserCubit(_user)),
+      ],
+      child: MainView(),
+    );
   }
 }
 
@@ -65,14 +63,16 @@ class MainView extends StatelessWidget {
                   _handler.handleFailure(mplf.failure, bcContext, toast: false),
               (_) => null,
               (_) => null,
-              (mplo) => _logOut(context, withError: mplo.withError));
+              (mplo) => _logOut(context, withError: mplo.withError),
+              (_) => null);
         },
         builder: (bcContext, state) => state.join(
             (_) => _buildLoading(),
             (_) => _buildErrorScreen(bcContext),
             (_) => _buildGroupless(),
-            (mpwg) => _buildContent(bcContext, mpwg.group),
-            (_) => _buildErrorScreen(bcContext)),
+            (mpwg) => _buildContent(bcContext, mpwg.club),
+            (_) => _buildErrorScreen(bcContext),
+            (mpwdm) => _buildContent(bcContext, mpwdm.dm)),
       ),
     ));
   }

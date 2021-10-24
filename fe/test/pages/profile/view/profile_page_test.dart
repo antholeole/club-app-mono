@@ -1,9 +1,9 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
+import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/pages/profile/cubit/name_change_cubit.dart';
 import 'package:fe/pages/profile/view/profile_page.dart';
-import 'package:fe/providers/user_provider.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
@@ -38,11 +38,12 @@ void main() {
     testWidgets('should render profile view', (tester) async {
       await tester.pumpApp(MultiBlocProvider(
         providers: [
+          BlocProvider<UserCubit>(create: (_) => UserCubit(fakeUser)),
           BlocProvider<MainCubit>(
             create: (context) => mockMainCubit,
           ),
         ],
-        child: UserProvider(user: fakeUser, child: ProfilePage()),
+        child: ProfilePage(),
       ));
 
       expect(find.byType(ProfileView), findsOneWidget);
@@ -61,14 +62,14 @@ void main() {
           ),
           BlocProvider<NameChangeCubit>(create: (_) => mockNameChangeCubit),
           BlocProvider<ToasterCubit>(create: (_) => mockToasterCubit),
+          BlocProvider<UserCubit>(create: (_) => UserCubit(fakeUser)),
         ],
-        child: UserProvider(user: fakeUser, child: child),
+        child: child,
       );
     }
 
     setUp(() {
-      <MockCubit>[mockNameChangeCubit, mockToasterCubit]
-          .forEach(resetMockCubit);
+      <MockCubit>[mockNameChangeCubit, mockToasterCubit].forEach(resetMockBloc);
     });
 
     testWidgets('should display users name', (tester) async {
@@ -140,8 +141,7 @@ void main() {
         whenListen(
             mockNameChangeCubit,
             Stream<NameChangeState>.fromIterable([
-              NameChangeState.failure(
-                  const Failure(status: FailureStatus.GQLMisc))
+              NameChangeState.failure(Failure(status: FailureStatus.GQLMisc))
             ]),
             initialState: NameChangeState.notChanging());
 

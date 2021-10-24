@@ -79,9 +79,11 @@ class LoginCubit extends Cubit<LoginState> {
         break;
     }
 
-    final resp = await _client.request(GAuthenticateReq((q) => q
-      ..vars.id_token = providerIdToken
-      ..vars.identity_provider = idp));
+    final resp = await _client
+        .request(GAuthenticateReq((q) => q
+          ..vars.id_token = providerIdToken
+          ..vars.identity_provider = idp))
+        .first;
 
     return BackendAccessTokens(
         accessToken: resp.authenticate!.accessToken,

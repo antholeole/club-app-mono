@@ -7,5 +7,5 @@ export const authRouter = Router({
   base: '/api/auth'
 })
 
-authRouter.post('/', async (req: Request)  => await unauthRoute(req, registerRoute))
+authRouter.post('/', async (req: Request) => await unauthRoute(req, registerRoute))
 authRouter.post('/refresh', async (req: Request) => unauthRoute(req, refreshRoute))

@@ -7,23 +7,20 @@ class TestingConfig extends Config {
       : _needAutoEvents = needAutoEvents;
 
   @override
-  String get gqlUrl => 'not_real_gql';
-
-  @override
-  bool get httpIsSecure => false;
-
-  @override
-  bool get playTaxingAnimations => true;
-
-  @override
   bool get refreshLocalCacheOnReload => true;
-
-  @override
-  String get wsUrl => 'ws://localhost:8175';
 
   @override
   bool get testing => !_needAutoEvents;
 
   @override
-  String get hasuraUrl => 'unreal';
+  List<String> get gqlPathSegments => ['asd', 'asda'];
+
+  @override
+  String get hasuraHost => 'adsa';
+
+  @override
+  int? get hasuraPort => 8000;
+
+  @override
+  bool get transportIsSecure => false;
 }

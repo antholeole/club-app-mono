@@ -13,7 +13,7 @@ void main() {
   final mockLoginCubit = MockLoginCubit.getMock();
 
   setUp(() {
-    resetMockCubit(mockLoginCubit);
+    resetMockBloc(mockLoginCubit);
     registerFallbackValue(LoginType.Google);
   });
 

@@ -32,7 +32,7 @@ class LocalUserService {
         await _localFileStore.deserialize(LocalStorageType.LocalUser);
 
     if (userStr == null) {
-      throw const Failure(status: FailureStatus.NotLoggedIn);
+      throw Failure(status: FailureStatus.NotLoggedIn);
     }
 
     return User.fromJson(json.decode(userStr));

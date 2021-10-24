@@ -4,9 +4,9 @@ import 'package:fe/gql/query_self_threads_in_group.var.gql.dart';
 import 'package:fe/gql/query_self_threads_in_group.data.gql.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
+import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/pages/scaffold/view/widgets/channels_bottom_sheet.dart';
 import 'package:fe/pages/scaffold/cubit/channels_bottom_sheet_cubit.dart';
-import 'package:fe/providers/user_provider.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
@@ -42,37 +42,35 @@ void main() {
     MockToasterCubit mockToasterCubit = MockToasterCubit.getMock();
 
     Widget build() {
-      return UserProvider(
-          user: fakeUser,
-          child: MultiBlocProvider(
-              providers: [
-                BlocProvider<MainCubit>(create: (_) => mockMainCubit),
-                BlocProvider<ChatBottomSheetCubit>(
-                  create: (_) => mockChatBottomSheetCubit,
-                ),
-                BlocProvider<ThreadCubit>(
-                  create: (_) => mockThreadCubit,
-                ),
-                BlocProvider<ToasterCubit>(create: (_) => mockToasterCubit),
-              ],
-              child: MaterialApp(
-                home: Scaffold(
-                  body: Column(
-                    children: [
-                      Container(width: 10, height: 10, key: dismisserKey),
-                      Container(
-                        height: 10,
-                        width: 10,
-                        child: Builder(
-                            builder: (context) => GestureDetector(
-                                key: showBottomSheetButtonKey,
-                                onTap: () =>
-                                    ChannelsBottomSheet.show(context))),
-                      ),
-                    ],
+      return MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (_) => UserCubit(fakeUser)),
+            BlocProvider<MainCubit>(create: (_) => mockMainCubit),
+            BlocProvider<ChatBottomSheetCubit>(
+              create: (_) => mockChatBottomSheetCubit,
+            ),
+            BlocProvider<ThreadCubit>(
+              create: (_) => mockThreadCubit,
+            ),
+            BlocProvider<ToasterCubit>(create: (_) => mockToasterCubit),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: Column(
+                children: [
+                  Container(width: 10, height: 10, key: dismisserKey),
+                  Container(
+                    height: 10,
+                    width: 10,
+                    child: Builder(
+                        builder: (context) => GestureDetector(
+                            key: showBottomSheetButtonKey,
+                            onTap: () => ChannelsBottomSheet.show(context))),
                   ),
-                ),
-              )));
+                ],
+              ),
+            ),
+          ));
     }
 
     Future<void> cleanUp(WidgetTester tester) async {
@@ -87,14 +85,14 @@ void main() {
     }
 
     setUp(() async {
-      resetMockCubit(mockMainCubit);
-      resetMockCubit(mockThreadCubit);
-      resetMockCubit(mockChatBottomSheetCubit);
+      resetMockBloc(mockMainCubit);
+      resetMockBloc(mockThreadCubit);
+      resetMockBloc(mockChatBottomSheetCubit);
 
       await registerAllMockServices();
 
       whenListen(mockMainCubit, Stream<MainState>.fromIterable([]),
-          initialState: MainState.withGroup(mockGroupAdmin));
+          initialState: MainState.withClub(mockGroupAdmin));
 
       whenListen(mockChatBottomSheetCubit, Stream<bool>.fromIterable([]),
           initialState: false);
@@ -107,8 +105,7 @@ void main() {
         (tester) async {
       stubGqlResponse<GQuerySelfThreadsInGroupData,
               GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
-          data: (_) =>
-              GQuerySelfThreadsInGroupData.fromJson({'group_threads': []})!);
+          data: (_) => GQuerySelfThreadsInGroupData.fromJson({'threads': []})!);
 
       await tester.pumpApp(build());
       await show(tester);
@@ -122,8 +119,7 @@ void main() {
         (tester) async {
       stubGqlResponse<GQuerySelfThreadsInGroupData,
               GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
-          data: (_) =>
-              GQuerySelfThreadsInGroupData.fromJson({'group_threads': []})!);
+          data: (_) => GQuerySelfThreadsInGroupData.fromJson({'threads': []})!);
 
       await tester.pumpApp(build());
       await show(tester);
@@ -137,7 +133,7 @@ void main() {
         (tester) async {
       stubGqlResponse<GQuerySelfThreadsInGroupData,
               GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
-          error: (_) => const Failure(status: FailureStatus.GQLMisc));
+          error: (_) => Failure(status: FailureStatus.GQLMisc));
 
       await tester.pumpWidget(build());
       await show(tester);
@@ -162,7 +158,7 @@ void main() {
       stubGqlResponse<GQuerySelfThreadsInGroupData,
               GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
           data: (_) => GQuerySelfThreadsInGroupData.fromJson({
-                'group_threads': [
+                'threads': [
                   {
                     'name': thread1Name,
                     'id': '348af35f-4444-494b-a980-c0a420384c61'
@@ -177,7 +173,6 @@ void main() {
       await tester.pumpWidget(build());
       await show(tester);
       await tester.pump();
-
       await expectLater(find.text(thread1Name), findsOneWidget);
       await expectLater(find.text(thread2Name), findsOneWidget);
 
@@ -191,7 +186,7 @@ void main() {
       stubGqlResponse<GQuerySelfThreadsInGroupData,
               GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
           data: (_) => GQuerySelfThreadsInGroupData.fromJson({
-                'group_threads': [
+                'threads': [
                   fakeThread.toJson(),
                   {
                     'name': 'fake name 2',
@@ -202,40 +197,39 @@ void main() {
 
       Future<Thread?> threadSelectedFuture = Future.value(null);
 
-      await tester.pumpWidget(UserProvider(
-          user: fakeUser,
-          child: MultiBlocProvider(
-              providers: [
-                BlocProvider<MainCubit>(create: (_) => mockMainCubit),
-                BlocProvider<ChatBottomSheetCubit>(
-                  create: (_) => mockChatBottomSheetCubit,
-                ),
-                BlocProvider<ThreadCubit>(
-                  create: (_) => mockThreadCubit,
-                ),
-                BlocProvider<ToasterCubit>(create: (_) => mockToasterCubit),
-              ],
-              child: MaterialApp(
-                home: Scaffold(
-                  body: Column(
-                    children: [
-                      Container(width: 10, height: 10, key: dismisserKey),
-                      Container(
-                          height: 10,
-                          width: 10,
-                          child: Builder(
-                            builder: (context) => GestureDetector(
-                              key: showBottomSheetButtonKey,
-                              onTap: () {
-                                threadSelectedFuture =
-                                    ChannelsBottomSheet.show(context);
-                              },
-                            ),
-                          ))
-                    ],
-                  ),
-                ),
-              ))));
+      await tester.pumpWidget(MultiBlocProvider(
+          providers: [
+            BlocProvider<UserCubit>(create: (_) => UserCubit(fakeUser)),
+            BlocProvider<MainCubit>(create: (_) => mockMainCubit),
+            BlocProvider<ChatBottomSheetCubit>(
+              create: (_) => mockChatBottomSheetCubit,
+            ),
+            BlocProvider<ThreadCubit>(
+              create: (_) => mockThreadCubit,
+            ),
+            BlocProvider<ToasterCubit>(create: (_) => mockToasterCubit),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: Column(
+                children: [
+                  Container(width: 10, height: 10, key: dismisserKey),
+                  Container(
+                      height: 10,
+                      width: 10,
+                      child: Builder(
+                        builder: (context) => GestureDetector(
+                          key: showBottomSheetButtonKey,
+                          onTap: () {
+                            threadSelectedFuture =
+                                ChannelsBottomSheet.show(context);
+                          },
+                        ),
+                      ))
+                ],
+              ),
+            ),
+          )));
 
       await show(tester);
       await tester.pumpAndSettle();
@@ -247,7 +241,7 @@ void main() {
     });
 
     testWidgets('should say no group on no group', (tester) async {
-      resetMockCubit(mockMainCubit);
+      resetMockBloc(mockMainCubit);
       whenListen(mockMainCubit, Stream<MainState>.fromIterable([]),
           initialState: MainState.groupless());
 

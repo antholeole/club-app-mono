@@ -21,12 +21,25 @@ describe('test error handler', () => {
          .toThrow(new Error(statusMessage))
    })
 
-   test('should return 400 on unknown error', async () => {
-      mockDebugGetter.mockReturnValue(false)
+   describe('on unknown error', () => {
+      const unknownError = new Error(statusMessage)
 
-      expect(await errorHandler(new Error(statusMessage)).json()).toEqual({
-         'message': statusMessage,
-         'code': 400
+      beforeEach(() => {
+         mockDebugGetter.mockReturnValue(false)
+      })
+
+      test('should return 400', async () => {
+         expect(await errorHandler(unknownError).json()).toEqual({
+            'message': statusMessage,
+            'code': 400
+         })
+      })
+
+      test('should return unown error on no message', async () => {
+         expect(await errorHandler(Error()).json()).toEqual({
+            'message': 'unknown error',
+            'code': 400
+         })
       })
    })
 

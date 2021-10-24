@@ -34,16 +34,18 @@ class NameChangeCubit extends Cubit<NameChangeState> {
     final userId = await _localUserService.getLoggedInUserId();
 
     if (!_nameChangeRegex.hasMatch(newName)) {
-      emit(NameChangeState.failure(const Failure(
+      emit(NameChangeState.failure(Failure(
           message: NameChangeCubit.REGEX_FAIL_COPY,
-          status: FailureStatus.RegexFail)));
+          status: FailureStatus.Custom)));
       return;
     }
 
     try {
-      await _gqlClient.request(GUpdateSelfNameReq((b) => b
-        ..vars.id = userId
-        ..vars.name = newName));
+      await _gqlClient
+          .request(GUpdateSelfNameReq((b) => b
+            ..vars.id = userId
+            ..vars.name = newName))
+          .first;
     } on Failure catch (f) {
       emit(NameChangeState.failure(f));
       return;

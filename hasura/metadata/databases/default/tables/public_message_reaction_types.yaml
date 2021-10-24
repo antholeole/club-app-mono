@@ -1,0 +1,11 @@
+table:
+  name: message_reaction_types
+  schema: public
+is_enum: true
+select_permissions:
+- permission:
+    columns:
+    - description
+    - reaction_type
+    filter: {}
+  role: user

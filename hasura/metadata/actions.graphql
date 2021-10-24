@@ -6,7 +6,13 @@ type Mutation {
 }
 
 type Mutation {
-  refreshAccessToken (
+  get_or_create_dm (
+    with_user_id: uuid!
+  ): ThreadResponse
+}
+
+type Mutation {
+  refresh_access_token (
     refreshToken: String!
     userId: uuid!
   ): AccessToken
@@ -42,5 +48,10 @@ type AuthenticationResponse {
   id : uuid!
   name : String!
   email : String
+}
+
+type ThreadResponse {
+  id : uuid!
+  name : String
 }
 

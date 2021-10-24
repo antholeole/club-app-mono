@@ -1,9 +1,6 @@
-import 'package:fe/config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
-import '../../service_locator.dart';
 
 class Loader extends StatefulWidget {
   final double _size;
@@ -19,24 +16,14 @@ class Loader extends StatefulWidget {
 
 class _LoaderState extends State<Loader> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
-  late bool _showFiller;
 
   @override
-  @override
   Widget build(BuildContext context) {
-    return _showFiller
-        ? const Center(
-            child: CupertinoActivityIndicator(
-              animating: false,
-              radius: 50,
-            ),
-          )
-        : SpinKitThreeBounce(
-            size: widget._size,
-            color:
-                widget._white ? Colors.white : Theme.of(context).primaryColor,
-            controller: _animationController,
-          );
+    return SpinKitThreeBounce(
+      size: widget._size,
+      color: widget._white ? Colors.white : Theme.of(context).primaryColor,
+      controller: _animationController,
+    );
   }
 
   @override
@@ -48,7 +35,5 @@ class _LoaderState extends State<Loader> with SingleTickerProviderStateMixin {
   void _prepareAnimations() {
     _animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 1200));
-
-    _showFiller = !getIt<Config>().playTaxingAnimations;
   }
 }

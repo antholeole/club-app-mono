@@ -109,7 +109,7 @@ void main() {
       stubGqlResponse<GRefreshData, GRefreshVars>(
         getIt<UnauthGqlClient>(),
         data: (_) => GRefreshData.fromJson({
-          'authenticate': {'accessToken': aToken}
+          'refresh_access_token': {'accessToken': aToken}
         })!,
       );
 
@@ -128,12 +128,12 @@ void main() {
           .thenAnswer((_) async => rToken);
 
       stubGqlResponse<GRefreshData, GRefreshVars>(getIt<UnauthGqlClient>(),
-          error: (_) => const Failure(status: FailureStatus.GQLMisc));
+          error: (_) => Failure(status: FailureStatus.GQLMisc));
 
       final tokenManager = TokenManager();
 
       expect(() async => await tokenManager.refresh(),
-          throwsA(const Failure(status: FailureStatus.RefreshFail)));
+          throwsA(Failure(status: FailureStatus.RefreshFail)));
     });
   });
 }

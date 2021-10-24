@@ -1,5 +1,5 @@
 query QueryVerifySelfInThread($userId: uuid!, $groupId: uuid!, $threadId: uuid!) {
-  group_threads_aggregate(where: {
+  threads_aggregate(where: {
   	_and: {
       group_id: {
         _eq: $groupId

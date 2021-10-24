@@ -2,9 +2,9 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:fe/data/json/backend_access_tokens.dart';
 import 'package:fe/data/models/user.dart';
-import 'package:fe/pages/chat/cubit/chat_cubit.dart';
+import 'package:fe/pages/chat/bloc/chat_bloc.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
-import 'package:fe/pages/groups/cubit/update_groups_cubit.dart';
+import 'package:fe/pages/groups/cubit/group_req_cubit.dart';
 import 'package:fe/pages/login/cubit/login_cubit.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/pages/profile/cubit/name_change_cubit.dart';
@@ -32,23 +32,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fe/gql/query_self_groups.req.gql.dart';
 import 'package:http/http.dart' as http;
 
-import '../reset_mock_bloc.dart';
-
 class FakeBuildContext extends Fake implements BuildContext {}
-
-class MockUpdateGroupsCubit extends MockCubit<UpdateGroupsState>
-    implements UpdateGroupsCubit {
-  MockUpdateGroupsCubit._();
-
-  factory MockUpdateGroupsCubit.getMock() {
-    registerFallbackValue(UpdateGroupsState.fetchingGroups());
-    final cubit = MockUpdateGroupsCubit._();
-    resetMockCubit(cubit);
-    return cubit;
-  }
-}
 
 class MockNameChangeCubit extends MockCubit<NameChangeState>
     implements NameChangeCubit {
@@ -114,14 +101,15 @@ class MockThreadCubit extends MockCubit<ThreadState> implements ThreadCubit {
   }
 }
 
-class MockChatCubit extends MockCubit<ChatState> implements ChatCubit {
-  MockChatCubit._();
+class MockChatBloc extends MockBloc<ChatEvent, ChatState> implements ChatBloc {
+  MockChatBloc._();
 
-  factory MockChatCubit.getMock() {
-    registerFallbackValue(ChatState.inital());
-    final cubit = MockChatCubit._();
-    when(() => cubit.close()).thenAnswer((invocation) async => null);
-    return cubit;
+  factory MockChatBloc.getMock() {
+    registerFallbackValue(ChatState.loading());
+    registerFallbackValue(const FetchMessagesEvent());
+    final bloc = MockChatBloc._();
+    when(() => bloc.close()).thenAnswer((invocation) async => null);
+    return bloc;
   }
 }
 
@@ -146,6 +134,20 @@ class MockMainCubit extends MockCubit<MainState> implements MainCubit {
 }
 
 class MockMainState extends Fake implements MainState {}
+
+class MockGroupReqCubit extends MockCubit<GQuerySelfGroupsReq>
+    implements GroupReqCubit {
+  MockGroupReqCubit._();
+
+  factory MockGroupReqCubit.getMock() {
+    registerFallbackValue(
+        GQuerySelfGroupsReq((q) => q..vars.selfId = UuidType.generate()));
+
+    final cubit = MockGroupReqCubit._();
+
+    return cubit;
+  }
+}
 
 class MockChatBottomSheetCubit extends MockCubit<bool>
     implements ChatBottomSheetCubit {
@@ -332,7 +334,7 @@ class MockHandler extends Mock implements Handler {
   factory MockHandler.getMock() {
     final handler = MockHandler._();
     registerFallbackValue(FakeBuildContext());
-    registerFallbackValue(const Failure(status: FailureStatus.GQLMisc));
+    registerFallbackValue(Failure(status: FailureStatus.GQLMisc));
     return handler;
   }
 }

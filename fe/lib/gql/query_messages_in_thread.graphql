@@ -12,7 +12,7 @@ query QueryMessagesInThread(
         _eq: $threadId,
       },
       created_at: {
-        _lt: $before
+        _lte: $before
       }
     }
   ) {
@@ -22,6 +22,14 @@ query QueryMessagesInThread(
       name,
       profile_picture,
       id
+    },
+  	message_reactions {
+      reaction_type,
+      id,
+      user {
+        id,
+        name
+      }
     },
     is_image,
     updated_at,

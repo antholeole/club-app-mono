@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-// returns two functions: one to setup testing
-// and one to tear down
+/// returns two functions: one to setup testing
+/// and one to tear down
 List<Future<void> Function()> pathProviderSetup(String folderName) {
   final dir = './dump/$folderName/';
 
@@ -20,6 +20,10 @@ List<Future<void> Function()> pathProviderSetup(String folderName) {
         return dir;
       });
     },
-    () async => await Directory('./dump/$folderName/').delete(recursive: true)
+    () async {
+      try {
+        await Directory('./dump/$folderName/').delete(recursive: true);
+      } catch (_) {}
+    }
   ];
 }

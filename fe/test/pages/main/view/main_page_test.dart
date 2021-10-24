@@ -1,5 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:fe/data/models/group.dart';
+import 'package:fe/data/models/club.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/flows/app_state.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
@@ -26,17 +26,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../test_helpers/fixtures/mocks.dart';
 import '../../../test_helpers/get_it_helpers.dart';
 import '../../../test_helpers/pump_app.dart';
-import '../../../test_helpers/stub_cubit_stream.dart';
+import '../../../test_helpers/stub_bloc_stream.dart';
 
 void main() {
   final fakeUser = User(name: 'mock user', id: UuidType.generate());
   final fakeGroup =
-      Group(id: UuidType.generate(), name: 'my group', admin: false);
+      Club(id: UuidType.generate(), name: 'my group', admin: false);
   const failureMessage = 'failurefailure';
 
   setUpAll(() {
     registerFallbackValue(FakeBuildContext());
-    registerFallbackValue(const Failure(status: FailureStatus.GQLMisc));
+    registerFallbackValue(Failure(status: FailureStatus.GQLMisc));
   });
 
   setUp(() async {
@@ -57,7 +57,7 @@ void main() {
     final mockToasterCubit = MockToasterCubit.getMock();
     final mockScaffoldCubit = MockScaffoldCubit.getMock();
 
-    const fakeFailure = Failure(status: FailureStatus.GQLMisc);
+    final fakeFailure = Failure(status: FailureStatus.GQLMisc);
 
     Widget wrapWithDependencies(Widget child) {
       return MultiBlocProvider(
@@ -128,7 +128,7 @@ void main() {
       whenListen(mockPageCubit, Stream<PageState>.fromIterable([]),
           initialState: PageState.eventPage());
       whenListen(mockMainCubit, Stream<MainState>.fromIterable([]),
-          initialState: MainState.withGroup(fakeGroup));
+          initialState: MainState.withClub(fakeGroup));
       whenListen(mockScaffoldCubit, Stream<sc.ScaffoldState>.fromIterable([]),
           initialState: const sc.ScaffoldInitial());
 
@@ -156,7 +156,7 @@ void main() {
           (tester) async {
         const loggedOutKey = Key('imloggedout');
         final mockMainCubitStream =
-            stubCubitStream(mockMainCubit, initialState: MainState.loading());
+            stubBlocStream(mockMainCubit, initialState: MainState.loading());
 
         whenListen(mockPageCubit, Stream<PageState>.fromIterable([]),
             initialState: PageState.eventPage());
@@ -188,7 +188,7 @@ void main() {
           (tester) async {
         const loggedOutKey = Key('imloggedout');
         final mockMainCubitStream =
-            stubCubitStream(mockMainCubit, initialState: MainState.loading());
+            stubBlocStream(mockMainCubit, initialState: MainState.loading());
 
         whenListen(mockPageCubit, Stream<PageState>.fromIterable([]),
             initialState: PageState.eventPage());
