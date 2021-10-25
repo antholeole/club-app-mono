@@ -1,0 +1,10 @@
+config:
+  aws:region: us-east-1
+  club-app:db_password:
+    secure: AAABAAutketKXQ1kr5JKkvxDaswXsDY/+wwnaBRx2ixehNaf89wgxfUMP+UzXONfuIa4MLkFF94/
+  club-app:domain: getclub.app
+  club-app:jwt_secret:
+    secure: AAABALTZjJvB6WAHHTTXAbftrIF0gR7b94PG40wy5Ho2kWnKv3Bzsb4ej/cJvUxzXsEujDaiNUgttPviXT/4SWd5N3dsjJD/e6nKYUPAG4wsASmDt+svBVvlkZXFqZrgaw==
+  club-app:stage: dev
+  club-app:webhook_secret:
+    secure: AAABAEITdx/rXZb26YbgrJEnbGnQe99LsI/AqVuUb7k54lkOJffny+etOsa/XKtaRtXcKMtKqCpd6YsLpzS6ZBrs2gdtyZ3Z
