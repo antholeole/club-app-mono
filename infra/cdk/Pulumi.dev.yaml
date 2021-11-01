@@ -1,5 +1,12 @@
 config:
   aws:region: us-east-1
+  cloudflare:apiToken:
+    secure: AAABANV+xN3an0qghXlpOyWhiirTWDs5HFEtTwJSV2/e4gf6G2TjYRHOmKA2jFk7qjCtIxThtJiDm5G9jzjWbbz2T28xXv2T
+  club-app:CF_VERIFICATION_HEADER:
+    secure: AAABAIvC7jVUhQbB86BtZzwrdzjXWSUfrwJcZEWoZK8IfwL+hd25K43xZ4sQBd3FLBznw822
+  club-app:CF_ZONE:
+    secure: AAABAFs3y2EBKW23LXfUy9lMLEbZ2rQ0J5ofksSeSKDHnnOMgEKmfJMNf92G5ldLt0HDDbutr4XH5P3jaGU1yA==
+  club-app:base_url: getclub.app
   club-app:db_password:
     secure: AAABAAutketKXQ1kr5JKkvxDaswXsDY/+wwnaBRx2ixehNaf89wgxfUMP+UzXONfuIa4MLkFF94/
   club-app:domain: getclub.app

@@ -12,7 +12,8 @@ module.exports = {
                 "hasura",
                 "knowledge",
                 "website",
-                "multi"
+                "multi",
+                "cdk"
             ],
         ],
     },

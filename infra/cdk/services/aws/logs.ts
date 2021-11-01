@@ -1,6 +1,6 @@
 import * as pulumi from '@pulumi/pulumi'
 import * as aws from '@pulumi/aws'
-import { generateName } from '../helpers'
+import { generateName } from '../../helpers'
 
 export const createLogGroup = (config: pulumi.Config, name: string): aws.cloudwatch.LogGroup => 
     new aws.cloudwatch.LogGroup(generateName(config, `${name}-logs`), {
