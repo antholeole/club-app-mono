@@ -10,8 +10,16 @@ config:
   club-app:db_password:
     secure: AAABAAutketKXQ1kr5JKkvxDaswXsDY/+wwnaBRx2ixehNaf89wgxfUMP+UzXONfuIa4MLkFF94/
   club-app:domain: getclub.app
+  club-app:github_token:
+    secure: AAABAM99nDq18Q8y6Z0PdZjvzycrg8wdwOKzhmOO3iRkqutdnrzlOsBCOBiBk/IM8CAbyiMlJhpSbJOCSe5NHe0gEGl36w4M
+  club-app:hasura_admin_key:
+    secure: AAABAJNnAMrsA4DjVwEbLIwCU+iq9A1U6rry0QfWEuz+ZMsWgoUyaoG7X/EM0FFUgpkZTa5eHcxNrLuItw==
   club-app:jwt_secret:
     secure: AAABALTZjJvB6WAHHTTXAbftrIF0gR7b94PG40wy5Ho2kWnKv3Bzsb4ej/cJvUxzXsEujDaiNUgttPviXT/4SWd5N3dsjJD/e6nKYUPAG4wsASmDt+svBVvlkZXFqZrgaw==
   club-app:stage: dev
   club-app:webhook_secret:
     secure: AAABAEITdx/rXZb26YbgrJEnbGnQe99LsI/AqVuUb7k54lkOJffny+etOsa/XKtaRtXcKMtKqCpd6YsLpzS6ZBrs2gdtyZ3Z
+  github:app_auth:
+    secure: AAABAAo7fFKXRLBzIo1L5kj7c0DdXj46El34N2A2xlv56WDP95+6H3+zHe9LVAIxeQVzA2FRI1pfeB0H/Ji6g77HKGo4gblM
+  github:token:
+    secure: AAABANHENT51GIn0yt9E+qpQ/VnUvTkbq2nelHMmdIIXM41FkufPHTFeta4aw/j1vWmFwKohq132PnYaINLlNXisGUXPobvQ

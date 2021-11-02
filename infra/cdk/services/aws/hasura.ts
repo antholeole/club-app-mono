@@ -5,7 +5,7 @@ import { generateName } from '../../helpers'
 import { generateARecord } from '../cloudflare/aRecord'
 
 export const createHasura = (
-    config: pulumi.Config, hasuraAdminKey: pulumi.Input<string>, rds: aws.rds.Instance, cluster: awsx.ecs.Cluster
+    config: pulumi.Config, rds: aws.rds.Instance, cluster: awsx.ecs.Cluster
 ): pulumi.Output<string> => {
     // TODO: a user can easily hit ALB directly. need to add a secret header on CF side and then
     // verify it in ALB side. don't worr
@@ -32,7 +32,7 @@ export const createHasura = (
                         name: 'HASURA_GRAPHQL_JWT_SECRET',
                         value: config.requireSecret('jwt_secret').apply((jwtSecret) => `{"type": "HS256","key": "${jwtSecret}"}`)
                     },
-                    { name: 'HASURA_GRAPHQL_ADMIN_SECRET', value: hasuraAdminKey },
+                    { name: 'HASURA_GRAPHQL_ADMIN_SECRET', value: config.requireSecret('hasura_admin_key') },
                     { name: 'HASURA_GRAPHQL_DEV_MODE', value: 'false' },
                     { name: 'HASURA_GRAPHQL_ENABLE_CONSOLE', value: 'false' },
                     { name: 'HASURA_GRAPHQL_UNAUTHORIZED_ROLE', value: 'unauthenticated' },
