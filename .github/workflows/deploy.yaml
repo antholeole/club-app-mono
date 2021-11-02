@@ -1,0 +1,57 @@
+on: push
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Set env to staging
+        #if: endsWith(github.ref, '/staging') 
+        run: echo "ENVIRONMENT=dev" >> $GITHUB_ENV     
+      - name: Set env to production
+        if: endsWith(github.ref, '/main')
+        run: echo "ENVIRONMENT=prod" >> $GITHUB_ENV
+      - name: Setup AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-region: us-east-1
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - run: npm install
+        working-directory: ./infra/cdk
+      - name: Deploy
+        id: deploy
+        uses: pulumi/actions@v3
+        with:
+          command: up
+          stack-name: ${{ env.ENVIRONMENT }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          work-dir: infra/cdk
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      - name: Hasura migration
+        uses: tibotiber/hasura-action@master
+        with:
+          args: migrate apply --all-databases
+        env:
+          HASURA_ENDPOINT: https://${{ steps.deploy.outputs.hasuraEndpoint }}
+          HASURA_ADMIN_SECRET: ${{ secrets[format('{0}_HASURA_ADMIN_KEY', env.ENVIRONMENT)] }}
+          HASURA_WORKDIR: hasura
+          HASURA_ENGINE_VERSION: ${{ steps.deploy.outputs.hasuraVersion }}
+      - name: Hasura metadata
+        if: false
+        uses: tibotiber/hasura-action@master
+        with:
+          args: metadata apply
+        env:
+          HASURA_ENDPOINT: https://${{ steps.deploy.outputs.hasuraEndpoint }}
+          HASURA_ADMIN_SECRET: ${{ secrets[format('{0}_HASURA_ADMIN_KEY', env.ENVIRONMENT)] }}
+          HASURA_WORKDIR: hasura
+          HASURA_ENGINE_VERSION: ${{ steps.deploy.outputs.hasuraVersion }}
+        
+    

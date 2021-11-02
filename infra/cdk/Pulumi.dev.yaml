@@ -14,6 +14,7 @@ config:
     secure: AAABAM99nDq18Q8y6Z0PdZjvzycrg8wdwOKzhmOO3iRkqutdnrzlOsBCOBiBk/IM8CAbyiMlJhpSbJOCSe5NHe0gEGl36w4M
   club-app:hasura_admin_key:
     secure: AAABAJNnAMrsA4DjVwEbLIwCU+iq9A1U6rry0QfWEuz+ZMsWgoUyaoG7X/EM0FFUgpkZTa5eHcxNrLuItw==
+  club-app:hasura_version: v2.0.10
   club-app:jwt_secret:
     secure: AAABALTZjJvB6WAHHTTXAbftrIF0gR7b94PG40wy5Ho2kWnKv3Bzsb4ej/cJvUxzXsEujDaiNUgttPviXT/4SWd5N3dsjJD/e6nKYUPAG4wsASmDt+svBVvlkZXFqZrgaw==
   club-app:stage: dev

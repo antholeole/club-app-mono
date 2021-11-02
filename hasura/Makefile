@@ -14,3 +14,8 @@ test:
 	docker-compose down && source scripts/env/bin/activate && cd scripts/tests && \
 	 JWT_SECRET=$$(grep JWT_SECRET ./../../../.env | cut -d '=' -f 2-) \
 	 ADMIN_SECRET=$$(grep ADMIN_SECRET ./../../../.env | cut -d '=' -f 2-) pytest --docker-compose=./../../docker-compose.yaml
+
+whitelist:
+	ADMIN_SECRET=$$(grep ADMIN_SECRET ./../.env | cut -d '=' -f 2-) && \
+	export ADMIN_SECRET=$$ADMIN_SECRET && \
+	python3 scripts/allow_list/allow_queries.py && hasura metadata export --admin-secret $$ADMIN_SECRET

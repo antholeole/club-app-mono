@@ -27,6 +27,7 @@ services:
       WEBHOOK_URL: '${WEBHOOK_URL}'
       WEBHOOK_SECRET_KEY: '${WEBHOOK_SECRET_KEY}'
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: 'unauthenticated'
+      HASURA_GRAPHQL_ENABLE_ALLOWLIST: "true"
     volumes:
       - ./migrations:/migrations
       - ./metadata:/metadata

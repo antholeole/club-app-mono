@@ -15,7 +15,9 @@ export const createHasura = (
         generateName(config, 'hasura-alb'), { external: true, securityGroups: [...cluster.securityGroups, ] })
 
     const atg = alb.createTargetGroup(
-        'app-tg', { port: 8080, deregistrationDelay: 0 }, )
+        'app-tg', { port: 8080, deregistrationDelay: 0, healthCheck: {
+            path: '/healthz'
+        } }, )
 
     const web = atg.createListener('web', { port: 80 }) 
     
@@ -24,7 +26,13 @@ export const createHasura = (
         desiredCount: 1,
         taskDefinitionArgs: {
             container: {
-                image: 'hasura/graphql-engine:v2.0.10',
+                healthCheck: { 
+                    command: ['CMD', 'bash', '-c', 'exec 5<>/dev/tcp/127.0.0.1/8080 && echo -e \'GET /healthz HTTP/1.1\n\n\' >&5 && cat <&5 | head -n 1 | grep 200'],
+                    interval: 15,
+                    timeout: 5,
+                    retries: 3
+                },
+                image: pulumi.interpolate `hasura/graphql-engine:${config.require('hasura_version')}`,
                 portMappings: [web],
                 environment: [
                     { name: 'HASURA_GRAPHQL_ENABLED_LOG_TYPES', value: 'http-log, webhook-log, websocket-log, query-log' },
@@ -34,9 +42,10 @@ export const createHasura = (
                     },
                     { name: 'HASURA_GRAPHQL_ADMIN_SECRET', value: config.requireSecret('hasura_admin_key') },
                     { name: 'HASURA_GRAPHQL_DEV_MODE', value: 'false' },
-                    { name: 'HASURA_GRAPHQL_ENABLE_CONSOLE', value: 'false' },
+                    { name: 'HASURA_GRAPHQL_ENABLE_CONSOLE', value: config.require('stage') === 'dev' ? 'true' : 'false' },
                     { name: 'HASURA_GRAPHQL_UNAUTHORIZED_ROLE', value: 'unauthenticated' },
                     { name: 'WEBHOOK_URL', value: 'getclub.app/api' },
+                    { name: 'HASURA_GRAPHQL_ENABLE_ALLOWLIST', value: 'true' },
                     {
                         name: 'WEBHOOK_SECRET_KEY',
                         value: config.requireSecret('webhook_secret')
@@ -50,9 +59,10 @@ export const createHasura = (
         },
     })
 
-    generateARecord(config, pulumi.interpolate`${config.get('stage')}-hasura.${config.get('base_url')}`, alb.loadBalancer.dnsName, 'hasura')
+    const endpoint = pulumi.interpolate`${config.get('stage')}-hasura.${config.get('base_url')}`
+    generateARecord(config, endpoint, alb.loadBalancer.dnsName, 'hasura')
 
-    return pulumi.interpolate`http://${web.endpoint.hostname}:${web.endpoint.port}`
+    return endpoint
 }
 
 

@@ -12,7 +12,9 @@ const cluster = awsx.ecs.Cluster.getDefault()
 const rds = createRds(config, vpc, cluster)
 const hasura = createHasura(config, rds, cluster)
 
-addSecret(config, pulumi.interpolate `${config.require('stage')}-hasura_admin_key`, config.requireSecret('hasura_admin_key'))
+addSecret(config, pulumi.interpolate `${config.require('stage')}_hasura_admin_key`, config.requireSecret('hasura_admin_key'))
 
-export const endpoint = hasura
+export const hasuraEndpoint = hasura
+export const hasuraVersion = config.require('hasura_version')
+
 
