@@ -1,11 +1,12 @@
 import * as pulumi from '@pulumi/pulumi'
 import * as awsx from '@pulumi/awsx'
 import * as aws from '@pulumi/aws'
-import { generateName } from '../../helpers'
-import { generateARecord } from '../cloudflare/aRecord'
+import { generateName, generateUserFacingName } from '../../helpers'
+import { generateRecord } from '../cloudflare/records'
+import { RecordType } from '@pulumi/aws/route53'
 
 export const createHasura = (
-    config: pulumi.Config, rds: aws.rds.Instance, cluster: awsx.ecs.Cluster
+    config: pulumi.Config, rds: aws.rds.Instance, cluster: awsx.ecs.Cluster, workerEndpoint: pulumi.Output<string>
 ): pulumi.Output<string> => {
     // TODO: a user can easily hit ALB directly. need to add a secret header on CF side and then
     // verify it in ALB side. don't worr
@@ -41,10 +42,10 @@ export const createHasura = (
                         value: config.requireSecret('jwt_secret').apply((jwtSecret) => `{"type": "HS256","key": "${jwtSecret}"}`)
                     },
                     { name: 'HASURA_GRAPHQL_ADMIN_SECRET', value: config.requireSecret('hasura_admin_key') },
-                    { name: 'HASURA_GRAPHQL_DEV_MODE', value: 'false' },
+                    { name: 'HASURA_GRAPHQL_DEV_MODE', value: config.require('stage') === 'dev' ? 'true' : 'false' },
                     { name: 'HASURA_GRAPHQL_ENABLE_CONSOLE', value: config.require('stage') === 'dev' ? 'true' : 'false' },
                     { name: 'HASURA_GRAPHQL_UNAUTHORIZED_ROLE', value: 'unauthenticated' },
-                    { name: 'WEBHOOK_URL', value: 'getclub.app/api' },
+                    { name: 'WEBHOOK_URL', value: pulumi.interpolate `https://${workerEndpoint}` },
                     { name: 'HASURA_GRAPHQL_ENABLE_ALLOWLIST', value: 'true' },
                     {
                         name: 'WEBHOOK_SECRET_KEY',
@@ -59,8 +60,8 @@ export const createHasura = (
         },
     })
 
-    const endpoint = pulumi.interpolate`${config.get('stage')}-hasura.${config.get('base_url')}`
-    generateARecord(config, endpoint, alb.loadBalancer.dnsName, 'hasura')
+    const endpoint = pulumi.interpolate `${generateUserFacingName(config, 'hasura')}.${config.require('base_url')}`
+    generateRecord(config, endpoint, 'hasura', RecordType.CNAME, alb.loadBalancer.dnsName)
 
     return endpoint
 }

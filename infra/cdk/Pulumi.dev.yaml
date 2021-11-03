@@ -1,5 +1,7 @@
 config:
   aws:region: us-east-1
+  cloudflare:accountId:
+    secure: AAABAL9TFau2nXhHPrEAbITxa8jrMrEpUGNv6rPBE/RMxScDPop2iONlE6v9TcGv5WnfiWe/XR/BNRyRzOnvuQ==
   cloudflare:apiToken:
     secure: AAABANV+xN3an0qghXlpOyWhiirTWDs5HFEtTwJSV2/e4gf6G2TjYRHOmKA2jFk7qjCtIxThtJiDm5G9jzjWbbz2T28xXv2T
   club-app:CF_VERIFICATION_HEADER:

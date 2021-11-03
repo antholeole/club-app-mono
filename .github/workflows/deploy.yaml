@@ -1,8 +1,8 @@
 on: 
   push:
     branches:
-      - main
       - staging
+      - main
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -48,7 +48,6 @@ jobs:
           HASURA_WORKDIR: hasura
           HASURA_ENGINE_VERSION: ${{ steps.deploy.outputs.hasuraVersion }}
       - name: Hasura metadata
-        if: false
         uses: tibotiber/hasura-action@master
         with:
           args: metadata apply
