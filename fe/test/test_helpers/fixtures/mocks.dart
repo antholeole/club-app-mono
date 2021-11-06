@@ -3,6 +3,9 @@ import 'package:connectivity/connectivity.dart';
 import 'package:fe/data/json/backend_access_tokens.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/chat/bloc/chat_bloc.dart';
+import 'package:fe/pages/chat/cubit/data_carriers/sending_message.dart';
+import 'package:fe/pages/chat/cubit/message_overlay_cubit.dart';
+import 'package:fe/pages/chat/cubit/send_cubit.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/pages/groups/cubit/group_req_cubit.dart';
 import 'package:fe/pages/login/cubit/login_cubit.dart';
@@ -101,6 +104,18 @@ class MockThreadCubit extends MockCubit<ThreadState> implements ThreadCubit {
   }
 }
 
+class MockSendCubit extends MockCubit<List<SendState>> implements SendCubit {
+  MockSendCubit._();
+
+  factory MockSendCubit.getMock() {
+    registerFallbackValue(
+        [SendState.sending(message: SendingMessage(message: 'asdads'))]);
+    final cubit = MockSendCubit._();
+    when(() => cubit.close()).thenAnswer((invocation) async => null);
+    return cubit;
+  }
+}
+
 class MockChatBloc extends MockBloc<ChatEvent, ChatState> implements ChatBloc {
   MockChatBloc._();
 
@@ -155,6 +170,19 @@ class MockChatBottomSheetCubit extends MockCubit<bool>
 
   factory MockChatBottomSheetCubit.getMock() {
     final cubit = MockChatBottomSheetCubit._();
+
+    return cubit;
+  }
+}
+
+class MockMessageOverlayCubit extends MockCubit<MessageOverlayState>
+    implements MessageOverlayCubit {
+  MockMessageOverlayCubit._();
+
+  factory MockMessageOverlayCubit.getMock() {
+    registerFallbackValue(MessageOverlayState.none());
+
+    final cubit = MockMessageOverlayCubit._();
 
     return cubit;
   }

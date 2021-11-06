@@ -17,7 +17,7 @@ void main() {
   final Dm fakeDm = Dm(id: UuidType.generate(), users: [], name: 'asdasd');
   final Dm otherDm = Dm(id: UuidType.generate(), name: 'toast', users: []);
 
-  Widget build({required Widget child}) {
+  Widget wrapWithDependencies({required Widget child}) {
     when(() => mockMainCubit.state).thenReturn(MainState.withDm(dm: fakeDm));
 
     return MultiBlocProvider(
@@ -30,7 +30,7 @@ void main() {
 
   testWidgets('should display selectedTabIncidactor if selected',
       (tester) async {
-    await tester.pumpApp(build(
+    await tester.pumpApp(wrapWithDependencies(
         child: Column(
       children: [
         Provider(create: (_) => fakeDm, child: const DmTab()),
@@ -54,8 +54,8 @@ void main() {
   });
 
   testWidgets('should set dm on tap', (tester) async {
-    await tester.pumpApp(
-        build(child: Provider(create: (_) => fakeDm, child: const DmTab())));
+    await tester.pumpApp(wrapWithDependencies(
+        child: Provider(create: (_) => fakeDm, child: const DmTab())));
 
     await tester.tap(find.byType(DmTab));
 
