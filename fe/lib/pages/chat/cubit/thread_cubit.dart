@@ -13,7 +13,6 @@ import 'package:fe/gql/query_self_threads_in_group.req.gql.dart';
 import 'package:fe/gql/query_verify_self_in_thread.req.gql.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../config.dart';
 import '../../../service_locator.dart';
 
 import 'thread_state.dart';
@@ -23,17 +22,12 @@ class ThreadCubit extends Cubit<ThreadState> {
   final _sharedPrefrences = getIt<SharedPreferences>();
   final _gqlClient = getIt<AuthGqlClient>();
   final _localUserService = getIt<LocalUserService>();
-  final _config = getIt<Config>();
 
   Group? currentGroup;
 
   ThreadCubit({required Group group, Thread? initalThread})
       : super(ThreadState.noThread()) {
-    if (_config.testing) {
-      currentGroup = group;
-    } else {
-      _newGroup(group);
-    }
+    _newGroup(group);
 
     if (initalThread != null) {
       emit(ThreadState.thread(initalThread));

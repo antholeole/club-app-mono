@@ -15,7 +15,6 @@ import 'package:fe/gql/query_self_group_preview.data.gql.dart';
 import 'package:fe/gql/query_self_group_preview.req.gql.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
 
-import '../../../config.dart';
 import '../../../service_locator.dart';
 
 part 'main_state.dart';
@@ -26,10 +25,9 @@ class MainCubit extends Cubit<MainState> {
   final _localFileStore = getIt<LocalFileStore>();
   final _secureStorage = getIt<FlutterSecureStorage>();
   final _tokenManager = getIt<TokenManager>();
-  final _config = getIt<Config>();
 
   MainCubit() : super(MainState.loading()) {
-    if (!_config.testing) initalizeMainPage();
+    initalizeMainPage();
   }
 
   Future<void> initalizeMainPage() async {

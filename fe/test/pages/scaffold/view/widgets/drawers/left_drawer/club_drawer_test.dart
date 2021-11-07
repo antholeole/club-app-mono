@@ -31,7 +31,7 @@ void main() {
   }
 
   setUp(() {
-    registerAllMockServices(needCubitAutoEvents: false);
+    registerAllMockServices();
   });
 
   testWidgets('should display the correct page', (tester) async {

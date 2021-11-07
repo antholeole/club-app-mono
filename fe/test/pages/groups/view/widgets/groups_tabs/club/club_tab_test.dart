@@ -19,7 +19,7 @@ void main() {
   final Club otherFakeClub =
       Club(id: UuidType.generate(), name: 'fake club 2', admin: false);
 
-  Widget build({required Widget child}) {
+  Widget wrapWithDependencies({required Widget child}) {
     return BlocProvider<MainCubit>(
       create: (context) => mockMainCubit,
       child: child,
@@ -29,7 +29,7 @@ void main() {
   testWidgets('should display selected if selected', (tester) async {
     when(() => mockMainCubit.state).thenReturn(MainState.withClub(fakeClub));
 
-    await tester.pumpApp(build(
+    await tester.pumpApp(wrapWithDependencies(
         child: Column(
       children: [
         Provider(create: (_) => fakeClub, child: const ClubTab()),
@@ -55,7 +55,7 @@ void main() {
   testWidgets('should switch group if tapped', (tester) async {
     when(() => mockMainCubit.state).thenReturn(MainState.withClub(fakeClub));
 
-    await tester.pumpApp(build(
+    await tester.pumpApp(wrapWithDependencies(
       child: Provider(create: (_) => fakeClub, child: const ClubTab()),
     ));
 

@@ -34,7 +34,7 @@ void main() {
         joinToken: withJoinToken);
   }
 
-  Widget build({required Widget child, required Club club}) {
+  Widget wrapWithDependencies({required Widget child, required Club club}) {
     return BlocProvider<GroupReqCubit>(
       create: (context) => mockGroupReqCubit,
       child: Provider<Club>(
@@ -53,7 +53,8 @@ void main() {
   });
 
   testWidgets('should display no join token on no join token', (tester) async {
-    await tester.pumpApp(build(child: JoinTokenTile(), club: getClub()));
+    await tester
+        .pumpApp(wrapWithDependencies(child: JoinTokenTile(), club: getClub()));
 
     expect(find.text(JoinTokenTile.NO_JOIN_TOKEN_TEXT), findsOneWidget);
   });
@@ -61,8 +62,8 @@ void main() {
   testWidgets('should display join token on join token', (tester) async {
     const joinToken = 'IM A HAPPYL ITTLE JOIN TOKEN';
 
-    await tester.pumpApp(
-        build(child: JoinTokenTile(), club: getClub(withJoinToken: joinToken)));
+    await tester.pumpApp(wrapWithDependencies(
+        child: JoinTokenTile(), club: getClub(withJoinToken: joinToken)));
 
     expect(find.text(joinToken), findsOneWidget);
   });
@@ -74,8 +75,8 @@ void main() {
         getIt<AuthGqlClient>(),
         data: (_) => GUpsertGroupJoinTokenData.fromJson({})!);
 
-    await tester.pumpApp(
-        build(child: JoinTokenTile(), club: getClub(withJoinToken: joinToken)));
+    await tester.pumpApp(wrapWithDependencies(
+        child: JoinTokenTile(), club: getClub(withJoinToken: joinToken)));
     await tester.tap(find.byIcon(Icons.delete));
 
     final req = verify(() => getIt<AuthGqlClient>().request(captureAny()))
@@ -92,8 +93,8 @@ void main() {
         getIt<AuthGqlClient>(),
         data: (_) => GUpsertGroupJoinTokenData.fromJson({})!);
 
-    await tester.pumpApp(
-        build(child: JoinTokenTile(), club: getClub(withJoinToken: joinToken)));
+    await tester.pumpApp(wrapWithDependencies(
+        child: JoinTokenTile(), club: getClub(withJoinToken: joinToken)));
     await tester.tap(find.byIcon(Icons.refresh));
 
     final req = verify(() => getIt<AuthGqlClient>().request(captureAny()))
@@ -110,8 +111,8 @@ void main() {
         getIt<AuthGqlClient>(),
         error: (_) => Failure(status: FailureStatus.GQLMisc));
 
-    await tester.pumpApp(
-        build(child: JoinTokenTile(), club: getClub(withJoinToken: joinToken)));
+    await tester.pumpApp(wrapWithDependencies(
+        child: JoinTokenTile(), club: getClub(withJoinToken: joinToken)));
     await tester.tap(find.byIcon(Icons.refresh));
 
     verify(() => getIt<Handler>().handleFailure(any(), any())).called(1);

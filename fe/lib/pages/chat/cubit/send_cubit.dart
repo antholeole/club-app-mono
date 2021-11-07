@@ -73,11 +73,9 @@ class SendCubit extends Cubit<List<SendState>> {
     // ignore: unawaited_futures
     _chatBloc.stream
         .firstWhere(
-            (element) => element.join(
-                (fm) => fm.messages.any((msg) => msg.id == sendingMessage.id),
-                (_) => false,
-                (_) => false,
-                (_) => false),
+            (element) => element.join((fm) {
+                  return fm.messages.any((msg) => msg.id == sendingMessage.id);
+                }, (_) => false, (_) => false, (_) => false),
             //dummy or else prevents state errors when app closes and no stream was found.
             orElse: () => ChatState.loading())
         .then((_) => emit(List.of(state

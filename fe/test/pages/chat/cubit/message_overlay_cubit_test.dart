@@ -34,6 +34,28 @@ void main() {
           ]);
 
   blocTest<MessageOverlayCubit, MessageOverlayState>(
+      'should emit settings on add settings',
+      build: () =>
+          MessageOverlayCubit(scrollController: MockScrollController()),
+      act: (cubit) => cubit.addSettingsOverlay(
+          layerLink: fakeLayerLink, message: fakeMessage),
+      expect: () => [
+            isA<MessageOverlayState>().having(
+                (state) => state.join((_) => null, (mos) => mos, (_) => null),
+                'state',
+                isNotNull)
+          ]);
+
+  blocTest<MessageOverlayCubit, MessageOverlayState>(
+      'should emit none on close',
+      build: () =>
+          MessageOverlayCubit(scrollController: MockScrollController()),
+      seed: () => MessageOverlayState.settings(
+          layerLink: fakeLayerLink, message: fakeMessage),
+      act: (cubit) => cubit.dismissOverlay(),
+      expect: () => [MessageOverlayState.none()]);
+
+  blocTest<MessageOverlayCubit, MessageOverlayState>(
       'should emit reaction on add reaction',
       build: () =>
           MessageOverlayCubit(scrollController: MockScrollController()),
@@ -53,6 +75,4 @@ void main() {
       act: (cubit) => cubit.close(),
       verify: (_) =>
           verify(() => mockScrollController.dispose()).called(greaterThan(1)));
-
-  //close should close scroll controller
 }

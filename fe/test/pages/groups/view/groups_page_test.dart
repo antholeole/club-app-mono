@@ -152,7 +152,7 @@ void main() {
             Club(admin: false, id: UuidType.generate(), name: 'asdasd')));
   });
 
-  Widget build({required Widget child}) {
+  Widget wrapWithDependencies({required Widget child}) {
     return MultiBlocProvider(
       providers: [
         BlocProvider<MainCubit>(create: (_) => mockMainCubit),
@@ -168,7 +168,7 @@ void main() {
     testWidgets('should render groupsView', (tester) async {
       stubGqlResponse(getIt<AuthGqlClient>(), data: (_) => respAsObj);
 
-      await tester.pumpApp(build(child: const GroupsPage()));
+      await tester.pumpApp(wrapWithDependencies(child: const GroupsPage()));
 
       expect(find.byType(GroupsView), findsOneWidget);
     });
@@ -179,7 +179,7 @@ void main() {
         (tester) async {
       stubGqlResponse(getIt<AuthGqlClient>(), data: (_) => respAsObj);
 
-      await tester.pumpApp(build(child: const GroupsPage()));
+      await tester.pumpApp(wrapWithDependencies(child: const GroupsPage()));
       await tester.pump(const Duration(microseconds: 10));
 
       expect(

@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:fe/pages/chat/bloc/chat_bloc.dart';
 import 'package:fe/pages/chat/cubit/message_overlay_cubit.dart';
 import 'package:fe/pages/chat/cubit/send_cubit.dart';
-import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/pages/chat/view/widgets/chats/message/overlays/message_overlay_display.dart';
 import 'package:fe/pages/chat/view/widgets/chats/message/sending_message.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
@@ -19,9 +18,11 @@ import '../../../../../service_locator.dart';
 import 'message/chat_page_message_display.dart';
 
 class Chats extends StatefulWidget {
+  @visibleForTesting
   static const String ERROR_COPY = 'There was an error while fetching chats.';
+
+  @visibleForTesting
   static const String NO_MESSAGES_COPY = 'No messages yet.';
-  static const String NO_THREAD_COPY = 'No thread selected.';
 
   const Chats({Key? key}) : super(key: key);
 
@@ -31,24 +32,6 @@ class Chats extends StatefulWidget {
 
 class _ChatsState extends State<Chats> {
   final _handler = getIt<Handler>();
-
-  late ScrollController _scrollController;
-
-  late MessageOverlayCubit _messsageOverlayCubit;
-
-  @override
-  void initState() {
-    _messsageOverlayCubit = context.read<MessageOverlayCubit>();
-    _scrollController = _messsageOverlayCubit.scrollController;
-    _scrollController.addListener(_onScroll);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _messsageOverlayCubit.scrollController.removeListener(_onScroll);
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +74,7 @@ class _ChatsState extends State<Chats> {
     return MessageOverlayDisplay(
       child: ListView.builder(
           reverse: true,
-          controller: _scrollController,
+          controller: context.read<MessageOverlayCubit>().scrollController,
           itemCount: itemCount,
           itemBuilder: (context, i) {
             if (i < unsents.length) {
@@ -142,21 +125,15 @@ class _ChatsState extends State<Chats> {
   }
 
   Widget _buildNoChats() {
-    final copy = [];
-
-    if (context.read<ThreadCubit>().state.thread != null) {
-      copy.addAll(
-          [Chats.NO_MESSAGES_COPY, 'Send one to start the conversation!']);
-    } else {
-      copy.add(Chats.NO_THREAD_COPY);
-    }
-
     return Container(
       width: double.infinity,
       child: Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: Column(
-          children: copy
+          children: [
+            Chats.NO_MESSAGES_COPY,
+            'Send one to start the conversation!'
+          ]
               .map((e) => Text(e, style: Theme.of(context).textTheme.caption))
               .toList(),
         ),
@@ -166,11 +143,5 @@ class _ChatsState extends State<Chats> {
 
   Widget _buildLoading() {
     return const Center(child: Loader());
-  }
-
-  void _onScroll() {
-    final chatCubit = context.read<ChatBloc>();
-
-    chatCubit.appendingNewMessages = _scrollController.offset <= 0;
   }
 }

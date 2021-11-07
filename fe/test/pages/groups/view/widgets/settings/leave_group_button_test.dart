@@ -35,7 +35,7 @@ void main() {
   final MockMainCubit mockMainCubit = MockMainCubit.getMock();
   final MockGroupReqCubit mockGroupReqCubit = MockGroupReqCubit.getMock();
 
-  Widget build({required Widget child}) {
+  Widget wrapWithDependencies({required Widget child}) {
     return Provider(
       create: (_) => fakeClub,
       child: MultiBlocProvider(providers: [
@@ -64,7 +64,7 @@ void main() {
               'delete_user_to_group': {'affected_rows': 1}
             })!);
 
-    await tester.pumpApp(build(child: LeaveGroupButton()));
+    await tester.pumpApp(wrapWithDependencies(child: LeaveGroupButton()));
     await tester.tap(find.byType(LoadableTileButton));
 
     verify(() => mockGroupReqCubit.refresh()).called(1);
@@ -82,7 +82,7 @@ void main() {
         getIt<AuthGqlClient>(),
         error: (_) => Failure(status: FailureStatus.GQLMisc));
 
-    await tester.pumpApp(build(child: LeaveGroupButton()));
+    await tester.pumpApp(wrapWithDependencies(child: LeaveGroupButton()));
     await tester.tap(find.byType(LoadableTileButton));
 
     verifyNever(() => mockGroupReqCubit.refresh());

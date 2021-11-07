@@ -28,8 +28,6 @@ part 'chat_state.dart';
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   static const SINGLE_QUERY_LIMIT = 20;
 
-  bool appendingNewMessages = true;
-
   final _gqlClient = getIt<AuthGqlClient>();
   final ThreadCubit _threadCubit;
 

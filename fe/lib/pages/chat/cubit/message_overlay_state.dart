@@ -39,7 +39,10 @@ class MessageOverlayState extends Union3Impl<MessageOverlayNone,
 //doing so would make it so that if the same state was triggered,
 //it would not reemit the state. This is not the goal; if a user taps
 //an already tapped message, we want to be able to react appropriately.
-class MessageOverlayNone {}
+class MessageOverlayNone extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
 
 class MessageOverlaySettings {
   final LayerLink layerLink;

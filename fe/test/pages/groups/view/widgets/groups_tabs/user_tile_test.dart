@@ -32,7 +32,7 @@ void main() {
     registerAllMockServices();
   });
 
-  Widget build({required Widget child}) {
+  Widget wrapWithDependencies({required Widget child}) {
     return BlocProvider<MainCubit>(create: (_) => mockMainCubit, child: child);
   }
 
@@ -46,7 +46,7 @@ void main() {
               }
             })!);
 
-    await tester.pumpApp(build(child: UserTile(user: fakeUser)));
+    await tester.pumpApp(wrapWithDependencies(child: UserTile(user: fakeUser)));
     await tester.tap(find.byIcon(Icons.chat_outlined));
 
     verify(() => getIt<AuthGqlClient>().request(any())).called(1);
@@ -58,7 +58,7 @@ void main() {
         getIt<AuthGqlClient>(),
         error: (_) => Failure(status: FailureStatus.GQLMisc));
 
-    await tester.pumpApp(build(child: UserTile(user: fakeUser)));
+    await tester.pumpApp(wrapWithDependencies(child: UserTile(user: fakeUser)));
     await tester.tap(find.byIcon(Icons.chat_outlined));
 
     verify(() => getIt<Handler>().handleFailure(any(), any())).called(1);

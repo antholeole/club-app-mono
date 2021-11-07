@@ -25,7 +25,7 @@ import '../../../test_helpers/reset_mock_bloc.dart';
 
 void main() {
   setUpAll(() async {
-    await registerAllMockServices(needCubitAutoEvents: true);
+    await registerAllMockServices();
   });
 
   group('login page', () {

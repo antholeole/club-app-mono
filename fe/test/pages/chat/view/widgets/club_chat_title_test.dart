@@ -13,7 +13,7 @@ void main() {
   final MockChatBottomSheetCubit mockChatBottomSheetCubit =
       MockChatBottomSheetCubit.getMock();
 
-  Widget build({required Widget child}) {
+  Widget wrapWithDependencies({required Widget child}) {
     return BlocProvider<ChatBottomSheetCubit>(
       create: (_) => mockChatBottomSheetCubit,
       child: child,
@@ -24,7 +24,8 @@ void main() {
     stubBlocStream(mockChatBottomSheetCubit, initialState: false);
     final mockCaller = MockCaller();
 
-    await tester.pumpApp(build(child: ClubChatTitle(onClick: mockCaller.call)));
+    await tester.pumpApp(
+        wrapWithDependencies(child: ClubChatTitle(onClick: mockCaller.call)));
     await tester.tap(find.byIcon(Icons.expand_more));
 
     verify(() => mockCaller.call()).called(1);
@@ -34,7 +35,8 @@ void main() {
     final controller =
         stubBlocStream(mockChatBottomSheetCubit, initialState: false);
 
-    await tester.pumpApp(build(child: ClubChatTitle(onClick: () {})));
+    await tester
+        .pumpApp(wrapWithDependencies(child: ClubChatTitle(onClick: () {})));
 
     expect(
         (find.byType(AnimatedRotation).evaluate().first.widget
