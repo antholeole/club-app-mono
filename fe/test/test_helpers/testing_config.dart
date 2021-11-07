@@ -1,16 +1,10 @@
 import 'package:fe/config.dart';
 
 class TestingConfig extends Config {
-  final bool _needAutoEvents;
-
-  TestingConfig({bool needAutoEvents = false})
-      : _needAutoEvents = needAutoEvents;
+  TestingConfig();
 
   @override
   bool get refreshLocalCacheOnReload => true;
-
-  @override
-  bool get testing => !_needAutoEvents;
 
   @override
   List<String> get gqlPathSegments => ['asd', 'asda'];

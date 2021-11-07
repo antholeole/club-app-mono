@@ -36,12 +36,29 @@ void main() {
 
   group('set group', () {
     blocTest<MainCubit, MainState>('should emit new group',
+        setUp: () {
+          when(() => getIt<LocalUserService>().getLoggedInUserId())
+              .thenAnswer((_) async => UuidType.generate());
+
+          stubGqlResponse<GQuerySelfGroupsPreviewData,
+                  GQuerySelfGroupsPreviewVars>(getIt<AuthGqlClient>(),
+              data: (_) => GQuerySelfGroupsPreviewData.fromJson({})!);
+        },
         build: () => MainCubit(),
         act: (cubit) => cubit.setClub(fakeGroup1),
-        expect: () => [MainState.withClub(fakeGroup1)]);
+        expect: () => [MainState.withClub(fakeGroup1), anything]);
   });
 
   group('log out', () {
+    setUp(() {
+      when(() => getIt<LocalUserService>().getLoggedInUserId())
+          .thenAnswer((_) async => UuidType.generate());
+
+      stubGqlResponse<GQuerySelfGroupsPreviewData, GQuerySelfGroupsPreviewVars>(
+          getIt<AuthGqlClient>(),
+          data: (_) => GQuerySelfGroupsPreviewData.fromJson({})!);
+    });
+
     blocTest<MainCubit, MainState>(
         'should clear local data and logout with no error on no error',
         setUp: () {
@@ -56,7 +73,7 @@ void main() {
         },
         build: () => MainCubit(),
         act: (cubit) => cubit.logOut(),
-        expect: () => [MainState.logOut()],
+        expect: () => [MainState.logOut(), anything],
         verify: (c) => [
               () => getIt<LocalFileStore>().delete(LocalStorageType.LocalUser),
               getIt<FlutterSecureStorage>().deleteAll,
@@ -77,7 +94,7 @@ void main() {
         },
         build: () => MainCubit(),
         act: (cubit) => cubit.logOut(withError: errorMessage),
-        expect: () => [MainState.logOut(withError: errorMessage)],
+        expect: () => [MainState.logOut(withError: errorMessage), anything],
         verify: (c) => [
               () => getIt<LocalFileStore>().delete(LocalStorageType.LocalUser),
               getIt<FlutterSecureStorage>().deleteAll,
@@ -128,7 +145,7 @@ void main() {
                   GQuerySelfGroupsPreviewData.fromJson({'user_to_group': []})!);
         },
         build: () => MainCubit(),
-        act: (cubit) => cubit.initalizeMainPage(),
+        act: (cubit) => null, //will call automatically
         expect: () => [MainState.groupless()],
         verify: (_) => verify(() => getIt<AuthGqlClient>().request(any(
             that: isA<

@@ -6,12 +6,6 @@ abstract class Config {
   List<String> get gqlPathSegments;
   bool get transportIsSecure;
   bool get refreshLocalCacheOnReload;
-
-  //use in exclusive cases where
-  //testing requires a different variable.
-  //i.e. don't let bloc trigger events on constructor
-  //to avoid needing to stub everything
-  bool get testing;
 }
 
 class DevConfig extends Config {
@@ -26,9 +20,6 @@ class DevConfig extends Config {
 
   @override
   bool get refreshLocalCacheOnReload => false;
-
-  @override
-  bool get testing => false;
 
   @override
   int? get hasuraPort => 8080;
@@ -46,9 +37,6 @@ class ProdConfig extends Config {
 
   @override
   bool get refreshLocalCacheOnReload => false;
-
-  @override
-  bool get testing => false;
 
   @override
   int? get hasuraPort => null;

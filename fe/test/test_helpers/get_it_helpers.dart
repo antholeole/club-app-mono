@@ -18,7 +18,7 @@ import 'package:http/http.dart' as http;
 import 'fixtures/mocks.dart';
 import 'testing_config.dart';
 
-Future<void> registerAllMockServices({needCubitAutoEvents = false}) {
+Future<void> registerAllMockServices() {
   getIt.allowReassignment = true;
 
   getIt.registerSingleton<TokenManager>(MockTokenManager.getMock());
@@ -36,8 +36,7 @@ Future<void> registerAllMockServices({needCubitAutoEvents = false}) {
   getIt.registerSingleton<Connectivity>(MockConnectivity());
   getIt.registerSingleton<Handler>(MockHandler.getMock());
 
-  getIt.registerSingleton<Config>(
-      TestingConfig(needAutoEvents: needCubitAutoEvents));
+  getIt.registerSingleton<Config>(TestingConfig());
 
   return getIt.allReady();
 }

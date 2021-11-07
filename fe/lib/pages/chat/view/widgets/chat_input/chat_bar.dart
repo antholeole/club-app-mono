@@ -48,7 +48,7 @@ class _ChatBarState extends State<ChatBar> {
             children: [
               ChatButtons(
                   isOpen: _settingsIsOpen,
-                  manuallyShowbuttons: () => setState(() {
+                  manuallyShowButtons: () => setState(() {
                         _settingsIsOpen = true;
                       })),
               Expanded(
@@ -66,10 +66,6 @@ class _ChatBarState extends State<ChatBar> {
   }
 
   void _onTextUpdate() {
-    if (!_focusNode.hasFocus) {
-      return;
-    }
-
     if (_controller.text.isEmpty && !_settingsIsOpen) {
       setState(() {
         _settingsIsOpen = true;
