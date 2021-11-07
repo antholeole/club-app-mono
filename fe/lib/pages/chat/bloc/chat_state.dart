@@ -50,11 +50,6 @@ class FetchedMessages extends Equatable {
                   .copyWithNewReaction(newReaction))
         ]);
 
-  FetchedMessages.withNewHeldMessage(
-      {required FetchedMessages old, required Message newHeldMessage})
-      : hasReachedMax = old.hasReachedMax,
-        _messages = Map.from(old._messages);
-
   FetchedMessages.withNewMessage(
       {required FetchedMessages old, required Message newMessage})
       : hasReachedMax = old.hasReachedMax,
