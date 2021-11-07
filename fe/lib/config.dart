@@ -39,9 +39,6 @@ class DevConfig extends Config {
   bool get refreshLocalCacheOnReload => false;
 
   @override
-  bool get testing => false;
-
-  @override
   int? get hasuraPort => null;
 }
 

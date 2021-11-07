@@ -164,7 +164,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   void _handleUpdatedReaction(
-      _UpdatedReactionEvent event, Emitter<ChatState> emitter) {
+      _UpdatedReactionEvent event, Emitter<ChatState> emit) {
     FetchedMessages? old =
         state.join((fm) => fm, (_) => null, (_) => null, (_) => null);
     if (old == null) {
