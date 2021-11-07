@@ -22,7 +22,7 @@ void main() {
   }
 
   setUp(() {
-    resetMockCubit(mockToasterCubit);
+    resetMockBloc(mockToasterCubit);
   });
 
   ToastType.values.forEach((toastType) {

@@ -21,10 +21,13 @@ services:
       ## enable debugging mode. It is recommended to disable this in production
       HASURA_GRAPHQL_DEV_MODE: "true"
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: http-log, webhook-log, websocket-log, query-log
-      HASURA_GRAPHQL_ADMIN_SECRET: '${ADMIN_SECRET}'
+      HASURA_GRAPHQL_ADMIN_SECRET: '${ADMIN_SECRET}' #need to slash here to escape * in env var.... new update?
       HASURA_GRAPHQL_MIGRATIONS_DIR: /migrations
       HASURA_GRAPHQL_METADATA_DIR: /metadata
       HASURA_GRAPHQL_JWT_SECRET: '{"type": "HS256","key": "${JWT_SECRET}"}'
+      WEBHOOK_URL: '${WEBHOOK_URL}'
+      WEBHOOK_SECRET_KEY: '${WEBHOOK_SECRET_KEY}'
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: 'unauthenticated'
     volumes:
       - ./migrations:/migrations
       - ./metadata:/metadata

@@ -8,6 +8,14 @@ object_relationships:
 - name: user
   using:
     foreign_key_constraint_on: user_sent
+array_relationships:
+- name: message_reactions
+  using:
+    foreign_key_constraint_on:
+      column: message_id
+      table:
+        name: message_reactions
+        schema: public
 insert_permissions:
 - permission:
     backend_only: false
@@ -21,7 +29,9 @@ insert_permissions:
               id:
                 _eq: X-Hasura-User-Id
     columns:
+    - id
     - message
+    - thread_id
     - user_sent
   role: user
 select_permissions:

@@ -1,6 +1,5 @@
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 
-import 'package:fe/pages/scaffold/view/widgets/ws_reactor.dart';
 import 'package:fe/pages/scaffold/cubit/data_carriers/main_scaffold_parts.dart';
 import 'package:fe/pages/scaffold/cubit/scaffold_cubit.dart' as sc;
 import 'package:fe/pages/scaffold/view/widgets/drawers/left_drawer/club_drawer.dart';
@@ -22,44 +21,37 @@ class MainScaffold extends StatefulWidget {
 }
 
 class _MainScaffoldState extends State<MainScaffold> {
-  double _appBarToastSize = 0;
-
   @override
   Widget build(BuildContext context) {
     final mainScaffoldParts =
         context.watch<sc.ScaffoldCubit>().state.mainScaffoldParts;
 
     return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        bottom: PreferredSize(
-            preferredSize: Size(10, _appBarToastSize),
-            child: WsReactor(
-              sizeCallback: (size) => WidgetsBinding.instance!
-                  .addPostFrameCallback((_) => setState(() {
-                        _appBarToastSize = size;
-                      })),
-            )),
-        centerTitle: true,
-        backwardsCompatibility: false,
-        backgroundColor: const Color(0xffFBFBFB),
-        foregroundColor: Colors.grey[900],
-        automaticallyImplyLeading: false,
-        title: _buildTitle(mainScaffoldParts.titleBarWidget),
-        leading: ScaffoldButton(
-            icon: Icons.menu,
-            onPressed: (sbContext) => Scaffold.of(sbContext).openDrawer()),
-        actions: _buildContextButtons(mainScaffoldParts.actionButtons),
-      ),
-      drawer: ClubDrawer(),
-      endDrawer: mainScaffoldParts.endDrawer,
-      backgroundColor: Colors.white,
-      body: GestureDetector(
-        onTap: FocusScope.of(context).unfocus,
-        child: widget._child,
-      ),
-      bottomNavigationBar: const BottomNav(),
-    );
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: const Color(0xffFBFBFB),
+          foregroundColor: Colors.grey[900],
+          automaticallyImplyLeading: false,
+          title: _buildTitle(mainScaffoldParts.titleBarWidget),
+          leading: ScaffoldButton(
+              icon: Icons.menu,
+              onPressed: (sbContext) => Scaffold.of(sbContext).openDrawer()),
+          actions: _buildContextButtons(mainScaffoldParts.actionButtons),
+        ),
+        drawer: ClubDrawer(),
+        endDrawer: mainScaffoldParts.endDrawer,
+        backgroundColor: Colors.white,
+        body: GestureDetector(
+          onTap: FocusScope.of(context).unfocus,
+          child: widget._child,
+        ),
+        bottomNavigationBar: _buildBottomNav(context.watch<MainCubit>()));
+  }
+
+  Widget? _buildBottomNav(MainCubit cubit) {
+    return cubit.state.join((_) => null, (_) => null, (_) => null,
+        (p0) => const BottomNav(), (_) => null, (_) => null);
   }
 
   List<Widget> _buildContextButtons(List<ActionButton> actionButtons) {
@@ -87,12 +79,13 @@ class _MainScaffoldState extends State<MainScaffold> {
                 children: [
                   if (titleBarWidget != null) titleBarWidget,
                   Text(
-                    mpwg.group.name,
+                    mpwg.club.name,
                     style: Theme.of(context).textTheme.caption,
                   ),
                 ],
               ),
-          (_) => Container()),
+          (_) => Container(),
+          (mpwdm) => titleBarWidget!),
     );
   }
 }

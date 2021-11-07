@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter/material.dart';
@@ -36,9 +37,8 @@ class Toast extends Equatable {
     bool expire = true,
     this.action,
   })  : id = id ?? UuidType.generate(),
-        created = DateTime.now(),
-        expireAt =
-            expire ? DateTime.now().add(const Duration(seconds: 10)) : null;
+        created = clock.now(),
+        expireAt = expire ? clock.now().add(const Duration(seconds: 10)) : null;
 
   Toast.customExpire({
     UuidType? id,

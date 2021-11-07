@@ -1,5 +1,5 @@
 query QuerySelfThreadsInGroup($userId: uuid!, $groupId: uuid!) {
-  group_threads(where: {
+  threads(where: {
   	_and: {
       group_id: {
         _eq: $groupId

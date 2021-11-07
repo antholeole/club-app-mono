@@ -8,7 +8,7 @@ clean:
 	find . -maxdepth 20 -type f \( -name "*.ast.gql.dart" -o -name "**.req.gql.dart" -o -name "*.data.gql.dart" -name "*.var.gql.dart" -o -name "*.gql.g.dart" -o -name "*.g.dart" -o -name "*.gql.dart" -o -name "*.mocks.dart" \) -delete && flutter clean && flutter pub get && flutter pub run build_runner clean
 
 schema-pull:
-	get-graphql-schema --header x-hasura-admin-secret="*hV@?*xh0)aL,@1+Tza>Kj[zC(5akn" http://localhost:8080/v1/graphql > ./lib/schema.graphql
+	get-graphql-schema --header x-hasura-admin-secret="aodrkofkioermwieojrowiemfosdmfiosdmfisdmfiosdmfiosmaoisaosidmoi" http://localhost:8080/v1/graphql > ./lib/schema.graphql
 
 t:
 	flutter test --coverage
@@ -21,6 +21,7 @@ t-clean:
 	'lib/gql/*' \
 	'lib/schema.graphql' \
 	'lib/**/*_state.dart' \
+	'lib/**/*_event.dart' \
 	'lib/*.gql.g.dart' \
 	'lib/*.gql.dart' \
 	'lib/config.dart' \

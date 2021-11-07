@@ -1,17 +1,18 @@
 part of 'main_cubit.dart';
 
-class MainState extends Union5Impl<MainLoading, MainLoadFailure, MainGroupless,
-    MainWithGroup, MainLogOut> {
+class MainState extends Union6Impl<MainLoading, MainLoadFailure, MainGroupless,
+    MainWithClub, MainLogOut, MainWithDm> {
   @override
-  String toString() => join((a) => a.toString(), (b) => b.toString(),
-      (c) => c.toString(), (d) => d.toString(), (e) => e.toString());
+  String toString() =>
+      join((a) => a, (b) => b, (c) => c, (d) => d, (e) => e, (f) => f)
+          .toString();
 
-  static const unions = Quintet<MainLoading, MainLoadFailure, MainGroupless,
-      MainWithGroup, MainLogOut>();
+  static const unions = Sextet<MainLoading, MainLoadFailure, MainGroupless,
+      MainWithClub, MainLogOut, MainWithDm>();
 
   MainState._(
-      Union5<MainLoading, MainLoadFailure, MainGroupless, MainWithGroup,
-              MainLogOut>
+      Union6<MainLoading, MainLoadFailure, MainGroupless, MainWithClub,
+              MainLogOut, MainWithDm>
           union)
       : super(union);
 
@@ -23,15 +24,18 @@ class MainState extends Union5Impl<MainLoading, MainLoadFailure, MainGroupless,
   factory MainState.groupless() =>
       MainState._(unions.third(const MainGroupless()));
 
-  factory MainState.withGroup(Group group) =>
-      MainState._(unions.fourth(MainWithGroup(group: group)));
+  factory MainState.withClub(Club group) =>
+      MainState._(unions.fourth(MainWithClub(club: group)));
 
   factory MainState.logOut({String? withError}) =>
       MainState._(unions.fifth(MainLogOut(withError: withError)));
 
-  Group? get group {
-    return join((_) => null, (_) => null, (_) => null, (mpwgs) => mpwgs.group,
-        (_) => null);
+  factory MainState.withDm({required Dm dm}) =>
+      MainState._(unions.sixth(MainWithDm(dm)));
+
+  UuidType? get groupId {
+    return join((_) => null, (_) => null, (_) => null, (mpwg) => mpwg.club.id,
+        (_) => null, (dm) => dm.dm.id);
   }
 }
 
@@ -48,7 +52,16 @@ class MainLoadFailure extends Equatable {
   const MainLoadFailure({required this.failure});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [failure];
+}
+
+class MainWithDm extends Equatable {
+  final Dm dm;
+
+  const MainWithDm(this.dm);
+
+  @override
+  List<Object?> get props => [dm];
 }
 
 class MainGroupless extends Equatable {
@@ -58,13 +71,13 @@ class MainGroupless extends Equatable {
   List<Object?> get props => [];
 }
 
-class MainWithGroup extends Equatable {
-  final Group group;
+class MainWithClub extends Equatable {
+  final Club club;
 
-  const MainWithGroup({required this.group});
+  const MainWithClub({required this.club});
 
   @override
-  List<Object?> get props => [group];
+  List<Object?> get props => [club];
 }
 
 class MainLogOut extends Equatable {

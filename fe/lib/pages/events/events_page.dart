@@ -1,4 +1,5 @@
-import 'package:fe/data/models/group.dart';
+import 'package:clock/clock.dart';
+import 'package:fe/data/models/club.dart';
 import 'package:fe/pages/scaffold/cubit/data_carriers/main_scaffold_parts.dart';
 import 'package:fe/pages/scaffold/cubit/page_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/scaffold_cubit.dart';
@@ -10,9 +11,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EventsPage extends StatefulWidget {
   // ignore: unused_field
-  final Group? _group;
+  final Club? _group;
 
-  const EventsPage({Group? group}) : _group = group;
+  const EventsPage({Club? group}) : _group = group;
 
   @override
   _EventsPageState createState() => _EventsPageState();
@@ -26,7 +27,7 @@ class EventsPage extends StatefulWidget {
                 context.read<ToasterCubit>().add(Toast.customExpire(
                     message: '${UuidType.generate().uuid}',
                     type: ToastType.Error,
-                    expireAt: DateTime.now().add(const Duration(seconds: 3))));
+                    expireAt: clock.now().add(const Duration(seconds: 3))));
               }),
           ActionButton(
               icon: Icons.baby_changing_station_outlined,

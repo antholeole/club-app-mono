@@ -1,14 +1,12 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:fe/pages/profile/cubit/name_change_cubit.dart';
 import 'package:fe/service_locator.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
-import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
-import 'package:ferry/ferry.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gql_exec/gql_exec.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:fe/gql/update_self_name.data.gql.dart';
 import 'package:fe/gql/update_self_name.req.gql.dart';
@@ -44,8 +42,8 @@ void main() {
         act: (cubit) => cubit.changeName(newName + ']', caller.call),
         expect: () => [
               NameChangeState.changing(),
-              NameChangeState.failure(const Failure(
-                  status: FailureStatus.RegexFail,
+              NameChangeState.failure(Failure(
+                  status: FailureStatus.Custom,
                   message: NameChangeCubit.REGEX_FAIL_COPY))
             ],
         verify: (_) => verifyNever(() => caller.call()));
@@ -54,18 +52,14 @@ void main() {
         'should emit failure on http call fail',
         setUp: () {
           stubGqlResponse<GUpdateSelfNameData, GUpdateSelfNameVars>(
-              getIt<Client>(),
-              errors: (_) => [const GraphQLError(message: 'blah')]);
-
-          when(() => getIt<Handler>().basicGqlErrorHandler(any())).thenAnswer(
-              (_) async => const Failure(status: FailureStatus.GQLMisc));
+              getIt<AuthGqlClient>(),
+              error: (_) => Failure(status: FailureStatus.GQLMisc));
         },
         build: () => NameChangeCubit(),
         act: (cubit) => cubit.changeName(newName, caller.call),
         expect: () => [
               NameChangeState.changing(),
-              NameChangeState.failure(
-                  const Failure(status: FailureStatus.GQLMisc))
+              NameChangeState.failure(Failure(status: FailureStatus.GQLMisc))
             ],
         verify: (_) => verifyNever(() => caller.call()));
 
@@ -76,7 +70,7 @@ void main() {
               .thenAnswer((_) async => null);
 
           stubGqlResponse<GUpdateSelfNameData, GUpdateSelfNameVars>(
-              getIt<Client>(),
+              getIt<AuthGqlClient>(),
               data: (invoc) => GUpdateSelfNameData.fromJson({
                     'update_users_by_pk': {
                       'name':
@@ -84,7 +78,7 @@ void main() {
                               .vars
                               .name
                     }
-                  }));
+                  })!);
         },
         build: () => NameChangeCubit(),
         act: (cubit) => cubit.changeName(newName, caller.call),

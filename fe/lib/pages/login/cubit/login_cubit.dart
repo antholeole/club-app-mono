@@ -1,25 +1,30 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fe/data/json/backend_access_tokens.dart';
-import 'package:fe/data/json/provider_access_token.dart';
 import 'package:fe/data/models/user.dart';
-import 'package:fe/services/clients/http_client/unauth_http_client.dart';
+import 'package:fe/services/clients/gql_client/unauth_gql_client.dart';
 import 'package:fe/services/local_data/token_manager.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
+import 'package:fe/gql/authenticate.req.gql.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:meta/meta.dart';
 import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
+import 'package:fe/schema.schema.gql.dart';
 
 import '../../../service_locator.dart';
 
 part 'login_state.dart';
 
+enum LoginType {
+  Google,
+}
+
 class LoginCubit extends Cubit<LoginState> {
-  final _client = getIt<UnauthHttpClient>();
   final _localUserService = getIt<LocalUserService>();
   final _tokenManager = getIt<TokenManager>();
+  final _client = getIt<UnauthGqlClient>();
 
   final _googleSignIn = getIt<GoogleSignIn>();
 
@@ -45,9 +50,14 @@ class LoginCubit extends Cubit<LoginState> {
       return;
     }
 
-    final providerAccessToken =
-        ProviderIdToken(from: loginType, idToken: providerLoginDetails.idToken);
-    final backendAccessTokens = await _getGqlAuth(providerAccessToken);
+    BackendAccessTokens backendAccessTokens;
+    try {
+      backendAccessTokens =
+          await _getGqlAuth(loginType, providerLoginDetails.idToken);
+    } on Failure catch (f) {
+      emit(LoginState.failure(f));
+      return;
+    }
 
     await _tokenManager.initalizeTokens(backendAccessTokens);
 
@@ -61,10 +71,25 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   Future<BackendAccessTokens> _getGqlAuth(
-      ProviderIdToken providerAccess) async {
-    final tokens = await _client.postReq('/auth', providerAccess.toJson());
+      LoginType loginType, String providerIdToken) async {
+    GIdentityProvider idp;
+    switch (loginType) {
+      case LoginType.Google:
+        idp = GIdentityProvider.Google;
+        break;
+    }
 
-    return BackendAccessTokens.fromJson(tokens.body);
+    final resp = await _client
+        .request(GAuthenticateReq((q) => q
+          ..vars.id_token = providerIdToken
+          ..vars.identity_provider = idp))
+        .first;
+
+    return BackendAccessTokens(
+        accessToken: resp.authenticate!.accessToken,
+        id: resp.authenticate!.id,
+        name: resp.authenticate!.name,
+        refreshToken: resp.authenticate!.refreshToken);
   }
 
   Future<_ProviderLoginDetails> _googleLogin() async {

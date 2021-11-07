@@ -1,6 +1,6 @@
 import { DEBUG, DEFAULT_USERNAME, GOOGLE_CERTS, GOOGLE_PEM_SRC, GOOGLE_VALID_AUDS, GOOGLE_VALID_ISSUER } from '../../constants'
 import { StatusError } from 'itty-router-extras'
-import { encodeJwt } from '../../helpers/jwt'
+import { encodeJwt } from '../../helpers/create_jwt'
 import jwt from 'jsonwebtoken'
 
 
@@ -93,7 +93,7 @@ export const getFakeIdentifier = (accessToken: string): IIdentifier => {
     }
     const identifier: IIdentifier = JSON.parse(accessToken)
 
-    if (!identifier.name || !identifier.sub) {
+    if (!identifier?.name || !identifier?.sub) {
         throw new StatusError(300, 'invalid input')
     }
 

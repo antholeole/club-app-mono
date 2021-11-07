@@ -10,9 +10,9 @@ class ChatButtons extends StatelessWidget {
   const ChatButtons(
       {Key? key,
       required bool isOpen,
-      required void Function() manuallyShowbuttons})
+      required void Function() manuallyShowButtons})
       : _isOpen = isOpen,
-        _manuallyShowButtons = manuallyShowbuttons,
+        _manuallyShowButtons = manuallyShowButtons,
         super(key: key);
 
   @override

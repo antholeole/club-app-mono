@@ -1,10 +1,10 @@
-import 'package:fe/data/models/group.dart';
+import 'package:fe/data/models/club.dart';
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/gql/query_self_threads_in_group.data.gql.dart';
 import 'package:fe/gql/query_self_threads_in_group.req.gql.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
+import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/channels_bottom_sheet_cubit.dart';
-import 'package:fe/providers/user_provider.dart';
 import 'package:fe/stdlib/shared_widgets/gql_operation.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +35,9 @@ class ChannelsBottomSheet extends StatelessWidget {
               providerReadableContext: context,
             ));
 
-    context.read<ChatBottomSheetCubit>().setState(false);
+    //in cases where the logout is forced by the bottom sheet,
+    //this will fail and thus needs to be nullable.
+    context.read<ChatBottomSheetCubit?>()?.setState(false);
 
     return thread;
   }
@@ -47,7 +49,8 @@ class ChannelsBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = _providerReadableContext.watch<MainCubit>().state;
-    Group? _currentGroup = state.group;
+    Club? _currentGroup = state.join((_) => null, (_) => null, (p0) => null,
+        (mwc) => mwc.club, (_) => null, (_) => null);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -86,22 +89,23 @@ class ChannelsBottomSheet extends StatelessWidget {
                               color: Colors.grey.shade700),
                         ),
                         GqlOperation(
+                            providerReadableContext: _providerReadableContext,
                             operationRequest: GQuerySelfThreadsInGroupReq((q) =>
                                 q
                                   ..fetchPolicy = FetchPolicy.CacheAndNetwork
                                   ..vars.groupId = _currentGroup.id
-                                  ..vars.userId =
-                                      UserProvider.of(_providerReadableContext)
-                                          .user
-                                          .id),
+                                  ..vars.userId = _providerReadableContext
+                                      .read<UserCubit>()
+                                      .state
+                                      .id),
                             errorText: ChannelsBottomSheet.ERROR_TEXT,
                             onResponse: (GQuerySelfThreadsInGroupData data) =>
-                                data.group_threads.isNotEmpty
+                                data.threads.isNotEmpty
                                     ? Column(
                                         mainAxisSize: MainAxisSize.min,
-                                        children: data.group_threads
+                                        children: data.threads
                                             .map((v) =>
-                                                Thread(name: v.name, id: v.id))
+                                                Thread(name: v.name!, id: v.id))
                                             .map((v) => _buildChannelTile(
                                                 unreadMessages: 2,
                                                 onTap: () =>

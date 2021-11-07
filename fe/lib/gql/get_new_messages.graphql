@@ -1,0 +1,34 @@
+subscription GetNewMessages(
+  $threadId: uuid!,
+) {
+  messages(
+    order_by: {
+      created_at: desc
+    },
+    where: {
+      thread_id: {
+        _eq: $threadId,
+      },
+    },
+    limit: 10
+  ) {
+   created_at,
+    message,
+    id,
+    user {
+      name,
+      profile_picture,
+      id
+    },
+    message_reactions {
+      reaction_type,
+      id,
+      user {
+        id,
+        name
+      }
+    },
+    is_image,
+    updated_at
+  }
+}

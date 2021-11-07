@@ -1,84 +1,100 @@
-import 'package:fe/pages/groups/cubit/update_groups_cubit.dart';
-import 'package:fe/pages/groups/view/widgets/group_tab.dart';
-import 'package:fe/stdlib/errors/handler.dart';
-import 'package:fe/stdlib/theme/loader.dart';
+import 'package:fe/data/models/club.dart';
+import 'package:fe/data/models/dm.dart';
+import 'package:fe/data/models/user.dart';
+import 'package:fe/pages/groups/cubit/group_req_cubit.dart';
+import 'package:fe/pages/groups/view/widgets/groups_tabs/club/club_tab.dart';
+import 'package:fe/pages/groups/view/widgets/groups_tabs/dm/dm_tab.dart';
+import 'package:fe/pages/groups/view/widgets/groups_tabs/groups_tab.dart';
+import 'package:fe/pages/main/cubit/user_cubit.dart';
+import 'package:fe/stdlib/shared_widgets/gql_operation.dart';
+import 'package:fe/gql/query_self_groups.var.gql.dart';
+import 'package:fe/gql/query_self_groups.data.gql.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../service_locator.dart';
+import 'package:provider/provider.dart';
 
 class GroupsPage extends StatelessWidget {
   const GroupsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => UpdateGroupsCubit()),
-      ],
-      child: GroupsView(),
+    return BlocProvider(
+      create: (context) => GroupReqCubit(context.read<UserCubit>().user.id),
+      child: const GroupsView(),
     );
   }
 }
 
 class GroupsView extends StatelessWidget {
-  final _handler = getIt<Handler>();
-
-  @visibleForTesting
-  static const ERROR_TEXT = 'sorry, there was an error loading groups.';
+  const GroupsView({Key? key}) : super(key: key);
 
   @visibleForTesting
   static const NO_CLUBS_TEXT = 'You have no clubs. Go ahead and join some!';
 
-  GroupsView({Key? key}) : super(key: key);
+  @visibleForTesting
+  static const NO_DMS_TEXT = 'No direct messages.';
+
+  @visibleForTesting
+  static const ERROR_TEXT = 'sorry, there was an error loading groups.';
 
   @override
   Widget build(BuildContext context) {
     return SizedBox.expand(
-      child: BlocConsumer<UpdateGroupsCubit, UpdateGroupsState>(
-          listener: (context, state) => state.join((_) => null, (_) => null,
-              (fgf) => _handler.handleFailure(fgf.failure, context)),
-          builder: (context, state) => state.join(
-              (_) => const Loader(),
-              (fgs) => _buildGroups(fgs.groups.values, context),
-              (_) => const Center(
-                    child: Text(GroupsView.ERROR_TEXT),
-                  ))),
-    );
-  }
+      child: SingleChildScrollView(
+        child: GqlOperation<GQuerySelfGroupsData, GQuerySelfGroupsVars>(
+          operationRequest: context.watch<GroupReqCubit>().state,
+          onResponse: (data) {
+            final clubs = [
+              ...data.admin_clubs.map((adminGroup) => Club(
+                  admin: true,
+                  id: adminGroup.group.id,
+                  joinToken: adminGroup.group.group_join_tokens.isEmpty
+                      ? null
+                      : adminGroup.group.group_join_tokens.first.join_token,
+                  name: adminGroup.group.group_name)),
+              ...data.member_clubs.map((memberGroup) => Club(
+                  admin: false,
+                  id: memberGroup.group.id,
+                  name: memberGroup.group.group_name))
+            ];
 
-  Widget _buildGroups(Iterable<GroupsPageGroup> groups, BuildContext context) {
-    return Column(mainAxisSize: MainAxisSize.max, children: [
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-          'Your Clubs',
-          style: Theme.of(context).textTheme.headline6,
-          textAlign: TextAlign.center,
+            final dms = data.dms
+                .map((memberGroup) => Dm(
+                    users: memberGroup.thread.user_to_threads
+                        .where((user) =>
+                            user.user.id != context.read<UserCubit>().user.id)
+                        .map((user) => User(
+                            name: user.user.name,
+                            id: user.user.id,
+                            profilePictureUrl: user.user.profile_picture))
+                        .toList(),
+                    id: memberGroup.thread.id,
+                    name: memberGroup.thread.name))
+                .toList();
+
+            return Theme(
+              data:
+                  Theme.of(context).copyWith(dividerColor: Colors.transparent),
+              child: Column(
+                children: [
+                  GroupsTab<Club>(
+                    buildTab: () => const ClubTab(),
+                    groups: clubs,
+                    header: 'Your Clubs',
+                    noElementsText: NO_CLUBS_TEXT,
+                  ),
+                  GroupsTab<Dm>(
+                    buildTab: () => const DmTab(),
+                    groups: dms,
+                    header: 'DMs',
+                    noElementsText: NO_DMS_TEXT,
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ),
-      groups.isNotEmpty
-          ? Expanded(
-              child: ListView(
-                  shrinkWrap: true,
-                  children: groups
-                      .map(
-                        (v) => GroupTab(
-                          group: v,
-                        ),
-                      )
-                      .toList()),
-            )
-          : Expanded(
-              child: Center(
-                  child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                GroupsView.NO_CLUBS_TEXT,
-                style: Theme.of(context).textTheme.bodyText1,
-                textAlign: TextAlign.center,
-              ),
-            )))
-    ]);
+    );
   }
 }

@@ -1,23 +1,24 @@
-import 'package:ferry/ferry.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:gql_exec/gql_exec.dart';
-import 'package:mocktail/mocktail.dart';
-import 'fixtures/mocks.dart';
+import 'dart:async';
 
-void stubGqlResponse<TData, TVars>(Client client,
-    {TData? Function(Invocation)? data,
-    List<GraphQLError>? Function(Invocation)? errors,
+import 'package:fe/services/clients/gql_client/gql_client.dart';
+import 'package:fe/stdlib/errors/failure.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+
+void stubGqlResponse<TData, TVars>(GqlClient client,
+    {TData Function(Invocation)? data,
+    Failure Function(Invocation)? error,
     Matcher? requestMatcher}) {
   assert(
-      data != null || errors != null, 'one of data or errors must be provided');
+      data != null || error != null, 'one of data or errors must be provided');
 
-  when(() => client.request(any(that: requestMatcher))).thenAnswer(
-      (invocation) => Stream<OperationResponse<TData, TVars>>.fromIterable([
-            OperationResponse(
-                operationRequest: FakeRequest<TData, TVars>(),
-                data: data?.call(invocation),
-                graphqlErrors: errors?.call(invocation),
-                linkException:
-                    errors != null ? FakeLinkException(Exception()) : null)
-          ]));
+  if (data != null) {
+    when(() => client.request(any(that: requestMatcher))).thenAnswer(
+        (invocation) => Stream<TData>.fromIterable([data.call(invocation)]));
+  }
+
+  if (error != null) {
+    when(() => client.request(any(that: requestMatcher)))
+        .thenAnswer((invocation) => Stream<TData>.error(error(invocation)));
+  }
 }

@@ -1,18 +1,23 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:fe/data/json/backend_access_tokens.dart';
 import 'package:fe/data/models/user.dart';
-import 'package:fe/pages/chat/cubit/chat_cubit.dart';
+import 'package:fe/pages/chat/bloc/chat_bloc.dart';
+import 'package:fe/pages/chat/cubit/data_carriers/sending_message.dart';
+import 'package:fe/pages/chat/cubit/message_overlay_cubit.dart';
+import 'package:fe/pages/chat/cubit/send_cubit.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
-import 'package:fe/pages/groups/cubit/update_groups_cubit.dart';
+import 'package:fe/pages/groups/cubit/group_req_cubit.dart';
 import 'package:fe/pages/login/cubit/login_cubit.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/pages/profile/cubit/name_change_cubit.dart';
+import 'package:fe/gql/fake/fake.req.gql.dart';
 import 'package:fe/pages/scaffold/cubit/channels_bottom_sheet_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/page_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/scaffold_cubit.dart';
 import 'package:fe/pages/splash/cubit/splash_cubit.dart';
-import 'package:fe/services/clients/http_client/unauth_http_client.dart';
-import 'package:fe/services/clients/ws_client/ws_client.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
+import 'package:fe/services/clients/gql_client/unauth_gql_client.dart';
 import 'package:fe/services/local_data/image_handler.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
 import 'package:fe/services/local_data/token_manager.dart';
@@ -30,23 +35,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fe/gql/query_self_groups.req.gql.dart';
 import 'package:http/http.dart' as http;
 
-import '../reset_mock_bloc.dart';
-
 class FakeBuildContext extends Fake implements BuildContext {}
-
-class MockUpdateGroupsCubit extends MockCubit<UpdateGroupsState>
-    implements UpdateGroupsCubit {
-  MockUpdateGroupsCubit._();
-
-  factory MockUpdateGroupsCubit.getMock() {
-    registerFallbackValue(UpdateGroupsState.fetchingGroups());
-    final cubit = MockUpdateGroupsCubit._();
-    resetMockCubit(cubit);
-    return cubit;
-  }
-}
 
 class MockNameChangeCubit extends MockCubit<NameChangeState>
     implements NameChangeCubit {
@@ -112,14 +104,27 @@ class MockThreadCubit extends MockCubit<ThreadState> implements ThreadCubit {
   }
 }
 
-class MockChatCubit extends MockCubit<ChatState> implements ChatCubit {
-  MockChatCubit._();
+class MockSendCubit extends MockCubit<List<SendState>> implements SendCubit {
+  MockSendCubit._();
 
-  factory MockChatCubit.getMock() {
-    registerFallbackValue(ChatState.inital());
-    final cubit = MockChatCubit._();
+  factory MockSendCubit.getMock() {
+    registerFallbackValue(
+        [SendState.sending(message: SendingMessage(message: 'asdads'))]);
+    final cubit = MockSendCubit._();
     when(() => cubit.close()).thenAnswer((invocation) async => null);
     return cubit;
+  }
+}
+
+class MockChatBloc extends MockBloc<ChatEvent, ChatState> implements ChatBloc {
+  MockChatBloc._();
+
+  factory MockChatBloc.getMock() {
+    registerFallbackValue(ChatState.loading());
+    registerFallbackValue(const FetchMessagesEvent());
+    final bloc = MockChatBloc._();
+    when(() => bloc.close()).thenAnswer((invocation) async => null);
+    return bloc;
   }
 }
 
@@ -145,12 +150,39 @@ class MockMainCubit extends MockCubit<MainState> implements MainCubit {
 
 class MockMainState extends Fake implements MainState {}
 
+class MockGroupReqCubit extends MockCubit<GQuerySelfGroupsReq>
+    implements GroupReqCubit {
+  MockGroupReqCubit._();
+
+  factory MockGroupReqCubit.getMock() {
+    registerFallbackValue(
+        GQuerySelfGroupsReq((q) => q..vars.selfId = UuidType.generate()));
+
+    final cubit = MockGroupReqCubit._();
+
+    return cubit;
+  }
+}
+
 class MockChatBottomSheetCubit extends MockCubit<bool>
     implements ChatBottomSheetCubit {
   MockChatBottomSheetCubit._();
 
   factory MockChatBottomSheetCubit.getMock() {
     final cubit = MockChatBottomSheetCubit._();
+
+    return cubit;
+  }
+}
+
+class MockMessageOverlayCubit extends MockCubit<MessageOverlayState>
+    implements MessageOverlayCubit {
+  MockMessageOverlayCubit._();
+
+  factory MockMessageOverlayCubit.getMock() {
+    registerFallbackValue(MessageOverlayState.none());
+
+    final cubit = MockMessageOverlayCubit._();
 
     return cubit;
   }
@@ -209,13 +241,13 @@ class MockLocalUserService extends Mock implements LocalUserService {}
 
 class MockFlutterSecureStorage extends Mock implements FlutterSecureStorage {}
 
-class MockGqlClient extends Mock implements Client {
-  MockGqlClient._();
+class MockClient extends Mock implements Client {
+  MockClient._();
 
-  factory MockGqlClient.getMock() {
+  factory MockClient.getMock() {
     registerFallbackValue(FakeRequest());
     registerFallbackValue(FakeResponse());
-    return MockGqlClient._();
+    return MockClient._();
   }
 }
 
@@ -283,7 +315,21 @@ class FakeGoogleSignInAuthentication implements GoogleSignInAuthentication {
   String? get serverAuthCode => 'ad123123';
 }
 
-class MockUnauthHttpClient extends Mock implements UnauthHttpClient {}
+class MockGqlClient extends Mock implements AuthGqlClient {
+  MockGqlClient._();
+
+  factory MockGqlClient.getMock() {
+    final MockGqlClient mockGqlClient = MockGqlClient._();
+
+    registerFallbackValue<OperationRequest>(GFakeGqlReq());
+
+    return mockGqlClient;
+  }
+}
+
+class MockUnauthGqlClient extends Mock implements UnauthGqlClient {}
+
+class MockConnectivity extends Mock implements Connectivity {}
 
 class MockHttpClient extends Mock implements http.Client {
   MockHttpClient._();
@@ -298,23 +344,6 @@ class MockHttpClient extends Mock implements http.Client {
 }
 
 class MockBaseRequest extends Fake implements http.BaseRequest {}
-
-class MockWsClient extends Mock implements WsClient {
-  MockWsClient._();
-
-  factory MockWsClient.getMock() {
-    final client = MockWsClient._();
-    when(() => client.initalize()).thenAnswer((invocation) async => null);
-    return client;
-  }
-
-  void emptyStub() {
-    when(() => connectionState).thenAnswer((_) => const Stream.empty());
-    when(() => failureStream).thenAnswer((_) => const Stream.empty());
-    when(() => messageStream).thenAnswer((_) => const Stream.empty());
-    when(() => close()).thenAnswer((_) async => null);
-  }
-}
 
 class FakeImageProvider extends Mock implements ImageProvider {}
 
@@ -333,7 +362,7 @@ class MockHandler extends Mock implements Handler {
   factory MockHandler.getMock() {
     final handler = MockHandler._();
     registerFallbackValue(FakeBuildContext());
-    registerFallbackValue(const Failure(status: FailureStatus.GQLMisc));
+    registerFallbackValue(Failure(status: FailureStatus.GQLMisc));
     return handler;
   }
 }
@@ -345,3 +374,5 @@ class _Caller {
 
 //allows us to pass in arbitrary methods, verifying that this was called
 class MockCaller extends Mock implements _Caller {}
+
+class MockScrollController extends Mock implements ScrollController {}

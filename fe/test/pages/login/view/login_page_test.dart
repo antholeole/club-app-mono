@@ -25,7 +25,7 @@ import '../../../test_helpers/reset_mock_bloc.dart';
 
 void main() {
   setUpAll(() async {
-    await registerAllMockServices(needCubitAutoEvents: true);
+    await registerAllMockServices();
   });
 
   group('login page', () {
@@ -56,7 +56,7 @@ void main() {
     }
 
     setUp(() {
-      resetMockCubit(mockLoginCubit);
+      resetMockBloc(mockLoginCubit);
     });
 
     testWidgets('should render login buttons on inital', (tester) async {
@@ -84,8 +84,8 @@ void main() {
       whenListen(
           mockLoginCubit,
           Stream<LoginState>.fromIterable([
-            LoginState.failure(const Failure(
-                status: FailureStatus.Unknown, message: failureMessage))
+            LoginState.failure(
+                Failure(status: FailureStatus.Unknown, message: failureMessage))
           ]),
           initialState: LoginState.loading());
 

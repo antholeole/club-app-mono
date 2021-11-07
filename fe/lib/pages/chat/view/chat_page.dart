@@ -1,9 +1,12 @@
+import 'package:fe/data/models/club.dart';
 import 'package:fe/data/models/group.dart';
-import 'package:fe/pages/chat/cubit/chat_cubit.dart';
+import 'package:fe/pages/chat/bloc/chat_bloc.dart';
+import 'package:fe/pages/chat/cubit/message_overlay_cubit.dart';
+import 'package:fe/pages/chat/cubit/send_cubit.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
-import 'package:fe/pages/scaffold/view/widgets/channels_bottom_sheet.dart';
 import 'package:fe/pages/chat/view/widgets/chat_input/chat_bar.dart';
-import 'package:fe/pages/chat/view/widgets/chat_title.dart';
+import 'package:fe/pages/chat/view/widgets/title/chat_title.dart';
+import 'package:fe/pages/chat/view/widgets/title/club_chat_title.dart';
 import 'package:fe/pages/chat/view/widgets/chats/chats.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/data_carriers/main_scaffold_parts.dart';
@@ -12,21 +15,47 @@ import 'package:fe/pages/scaffold/cubit/scaffold_cubit.dart';
 import 'package:keyboard_attachable/keyboard_attachable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class ChatPage extends StatelessWidget {
   final Group group;
 
-  const ChatPage({required this.group});
+  late final ThreadCubit _threadCubit;
+  late final ChatBloc _chatBloc;
+
+  final ScrollController _scrollController = ScrollController();
+
+  ChatPage({required this.group}) {
+    _threadCubit = ThreadCubit(group: group);
+    _chatBloc = ChatBloc(threadCubit: _threadCubit);
+  }
 
   static MainScaffoldParts scaffoldWidgets(BuildContext context) {
-    return MainScaffoldParts(
-        actionButtons: [],
-        endDrawer: Container(
-          color: Colors.red,
-        ),
-        titleBarWidget: GestureDetector(
-            onTap: () => ChannelsBottomSheet.show(context),
-            child: ChatTitle(chatProviderContext: context)));
+    final group = Provider.of<MainCubit>(context, listen: true).state.join(
+        (p0) => null,
+        (p0) => null,
+        (_) => null,
+        (mwc) => mwc.club,
+        (p0) => null,
+        (mwdm) => mwdm.dm);
+
+    final thread = Provider.of<ThreadCubit>(context, listen: true).state.thread;
+
+    if (group is Club) {
+      return MainScaffoldParts(
+          actionButtons: [],
+          endDrawer: Container(
+            color: Colors.red,
+          ),
+          titleBarWidget: GestureDetector(
+              onTap: () => context.read<PageCubit>().bottomSheet(context),
+              child: ClubChatTitle(
+                thread: thread,
+                onClick: () => context.read<PageCubit>().bottomSheet(context),
+              )));
+    } else {
+      return MainScaffoldParts(titleBarWidget: ChatTitle(thread: thread));
+    }
   }
 
   @override
@@ -34,11 +63,14 @@ class ChatPage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => ThreadCubit(group: group),
+          create: (_) => _threadCubit,
         ),
         BlocProvider(
-          create: (_) => ChatCubit(),
+          create: (_) => _chatBloc,
         ),
+        BlocProvider(
+            create: (_) =>
+                MessageOverlayCubit(scrollController: _scrollController))
       ],
       child: const ChatView(),
     );
@@ -95,13 +127,17 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     threadCubit = context.read<ThreadCubit>();
     pageCubit = context.read<PageCubit>();
-    final thread = context.watch<ThreadCubit>().state.thread;
 
     return MultiBlocListener(
         listeners: [
           BlocListener<MainCubit, MainState>(listener: (context, state) {
-            context.read<ThreadCubit>().newGroup(state.group!);
-            currentGroup = state.group;
+            state.join(
+                (_) => null,
+                (_) => null,
+                (_) => null,
+                (mpwg) => context.read<ThreadCubit>().newGroup(mpwg.club),
+                (_) => null,
+                (mpwdm) => context.read<ThreadCubit>().newGroup(mpwdm.dm));
           }),
           BlocListener<PageCubit, PageState>(listener: (context, state) {
             state.join((_) => null, (cps) {
@@ -111,13 +147,18 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
             });
           }),
         ],
-        child: FooterLayout(
-          footer: const KeyboardAttachable(child: ChatBar()),
-          child: thread != null
-              ? Chats(
-                  thread: thread,
-                )
-              : Container(),
+        child: BlocBuilder<ThreadCubit, ThreadState>(
+          builder: (context, state) => state.join(
+              (_) => Container(),
+              (_) => BlocProvider<SendCubit>(
+                    create: (_) => SendCubit(
+                        threadCubit: context.read<ThreadCubit>(),
+                        chatBloc: context.read<ChatBloc>()),
+                    child: const FooterLayout(
+                      footer: KeyboardAttachable(child: ChatBar()),
+                      child: Chats(),
+                    ),
+                  )),
         ));
   }
 

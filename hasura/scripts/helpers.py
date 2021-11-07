@@ -2,7 +2,7 @@ import requests
 import json  
 
 API_URL = 'http://localhost:8080/v1/query'
-ADMIN_KEY = '*hV@?*xh0)aL,@1+Tza>Kj[zC(5akn'
+ADMIN_KEY = 'aodrkofkioermwieojrowiemfosdmfiosdmfisdmfiosdmfiosmaoisaosidmoi'
 
 def build_req(query: str) -> str:
     return json.dumps({

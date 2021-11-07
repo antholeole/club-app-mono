@@ -39,8 +39,7 @@
 					{
 						"name": "flutter",
 						"commands": [
-							"cd fe",
-							"flutter run"
+							"cd fe"
 						]
 					}
 				]
