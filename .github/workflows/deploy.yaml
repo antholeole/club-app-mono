@@ -15,7 +15,7 @@ jobs:
         with:
           python-version: 3.8
       - name: Set env to staging
-        #if: endsWith(github.ref, '/staging') 
+        if: endsWith(github.ref, '/staging') 
         run: echo "ENVIRONMENT=dev" >> $GITHUB_ENV     
       - name: Set env to production
         if: endsWith(github.ref, '/main')
