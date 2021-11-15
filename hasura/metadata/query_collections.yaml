@@ -16,6 +16,11 @@
             }
           }
         }
+    - name: query_view_only_threads
+      query: 'query QueryViewOnlyThreads($groupId: uuid!, $userId: uuid!) {  threads(where:
+        {  _and: {      group_id: {        _eq: $groupId      },      _not: {      user_to_threads:
+        {        user_id: {          _eq: $userId        }      }       }    }  })
+        {    name,     id  }}'
     - name: update_self_name
       query: 'mutation UpdateSelfName($id: uuid!, $name: String!) {  update_users_by_pk(    pk_columns:
         { id: $id }  _set: { name: $name }  ) {    name  }}'
@@ -28,6 +33,9 @@
     - name: query_self_group_preview
       query: 'query QuerySelfGroupsPreview($self_id: uuid!) {  user_to_group(where:
         {    user_id: {    _eq: $self_id    }  }) {   group {        id,        group_name      },    admin    }}'
+    - name: query_users_in_thread
+      query: 'query QueryUsersInThread($threadId: uuid!) {  user_to_thread(where:
+        {    thread_id: {      _eq: $threadId    }  }) {    user {      name,      profile_picture,      id    }  }}'
     - name: insert_message
       query: 'mutation InsertMessage($message: String!, $threadId: uuid!, $selfId:
         uuid!, $messageId: uuid!) {  insert_messages(objects: {    message: $message,    thread_id:

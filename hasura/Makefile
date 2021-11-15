@@ -18,4 +18,4 @@ test:
 whitelist:
 	ADMIN_SECRET=$$(grep ADMIN_SECRET ./../.env | cut -d '=' -f 2-) && \
 	export ADMIN_SECRET=$$ADMIN_SECRET && \
-	python3 scripts/allow_list/allow_queries.py && hasura metadata export --admin-secret $$ADMIN_SECRET
+	./scripts/env/bin/python3 scripts/allow_list/allow_queries.py && hasura metadata export --admin-secret $$ADMIN_SECRET

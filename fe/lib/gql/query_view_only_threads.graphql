@@ -1,0 +1,19 @@
+query QueryViewOnlyThreads($groupId: uuid!, $userId: uuid!) {
+  threads(where: {
+  	_and: {
+      group_id: {
+        _eq: $groupId
+      },
+      _not: {
+      	user_to_threads: {
+        	user_id: {
+          	_eq: $userId
+        }
+      } 
+      }
+    }
+  }) {
+    name, 
+    id
+  }
+}

@@ -2,9 +2,14 @@ import 'package:fe/data/models/club.dart';
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/gql/query_self_threads_in_group.data.gql.dart';
 import 'package:fe/gql/query_self_threads_in_group.req.gql.dart';
+import 'package:fe/gql/query_self_threads_in_group.var.gql.dart';
+import 'package:fe/gql/query_view_only_threads.data.gql.dart';
+import 'package:fe/gql/query_view_only_threads.req.gql.dart';
+import 'package:fe/gql/query_view_only_threads.var.gql.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/channels_bottom_sheet_cubit.dart';
+import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/shared_widgets/gql_operation.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +19,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ChannelsBottomSheet extends StatelessWidget {
   static const String ERROR_TEXT = 'Error loading threads';
   static const String CHANNELS_TEXT = 'CHANNELS';
+  static const String VIEW_ONLY_TEXT = 'VIEW ONLY CHANNELS';
   static const String NO_GROUP = 'No group selected!';
   static const String NO_THREADS = "You're not in any threads yet!";
 
@@ -49,7 +55,7 @@ class ChannelsBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = _providerReadableContext.watch<MainCubit>().state;
-    Club? _currentGroup = state.join((_) => null, (_) => null, (p0) => null,
+    Club? currentGroup = state.join((_) => null, (_) => null, (p0) => null,
         (mwc) => mwc.club, (_) => null, (_) => null);
 
     return Padding(
@@ -61,7 +67,7 @@ class ChannelsBottomSheet extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: _currentGroup != null
+          child: currentGroup != null
               ? Column(
                   children: [
                     Padding(
@@ -78,49 +84,41 @@ class ChannelsBottomSheet extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Expanded(
-                        child: ListView(
-                      children: [
-                        Text(
-                          ChannelsBottomSheet.CHANNELS_TEXT,
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                              fontFamily: 'IBM Plex Mono',
-                              color: Colors.grey.shade700),
-                        ),
-                        GqlOperation(
-                            providerReadableContext: _providerReadableContext,
-                            operationRequest: GQuerySelfThreadsInGroupReq((q) =>
-                                q
-                                  ..fetchPolicy = FetchPolicy.CacheAndNetwork
-                                  ..vars.groupId = _currentGroup.id
-                                  ..vars.userId = _providerReadableContext
-                                      .read<UserCubit>()
-                                      .state
-                                      .id),
-                            errorText: ChannelsBottomSheet.ERROR_TEXT,
-                            onResponse: (GQuerySelfThreadsInGroupData data) =>
-                                data.threads.isNotEmpty
-                                    ? Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: data.threads
-                                            .map((v) =>
-                                                Thread(name: v.name!, id: v.id))
-                                            .map((v) => _buildChannelTile(
-                                                unreadMessages: 2,
-                                                onTap: () =>
-                                                    _selectThread(v, context),
-                                                selected: v == selectedThread,
-                                                title: v.name))
-                                            .toList(),
-                                      )
-                                    : Container(
-                                        child: const Center(
-                                            child: Text(ChannelsBottomSheet
-                                                .NO_THREADS)),
-                                      ))
-                      ],
-                    ))
+                    _buildThreadGroup<GQuerySelfThreadsInGroupData,
+                            GQuerySelfThreadsInGroupVars>(
+                        context: context,
+                        title: ChannelsBottomSheet.CHANNELS_TEXT,
+                        currentGroupId: currentGroup.id,
+                        dataMap: (data) => data.threads.map((threadData) =>
+                            Thread(
+                                name: threadData.name!,
+                                id: threadData.id,
+                                isViewOnly: false)),
+                        operationRequest: GQuerySelfThreadsInGroupReq((q) => q
+                          ..fetchPolicy = FetchPolicy.CacheAndNetwork
+                          ..vars.groupId = currentGroup.id
+                          ..vars.userId = _providerReadableContext
+                              .read<UserCubit>()
+                              .state
+                              .id)),
+                    if (currentGroup.admin)
+                      _buildThreadGroup<GQueryViewOnlyThreadsData,
+                              GQueryViewOnlyThreadsVars>(
+                          context: context,
+                          title: ChannelsBottomSheet.VIEW_ONLY_TEXT,
+                          currentGroupId: currentGroup.id,
+                          dataMap: (data) => data.threads.map((threadData) =>
+                              Thread(
+                                  name: threadData.name!,
+                                  id: threadData.id,
+                                  isViewOnly: true)),
+                          operationRequest: GQueryViewOnlyThreadsReq((q) => q
+                            ..fetchPolicy = FetchPolicy.CacheAndNetwork
+                            ..vars.groupId = currentGroup.id
+                            ..vars.userId = _providerReadableContext
+                                .read<UserCubit>()
+                                .state
+                                .id))
                   ],
                 )
               : SizedBox(
@@ -132,12 +130,57 @@ class ChannelsBottomSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildChannelTile({
-    required int unreadMessages,
-    required bool selected,
-    required String title,
-    required Function() onTap,
-  }) {
+  Widget _buildThreadGroup<TData, TVars>(
+      {required BuildContext context,
+      required UuidType currentGroupId,
+      required Iterable<Thread> Function(TData) dataMap,
+      required OperationRequest<TData, TVars> operationRequest,
+      required String title}) {
+    return Expanded(
+        child: ListView(
+      children: [
+        Text(
+          title,
+          textAlign: TextAlign.left,
+          style: TextStyle(
+              fontFamily: 'IBM Plex Mono', color: Colors.grey.shade700),
+        ),
+        GqlOperation<TData, TVars>(
+            providerReadableContext: _providerReadableContext,
+            operationRequest: operationRequest,
+            errorText: ChannelsBottomSheet.ERROR_TEXT,
+            onResponse: (TData data) {
+              final threads = dataMap(data);
+
+              if (threads.isNotEmpty) {
+                return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: threads
+                        .map((v) => Thread(name: v.name, id: v.id))
+                        .map((v) => _buildChannelTile(
+                            viewOnly: v.isViewOnly,
+                            unreadMessages: 2,
+                            onTap: () => _selectThread(v, context),
+                            selected: v == selectedThread,
+                            title: v.name))
+                        .toList());
+              } else {
+                return Container(
+                  child:
+                      const Center(child: Text(ChannelsBottomSheet.NO_THREADS)),
+                );
+              }
+            })
+      ],
+    ));
+  }
+
+  Widget _buildChannelTile(
+      {required int unreadMessages,
+      required bool selected,
+      required String title,
+      required Function() onTap,
+      required bool viewOnly}) {
     return Container(
       decoration: BoxDecoration(
           color: selected ? Colors.grey.shade200 : Colors.transparent,
@@ -152,6 +195,7 @@ class ChannelsBottomSheet extends StatelessWidget {
           leading: Text('#',
               style: TextStyle(
                   fontSize: 28,
+                  color: viewOnly ? Colors.black26 : Colors.black,
                   fontWeight: unreadMessages > 0
                       ? FontWeight.bold
                       : FontWeight.normal)),

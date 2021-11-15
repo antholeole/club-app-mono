@@ -1,6 +1,7 @@
 import 'package:fe/data/models/dm.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
+import 'package:fe/pages/scaffold/cubit/data_carriers/main_scaffold_parts.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/handler.dart';
@@ -18,9 +19,17 @@ class UserTile extends StatelessWidget {
   final _gqlClient = getIt<AuthGqlClient>();
 
   final User _user;
+  final List<ActionButton> _actions;
+  final bool _showDmButton;
 
-  UserTile({required User user, Key? key})
-      : _user = user,
+  UserTile({
+    required User user,
+    Key? key,
+    List<ActionButton> actions = const [],
+    bool showDmButton = true,
+  })  : _user = user,
+        _actions = actions,
+        _showDmButton = showDmButton,
         super(key: key);
 
   @override
@@ -37,9 +46,16 @@ class UserTile extends StatelessWidget {
             ),
           ),
           Expanded(child: Text(_user.name)),
-          GestureDetector(
-              onTap: () => _createNewDm(_user.id, context),
-              child: Icon(Icons.chat_outlined, color: Colors.grey.shade500))
+          ..._actions.map((action) => Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: _buildActionButton(action, context),
+              )),
+          if (_showDmButton)
+            _buildActionButton(
+                ActionButton(
+                    icon: Icons.chat_outlined,
+                    onClick: () => _createNewDm(_user.id, context)),
+                context)
         ]),
       ),
     );
@@ -59,5 +75,11 @@ class UserTile extends StatelessWidget {
     } on Failure catch (f) {
       getIt<Handler>().handleFailure(f, context);
     }
+  }
+
+  Widget _buildActionButton(ActionButton button, BuildContext context) {
+    return GestureDetector(
+        onTap: button.onClick,
+        child: Icon(button.icon, color: Colors.grey.shade500));
   }
 }

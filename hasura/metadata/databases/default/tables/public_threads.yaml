@@ -29,7 +29,19 @@ select_permissions:
     - is_dm
     - name
     filter:
-      user_to_threads:
-        user_id:
-          _eq: X-Hasura-User-Id
+      _or:
+      - user_to_threads:
+          user_id:
+            _eq: X-Hasura-User-Id
+      - _exists:
+          _table:
+            name: user_to_group
+            schema: public
+          _where:
+            _and:
+            - user:
+                id:
+                  _eq: X-Hasura-User-Id
+            - admin:
+                _eq: true
   role: user

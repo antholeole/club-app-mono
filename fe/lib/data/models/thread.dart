@@ -9,8 +9,9 @@ part 'thread.g.dart';
 class Thread extends Equatable {
   final String name;
   final UuidType id;
+  final bool isViewOnly;
 
-  const Thread({required this.name, required this.id});
+  const Thread({required this.name, required this.id, this.isViewOnly = false});
 
   factory Thread.fromJson(Map<String, dynamic> json) => _$ThreadFromJson(json);
   Map<String, dynamic> toJson() => _$ThreadToJson(this);

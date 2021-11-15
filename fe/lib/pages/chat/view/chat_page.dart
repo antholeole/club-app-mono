@@ -5,6 +5,7 @@ import 'package:fe/pages/chat/cubit/message_overlay_cubit.dart';
 import 'package:fe/pages/chat/cubit/send_cubit.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/pages/chat/view/widgets/chat_input/chat_bar.dart';
+import 'package:fe/pages/chat/view/widgets/thread_members_drawer/thread_members_drawer.dart';
 import 'package:fe/pages/chat/view/widgets/title/chat_title.dart';
 import 'package:fe/pages/chat/view/widgets/title/club_chat_title.dart';
 import 'package:fe/pages/chat/view/widgets/chats/chats.dart';
@@ -41,12 +42,20 @@ class ChatPage extends StatelessWidget {
 
     final thread = Provider.of<ThreadCubit>(context, listen: true).state.thread;
 
+    final List<ActionButton> actionButtons = [];
+    if (thread != null) {
+      actionButtons.add(ActionButton(
+          icon: Icons.group, onClick: Scaffold.of(context).openEndDrawer));
+    }
+
     if (group is Club) {
       return MainScaffoldParts(
-          actionButtons: [],
-          endDrawer: Container(
-            color: Colors.red,
-          ),
+          actionButtons: actionButtons,
+          endDrawer: thread != null
+              ? ThreadMembersDrawer(
+                  thread: thread,
+                )
+              : null,
           titleBarWidget: GestureDetector(
               onTap: () => context.read<PageCubit>().bottomSheet(context),
               child: ClubChatTitle(
@@ -54,7 +63,15 @@ class ChatPage extends StatelessWidget {
                 onClick: () => context.read<PageCubit>().bottomSheet(context),
               )));
     } else {
-      return MainScaffoldParts(titleBarWidget: ChatTitle(thread: thread));
+      return MainScaffoldParts(
+        actionButtons: actionButtons,
+        titleBarWidget: ChatTitle(thread: thread),
+        endDrawer: thread != null
+            ? ThreadMembersDrawer(
+                thread: thread,
+              )
+            : null,
+      );
     }
   }
 

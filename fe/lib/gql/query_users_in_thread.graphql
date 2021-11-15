@@ -1,0 +1,13 @@
+query QueryUsersInThread($threadId: uuid!) {
+  user_to_thread(where: {
+    thread_id: {
+      _eq: $threadId
+    }
+  }) {
+    user {
+      name,
+      profile_picture,
+      id
+    }
+  }
+}

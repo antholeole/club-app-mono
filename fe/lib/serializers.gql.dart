@@ -96,6 +96,15 @@ import 'package:fe/gql/query_users_in_group.req.gql.dart'
     show GQueryUsersInGroupReq;
 import 'package:fe/gql/query_users_in_group.var.gql.dart'
     show GQueryUsersInGroupVars;
+import 'package:fe/gql/query_users_in_thread.data.gql.dart'
+    show
+        GQueryUsersInThreadData,
+        GQueryUsersInThreadData_user_to_thread,
+        GQueryUsersInThreadData_user_to_thread_user;
+import 'package:fe/gql/query_users_in_thread.req.gql.dart'
+    show GQueryUsersInThreadReq;
+import 'package:fe/gql/query_users_in_thread.var.gql.dart'
+    show GQueryUsersInThreadVars;
 import 'package:fe/gql/query_verify_self_in_thread.data.gql.dart'
     show
         GQueryVerifySelfInThreadData,
@@ -105,6 +114,12 @@ import 'package:fe/gql/query_verify_self_in_thread.req.gql.dart'
     show GQueryVerifySelfInThreadReq;
 import 'package:fe/gql/query_verify_self_in_thread.var.gql.dart'
     show GQueryVerifySelfInThreadVars;
+import 'package:fe/gql/query_view_only_threads.data.gql.dart'
+    show GQueryViewOnlyThreadsData, GQueryViewOnlyThreadsData_threads;
+import 'package:fe/gql/query_view_only_threads.req.gql.dart'
+    show GQueryViewOnlyThreadsReq;
+import 'package:fe/gql/query_view_only_threads.var.gql.dart'
+    show GQueryViewOnlyThreadsVars;
 import 'package:fe/gql/refresh.data.gql.dart'
     show GRefreshData, GRefreshData_refresh_access_token;
 import 'package:fe/gql/refresh.req.gql.dart' show GRefreshReq;
@@ -341,11 +356,20 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GQueryUsersInGroupData_user_to_group_user,
   GQueryUsersInGroupReq,
   GQueryUsersInGroupVars,
+  GQueryUsersInThreadData,
+  GQueryUsersInThreadData_user_to_thread,
+  GQueryUsersInThreadData_user_to_thread_user,
+  GQueryUsersInThreadReq,
+  GQueryUsersInThreadVars,
   GQueryVerifySelfInThreadData,
   GQueryVerifySelfInThreadData_threads_aggregate,
   GQueryVerifySelfInThreadData_threads_aggregate_aggregate,
   GQueryVerifySelfInThreadReq,
   GQueryVerifySelfInThreadVars,
+  GQueryViewOnlyThreadsData,
+  GQueryViewOnlyThreadsData_threads,
+  GQueryViewOnlyThreadsReq,
+  GQueryViewOnlyThreadsVars,
   GRefreshData,
   GRefreshData_refresh_access_token,
   GRefreshReq,

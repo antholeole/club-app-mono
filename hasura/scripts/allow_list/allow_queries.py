@@ -3,7 +3,7 @@ import time
 import os
 
 ENDPOINT = 'http://localhost:8080'
-ADMIN_SECRET = os.environ['HASURA_ADMIN_SECRET']
+ADMIN_SECRET = os.environ['ADMIN_SECRET']
 ALLOWED_QUERIES = 'allowed-queries'
 
 MAX_PINGS = 20
