@@ -41,20 +41,14 @@
 			{
 				"splitTerminals": [
 					{
-						"name": "flutter",
-						"commands": [
-							"cd fe"
-						]
+						"name": "flutter"
 					}
 				]
 			},
 			{
 				"splitTerminals": [
 					{
-						"name": "backend",
-						"commands": [
-							"make run"
-						]
+						"name": "backend"
 					}
 				]
 			},

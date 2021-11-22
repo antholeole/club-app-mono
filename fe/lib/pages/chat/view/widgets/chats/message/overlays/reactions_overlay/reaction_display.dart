@@ -1,11 +1,16 @@
 import 'package:badges/badges.dart';
 import 'package:fe/data/models/reaction.dart';
+import 'package:fe/data/models/thread.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
+import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
+import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
+import 'package:fe/services/toaster/toaster.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter/material.dart';
 import 'package:fe/gql/upsert_reaction.req.gql.dart';
+import 'package:provider/src/provider.dart';
 
 import '../../../../../../../../service_locator.dart';
 
@@ -130,6 +135,13 @@ class _ReactionDisplayState extends State<ReactionDisplay>
   }
 
   Future<void> _onReacted() async {
+    if (context.read<Thread>().isViewOnly) {
+      context.read<ToasterCubit>().add(Toast(
+          message: "Can't react in a view only thread.",
+          type: ToastType.Warning));
+      return;
+    }
+
     try {
       await _authGqlClient
           .request(GUpsertReactionReq((q) => q

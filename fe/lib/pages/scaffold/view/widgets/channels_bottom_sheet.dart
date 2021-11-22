@@ -156,7 +156,8 @@ class ChannelsBottomSheet extends StatelessWidget {
                 return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: threads
-                        .map((v) => Thread(name: v.name, id: v.id))
+                        .map((v) => Thread(
+                            name: v.name, id: v.id, isViewOnly: v.isViewOnly))
                         .map((v) => _buildChannelTile(
                             viewOnly: v.isViewOnly,
                             unreadMessages: 2,
@@ -181,6 +182,8 @@ class ChannelsBottomSheet extends StatelessWidget {
       required String title,
       required Function() onTap,
       required bool viewOnly}) {
+    final textColor = viewOnly ? Colors.grey.shade500 : Colors.black;
+
     return Container(
       decoration: BoxDecoration(
           color: selected ? Colors.grey.shade200 : Colors.transparent,
@@ -189,13 +192,14 @@ class ChannelsBottomSheet extends StatelessWidget {
           onTap: onTap,
           title: Text(title,
               style: TextStyle(
+                  color: textColor,
                   fontWeight: unreadMessages != 0
                       ? FontWeight.bold
                       : FontWeight.normal)),
           leading: Text('#',
               style: TextStyle(
                   fontSize: 28,
-                  color: viewOnly ? Colors.black26 : Colors.black,
+                  color: textColor,
                   fontWeight: unreadMessages > 0
                       ? FontWeight.bold
                       : FontWeight.normal)),

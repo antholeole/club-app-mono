@@ -46,10 +46,19 @@ select_permissions:
     - thread_id
     - user_sent
     filter:
-      group_thread:
-        user_to_threads:
-          user_id:
-            _eq: X-Hasura-User-Id
+      _or:
+      - group_thread:
+          user_to_threads:
+            user_id:
+              _eq: X-Hasura-User-Id
+      - group_thread:
+          group:
+            user_to_groups:
+              _and:
+              - user_id:
+                  _eq: X-Hasura-User-Id
+              - admin:
+                  _eq: true
   role: user
 update_permissions:
 - permission:

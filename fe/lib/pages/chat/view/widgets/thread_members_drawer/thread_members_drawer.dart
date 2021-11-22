@@ -1,6 +1,9 @@
 import 'package:fe/data/models/club.dart';
+import 'package:fe/data/models/dm.dart';
 import 'package:fe/data/models/thread.dart';
+import 'package:fe/data/models/group.dart';
 import 'package:fe/data/models/user.dart';
+import 'package:fe/pages/chat/view/widgets/thread_members_drawer/add_dropdown.dart';
 import 'package:fe/pages/groups/view/widgets/groups_tabs/user_tile.dart';
 import 'package:fe/pages/scaffold/cubit/data_carriers/main_scaffold_parts.dart';
 import 'package:fe/stdlib/shared_widgets/gql_operation.dart';
@@ -11,21 +14,31 @@ import 'package:fe/gql/query_users_in_thread.req.gql.dart';
 
 class ThreadMembersDrawer extends StatelessWidget {
   final Thread _thread;
+  final Group _group;
 
-  const ThreadMembersDrawer({Key? key, required Thread thread})
+  static double getWidth(BuildContext context) {
+    return MediaQuery.of(context).size.width * 0.85;
+  }
+
+  const ThreadMembersDrawer(
+      {Key? key, required Thread thread, required Group group})
       : _thread = thread,
+        _group = group,
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    const List<ActionButton> actions = [];
+    final List<ActionButton> actions = [];
 
-    if (_thread is Club && (_thread as Club).admin) {
-      ActionButton(icon: Icons.person_remove, onClick: () {});
+    if (_group is Club && (_group as Club).admin) {
+      actions.add(ActionButton(icon: Icons.person_remove, onClick: () {}));
     }
 
+    final shouldShowAdd =
+        (_group is Club && (_group as Club).admin) || _group is Dm;
+
     return Container(
-      width: MediaQuery.of(context).size.width * 0.85,
+      width: ThreadMembersDrawer.getWidth(context),
       color: Colors.white,
       child: SafeArea(
         child: Column(
@@ -34,9 +47,14 @@ class ThreadMembersDrawer extends StatelessWidget {
               '${_thread.name} Members',
               style: Theme.of(context).textTheme.headline6,
             ),
-            Container(
-              height: 30,
-            ),
+            shouldShowAdd
+                ? AddDropdown(
+                    thread: _thread,
+                    group: _group,
+                  )
+                : Container(
+                    height: 30,
+                  ),
             Expanded(
                 child: GqlOperation<GQueryUsersInThreadData,
                         GQueryUsersInThreadVars>(

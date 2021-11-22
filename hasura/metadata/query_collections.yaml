@@ -65,6 +65,11 @@
         $groupId      },      user_to_threads: {        _and: {          user_id:
         {          _eq: $userId          },          thread_id: {          _eq: $threadId          }        }      },    }  })
         {    aggregate {      count    }  }}'
+    - name: query_members_not_in_thread
+      query: 'query QueryMembersNotInThread($threadId: uuid!, $groupId: uuid!) {  users(where:
+        {   _and: [    {      user_to_threads: {        thread_id: {          _neq:
+        $threadId        }      }    },    {      user_to_groups: {        group_id:
+        {          _eq: $groupId        }      }    }  ]  }) {      name,      profile_picture,      id  }}'
     - name: upsert_reaction
       query: 'mutation UpsertReaction(  $deleted: Boolean!,   $selfId: uuid!,   $messageId:
         uuid!,   $reaction: message_reaction_types_enum!) {  insert_message_reactions_one(object:

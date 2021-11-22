@@ -44,6 +44,12 @@ import 'package:fe/gql/query_group_join_token.req.gql.dart'
     show GQueryGroupJoinTokenReq;
 import 'package:fe/gql/query_group_join_token.var.gql.dart'
     show GQueryGroupJoinTokenVars;
+import 'package:fe/gql/query_members_not_in_thread.data.gql.dart'
+    show GQueryMembersNotInThreadData, GQueryMembersNotInThreadData_users;
+import 'package:fe/gql/query_members_not_in_thread.req.gql.dart'
+    show GQueryMembersNotInThreadReq;
+import 'package:fe/gql/query_members_not_in_thread.var.gql.dart'
+    show GQueryMembersNotInThreadVars;
 import 'package:fe/gql/query_messages_in_thread.data.gql.dart'
     show
         GQueryMessagesInThreadData,
@@ -323,6 +329,10 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GQueryGroupJoinTokenData_group_join_tokens,
   GQueryGroupJoinTokenReq,
   GQueryGroupJoinTokenVars,
+  GQueryMembersNotInThreadData,
+  GQueryMembersNotInThreadData_users,
+  GQueryMembersNotInThreadReq,
+  GQueryMembersNotInThreadVars,
   GQueryMessagesInThreadData,
   GQueryMessagesInThreadData_messages,
   GQueryMessagesInThreadData_messages_message_reactions,

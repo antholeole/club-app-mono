@@ -89,7 +89,8 @@ class ThreadCubit extends Cubit<ThreadState> {
 
     //if the group is a dm, we are good!
     if (group is Dm) {
-      emit(ThreadState.thread(Thread(id: group.id, name: group.name)));
+      emit(ThreadState.thread(
+          Thread(id: group.id, name: group.name, isViewOnly: false)));
       return;
     }
 

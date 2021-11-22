@@ -1,13 +1,15 @@
 import 'package:fe/pages/chat/cubit/send_cubit.dart';
-import 'package:fe/pages/chat/view/widgets/chat_input/send_button.dart';
+import 'package:fe/pages/chat/cubit/thread_cubit.dart';
+import 'package:fe/pages/chat/view/widgets/chat_input/sendable/chat_buttons.dart';
+import 'package:fe/pages/chat/view/widgets/chat_input/sendable/chat_text_field.dart';
+import 'package:fe/pages/chat/view/widgets/chat_input/sendable/send_button.dart';
+import 'package:fe/pages/chat/view/widgets/chat_input/unsendable/unsendable_chatbar.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/handler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../service_locator.dart';
-import 'chat_buttons.dart';
-import 'chat_text_field.dart';
 
 class ChatBar extends StatefulWidget {
   const ChatBar({Key? key}) : super(key: key);
@@ -44,25 +46,34 @@ class _ChatBarState extends State<ChatBar> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SafeArea(
-          child: Row(
-            children: [
-              ChatButtons(
-                  isOpen: _settingsIsOpen,
-                  manuallyShowButtons: () => setState(() {
-                        _settingsIsOpen = true;
-                      })),
-              Expanded(
-                  child: ChatTextField(
-                focusNode: _focusNode,
-                controller: _controller,
-              )),
-              SendButton(
-                  isSendable: _controller.text.isNotEmpty, onClick: _onSend)
-            ],
-          ),
+          child: buildContent(),
         ),
       ),
     );
+  }
+
+  Widget buildContent() {
+    final thread = context.read<ThreadCubit>().state.thread;
+
+    if (thread?.isViewOnly ?? false) {
+      return const UnsendableChatbar(reason: UnsendableReason.ViewOnly);
+    } else {
+      return Row(
+        children: [
+          ChatButtons(
+              isOpen: _settingsIsOpen,
+              manuallyShowButtons: () => setState(() {
+                    _settingsIsOpen = true;
+                  })),
+          Expanded(
+              child: ChatTextField(
+            focusNode: _focusNode,
+            controller: _controller,
+          )),
+          SendButton(isSendable: _controller.text.isNotEmpty, onClick: _onSend)
+        ],
+      );
+    }
   }
 
   void _onTextUpdate() {

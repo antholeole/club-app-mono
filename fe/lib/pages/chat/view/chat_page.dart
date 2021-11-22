@@ -32,7 +32,7 @@ class ChatPage extends StatelessWidget {
   }
 
   static MainScaffoldParts scaffoldWidgets(BuildContext context) {
-    final group = Provider.of<MainCubit>(context, listen: true).state.join(
+    final group = BlocProvider.of<MainCubit>(context, listen: true).state.join(
         (p0) => null,
         (p0) => null,
         (_) => null,
@@ -40,7 +40,8 @@ class ChatPage extends StatelessWidget {
         (p0) => null,
         (mwdm) => mwdm.dm);
 
-    final thread = Provider.of<ThreadCubit>(context, listen: true).state.thread;
+    final thread =
+        BlocProvider.of<ThreadCubit>(context, listen: true).state.thread;
 
     final List<ActionButton> actionButtons = [];
     if (thread != null) {
@@ -54,6 +55,7 @@ class ChatPage extends StatelessWidget {
           endDrawer: thread != null
               ? ThreadMembersDrawer(
                   thread: thread,
+                  group: group,
                 )
               : null,
           titleBarWidget: GestureDetector(
@@ -68,6 +70,7 @@ class ChatPage extends StatelessWidget {
         titleBarWidget: ChatTitle(thread: thread),
         endDrawer: thread != null
             ? ThreadMembersDrawer(
+                group: group!, //safety: if there's a thread, there's a group
                 thread: thread,
               )
             : null,
@@ -142,9 +145,6 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    threadCubit = context.read<ThreadCubit>();
-    pageCubit = context.read<PageCubit>();
-
     return MultiBlocListener(
         listeners: [
           BlocListener<MainCubit, MainState>(listener: (context, state) {
