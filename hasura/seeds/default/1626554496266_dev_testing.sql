@@ -1,11 +1,10 @@
-truncate group_join_tokens RESTART IDENTITY CASCADE;
-truncate threads RESTART IDENTITY CASCADE;
+truncate group_roles RESTART IDENTITY CASCADE;
 truncate groups RESTART IDENTITY CASCADE;
+truncate message_reactions RESTART IDENTITY CASCADE;
 truncate messages RESTART IDENTITY CASCADE;
-truncate user_to_group RESTART IDENTITY CASCADE;
-truncate user_to_thread RESTART IDENTITY CASCADE;
+truncate threads RESTART IDENTITY CASCADE;
+truncate user_to_role RESTART IDENTITY CASCADE;
 truncate users RESTART IDENTITY CASCADE;
-
 
 /* Insert Real People */
 INSERT INTO public.users (id, email, sub, name)
@@ -45,11 +44,34 @@ INSERT INTO public.groups(id, group_name)
     VALUES ('b454d579-c4d2-403c-95cd-ac8dbc97476a', 'Sports Ball Team');
 
 INSERT INTO public.groups(id, group_name) 
-    VALUES ('1f6aadfa-2f8c-4020-a338-379ee6a3fdce', 'ISU D&D Club');
+    VALUES ('1f6aadfa-2f8c-4020-a338-379ee6a3fdce', 'ISU D&D Club 2');
 
-/* what users are in each group. First, add self to D&D and Sports Ball */
-INSERT INTO public.user_to_group(user_id, group_id)
-    VALUES ('04c9b164-8535-4ae0-a091-9681a425b935', '56610d26-d62d-4628-8c08-eabf7ab7e8ad');
+/* roles for each group */
+
+/* DD club */
+INSERT INTO public.group_roles(id, group_id, role_name)
+    VALUES ('2b9722cc-9ffb-4b5e-8245-7c76296cc4f6', '56610d26-d62d-4628-8c08-eabf7ab7e8ad', 'Dungeon Masters');
+
+INSERT INTO public.group_roles(id, group_id, role_name)
+    VALUES ('a1c1b211-f834-4e45-8fb7-48f7e458b54a', '56610d26-d62d-4628-8c08-eabf7ab7e8ad', 'Players');
+
+/* Sports Ball Team */
+INSERT INTO public.group_roles(id, group_id, role_name)
+    VALUES ('47568061-097f-4de7-ba07-67516d4b90a4', 'b454d579-c4d2-403c-95cd-ac8dbc97476a', 'Defense');
+
+INSERT INTO public.group_roles(id, group_id, role_name)
+    VALUES ('850b9c83-38a0-4734-b7a2-0907650acbec', 'b454d579-c4d2-403c-95cd-ac8dbc97476a', 'Exec Board');
+
+/* DD club 2 (dead) */
+INSERT INTO public.group_roles(id, group_id, role_name)
+    VALUES ('01fa03a2-e56c-4219-acf4-af7fd48003de', '1f6aadfa-2f8c-4020-a338-379ee6a3fdce', 'Goblins');
+
+INSERT INTO public.group_roles(id, group_id, role_name)
+    VALUES ('850b9c83-38a0-4734-b7a2-0907650acbec', '1f6aadfa-2f8c-4020-a338-379ee6a3fdce', 'Gnomes');
+
+/* what users are in each role. First, add self to D&D and Sports Ball */
+INSERT INTO public.user_to_role(user_id, role_id)
+    VALUES ('04c9b164-8535-4ae0-a091-9681a425b935', '2b9722cc-9ffb-4b5e-8245-7c76296cc4f6');
 
 INSERT INTO public.user_to_group(user_id, group_id, admin)
     VALUES ('04c9b164-8535-4ae0-a091-9681a425b935', 'b454d579-c4d2-403c-95cd-ac8dbc97476a', True);
