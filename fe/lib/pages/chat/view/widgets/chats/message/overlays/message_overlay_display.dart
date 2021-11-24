@@ -1,6 +1,5 @@
 import 'package:fe/data/models/message.dart';
 import 'package:fe/data/models/thread.dart';
-import 'package:fe/pages/chat/bloc/chat_bloc.dart';
 import 'package:fe/pages/chat/cubit/message_overlay_cubit.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/pages/chat/view/widgets/chats/message/overlays/hold_overlay/message_options_overlay.dart';
@@ -81,8 +80,7 @@ class _MessageOverlayDisplayState extends State<MessageOverlayDisplay> {
         maintainState: true,
         builder: (_) => MultiProvider(providers: [
               BlocProvider.value(value: context.read<ToasterCubit>()),
-              Provider<Thread>(
-                  create: (_) => context.read<ThreadCubit>().state.thread!),
+              Provider.value(value: context.read<Thread>())
             ], child: widget));
 
     Overlay.of(context)!.insert(_currentMessageOverlay!);

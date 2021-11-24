@@ -2,9 +2,24 @@ table:
   name: messages
   schema: public
 object_relationships:
+- name: dm
+  using:
+    manual_configuration:
+      column_mapping:
+        source_id: id
+      insertion_order: null
+      remote_table:
+        name: dms
+        schema: public
 - name: group_thread
   using:
-    foreign_key_constraint_on: thread_id
+    manual_configuration:
+      column_mapping:
+        source_id: group_id
+      insertion_order: null
+      remote_table:
+        name: threads
+        schema: public
 - name: user
   using:
     foreign_key_constraint_on: user_sent
@@ -20,55 +35,42 @@ insert_permissions:
 - permission:
     backend_only: false
     check:
-      _and:
-      - user_sent:
-          _eq: X-Hasura-User-Id
+      _or:
+      - dm:
+          user_to_dms:
+            user_id:
+              _eq: X-Hasura-User-Id
       - group_thread:
-          user_to_threads:
-            user:
-              id:
-                _eq: X-Hasura-User-Id
+          users:
+            user_id:
+              _eq: X-Hasura-User-Id
     columns:
     - id
+    - is_image
     - message
-    - thread_id
-    - user_sent
+    - source_id
+    - updated_at
+    set:
+      user_sent: x-hasura-User-Id
   role: user
 select_permissions:
 - permission:
     columns:
-    - deleted
+    - created_at
+    - id
     - is_image
     - message
-    - created_at
+    - source_id
     - updated_at
-    - id
-    - thread_id
     - user_sent
     filter:
       _or:
-      - group_thread:
-          user_to_threads:
+      - dm:
+          user_to_dms:
             user_id:
               _eq: X-Hasura-User-Id
       - group_thread:
-          group:
-            user_to_groups:
-              _and:
-              - user_id:
-                  _eq: X-Hasura-User-Id
-              - admin:
-                  _eq: true
-  role: user
-update_permissions:
-- permission:
-    check: {}
-    columns:
-    - message
-    filter:
-      _and:
-      - user_sent:
-          _eq: X-Hasura-User-Id
-      - is_image:
-          _eq: false
+          users:
+            user_id:
+              _eq: X-Hasura-User-Id
   role: user

@@ -1,13 +1,13 @@
 subscription GetNewReactions(
-  $threadId: uuid!,
+  $sourceId: uuid!,
 ) {
   message_reactions(limit: 5, order_by: {
     updated_at: desc
   },
     where: {
      	message: {
-      thread_id: {
-        _eq: $threadId
+      source_id: {
+        _eq: $sourceId
       } 
     }
     }) {

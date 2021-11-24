@@ -33,9 +33,9 @@ class Users extends StatelessWidget {
                 children: data.user_to_group
                     .map((user) => UserTile(
                             user: User(
-                          id: user.user.id,
-                          name: user.user.name,
-                          profilePictureUrl: user.user.profile_picture,
+                          id: user.user!.id,
+                          name: user.user!.name,
+                          profilePictureUrl: user.user!.profile_picture,
                         )))
                     .toList())),
       ],

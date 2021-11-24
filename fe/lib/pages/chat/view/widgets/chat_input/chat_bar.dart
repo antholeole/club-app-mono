@@ -1,5 +1,5 @@
+import 'package:fe/data/models/thread.dart';
 import 'package:fe/pages/chat/cubit/send_cubit.dart';
-import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/pages/chat/view/widgets/chat_input/sendable/chat_buttons.dart';
 import 'package:fe/pages/chat/view/widgets/chat_input/sendable/chat_text_field.dart';
 import 'package:fe/pages/chat/view/widgets/chat_input/sendable/send_button.dart';
@@ -46,16 +46,14 @@ class _ChatBarState extends State<ChatBar> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SafeArea(
-          child: buildContent(),
+          child: buildContent(context.watch<Thread>()),
         ),
       ),
     );
   }
 
-  Widget buildContent() {
-    final thread = context.read<ThreadCubit>().state.thread;
-
-    if (thread?.isViewOnly ?? false) {
+  Widget buildContent(Thread thread) {
+    if (thread.isViewOnly) {
       return const UnsendableChatbar(reason: UnsendableReason.ViewOnly);
     } else {
       return Row(

@@ -47,20 +47,17 @@ class GroupsView extends StatelessWidget {
             final clubs = [
               ...data.admin_clubs.map((adminGroup) => Club(
                   admin: true,
-                  id: adminGroup.group.id,
-                  joinToken: adminGroup.group.group_join_tokens.isEmpty
-                      ? null
-                      : adminGroup.group.group_join_tokens.first.join_token,
-                  name: adminGroup.group.group_name)),
+                  id: adminGroup.group!.id,
+                  name: adminGroup.group!.name)),
               ...data.member_clubs.map((memberGroup) => Club(
                   admin: false,
-                  id: memberGroup.group.id,
-                  name: memberGroup.group.group_name))
+                  id: memberGroup.group!.id,
+                  name: memberGroup.group!.name))
             ];
 
             final dms = data.dms
                 .map((memberGroup) => Dm(
-                    users: memberGroup.thread.user_to_threads
+                    users: memberGroup.user_to_dms
                         .where((user) =>
                             user.user.id != context.read<UserCubit>().user.id)
                         .map((user) => User(
@@ -68,8 +65,8 @@ class GroupsView extends StatelessWidget {
                             id: user.user.id,
                             profilePictureUrl: user.user.profile_picture))
                         .toList(),
-                    id: memberGroup.thread.id,
-                    name: memberGroup.thread.name))
+                    id: memberGroup.id,
+                    name: memberGroup.name))
                 .toList();
 
             return Theme(

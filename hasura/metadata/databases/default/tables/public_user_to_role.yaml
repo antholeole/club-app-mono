@@ -1,0 +1,51 @@
+table:
+  name: user_to_role
+  schema: public
+object_relationships:
+- name: role
+  using:
+    foreign_key_constraint_on: role_id
+- name: user
+  using:
+    foreign_key_constraint_on: user_id
+insert_permissions:
+- permission:
+    backend_only: false
+    check:
+      role:
+        group:
+          users:
+            _and:
+            - owner:
+                _eq: true
+            - user_id:
+                _eq: X-Hasura-User-Id
+    columns:
+    - role_id
+    - user_id
+  role: user
+select_permissions:
+- permission:
+    columns:
+    - id
+    - role_id
+    - user_id
+    filter:
+      role:
+        group:
+          users:
+            user_id:
+              _eq: X-Hasura-User-Id
+  role: user
+delete_permissions:
+- permission:
+    filter:
+      role:
+        group:
+          users:
+            _and:
+            - owner:
+                _eq: true
+            - user_id:
+                _eq: X-Hasura-User-Id
+  role: user

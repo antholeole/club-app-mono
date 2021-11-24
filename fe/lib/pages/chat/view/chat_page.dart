@@ -1,5 +1,6 @@
 import 'package:fe/data/models/club.dart';
 import 'package:fe/data/models/group.dart';
+import 'package:fe/data/models/thread.dart';
 import 'package:fe/pages/chat/bloc/chat_bloc.dart';
 import 'package:fe/pages/chat/cubit/message_overlay_cubit.dart';
 import 'package:fe/pages/chat/cubit/send_cubit.dart';
@@ -22,13 +23,11 @@ class ChatPage extends StatelessWidget {
   final Group group;
 
   late final ThreadCubit _threadCubit;
-  late final ChatBloc _chatBloc;
 
   final ScrollController _scrollController = ScrollController();
 
   ChatPage({required this.group}) {
     _threadCubit = ThreadCubit(group: group);
-    _chatBloc = ChatBloc(threadCubit: _threadCubit);
   }
 
   static MainScaffoldParts scaffoldWidgets(BuildContext context) {
@@ -86,9 +85,6 @@ class ChatPage extends StatelessWidget {
           create: (_) => _threadCubit,
         ),
         BlocProvider(
-          create: (_) => _chatBloc,
-        ),
-        BlocProvider(
             create: (_) =>
                 MessageOverlayCubit(scrollController: _scrollController))
       ],
@@ -108,8 +104,6 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
   //allows us to use this in didChangeAppLifecycleState
   //without lifecycle errors.
   Group? currentGroup;
-  ThreadCubit? threadCubit;
-  PageCubit? pageCubit;
 
   @override
   void initState() {
@@ -120,27 +114,7 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
   @override
   void didChangeDependencies() {
     updateScaffold(context);
-
-    if (threadCubit != null) {
-      pageCubit?.addThreadCubit(threadCubit!);
-    }
-
     super.didChangeDependencies();
-  }
-
-  @override
-  void dispose() {
-    pageCubit?.removeThreadCubit();
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (threadCubit != null &&
-        state == AppLifecycleState.paused &&
-        currentGroup != null) {
-      threadCubit!.cacheThread();
-    }
   }
 
   @override
@@ -164,18 +138,36 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
             });
           }),
         ],
-        child: BlocBuilder<ThreadCubit, ThreadState>(
-          builder: (context, state) => state.join(
-              (_) => Container(),
-              (_) => BlocProvider<SendCubit>(
-                    create: (_) => SendCubit(
-                        threadCubit: context.read<ThreadCubit>(),
-                        chatBloc: context.read<ChatBloc>()),
-                    child: const FooterLayout(
-                      footer: KeyboardAttachable(child: ChatBar()),
+        child: BlocConsumer<ThreadCubit, ThreadState>(
+          listener: (_, state) => context.read<PageCubit>().currentThread =
+              state.join((_) => null, (wts) => wts.thread),
+          builder: (context, state) => state.join((_) => Container(), (wts) {
+            return MultiProvider(
+                providers: [
+                  Provider<Thread>.value(value: wts.thread),
+                  ProxyProvider<Thread, ChatBloc>(
+                    create: (BuildContext context) =>
+                        ChatBloc(thread: context.read<Thread>()),
+                    update: (BuildContext _, Thread thread, ChatBloc? value) =>
+                        ChatBloc(thread: thread),
+                  ),
+                  ProxyProvider<ChatBloc, SendCubit>(
+                    create: (BuildContext context) => SendCubit(
+                        chatBloc: context.read<ChatBloc>(),
+                        thread: context.read<Thread>()),
+                    update: (BuildContext context, ChatBloc chatBloc,
+                            SendCubit? value) =>
+                        SendCubit(
+                            thread: context.read<Thread>(), chatBloc: chatBloc),
+                  )
+                ],
+                builder: (context, _) => const FooterLayout(
+                      footer: KeyboardAttachable(
+                        child: ChatBar(),
+                      ),
                       child: Chats(),
-                    ),
-                  )),
+                    ));
+          }),
         ));
   }
 

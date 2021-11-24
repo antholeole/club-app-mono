@@ -5,7 +5,7 @@ query QueryViewOnlyThreads($groupId: uuid!, $userId: uuid!) {
         _eq: $groupId
       },
       _not: {
-      	user_to_threads: {
+      	users: {
         	user_id: {
           	_eq: $userId
         }

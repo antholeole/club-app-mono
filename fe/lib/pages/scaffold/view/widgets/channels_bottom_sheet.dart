@@ -91,7 +91,7 @@ class ChannelsBottomSheet extends StatelessWidget {
                         currentGroupId: currentGroup.id,
                         dataMap: (data) => data.threads.map((threadData) =>
                             Thread(
-                                name: threadData.name!,
+                                name: threadData.name,
                                 id: threadData.id,
                                 isViewOnly: false)),
                         operationRequest: GQuerySelfThreadsInGroupReq((q) => q
@@ -109,7 +109,7 @@ class ChannelsBottomSheet extends StatelessWidget {
                           currentGroupId: currentGroup.id,
                           dataMap: (data) => data.threads.map((threadData) =>
                               Thread(
-                                  name: threadData.name!,
+                                  name: threadData.name,
                                   id: threadData.id,
                                   isViewOnly: true)),
                           operationRequest: GQueryViewOnlyThreadsReq((q) => q

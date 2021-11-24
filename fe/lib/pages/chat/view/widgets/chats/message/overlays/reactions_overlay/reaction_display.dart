@@ -4,7 +4,6 @@ import 'package:fe/data/models/thread.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
-import 'package:fe/services/toaster/toaster.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
@@ -26,7 +25,6 @@ class ReactionDisplay extends StatefulWidget {
   final int _likeCount;
   final void Function(bool liked, ReactionType type) _onReacted;
   final UuidType _messageId;
-  final UuidType _userId;
 
   const ReactionDisplay(
       {Key? key,
@@ -34,11 +32,9 @@ class ReactionDisplay extends StatefulWidget {
       required int reactionCount,
       required bool selfReacted,
       required UuidType messageId,
-      required UuidType userId,
       required void Function(bool liked, ReactionType type) onReacted})
       : _reactionType = reactionType,
         _messageId = messageId,
-        _userId = userId,
         _selfReacted = selfReacted,
         _likeCount = reactionCount,
         _onReacted = onReacted,
@@ -147,7 +143,6 @@ class _ReactionDisplayState extends State<ReactionDisplay>
           .request(GUpsertReactionReq((q) => q
             ..vars.deleted = widget._selfReacted
             ..vars.messageId = widget._messageId
-            ..vars.selfId = widget._userId
             ..vars.reaction = widget._reactionType.gql))
           .first;
     } on Failure catch (f) {

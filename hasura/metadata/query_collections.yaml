@@ -4,89 +4,78 @@
     - name: QueryUsersInGroup
       query: |-
         query QueryUsersInGroup($groupId: uuid!) {
-          user_to_group(where: {
-            groupId: {
-              _eq: $groupId
-            }
-          }) {
-            user {
+          users {
               name,
               profile_picture,
               id
-            }
           }
         }
+    - name: query
+      query: |-
+        query {
+          users {
+            name
+          }
+        }
+    - name: query_users_in_dm
+      query: 'query QueryUsersInDm($dmId: uuid!) {  user_to_dm(where: {    dm_id:
+        {      _eq: $dmId    }  }) {    user {      name,      profile_picture,      id    }  }}'
     - name: query_view_only_threads
       query: 'query QueryViewOnlyThreads($groupId: uuid!, $userId: uuid!) {  threads(where:
-        {  _and: {      group_id: {        _eq: $groupId      },      _not: {      user_to_threads:
+        {  _and: {      group_id: {        _eq: $groupId      },      _not: {      users:
         {        user_id: {          _eq: $userId        }      }       }    }  })
         {    name,     id  }}'
     - name: update_self_name
       query: 'mutation UpdateSelfName($id: uuid!, $name: String!) {  update_users_by_pk(    pk_columns:
         { id: $id }  _set: { name: $name }  ) {    name  }}'
-    - name: query_messages_in_thread
-      query: 'query QueryMessagesInThread(  $threadId: uuid!,  $before: timestamptz!)
-        {  messages(    limit: 20,    order_by: {      created_at: desc    },    where:
-        {      thread_id: {        _eq: $threadId,      },      created_at: {        _lte:
-        $before      }    }  ) {   created_at,    message,    user {      name,      profile_picture,      id    },  message_reactions
-        {      reaction_type,      id,      user {        id,        name      }    },    is_image,    updated_at,    id  }}'
     - name: query_self_group_preview
       query: 'query QuerySelfGroupsPreview($self_id: uuid!) {  user_to_group(where:
-        {    user_id: {    _eq: $self_id    }  }) {   group {        id,        group_name      },    admin    }}'
+        {    user_id: {    _eq: $self_id    }  }) {   group {        id,        name      },    owner    }}'
     - name: query_users_in_thread
       query: 'query QueryUsersInThread($threadId: uuid!) {  user_to_thread(where:
         {    thread_id: {      _eq: $threadId    }  }) {    user {      name,      profile_picture,      id    }  }}'
     - name: insert_message
-      query: 'mutation InsertMessage($message: String!, $threadId: uuid!, $selfId:
-        uuid!, $messageId: uuid!) {  insert_messages(objects: {    message: $message,    thread_id:
-        $threadId,    user_sent: $selfId,    id: $messageId  }) {    returning {      created_at    }  }}'
+      query: 'mutation InsertMessage($message: String!, $sourceId: uuid!, $messageId:
+        uuid!) {  insert_messages(objects: {    message: $message,    source_id: $sourceId,    id:
+        $messageId  }) {    returning {      created_at    }  }}'
     - name: query_self_threads_in_group
       query: 'query QuerySelfThreadsInGroup($userId: uuid!, $groupId: uuid!) {  threads(where:
-        {  _and: {      group_id: {        _eq: $groupId      },      user_to_threads:
-        {        user_id: {          _eq: $userId        }      }    }  }) {    name,    id  }}'
+        {  _and: {      group_id: {        _eq: $groupId      },      users: {        user_id:
+        {          _eq: $userId        }      }    }  }) {    name,    id  }}'
     - name: query_self_groups
-      query: 'fragment group_base_fields on groups {    group_name,    id}query QuerySelfGroups($selfId:
-        uuid!) {  admin_clubs: user_to_group(    where: {      admin: {      _eq:true      },      user_id:
-        {        _eq: $selfId      }    }  ) {    group {      ...group_base_fields,      group_join_tokens
-        {        join_token      }    }  },    member_clubs: user_to_group(    where:
-        {      admin: {      _eq:false      },      user_id: {        _eq: $selfId      }    }  )
-        {    group {      ...group_base_fields    }  },  dms: user_to_thread(    where:
-        {      user_id: {        _eq: $selfId      },      thread: {        is_dm:
-        {          _eq: true        }      }    }  ) {    thread {      name,      id,      user_to_threads
-        {        user {          id,          name,          profile_picture        }      }    }  }}'
+      query: 'fragment group_base_fields on groups {    name,    id}query QuerySelfGroups($selfId:
+        uuid!) {  admin_clubs: user_to_group(    where: {      owner: {      _eq:true      },      user_id:
+        {        _eq: $selfId      }    }  ) {    group {      ...group_base_fields,    }  },    member_clubs:
+        user_to_group(    where: {      owner: {      _eq:false      },      user_id:
+        {        _eq: $selfId      }    }  ) {    group {      ...group_base_fields    }  },  dms(    where:
+        {      user_to_dms: {        user_id: {          _eq: $selfId        }      }    }  )
+        {    id,    name,    user_to_dms {      user {        id,        name,        profile_picture      }    }  }}'
+    - name: query_messages_in_chat
+      query: 'query QueryMessagesInChat(  $threadId: uuid!,  $before: timestamptz!)
+        {  messages(    limit: 20,    order_by: {      created_at: desc    },    where:
+        {      source_id: {        _eq: $threadId,      },      created_at: {        _lte:
+        $before      }    }  ) {   created_at,    message,    user {      name,      profile_picture,      id    },  message_reactions
+        {      reaction_type,      id,      user {        id,        name      }    },    is_image,    updated_at,    id  }}'
     - name: get_new_reactions
-      query: 'subscription GetNewReactions(  $threadId: uuid!,) {  message_reactions(limit:
-        5, order_by: {    updated_at: desc  },    where: {     message: {      thread_id:
-        {        _eq: $threadId      }     }    }) {    created_at,    user {      id,      name    },    reaction_type,    deleted,    message
+      query: 'subscription GetNewReactions(  $sourceId: uuid!,) {  message_reactions(limit:
+        5, order_by: {    updated_at: desc  },    where: {     message: {      source_id:
+        {        _eq: $sourceId      }     }    }) {    created_at,    user {      id,      name    },    reaction_type,    deleted,    message
         {      id    },    id  }}'
     - name: query_verify_self_in_thread
       query: 'query QueryVerifySelfInThread($userId: uuid!, $groupId: uuid!, $threadId:
         uuid!) {  threads_aggregate(where: {  _and: {      group_id: {        _eq:
-        $groupId      },      user_to_threads: {        _and: {          user_id:
-        {          _eq: $userId          },          thread_id: {          _eq: $threadId          }        }      },    }  })
+        $groupId      },      users: {        _and: {          user_id: {          _eq:
+        $userId          },          thread_id: {          _eq: $threadId          }        }      },    }  })
         {    aggregate {      count    }  }}'
-    - name: query_members_not_in_thread
-      query: 'query QueryMembersNotInThread($threadId: uuid!, $groupId: uuid!) {  users(where:
-        {   _and: [    {      user_to_threads: {        thread_id: {          _neq:
-        $threadId        }      }    },    {      user_to_groups: {        group_id:
-        {          _eq: $groupId        }      }    }  ]  }) {      name,      profile_picture,      id  }}'
     - name: upsert_reaction
-      query: 'mutation UpsertReaction(  $deleted: Boolean!,   $selfId: uuid!,   $messageId:
-        uuid!,   $reaction: message_reaction_types_enum!) {  insert_message_reactions_one(object:
-        {    deleted: $deleted,    message_id: $messageId,    reaction_type: $reaction,    user_id:
-        $selfId  },  on_conflict: {    constraint: message_reactions_pkey,    update_columns:
-        [deleted]  }  ) {    id,    deleted  }}'
-    - name: query_group_join_token
-      query: 'query QueryGroupJoinToken($group_id: uuid!) {  group_join_tokens(where:
-        {    group_id: {      _eq: $group_id    }  }) {    join_token  }}'
+      query: 'mutation UpsertReaction(  $deleted: Boolean!,   $messageId: uuid!,   $reaction:
+        message_reaction_types_enum!) {  insert_message_reactions_one(object: {    deleted:
+        $deleted,    message_id: $messageId,    reaction_type: $reaction,  },  on_conflict:
+        {    constraint: message_reactions_pkey,    update_columns: [deleted]  }  )
+        {    id,    deleted  }}'
     - name: refresh
       query: 'mutation Refresh($refreshToken: String!, $userId: uuid!) {  refresh_access_token(refreshToken:
         $refreshToken, userId:$userId) {    accessToken  }}'
-    - name: upsert_group_join_token
-      query: 'mutation UpsertGroupJoinToken($group_id: uuid!, $new_token: String)
-        {insert_group_join_tokens_one(        object: {          join_token: $new_token,          group_id:
-        $group_id,        },    on_conflict: {      update_columns: join_token,      constraint:
-        group_join_tokens_group_id_key}  ) {    join_token  }}'
     - name: query_users_in_group
       query: 'query QueryUsersInGroup($groupId: uuid!) {  user_to_group(where: {    group_id:
         {      _eq: $groupId    }  }) {    user {      name,      profile_picture,      id    }  }}'
@@ -95,14 +84,14 @@
         String!) {  authenticate(identityProvider: $identity_provider, idToken: $id_token)
         {    accessToken,    refreshToken,    id,    name  }}'
     - name: get_new_messages
-      query: 'subscription GetNewMessages(  $threadId: uuid!,) {  messages(    order_by:
-        {      created_at: desc    },    where: {      thread_id: {        _eq: $threadId,      },    },    limit:
+      query: 'subscription GetNewMessages(  $sourceId: uuid!,) {  messages(    order_by:
+        {      created_at: desc    },    where: {      source_id: {        _eq: $sourceId,      },    },    limit:
         10  ) {   created_at,    message,    id,    user {      name,      profile_picture,      id    },    message_reactions
         {      reaction_type,      id,      user {        id,        name      }    },    is_image,    updated_at  }}'
     - name: remove_self_from_group
-      query: 'mutation RemoveSelfFromGroup($groupId: uuid!, $userId: uuid!) {  delete_user_to_group(where:
-        {    _and: {      user_id:{        _eq: $userId      },      group_id: {        _eq:
-        $groupId      }    }  }) {    affected_rows  }}'
+      query: 'mutation RemoveSelfFromGroup($groupId: uuid!, $userId: uuid!) {  delete_user_to_role(where:
+        {    _and: {      user_id:{        _eq: $userId      },      role: {        group_id:
+        {          _eq: $groupId        }      }    }  }) {    affected_rows  }}'
     - name: get_or_create_dm
       query: 'mutation GetOrCreateDm($withUserId: uuid!) {  get_or_create_dm(with_user_id:
         $withUserId) {    name,    id  }}'

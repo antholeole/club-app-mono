@@ -1,5 +1,4 @@
 import 'package:fe/data/models/club.dart';
-import 'package:fe/pages/groups/view/widgets/groups_tabs/club/join_token_tile.dart';
 import 'package:fe/pages/groups/view/widgets/settings/leave_group_button.dart';
 import 'package:fe/pages/groups/view/widgets/settings/users.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,7 +19,6 @@ class GroupSettings extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         const Users(),
-        if (group.admin) JoinTokenTile(),
         LeaveGroupButton(),
       ],
     );

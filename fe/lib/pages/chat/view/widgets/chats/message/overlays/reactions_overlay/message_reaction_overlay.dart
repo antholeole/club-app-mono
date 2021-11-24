@@ -90,7 +90,6 @@ class _MessageReactionOverlayState extends State<MessageReactionOverlay>
                             (reactionType) => ReactionDisplay(
                                 reactionType: reactionType,
                                 messageId: widget._message.id,
-                                userId: widget._selfId,
                                 reactionCount: reactionCounts[reactionType]!,
                                 onReacted: (_, __) => widget._dismissSelf(),
                                 selfReacted: _getReacted(reactionType)),
