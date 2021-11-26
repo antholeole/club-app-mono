@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../test_helpers/fixtures/mocks.dart';
+import '../../test_helpers/mocks.dart';
 import '../../test_helpers/pump_app.dart';
 import '../../test_helpers/reset_mock_bloc.dart';
 import '../../test_helpers/stub_bloc_stream.dart';

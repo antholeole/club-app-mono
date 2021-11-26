@@ -16,7 +16,7 @@ import 'package:gql_exec/gql_exec.dart';
 import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';
 
-import '../../test_helpers/fixtures/mocks.dart';
+import '../../test_helpers/mocks.dart';
 import '../../test_helpers/get_it_helpers.dart';
 import '../../test_helpers/reset_mock_bloc.dart';
 

@@ -17,4 +17,7 @@ class TestingConfig extends Config {
 
   @override
   bool get transportIsSecure => false;
+
+  @override
+  bool get prod => true;
 }

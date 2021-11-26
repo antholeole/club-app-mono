@@ -1,6 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:clock/clock.dart';
 import 'package:fe/data/models/message.dart';
+import 'package:fe/data/models/thread.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/chat/cubit/message_overlay_cubit.dart';
 import 'package:fe/pages/chat/view/widgets/chats/message/overlays/hold_overlay/message_options_overlay.dart';
@@ -13,8 +14,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:provider/provider.dart';
 
-import '../../../../../../../test_helpers/fixtures/mocks.dart';
+import '../../../../../../../test_helpers/mocks.dart';
 import '../../../../../../../test_helpers/get_it_helpers.dart';
 import '../../../../../../../test_helpers/pump_app.dart';
 import '../../../../../../../test_helpers/stub_bloc_stream.dart';
@@ -28,13 +30,15 @@ void main() {
       isImage: false,
       createdAt: clock.now(),
       updatedAt: clock.now());
+  final fakeThread = Thread(id: UuidType.generate(), name: 'Quokka');
 
   final mockMessageOverlayCubit = MockMessageOverlayCubit.getMock();
   final mockToasterCubit = MockToasterCubit.getMock();
 
   Widget wrapWithDependencies({required Widget child, LayerLink? link}) {
-    return MultiBlocProvider(
+    return MultiProvider(
         providers: [
+          Provider.value(value: fakeThread),
           BlocProvider<MessageOverlayCubit>(
             create: (_) => mockMessageOverlayCubit,
           ),

@@ -1,12 +1,12 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:clock/clock.dart';
 import 'package:fe/data/models/message.dart';
+import 'package:fe/data/models/thread.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/chat/bloc/chat_bloc.dart';
 import 'package:fe/pages/chat/cubit/data_carriers/sending_message.dart';
 import 'package:fe/pages/chat/cubit/message_overlay_cubit.dart';
 import 'package:fe/pages/chat/cubit/send_cubit.dart';
-import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/pages/chat/view/widgets/chats/chats.dart';
 import 'package:fe/pages/chat/view/widgets/chats/message/chat_page_message_display.dart';
 import 'package:fe/pages/chat/view/widgets/chats/message/sending_message.dart';
@@ -21,8 +21,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:provider/provider.dart';
 
-import '../../../../../test_helpers/fixtures/mocks.dart';
+import '../../../../../test_helpers/mocks.dart';
 import '../../../../../test_helpers/get_it_helpers.dart';
 import '../../../../../test_helpers/pump_app.dart';
 import '../../../../../test_helpers/reset_mock_bloc.dart';
@@ -37,19 +38,20 @@ void main() {
       isImage: false,
       createdAt: clock.now(),
       updatedAt: clock.now());
+  final fakeThread =
+      Thread(id: UuidType.generate(), name: 'asdas', isViewOnly: false);
 
   final MockMessageOverlayCubit mockMessageOverlayCubit =
       MockMessageOverlayCubit.getMock();
   final MockChatBloc mockChatBloc = MockChatBloc.getMock();
-  final MockThreadCubit mockThreadCubit = MockThreadCubit.getMock();
   final MockSendCubit mockSendCubit = MockSendCubit.getMock();
 
   Widget wrapWithDependencies({required Widget child}) {
-    return MultiBlocProvider(providers: [
+    return MultiProvider(providers: [
       BlocProvider<MessageOverlayCubit>(create: (_) => mockMessageOverlayCubit),
       BlocProvider<ChatBloc>(create: (_) => mockChatBloc),
       BlocProvider<UserCubit>(create: (_) => UserCubit(fakeUser)),
-      BlocProvider<ThreadCubit>(create: (_) => mockThreadCubit),
+      Provider<Thread>.value(value: fakeThread),
       BlocProvider<SendCubit>(create: (_) => mockSendCubit),
     ], child: child);
   }
@@ -57,12 +59,8 @@ void main() {
   setUp(() {
     registerAllMockServices();
 
-    <BlocBase<dynamic>>[
-      mockMessageOverlayCubit,
-      mockChatBloc,
-      mockThreadCubit,
-      mockSendCubit
-    ].forEach((bloc) => resetMockBloc(bloc));
+    <BlocBase<dynamic>>[mockMessageOverlayCubit, mockChatBloc, mockSendCubit]
+        .forEach((bloc) => resetMockBloc(bloc));
 
     when(() => mockMessageOverlayCubit.scrollController)
         .thenReturn(ScrollController());
