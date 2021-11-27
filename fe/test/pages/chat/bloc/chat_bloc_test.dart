@@ -8,10 +8,9 @@ import 'package:fe/data/models/reaction.dart';
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/chat/bloc/chat_bloc.dart';
-import 'package:fe/pages/chat/cubit/thread_state.dart';
-import 'package:fe/gql/query_messages_in_thread.data.gql.dart';
-import 'package:fe/gql/query_messages_in_thread.var.gql.dart';
-import 'package:fe/gql/query_messages_in_thread.req.gql.dart';
+import 'package:fe/gql/query_messages_in_chat.data.gql.dart';
+import 'package:fe/gql/query_messages_in_chat.var.gql.dart';
+import 'package:fe/gql/query_messages_in_chat.req.gql.dart';
 import 'package:fe/gql/get_new_messages.data.gql.dart';
 import 'package:fe/gql/get_new_messages.var.gql.dart';
 import 'package:fe/gql/get_new_messages.req.gql.dart';
@@ -23,16 +22,11 @@ import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import '../../../test_helpers/fixtures/mocks.dart';
 import '../../../test_helpers/get_it_helpers.dart';
-import '../../../test_helpers/reset_mock_bloc.dart';
-import '../../../test_helpers/stub_bloc_stream.dart';
 import '../../../test_helpers/stub_gql_response.dart';
 
 void main() {
   fakeAsync((fakeAsync) {
-    final mockThreadCubit = MockThreadCubit.getMock();
-
     final fakeThread1 = Thread(name: 'asdiasjd', id: UuidType.generate());
     final fakeTime = clock.ago(days: 1);
     final fakeUser = User(name: 'Joshua', id: UuidType.generate());
@@ -58,14 +52,7 @@ void main() {
 
     setUp(() {
       registerAllMockServices();
-      resetMockBloc(mockThreadCubit);
     });
-
-    blocTest<ChatBloc, ChatState>('should have no thread on no thread',
-        setUp: () => stubBlocStream(mockThreadCubit,
-            initialState: ThreadState.noThread()),
-        build: () => ChatBloc(threadCubit: mockThreadCubit),
-        expect: () => [ChatState.noThread()]);
 
     group('fetch messages', () {
       setUp(() {
@@ -75,11 +62,9 @@ void main() {
       blocTest<ChatBloc, ChatState>(
           "should fetch with 'before' as earliest contained message sent if messages in current state",
           setUp: () {
-            stubBlocStream(mockThreadCubit,
-                initialState: ThreadState.thread(fakeThread1));
-            stubGqlResponse<GQueryMessagesInThreadData,
-                    GQueryMessagesInThreadVars>(getIt<AuthGqlClient>(),
-                data: (_) => GQueryMessagesInThreadData.fromJson({
+            stubGqlResponse<GQueryMessagesInChatData, GQueryMessagesInChatVars>(
+                getIt<AuthGqlClient>(),
+                data: (_) => GQueryMessagesInChatData.fromJson({
                       'messages': [
                         {
                           'created_at':
@@ -98,9 +83,9 @@ void main() {
                         }
                       ]
                     })!,
-                requestMatcher: isA<GQueryMessagesInThreadReq>());
+                requestMatcher: isA<GQueryMessagesInChatReq>());
           },
-          build: () => ChatBloc(threadCubit: mockThreadCubit),
+          build: () => ChatBloc(thread: fakeThread1),
           act: (bloc) async {
             await Future.delayed(
                 const Duration(milliseconds: 5)); //let the inital req finish
@@ -113,7 +98,7 @@ void main() {
               ],
           verify: (_) => expect(
               verify(() => getIt<AuthGqlClient>().request(captureAny(
-                  that: isA<GQueryMessagesInThreadReq>().having(
+                  that: isA<GQueryMessagesInChatReq>().having(
                       (req) => req.vars.before,
                       'before',
                       equals(fakeMessage1.createdAt))))).captured,
@@ -122,16 +107,14 @@ void main() {
       blocTest<ChatBloc, ChatState>(
           "should fetch with 'before' as time in future if no messages in current state",
           setUp: () {
-            stubBlocStream(mockThreadCubit,
-                initialState: ThreadState.thread(fakeThread1));
-            stubGqlResponse<GQueryMessagesInThreadData,
-                    GQueryMessagesInThreadVars>(getIt<AuthGqlClient>(),
+            stubGqlResponse<GQueryMessagesInChatData, GQueryMessagesInChatVars>(
+                getIt<AuthGqlClient>(),
                 data: (_) =>
-                    GQueryMessagesInThreadData.fromJson({'messages': []})!,
-                requestMatcher: isA<GQueryMessagesInThreadReq>());
+                    GQueryMessagesInChatData.fromJson({'messages': []})!,
+                requestMatcher: isA<GQueryMessagesInChatReq>());
           },
           seed: () => ChatState.fetchedMessages(FetchedMessages(messages: [])),
-          build: () => ChatBloc(threadCubit: mockThreadCubit),
+          build: () => ChatBloc(thread: fakeThread1),
           act: (bloc) => bloc.add(const FetchMessagesEvent()),
           expect: () => [
                 ChatState.loading(),
@@ -141,7 +124,7 @@ void main() {
           verify: (_) => expect(
               (verify(() => getIt<AuthGqlClient>().request(captureAny()))
                       .captured
-                      .first as GQueryMessagesInThreadReq)
+                      .first as GQueryMessagesInChatReq)
                   .vars
                   .before
                   .compareTo(clock.now()),
@@ -155,11 +138,9 @@ void main() {
         blocTest<ChatBloc, ChatState>(
             'should be false if more than single query limit',
             setUp: () {
-              stubBlocStream(mockThreadCubit,
-                  initialState: ThreadState.thread(fakeThread1));
-              stubGqlResponse<GQueryMessagesInThreadData,
-                      GQueryMessagesInThreadVars>(getIt<AuthGqlClient>(),
-                  data: (_) => GQueryMessagesInThreadData.fromJson({
+              stubGqlResponse<GQueryMessagesInChatData,
+                      GQueryMessagesInChatVars>(getIt<AuthGqlClient>(),
+                  data: (_) => GQueryMessagesInChatData.fromJson({
                         'messages': List.filled(20, {
                           'created_at':
                               fakeMessage1.createdAt.toIso8601String(),
@@ -176,9 +157,9 @@ void main() {
                           'id': fakeMessage1.id.uuid
                         })
                       })!,
-                  requestMatcher: isA<GQueryMessagesInThreadReq>());
+                  requestMatcher: isA<GQueryMessagesInChatReq>());
             },
-            build: () => ChatBloc(threadCubit: mockThreadCubit),
+            build: () => ChatBloc(thread: fakeThread1),
             act: (bloc) {
               bloc.add(const FetchMessagesEvent());
             },
@@ -192,16 +173,14 @@ void main() {
         blocTest<ChatBloc, ChatState>(
             'should be true if less than single query limit',
             setUp: () {
-              stubBlocStream(mockThreadCubit,
-                  initialState: ThreadState.thread(fakeThread1));
-              stubGqlResponse<GQueryMessagesInThreadData,
-                      GQueryMessagesInThreadVars>(getIt<AuthGqlClient>(),
-                  data: (_) => GQueryMessagesInThreadData.fromJson({})!,
-                  requestMatcher: isA<GQueryMessagesInThreadReq>());
+              stubGqlResponse<GQueryMessagesInChatData,
+                      GQueryMessagesInChatVars>(getIt<AuthGqlClient>(),
+                  data: (_) => GQueryMessagesInChatData.fromJson({})!,
+                  requestMatcher: isA<GQueryMessagesInChatReq>());
             },
             seed: () =>
                 ChatState.fetchedMessages(FetchedMessages(messages: [])),
-            build: () => ChatBloc(threadCubit: mockThreadCubit),
+            build: () => ChatBloc(thread: fakeThread1),
             act: (bloc) {
               bloc.add(const FetchMessagesEvent());
             },
@@ -226,9 +205,6 @@ void main() {
         setUp(() {
           newReactionsStream = StreamController();
 
-          stubBlocStream(mockThreadCubit,
-              initialState: ThreadState.thread(fakeThread1));
-
           stubGqlResponse<GGetNewMessagesData, GGetNewMessagesVars>(
               getIt<AuthGqlClient>(),
               data: (_) => GGetNewMessagesData.fromJson({'messages': []})!,
@@ -241,9 +217,9 @@ void main() {
 
         blocTest<ChatBloc, ChatState>('should add reaction on reaction added',
             setUp: () {
-              stubGqlResponse<GQueryMessagesInThreadData,
-                      GQueryMessagesInThreadReq>(getIt<AuthGqlClient>(),
-                  data: (_) => GQueryMessagesInThreadData.fromJson({
+              stubGqlResponse<GQueryMessagesInChatData,
+                      GQueryMessagesInChatReq>(getIt<AuthGqlClient>(),
+                  data: (_) => GQueryMessagesInChatData.fromJson({
                         'messages': [
                           {
                             'created_at':
@@ -262,9 +238,9 @@ void main() {
                           }
                         ]
                       })!,
-                  requestMatcher: isA<GQueryMessagesInThreadReq>());
+                  requestMatcher: isA<GQueryMessagesInChatReq>());
             },
-            build: () => ChatBloc(threadCubit: mockThreadCubit),
+            build: () => ChatBloc(thread: fakeThread1),
             act: (_) async {
               newReactionsStream.add(GGetNewReactionsData.fromJson({
                 'message_reactions': [
@@ -295,9 +271,9 @@ void main() {
         blocTest<ChatBloc, ChatState>(
             'should remove reaction on reaction deleted',
             setUp: () {
-              stubGqlResponse<GQueryMessagesInThreadData,
-                      GQueryMessagesInThreadReq>(getIt<AuthGqlClient>(),
-                  data: (_) => GQueryMessagesInThreadData.fromJson({
+              stubGqlResponse<GQueryMessagesInChatData,
+                      GQueryMessagesInChatReq>(getIt<AuthGqlClient>(),
+                  data: (_) => GQueryMessagesInChatData.fromJson({
                         'messages': [
                           {
                             'created_at':
@@ -329,9 +305,9 @@ void main() {
                           }
                         ]
                       })!,
-                  requestMatcher: isA<GQueryMessagesInThreadReq>());
+                  requestMatcher: isA<GQueryMessagesInChatReq>());
             },
-            build: () => ChatBloc(threadCubit: mockThreadCubit),
+            build: () => ChatBloc(thread: fakeThread1),
             act: (_) async {
               newReactionsStream.add(GGetNewReactionsData.fromJson({
                 'message_reactions': [
@@ -359,8 +335,6 @@ void main() {
                     fakeMessage1.copyWithoutReaction(fakeReaction)
                   ], hasReachedMax: true)),
                 ]);
-
-        //should remove reaction on reaction deleted
       });
 
       group('messages', () {
@@ -368,13 +342,10 @@ void main() {
             StreamController();
 
         setUp(() {
-          stubBlocStream(mockThreadCubit,
-              initialState: ThreadState.thread(fakeThread1));
-          stubGqlResponse<GQueryMessagesInThreadData,
-                  GQueryMessagesInThreadReq>(getIt<AuthGqlClient>(),
-              data: (_) =>
-                  GQueryMessagesInThreadData.fromJson({'messages': []})!,
-              requestMatcher: isA<GQueryMessagesInThreadReq>());
+          stubGqlResponse<GQueryMessagesInChatData, GQueryMessagesInChatReq>(
+              getIt<AuthGqlClient>(),
+              data: (_) => GQueryMessagesInChatData.fromJson({'messages': []})!,
+              requestMatcher: isA<GQueryMessagesInChatReq>());
           stubGqlResponse<GGetNewReactionsData, GGetNewReactionsVars>(
               getIt<AuthGqlClient>(),
               data: (_) =>
@@ -386,7 +357,7 @@ void main() {
         });
 
         blocTest<ChatBloc, ChatState>('should add message on message added',
-            build: () => ChatBloc(threadCubit: mockThreadCubit),
+            build: () => ChatBloc(thread: fakeThread1),
             act: (_) => newMessagesStream.add(GGetNewMessagesData.fromJson({
                   'messages': [
                     {
@@ -411,41 +382,6 @@ void main() {
                   ChatState.fetchedMessages(FetchedMessages(
                       messages: [fakeMessage1], hasReachedMax: true))
                 ]);
-      });
-    });
-
-    group('switch thread', () {
-      setUp(() {
-        stubRequests();
-        stubGqlResponse<GQueryMessagesInThreadData, GQueryMessagesInThreadVars>(
-            getIt<AuthGqlClient>(),
-            data: (_) => GQueryMessagesInThreadData.fromJson({})!,
-            requestMatcher: isA<GQueryMessagesInThreadReq>());
-      });
-
-      group('to new thread', () {
-        late StreamController<ThreadState> threadStateStream;
-
-        setUp(() {
-          threadStateStream = stubBlocStream<ThreadState>(mockThreadCubit,
-              initialState: ThreadState.noThread());
-        });
-
-        blocTest<ChatBloc, ChatState>('should call APIs',
-            build: () => ChatBloc(threadCubit: mockThreadCubit),
-            act: (_) async {
-              threadStateStream.add(ThreadState.thread(fakeThread1));
-              await Future.delayed(const Duration(milliseconds: 5));
-            },
-            verify: (_) {
-              verify(() => getIt<AuthGqlClient>()
-                  .request(any(that: isA<GGetNewMessagesReq>()))).called(1);
-              verify(() => getIt<AuthGqlClient>()
-                      .request(any(that: isA<GQueryMessagesInThreadReq>())))
-                  .called(1);
-              verify(() => getIt<AuthGqlClient>()
-                  .request(any(that: isA<GGetNewReactionsReq>()))).called(1);
-            });
       });
     });
   });

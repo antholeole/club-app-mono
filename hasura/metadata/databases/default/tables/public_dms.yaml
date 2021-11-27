@@ -1,0 +1,40 @@
+table:
+  name: dms
+  schema: public
+array_relationships:
+- name: messages
+  using:
+    manual_configuration:
+      column_mapping:
+        id: source_id
+      insertion_order: null
+      remote_table:
+        name: messages
+        schema: public
+- name: user_to_dms
+  using:
+    foreign_key_constraint_on:
+      column: dm_id
+      table:
+        name: user_to_dm
+        schema: public
+select_permissions:
+- permission:
+    columns:
+    - id
+    - name
+    filter:
+      user_to_dms:
+        user_id:
+          _eq: X-Hasura-User-Id
+  role: user
+update_permissions:
+- permission:
+    check: null
+    columns:
+    - name
+    filter:
+      user_to_dms:
+        user_id:
+          _eq: X-Hasura-User-Id
+  role: user

@@ -28,7 +28,7 @@
     "@styled-icons/ionicons-outline": "^10.28.0",
     "@styled-icons/ionicons-solid": "^10.28.0",
     "bootstrap": "^5.0.0-beta3",
-    "next": "11.1.0",
+    "next": "11.1.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-tsparticles": "^1.26.4",

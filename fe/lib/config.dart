@@ -6,9 +6,10 @@ abstract class Config {
   List<String> get gqlPathSegments;
   bool get transportIsSecure;
   bool get refreshLocalCacheOnReload;
+  bool get prod;
 }
 
-class DevConfig extends Config {
+class LocalConfig extends Config {
   @override
   String get hasuraHost => 'localhost';
 
@@ -23,6 +24,29 @@ class DevConfig extends Config {
 
   @override
   int? get hasuraPort => 8080;
+
+  @override
+  bool get prod => false;
+}
+
+class DevConfig extends Config {
+  @override
+  String get hasuraHost => 'dev-hasura.getclub.app';
+
+  @override
+  List<String> get gqlPathSegments => ['v1', 'graphql'];
+
+  @override
+  bool get transportIsSecure => true;
+
+  @override
+  bool get refreshLocalCacheOnReload => false;
+
+  @override
+  int? get hasuraPort => null;
+
+  @override
+  bool get prod => false;
 }
 
 class ProdConfig extends Config {
@@ -40,4 +64,7 @@ class ProdConfig extends Config {
 
   @override
   int? get hasuraPort => null;
+
+  @override
+  bool get prod => true;
 }

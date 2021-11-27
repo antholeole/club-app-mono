@@ -1,12 +1,12 @@
 fragment group_base_fields on groups {
-    group_name,
+    name,
     id
 }
 
 query QuerySelfGroups($selfId: uuid!) {
   admin_clubs: user_to_group(
     where: {
-      admin: {
+      owner: {
       	_eq:true
       },
       user_id: {
@@ -16,14 +16,11 @@ query QuerySelfGroups($selfId: uuid!) {
   ) {
     group {
       ...group_base_fields,
-      group_join_tokens {
-        join_token
-      }
     }
   },
     member_clubs: user_to_group(
     where: {
-      admin: {
+      owner: {
       	_eq:false
       },
       user_id: {
@@ -35,27 +32,22 @@ query QuerySelfGroups($selfId: uuid!) {
       ...group_base_fields
     }
   },
-  dms: user_to_thread(
+  dms(
     where: {
-      user_id: {
-        _eq: $selfId
-      },
-      thread: {
-        is_dm: {
-          _eq: true
+      user_to_dms: {
+        user_id: {
+          _eq: $selfId
         }
       }
     }
   ) {
-    thread {
-      name,
-      id,
-      user_to_threads {
-        user {
-          id,
-          name,
-          profile_picture
-        }
+    id,
+    name,
+    user_to_dms {
+      user {
+        id,
+        name,
+        profile_picture
       }
     }
   }

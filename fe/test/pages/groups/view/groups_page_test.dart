@@ -13,7 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../../test_helpers/fixtures/mocks.dart';
+import '../../../test_helpers/mocks.dart';
 import '../../../test_helpers/get_it_helpers.dart';
 import '../../../test_helpers/pump_app.dart';
 import '../../../test_helpers/stub_bloc_stream.dart';
@@ -24,117 +24,106 @@ void main() {
     'admin_clubs': [
       {
         'group': {
-          'group_name': 'Sports Ball Team',
+          'name': 'Sports Ball Team',
           'id': 'b454d579-c4d2-403c-95cd-ac8dbc97476a',
-          'group_join_tokens': [
-            {'join_token': 'soKVRwlKA4'}
-          ]
         }
       }
     ],
     'member_clubs': [
       {
         'group': {
-          'group_name': 'ISU D&D Club',
+          'name': 'ISU D&D Club',
           'id': '56610d26-d62d-4628-8c08-eabf7ab7e8ad'
         }
       }
     ],
     'dms': [
       {
-        'thread': {
-          'name': null,
-          'id': '0e18b5f2-5f27-44b8-9840-2aaf3f01aa52',
-          'user_to_threads': [
-            {
-              'user': {
-                'id': '04c9b164-8535-4ae0-a091-9681a425b935',
-                'name': 'Anthony Oleinik',
-                'profile_picture': null
-              }
-            },
-            {
-              'user': {
-                'id': 'd3ac2f6b-e56f-47d2-9121-c5444b959a3f',
-                'name': 'Brit B',
-                'profile_picture': null
-              }
+        'name': null,
+        'id': '0e18b5f2-5f27-44b8-9840-2aaf3f01aa52',
+        'user_to_dms': [
+          {
+            'user': {
+              'id': '04c9b164-8535-4ae0-a091-9681a425b935',
+              'name': 'Anthony Oleinik',
+              'profile_picture': null
             }
-          ]
-        }
+          },
+          {
+            'user': {
+              'id': 'd3ac2f6b-e56f-47d2-9121-c5444b959a3f',
+              'name': 'Brit B',
+              'profile_picture': null
+            }
+          }
+        ]
       },
       {
-        'thread': {
-          'name': null,
-          'id': '23b5b652-dd69-43c2-9790-8b877203a463',
-          'user_to_threads': [
-            {
-              'user': {
-                'id': '04c9b164-8535-4ae0-a091-9681a425b935',
-                'name': 'Anthony Oleinik',
-                'profile_picture': null
-              }
-            },
-            {
-              'user': {
-                'id': 'a1e459f1-b3aa-4e47-a3c7-cf6f7ff8f19f',
-                'name': 'Charles Xavier',
-                'profile_picture': null
-              }
-            },
-            {
-              'user': {
-                'id': 'd3ac2f6b-e56f-47d2-9121-c5444b959a3f',
-                'name': 'Brit B',
-                'profile_picture': null
-              }
+        'name': null,
+        'id': '23b5b652-dd69-43c2-9790-8b877203a463',
+        'user_to_dms': [
+          {
+            'user': {
+              'id': '04c9b164-8535-4ae0-a091-9681a425b935',
+              'name': 'Anthony Oleinik',
+              'profile_picture': null
             }
-          ]
-        }
+          },
+          {
+            'user': {
+              'id': 'a1e459f1-b3aa-4e47-a3c7-cf6f7ff8f19f',
+              'name': 'Charles Xavier',
+              'profile_picture': null
+            }
+          },
+          {
+            'user': {
+              'id': 'd3ac2f6b-e56f-47d2-9121-c5444b959a3f',
+              'name': 'Brit B',
+              'profile_picture': null
+            }
+          }
+        ]
       },
       {
-        'thread': {
-          'name': null,
-          'id': 'dc602f4d-9a34-491b-af4f-82acdc017e78',
-          'user_to_threads': [
-            {
-              'user': {
-                'id': 'a1e459f1-b3aa-4e47-a3c7-cf6f7ff8f19f',
-                'name': 'Charles Xavier',
-                'profile_picture': null
-              }
-            },
-            {
-              'user': {
-                'id': '04c9b164-8535-4ae0-a091-9681a425b935',
-                'name': 'Anthony Oleinik',
-                'profile_picture': null
-              }
+        'name': null,
+        'id': 'dc602f4d-9a34-491b-af4f-82acdc017e78',
+        'user_to_dms': [
+          {
+            'user': {
+              'id': 'a1e459f1-b3aa-4e47-a3c7-cf6f7ff8f19f',
+              'name': 'Charles Xavier',
+              'profile_picture': null
             }
-          ]
-        }
+          },
+          {
+            'user': {
+              'id': '04c9b164-8535-4ae0-a091-9681a425b935',
+              'name': 'Anthony Oleinik',
+              'profile_picture': null
+            }
+          }
+        ]
       },
       {
-        'thread': {
-          'name': null,
-          'id': 'b4ca3a92-963b-4605-9b7b-494890802812',
-          'user_to_threads': [
-            {
-              'user': {
-                'id': '4aff9671-edc3-410e-843e-647203def97d',
-                'name': 'Midget',
-                'profile_picture': null
-              }
-            },
-            {
-              'user': {
-                'id': '04c9b164-8535-4ae0-a091-9681a425b935',
-                'name': 'Anthony Oleinik',
-                'profile_picture': null
-              }
+        'name': null,
+        'id': 'b4ca3a92-963b-4605-9b7b-494890802812',
+        'user_to_dms': [
+          {
+            'user': {
+              'id': '4aff9671-edc3-410e-843e-647203def97d',
+              'name': 'Midget',
+              'profile_picture': null
             }
-          ]
-        }
+          },
+          {
+            'user': {
+              'id': '04c9b164-8535-4ae0-a091-9681a425b935',
+              'name': 'Anthony Oleinik',
+              'profile_picture': null
+            }
+          }
+        ]
       }
     ]
   };
@@ -191,7 +180,4 @@ void main() {
           findsNWidgets(respAsObj.dms.length));
     });
   });
-
-  //should have club tab for every club
-  //should have dm tab for every dm
 }

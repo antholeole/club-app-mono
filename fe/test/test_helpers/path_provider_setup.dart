@@ -22,7 +22,7 @@ List<Future<void> Function()> pathProviderSetup(String folderName) {
     },
     () async {
       try {
-        await Directory('./dump/$folderName/').delete(recursive: true);
+        await Directory('./dump/$folderName').delete(recursive: true);
       } catch (_) {}
     }
   ];

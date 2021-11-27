@@ -12,7 +12,7 @@ import 'package:fe/gql/update_self_name.data.gql.dart';
 import 'package:fe/gql/update_self_name.req.gql.dart';
 import 'package:fe/gql/update_self_name.var.gql.dart';
 
-import '../../../test_helpers/fixtures/mocks.dart';
+import '../../../test_helpers/mocks.dart';
 import '../../../test_helpers/get_it_helpers.dart';
 import '../../../test_helpers/stub_gql_response.dart';
 

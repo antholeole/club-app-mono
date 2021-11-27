@@ -1,3 +1,4 @@
+import 'package:fe/data/models/user.dart';
 import 'package:fe/flows/app_state.dart';
 import 'package:fe/pages/login/view/login_page.dart';
 import 'package:fe/pages/main/view/main_page.dart';
@@ -14,13 +15,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:fe/gql/query_self_group_preview.data.gql.dart';
 import 'package:fe/gql/query_self_group_preview.var.gql.dart';
-import '../test_helpers/fixtures/user.dart';
 import '../test_helpers/get_it_helpers.dart';
 import '../test_helpers/pump_app.dart';
 import '../test_helpers/stub_gql_response.dart';
 
 void main() {
   group('app flow', () {
+    final fakeUser = User(id: UuidType.generate(), name: 'a thony');
+
     setUpAll(() {
       getIt.allowReassignment = true;
 
@@ -52,7 +54,7 @@ void main() {
       getIt.registerSingleton(flowController);
 
       await tester.pumpApp(const Builder(builder: AppState.getFlow));
-      flowController.update((_) => AppState.loggedIn(mockUser));
+      flowController.update((_) => AppState.loggedIn(fakeUser));
       await tester.pump(const Duration(milliseconds: 5));
 
       await expectLater(find.byType(MainPage), findsOneWidget);

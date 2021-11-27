@@ -18,7 +18,7 @@ import 'package:fe/gql/query_self_threads_in_group.data.gql.dart';
 import 'package:fe/gql/query_self_threads_in_group.var.gql.dart';
 import 'package:fe/gql/query_self_threads_in_group.req.gql.dart';
 
-import '../../../test_helpers/fixtures/mocks.dart';
+import '../../../test_helpers/mocks.dart';
 import '../../../test_helpers/get_it_helpers.dart';
 import '../../../test_helpers/pump_app.dart';
 import '../../../test_helpers/reset_mock_bloc.dart';
@@ -80,8 +80,6 @@ void main() {
 
       testWidgets('should have selected thread if thread is selected',
           (tester) async {
-        final mockThreadCubit = MockThreadCubit.getMock();
-
         stubGqlResponse<GQuerySelfThreadsInGroupData,
                 GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
             requestMatcher: isA<GQuerySelfThreadsInGroupReq>(),
@@ -99,10 +97,8 @@ void main() {
             initialState: false);
         whenListen(mockMainCubit, const Stream<MainState>.empty(),
             initialState: MainState.withClub(fakeGroup));
-        whenListen(mockThreadCubit, const Stream<ThreadState>.empty(),
-            initialState: ThreadState.thread(fakeThread));
 
-        final pageCubit = PageCubit()..addThreadCubit(mockThreadCubit);
+        final pageCubit = PageCubit()..currentThread = fakeThread;
 
         final context = await getBottomSheetableContext(pageCubit, tester);
 
@@ -142,9 +138,7 @@ void main() {
         whenListen(mockThreadCubit, const Stream<ThreadState>.empty(),
             initialState: ThreadState.thread(fakeThread));
 
-        final pageCubit = PageCubit()
-          ..addThreadCubit(mockThreadCubit)
-          ..removeThreadCubit();
+        final pageCubit = PageCubit();
 
         final context = await getBottomSheetableContext(pageCubit, tester);
 

@@ -14,7 +14,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mocktail/mocktail.dart';
 
-import '../../../test_helpers/fixtures/mocks.dart';
+import '../../../test_helpers/mocks.dart';
 import '../../../test_helpers/get_it_helpers.dart';
 import '../../../test_helpers/stub_gql_response.dart';
 

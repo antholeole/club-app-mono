@@ -4,10 +4,22 @@ table:
 object_relationships:
 - name: thread
   using:
-    foreign_key_constraint_on: thread_id
+    manual_configuration:
+      column_mapping:
+        thread_id: id
+      insertion_order: null
+      remote_table:
+        name: threads
+        schema: public
 - name: user
   using:
-    foreign_key_constraint_on: user_id
+    manual_configuration:
+      column_mapping:
+        user_id: id
+      insertion_order: null
+      remote_table:
+        name: users
+        schema: public
 select_permissions:
 - permission:
     columns:
@@ -15,7 +27,7 @@ select_permissions:
     - user_id
     filter:
       thread:
-        user_to_threads:
+        users:
           user_id:
             _eq: X-Hasura-User-Id
   role: user

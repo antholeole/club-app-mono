@@ -1,5 +1,4 @@
 import { StatusError } from 'itty-router-extras'
-import { HASURA_ENDPOINT } from '../constants'
 
 export const gqlReq = async <T>(req: string): Promise<T> => {
     let response: Response

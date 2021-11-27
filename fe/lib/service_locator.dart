@@ -22,7 +22,7 @@ void setupLocator({required bool isProd}) {
   if (isProd) {
     getIt.registerSingleton<Config>(ProdConfig());
   } else {
-    getIt.registerSingleton<Config>(DevConfig());
+    getIt.registerSingleton<Config>(LocalConfig());
   }
 
   getIt.registerSingleton<Connectivity>(Connectivity());

@@ -1,11 +1,13 @@
 mutation RemoveSelfFromGroup($groupId: uuid!, $userId: uuid!) {
-  delete_user_to_group(where: {
+  delete_user_to_role(where: {
     _and: {
       user_id:{
         _eq: $userId
       },
-      group_id: {
-        _eq: $groupId
+      role: {
+        group_id: {
+          _eq: $groupId
+        }
       }
     }
   }) {

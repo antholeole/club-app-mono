@@ -6,7 +6,7 @@ import 'package:fe/gql/authenticate.data.gql.dart'
 import 'package:fe/gql/authenticate.req.gql.dart' show GAuthenticateReq;
 import 'package:fe/gql/authenticate.var.gql.dart' show GAuthenticateVars;
 import 'package:fe/gql/fake/fake.data.gql.dart'
-    show GFakeGqlData, GFakeGqlData_group_join_tokens;
+    show GFakeGqlData, GFakeGqlData_dms;
 import 'package:fe/gql/fake/fake.req.gql.dart' show GFakeGqlReq;
 import 'package:fe/gql/fake/fake.var.gql.dart' show GFakeGqlVars;
 import 'package:fe/gql/get_new_messages.data.gql.dart'
@@ -38,23 +38,17 @@ import 'package:fe/gql/insert_message.data.gql.dart'
         GInsertMessageData_insert_messages_returning;
 import 'package:fe/gql/insert_message.req.gql.dart' show GInsertMessageReq;
 import 'package:fe/gql/insert_message.var.gql.dart' show GInsertMessageVars;
-import 'package:fe/gql/query_group_join_token.data.gql.dart'
-    show GQueryGroupJoinTokenData, GQueryGroupJoinTokenData_group_join_tokens;
-import 'package:fe/gql/query_group_join_token.req.gql.dart'
-    show GQueryGroupJoinTokenReq;
-import 'package:fe/gql/query_group_join_token.var.gql.dart'
-    show GQueryGroupJoinTokenVars;
-import 'package:fe/gql/query_messages_in_thread.data.gql.dart'
+import 'package:fe/gql/query_messages_in_chat.data.gql.dart'
     show
-        GQueryMessagesInThreadData,
-        GQueryMessagesInThreadData_messages,
-        GQueryMessagesInThreadData_messages_message_reactions,
-        GQueryMessagesInThreadData_messages_message_reactions_user,
-        GQueryMessagesInThreadData_messages_user;
-import 'package:fe/gql/query_messages_in_thread.req.gql.dart'
-    show GQueryMessagesInThreadReq;
-import 'package:fe/gql/query_messages_in_thread.var.gql.dart'
-    show GQueryMessagesInThreadVars;
+        GQueryMessagesInChatData,
+        GQueryMessagesInChatData_messages,
+        GQueryMessagesInChatData_messages_message_reactions,
+        GQueryMessagesInChatData_messages_message_reactions_user,
+        GQueryMessagesInChatData_messages_user;
+import 'package:fe/gql/query_messages_in_chat.req.gql.dart'
+    show GQueryMessagesInChatReq;
+import 'package:fe/gql/query_messages_in_chat.var.gql.dart'
+    show GQueryMessagesInChatVars;
 import 'package:fe/gql/query_self_group_preview.data.gql.dart'
     show
         GQuerySelfGroupsPreviewData,
@@ -69,11 +63,9 @@ import 'package:fe/gql/query_self_groups.data.gql.dart'
         GQuerySelfGroupsData,
         GQuerySelfGroupsData_admin_clubs,
         GQuerySelfGroupsData_admin_clubs_group,
-        GQuerySelfGroupsData_admin_clubs_group_group_join_tokens,
         GQuerySelfGroupsData_dms,
-        GQuerySelfGroupsData_dms_thread,
-        GQuerySelfGroupsData_dms_thread_user_to_threads,
-        GQuerySelfGroupsData_dms_thread_user_to_threads_user,
+        GQuerySelfGroupsData_dms_user_to_dms,
+        GQuerySelfGroupsData_dms_user_to_dms_user,
         GQuerySelfGroupsData_member_clubs,
         GQuerySelfGroupsData_member_clubs_group,
         Ggroup_base_fieldsData;
@@ -87,6 +79,13 @@ import 'package:fe/gql/query_self_threads_in_group.req.gql.dart'
     show GQuerySelfThreadsInGroupReq;
 import 'package:fe/gql/query_self_threads_in_group.var.gql.dart'
     show GQuerySelfThreadsInGroupVars;
+import 'package:fe/gql/query_users_in_dm.data.gql.dart'
+    show
+        GQueryUsersInDmData,
+        GQueryUsersInDmData_user_to_dm,
+        GQueryUsersInDmData_user_to_dm_user;
+import 'package:fe/gql/query_users_in_dm.req.gql.dart' show GQueryUsersInDmReq;
+import 'package:fe/gql/query_users_in_dm.var.gql.dart' show GQueryUsersInDmVars;
 import 'package:fe/gql/query_users_in_group.data.gql.dart'
     show
         GQueryUsersInGroupData,
@@ -96,6 +95,15 @@ import 'package:fe/gql/query_users_in_group.req.gql.dart'
     show GQueryUsersInGroupReq;
 import 'package:fe/gql/query_users_in_group.var.gql.dart'
     show GQueryUsersInGroupVars;
+import 'package:fe/gql/query_users_in_thread.data.gql.dart'
+    show
+        GQueryUsersInThreadData,
+        GQueryUsersInThreadData_user_to_thread,
+        GQueryUsersInThreadData_user_to_thread_user;
+import 'package:fe/gql/query_users_in_thread.req.gql.dart'
+    show GQueryUsersInThreadReq;
+import 'package:fe/gql/query_users_in_thread.var.gql.dart'
+    show GQueryUsersInThreadVars;
 import 'package:fe/gql/query_verify_self_in_thread.data.gql.dart'
     show
         GQueryVerifySelfInThreadData,
@@ -105,14 +113,18 @@ import 'package:fe/gql/query_verify_self_in_thread.req.gql.dart'
     show GQueryVerifySelfInThreadReq;
 import 'package:fe/gql/query_verify_self_in_thread.var.gql.dart'
     show GQueryVerifySelfInThreadVars;
+import 'package:fe/gql/query_view_only_threads.data.gql.dart'
+    show GQueryViewOnlyThreadsData, GQueryViewOnlyThreadsData_threads;
+import 'package:fe/gql/query_view_only_threads.req.gql.dart'
+    show GQueryViewOnlyThreadsReq;
+import 'package:fe/gql/query_view_only_threads.var.gql.dart'
+    show GQueryViewOnlyThreadsVars;
 import 'package:fe/gql/refresh.data.gql.dart'
     show GRefreshData, GRefreshData_refresh_access_token;
 import 'package:fe/gql/refresh.req.gql.dart' show GRefreshReq;
 import 'package:fe/gql/refresh.var.gql.dart' show GRefreshVars;
 import 'package:fe/gql/remove_self_from_group.data.gql.dart'
-    show
-        GRemoveSelfFromGroupData,
-        GRemoveSelfFromGroupData_delete_user_to_group;
+    show GRemoveSelfFromGroupData, GRemoveSelfFromGroupData_delete_user_to_role;
 import 'package:fe/gql/remove_self_from_group.req.gql.dart'
     show GRemoveSelfFromGroupReq;
 import 'package:fe/gql/remove_self_from_group.var.gql.dart'
@@ -121,14 +133,6 @@ import 'package:fe/gql/update_self_name.data.gql.dart'
     show GUpdateSelfNameData, GUpdateSelfNameData_update_users_by_pk;
 import 'package:fe/gql/update_self_name.req.gql.dart' show GUpdateSelfNameReq;
 import 'package:fe/gql/update_self_name.var.gql.dart' show GUpdateSelfNameVars;
-import 'package:fe/gql/upsert_group_join_token.data.gql.dart'
-    show
-        GUpsertGroupJoinTokenData,
-        GUpsertGroupJoinTokenData_insert_group_join_tokens_one;
-import 'package:fe/gql/upsert_group_join_token.req.gql.dart'
-    show GUpsertGroupJoinTokenReq;
-import 'package:fe/gql/upsert_group_join_token.var.gql.dart'
-    show GUpsertGroupJoinTokenVars;
 import 'package:fe/gql/upsert_reaction.data.gql.dart'
     show GUpsertReactionData, GUpsertReactionData_insert_message_reactions_one;
 import 'package:fe/gql/upsert_reaction.req.gql.dart' show GUpsertReactionReq;
@@ -138,19 +142,26 @@ import 'package:fe/schema.schema.gql.dart'
         GBoolean_comparison_exp,
         GIdentityProvider,
         GString_comparison_exp,
-        Ggroup_join_tokens_aggregate_order_by,
-        Ggroup_join_tokens_arr_rel_insert_input,
-        Ggroup_join_tokens_bool_exp,
-        Ggroup_join_tokens_constraint,
-        Ggroup_join_tokens_insert_input,
-        Ggroup_join_tokens_max_order_by,
-        Ggroup_join_tokens_min_order_by,
-        Ggroup_join_tokens_on_conflict,
-        Ggroup_join_tokens_order_by,
-        Ggroup_join_tokens_pk_columns_input,
-        Ggroup_join_tokens_select_column,
-        Ggroup_join_tokens_set_input,
-        Ggroup_join_tokens_update_column,
+        Gdms_bool_exp,
+        Gdms_constraint,
+        Gdms_insert_input,
+        Gdms_obj_rel_insert_input,
+        Gdms_on_conflict,
+        Gdms_order_by,
+        Gdms_pk_columns_input,
+        Gdms_select_column,
+        Gdms_set_input,
+        Gdms_update_column,
+        Ggroup_metadata_bool_exp,
+        Ggroup_metadata_constraint,
+        Ggroup_metadata_insert_input,
+        Ggroup_metadata_obj_rel_insert_input,
+        Ggroup_metadata_on_conflict,
+        Ggroup_metadata_order_by,
+        Ggroup_metadata_pk_columns_input,
+        Ggroup_metadata_select_column,
+        Ggroup_metadata_set_input,
+        Ggroup_metadata_update_column,
         Ggroups_bool_exp,
         Ggroups_constraint,
         Ggroups_insert_input,
@@ -201,11 +212,33 @@ import 'package:fe/schema.schema.gql.dart'
         Gmessages_set_input,
         Gmessages_update_column,
         Gorder_by,
-        Gsingle_dms_bool_exp,
-        Gsingle_dms_insert_input,
-        Gsingle_dms_order_by,
-        Gsingle_dms_select_column,
-        Gsingle_dms_set_input,
+        Grole_to_threads_aggregate_order_by,
+        Grole_to_threads_arr_rel_insert_input,
+        Grole_to_threads_bool_exp,
+        Grole_to_threads_constraint,
+        Grole_to_threads_insert_input,
+        Grole_to_threads_max_order_by,
+        Grole_to_threads_min_order_by,
+        Grole_to_threads_on_conflict,
+        Grole_to_threads_order_by,
+        Grole_to_threads_pk_columns_input,
+        Grole_to_threads_select_column,
+        Grole_to_threads_set_input,
+        Grole_to_threads_update_column,
+        Groles_aggregate_order_by,
+        Groles_arr_rel_insert_input,
+        Groles_bool_exp,
+        Groles_constraint,
+        Groles_insert_input,
+        Groles_max_order_by,
+        Groles_min_order_by,
+        Groles_obj_rel_insert_input,
+        Groles_on_conflict,
+        Groles_order_by,
+        Groles_pk_columns_input,
+        Groles_select_column,
+        Groles_set_input,
+        Groles_update_column,
         Gthreads_aggregate_order_by,
         Gthreads_arr_rel_insert_input,
         Gthreads_bool_exp,
@@ -221,32 +254,48 @@ import 'package:fe/schema.schema.gql.dart'
         Gthreads_set_input,
         Gthreads_update_column,
         Gtimestamptz_comparison_exp,
+        Guser_to_dm_aggregate_order_by,
+        Guser_to_dm_arr_rel_insert_input,
+        Guser_to_dm_bool_exp,
+        Guser_to_dm_constraint,
+        Guser_to_dm_insert_input,
+        Guser_to_dm_max_order_by,
+        Guser_to_dm_min_order_by,
+        Guser_to_dm_on_conflict,
+        Guser_to_dm_order_by,
+        Guser_to_dm_pk_columns_input,
+        Guser_to_dm_select_column,
+        Guser_to_dm_set_input,
+        Guser_to_dm_update_column,
         Guser_to_group_aggregate_order_by,
         Guser_to_group_arr_rel_insert_input,
         Guser_to_group_bool_exp,
-        Guser_to_group_constraint,
         Guser_to_group_insert_input,
         Guser_to_group_max_order_by,
         Guser_to_group_min_order_by,
-        Guser_to_group_on_conflict,
         Guser_to_group_order_by,
-        Guser_to_group_pk_columns_input,
         Guser_to_group_select_column,
-        Guser_to_group_set_input,
-        Guser_to_group_update_column,
+        Guser_to_role_aggregate_order_by,
+        Guser_to_role_arr_rel_insert_input,
+        Guser_to_role_bool_exp,
+        Guser_to_role_constraint,
+        Guser_to_role_insert_input,
+        Guser_to_role_max_order_by,
+        Guser_to_role_min_order_by,
+        Guser_to_role_on_conflict,
+        Guser_to_role_order_by,
+        Guser_to_role_pk_columns_input,
+        Guser_to_role_select_column,
+        Guser_to_role_set_input,
+        Guser_to_role_update_column,
         Guser_to_thread_aggregate_order_by,
         Guser_to_thread_arr_rel_insert_input,
         Guser_to_thread_bool_exp,
-        Guser_to_thread_constraint,
         Guser_to_thread_insert_input,
         Guser_to_thread_max_order_by,
         Guser_to_thread_min_order_by,
-        Guser_to_thread_on_conflict,
         Guser_to_thread_order_by,
-        Guser_to_thread_pk_columns_input,
         Guser_to_thread_select_column,
-        Guser_to_thread_set_input,
-        Guser_to_thread_update_column,
         Gusers_bool_exp,
         Gusers_constraint,
         Gusers_insert_input,
@@ -278,7 +327,7 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GAuthenticateVars,
   GBoolean_comparison_exp,
   GFakeGqlData,
-  GFakeGqlData_group_join_tokens,
+  GFakeGqlData_dms,
   GFakeGqlReq,
   GFakeGqlVars,
   GGetNewMessagesData,
@@ -304,25 +353,19 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GInsertMessageData_insert_messages_returning,
   GInsertMessageReq,
   GInsertMessageVars,
-  GQueryGroupJoinTokenData,
-  GQueryGroupJoinTokenData_group_join_tokens,
-  GQueryGroupJoinTokenReq,
-  GQueryGroupJoinTokenVars,
-  GQueryMessagesInThreadData,
-  GQueryMessagesInThreadData_messages,
-  GQueryMessagesInThreadData_messages_message_reactions,
-  GQueryMessagesInThreadData_messages_message_reactions_user,
-  GQueryMessagesInThreadData_messages_user,
-  GQueryMessagesInThreadReq,
-  GQueryMessagesInThreadVars,
+  GQueryMessagesInChatData,
+  GQueryMessagesInChatData_messages,
+  GQueryMessagesInChatData_messages_message_reactions,
+  GQueryMessagesInChatData_messages_message_reactions_user,
+  GQueryMessagesInChatData_messages_user,
+  GQueryMessagesInChatReq,
+  GQueryMessagesInChatVars,
   GQuerySelfGroupsData,
   GQuerySelfGroupsData_admin_clubs,
   GQuerySelfGroupsData_admin_clubs_group,
-  GQuerySelfGroupsData_admin_clubs_group_group_join_tokens,
   GQuerySelfGroupsData_dms,
-  GQuerySelfGroupsData_dms_thread,
-  GQuerySelfGroupsData_dms_thread_user_to_threads,
-  GQuerySelfGroupsData_dms_thread_user_to_threads_user,
+  GQuerySelfGroupsData_dms_user_to_dms,
+  GQuerySelfGroupsData_dms_user_to_dms_user,
   GQuerySelfGroupsData_member_clubs,
   GQuerySelfGroupsData_member_clubs_group,
   GQuerySelfGroupsPreviewData,
@@ -336,22 +379,36 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GQuerySelfThreadsInGroupData_threads,
   GQuerySelfThreadsInGroupReq,
   GQuerySelfThreadsInGroupVars,
+  GQueryUsersInDmData,
+  GQueryUsersInDmData_user_to_dm,
+  GQueryUsersInDmData_user_to_dm_user,
+  GQueryUsersInDmReq,
+  GQueryUsersInDmVars,
   GQueryUsersInGroupData,
   GQueryUsersInGroupData_user_to_group,
   GQueryUsersInGroupData_user_to_group_user,
   GQueryUsersInGroupReq,
   GQueryUsersInGroupVars,
+  GQueryUsersInThreadData,
+  GQueryUsersInThreadData_user_to_thread,
+  GQueryUsersInThreadData_user_to_thread_user,
+  GQueryUsersInThreadReq,
+  GQueryUsersInThreadVars,
   GQueryVerifySelfInThreadData,
   GQueryVerifySelfInThreadData_threads_aggregate,
   GQueryVerifySelfInThreadData_threads_aggregate_aggregate,
   GQueryVerifySelfInThreadReq,
   GQueryVerifySelfInThreadVars,
+  GQueryViewOnlyThreadsData,
+  GQueryViewOnlyThreadsData_threads,
+  GQueryViewOnlyThreadsReq,
+  GQueryViewOnlyThreadsVars,
   GRefreshData,
   GRefreshData_refresh_access_token,
   GRefreshReq,
   GRefreshVars,
   GRemoveSelfFromGroupData,
-  GRemoveSelfFromGroupData_delete_user_to_group,
+  GRemoveSelfFromGroupData_delete_user_to_role,
   GRemoveSelfFromGroupReq,
   GRemoveSelfFromGroupVars,
   GString_comparison_exp,
@@ -359,30 +416,33 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GUpdateSelfNameData_update_users_by_pk,
   GUpdateSelfNameReq,
   GUpdateSelfNameVars,
-  GUpsertGroupJoinTokenData,
-  GUpsertGroupJoinTokenData_insert_group_join_tokens_one,
-  GUpsertGroupJoinTokenReq,
-  GUpsertGroupJoinTokenVars,
   GUpsertReactionData,
   GUpsertReactionData_insert_message_reactions_one,
   GUpsertReactionReq,
   GUpsertReactionVars,
+  Gdms_bool_exp,
+  Gdms_constraint,
+  Gdms_insert_input,
+  Gdms_obj_rel_insert_input,
+  Gdms_on_conflict,
+  Gdms_order_by,
+  Gdms_pk_columns_input,
+  Gdms_select_column,
+  Gdms_set_input,
+  Gdms_update_column,
   Ggroup_base_fieldsData,
   Ggroup_base_fieldsReq,
   Ggroup_base_fieldsVars,
-  Ggroup_join_tokens_aggregate_order_by,
-  Ggroup_join_tokens_arr_rel_insert_input,
-  Ggroup_join_tokens_bool_exp,
-  Ggroup_join_tokens_constraint,
-  Ggroup_join_tokens_insert_input,
-  Ggroup_join_tokens_max_order_by,
-  Ggroup_join_tokens_min_order_by,
-  Ggroup_join_tokens_on_conflict,
-  Ggroup_join_tokens_order_by,
-  Ggroup_join_tokens_pk_columns_input,
-  Ggroup_join_tokens_select_column,
-  Ggroup_join_tokens_set_input,
-  Ggroup_join_tokens_update_column,
+  Ggroup_metadata_bool_exp,
+  Ggroup_metadata_constraint,
+  Ggroup_metadata_insert_input,
+  Ggroup_metadata_obj_rel_insert_input,
+  Ggroup_metadata_on_conflict,
+  Ggroup_metadata_order_by,
+  Ggroup_metadata_pk_columns_input,
+  Ggroup_metadata_select_column,
+  Ggroup_metadata_set_input,
+  Ggroup_metadata_update_column,
   Ggroups_bool_exp,
   Ggroups_constraint,
   Ggroups_insert_input,
@@ -433,11 +493,33 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   Gmessages_set_input,
   Gmessages_update_column,
   Gorder_by,
-  Gsingle_dms_bool_exp,
-  Gsingle_dms_insert_input,
-  Gsingle_dms_order_by,
-  Gsingle_dms_select_column,
-  Gsingle_dms_set_input,
+  Grole_to_threads_aggregate_order_by,
+  Grole_to_threads_arr_rel_insert_input,
+  Grole_to_threads_bool_exp,
+  Grole_to_threads_constraint,
+  Grole_to_threads_insert_input,
+  Grole_to_threads_max_order_by,
+  Grole_to_threads_min_order_by,
+  Grole_to_threads_on_conflict,
+  Grole_to_threads_order_by,
+  Grole_to_threads_pk_columns_input,
+  Grole_to_threads_select_column,
+  Grole_to_threads_set_input,
+  Grole_to_threads_update_column,
+  Groles_aggregate_order_by,
+  Groles_arr_rel_insert_input,
+  Groles_bool_exp,
+  Groles_constraint,
+  Groles_insert_input,
+  Groles_max_order_by,
+  Groles_min_order_by,
+  Groles_obj_rel_insert_input,
+  Groles_on_conflict,
+  Groles_order_by,
+  Groles_pk_columns_input,
+  Groles_select_column,
+  Groles_set_input,
+  Groles_update_column,
   Gthreads_aggregate_order_by,
   Gthreads_arr_rel_insert_input,
   Gthreads_bool_exp,
@@ -453,32 +535,48 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   Gthreads_set_input,
   Gthreads_update_column,
   Gtimestamptz_comparison_exp,
+  Guser_to_dm_aggregate_order_by,
+  Guser_to_dm_arr_rel_insert_input,
+  Guser_to_dm_bool_exp,
+  Guser_to_dm_constraint,
+  Guser_to_dm_insert_input,
+  Guser_to_dm_max_order_by,
+  Guser_to_dm_min_order_by,
+  Guser_to_dm_on_conflict,
+  Guser_to_dm_order_by,
+  Guser_to_dm_pk_columns_input,
+  Guser_to_dm_select_column,
+  Guser_to_dm_set_input,
+  Guser_to_dm_update_column,
   Guser_to_group_aggregate_order_by,
   Guser_to_group_arr_rel_insert_input,
   Guser_to_group_bool_exp,
-  Guser_to_group_constraint,
   Guser_to_group_insert_input,
   Guser_to_group_max_order_by,
   Guser_to_group_min_order_by,
-  Guser_to_group_on_conflict,
   Guser_to_group_order_by,
-  Guser_to_group_pk_columns_input,
   Guser_to_group_select_column,
-  Guser_to_group_set_input,
-  Guser_to_group_update_column,
+  Guser_to_role_aggregate_order_by,
+  Guser_to_role_arr_rel_insert_input,
+  Guser_to_role_bool_exp,
+  Guser_to_role_constraint,
+  Guser_to_role_insert_input,
+  Guser_to_role_max_order_by,
+  Guser_to_role_min_order_by,
+  Guser_to_role_on_conflict,
+  Guser_to_role_order_by,
+  Guser_to_role_pk_columns_input,
+  Guser_to_role_select_column,
+  Guser_to_role_set_input,
+  Guser_to_role_update_column,
   Guser_to_thread_aggregate_order_by,
   Guser_to_thread_arr_rel_insert_input,
   Guser_to_thread_bool_exp,
-  Guser_to_thread_constraint,
   Guser_to_thread_insert_input,
   Guser_to_thread_max_order_by,
   Guser_to_thread_min_order_by,
-  Guser_to_thread_on_conflict,
   Guser_to_thread_order_by,
-  Guser_to_thread_pk_columns_input,
   Guser_to_thread_select_column,
-  Guser_to_thread_set_input,
-  Guser_to_thread_update_column,
   Gusers_bool_exp,
   Gusers_constraint,
   Gusers_insert_input,

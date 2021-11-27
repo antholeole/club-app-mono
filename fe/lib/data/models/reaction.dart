@@ -3,7 +3,7 @@ import 'package:fe/data/models/user.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/schema.schema.gql.dart' show Gmessage_reaction_types_enum;
 
-enum ReactionType { Like, Laugh, Wow, Cry, Angry }
+enum ReactionType { Heart, Laugh, Wow, Straight, Angry }
 
 class Reaction extends Equatable {
   final ReactionType type;
@@ -24,14 +24,14 @@ class Reaction extends Equatable {
 extension ReactionEmoji on ReactionType {
   Gmessage_reaction_types_enum get gql {
     switch (this) {
-      case ReactionType.Like:
-        return Gmessage_reaction_types_enum.LIKE;
+      case ReactionType.Heart:
+        return Gmessage_reaction_types_enum.HEART;
       case ReactionType.Angry:
         return Gmessage_reaction_types_enum.ANGRY;
       case ReactionType.Laugh:
         return Gmessage_reaction_types_enum.LAUGH;
-      case ReactionType.Cry:
-        return Gmessage_reaction_types_enum.CRY;
+      case ReactionType.Straight:
+        return Gmessage_reaction_types_enum.STRAIGHT;
       case ReactionType.Wow:
         return Gmessage_reaction_types_enum.WOW;
     }
@@ -39,14 +39,14 @@ extension ReactionEmoji on ReactionType {
 
   static ReactionType fromGql(Gmessage_reaction_types_enum gql) {
     switch (gql) {
-      case Gmessage_reaction_types_enum.LIKE:
-        return ReactionType.Like;
+      case Gmessage_reaction_types_enum.HEART:
+        return ReactionType.Heart;
       case Gmessage_reaction_types_enum.ANGRY:
         return ReactionType.Angry;
       case Gmessage_reaction_types_enum.LAUGH:
         return ReactionType.Laugh;
-      case Gmessage_reaction_types_enum.CRY:
-        return ReactionType.Cry;
+      case Gmessage_reaction_types_enum.STRAIGHT:
+        return ReactionType.Straight;
       case Gmessage_reaction_types_enum.WOW:
         return ReactionType.Wow;
     }
@@ -61,12 +61,12 @@ extension ReactionEmoji on ReactionType {
     switch (this) {
       case ReactionType.Angry:
         return '😡';
-      case ReactionType.Cry:
-        return '😭';
+      case ReactionType.Heart:
+        return '❤️';
       case ReactionType.Laugh:
         return '😂';
-      case ReactionType.Like:
-        return '❤️';
+      case ReactionType.Straight:
+        return '😐';
       case ReactionType.Wow:
         return '😮';
     }

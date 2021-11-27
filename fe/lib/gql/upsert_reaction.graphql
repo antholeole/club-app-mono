@@ -1,6 +1,5 @@
 mutation UpsertReaction(
   $deleted: Boolean!, 
-  $selfId: uuid!, 
   $messageId: uuid!, 
   $reaction: message_reaction_types_enum!
 ) {
@@ -8,7 +7,6 @@ mutation UpsertReaction(
     deleted: $deleted,
     message_id: $messageId,
     reaction_type: $reaction,
-    user_id: $selfId
   },
   on_conflict: {
     constraint: message_reactions_pkey,

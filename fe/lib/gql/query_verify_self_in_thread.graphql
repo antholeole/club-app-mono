@@ -4,7 +4,7 @@ query QueryVerifySelfInThread($userId: uuid!, $groupId: uuid!, $threadId: uuid!)
       group_id: {
         _eq: $groupId
       },
-      user_to_threads: {
+      users: {
         _and: {
           user_id: {
           	_eq: $userId

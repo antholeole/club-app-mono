@@ -15,7 +15,7 @@ import 'package:fe/gql/get_or_create_dm.data.gql.dart';
 import 'package:fe/gql/get_or_create_dm.var.gql.dart';
 import 'package:mocktail/mocktail.dart';
 
-import '../../../../../test_helpers/fixtures/mocks.dart';
+import '../../../../../test_helpers/mocks.dart';
 import '../../../../../test_helpers/get_it_helpers.dart';
 import '../../../../../test_helpers/pump_app.dart';
 import '../../../../../test_helpers/stub_gql_response.dart';

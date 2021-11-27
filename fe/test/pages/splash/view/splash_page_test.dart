@@ -1,17 +1,20 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:fe/data/models/user.dart';
 import 'package:fe/flows/app_state.dart';
 import 'package:fe/pages/splash/cubit/splash_cubit.dart';
 import 'package:fe/pages/splash/view/splash_page.dart';
+import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../../test_helpers/fixtures/mocks.dart';
-import '../../../test_helpers/fixtures/user.dart';
+import '../../../test_helpers/mocks.dart';
 import '../../../test_helpers/pump_app.dart';
 
 void main() {
+  final User fakeUser = User(id: UuidType.generate(), name: 'Loons');
+
   late MockSplashCubit mockSplashCubit;
 
   setUp(() {
@@ -24,7 +27,7 @@ void main() {
       whenListen(
         mockSplashCubit,
         Stream.fromIterable(
-            [SplashState.initial(), SplashState.loggedIn(mockUser)]),
+            [SplashState.initial(), SplashState.loggedIn(fakeUser)]),
         initialState: SplashState.initial(),
       );
 

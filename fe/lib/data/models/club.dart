@@ -5,15 +5,10 @@ import 'group.dart';
 
 class Club extends Group implements Equatable {
   final bool admin;
-  final String? joinToken;
 
-  const Club(
-      {required UuidType id,
-      required String name,
-      required this.admin,
-      this.joinToken})
+  const Club({required UuidType id, required String name, required this.admin})
       : super(id: id, name: name);
 
   @override
-  List<Object?> get props => [...super.props, admin, joinToken];
+  List<Object?> get props => [...super.props, admin];
 }

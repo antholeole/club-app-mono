@@ -1,36 +1,45 @@
 table:
   name: groups
   schema: public
-array_relationships:
-- name: group_join_tokens
+object_relationships:
+- name: group_metadatum
   using:
     foreign_key_constraint_on:
       column: group_id
       table:
-        name: group_join_tokens
+        name: group_metadata
         schema: public
-- name: group_threads
+array_relationships:
+- name: roles
+  using:
+    foreign_key_constraint_on:
+      column: group_id
+      table:
+        name: roles
+        schema: public
+- name: threads
   using:
     foreign_key_constraint_on:
       column: group_id
       table:
         name: threads
         schema: public
-- name: user_to_groups
+- name: users
   using:
-    foreign_key_constraint_on:
-      column: group_id
-      table:
+    manual_configuration:
+      column_mapping:
+        id: group_id
+      insertion_order: null
+      remote_table:
         name: user_to_group
         schema: public
 select_permissions:
 - permission:
-    allow_aggregations: true
     columns:
-    - group_name
     - id
+    - name
     filter:
-      user_to_groups:
+      users:
         user_id:
           _eq: X-Hasura-User-Id
   role: user
@@ -38,12 +47,12 @@ update_permissions:
 - permission:
     check: null
     columns:
-    - group_name
+    - name
     filter:
-      user_to_groups:
+      users:
         _and:
+        - owner:
+            _eq: true
         - user_id:
             _eq: X-Hasura-User-Id
-        - admin:
-            _eq: true
   role: user
