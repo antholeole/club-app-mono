@@ -4,6 +4,8 @@ import 'package:fe/gql/query_self_threads_in_group.var.gql.dart';
 import 'package:fe/gql/query_self_threads_in_group.data.gql.dart';
 import 'package:fe/gql/query_self_threads_in_group.req.gql.dart';
 import 'package:fe/gql/query_view_only_threads.req.gql.dart';
+import 'package:fe/gql/query_view_only_threads.data.gql.dart';
+import 'package:fe/gql/query_view_only_threads.var.gql.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
@@ -24,11 +26,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
 
-import '../../../test_helpers/mocks.dart';
-import '../../../test_helpers/get_it_helpers.dart';
-import '../../../test_helpers/reset_mock_bloc.dart';
-import '../../../test_helpers/pump_app.dart';
-import '../../../test_helpers/stub_gql_response.dart';
+import '../../../../test_helpers/mocks.dart';
+import '../../../../test_helpers/get_it_helpers.dart';
+import '../../../../test_helpers/reset_mock_bloc.dart';
+import '../../../../test_helpers/pump_app.dart';
+import '../../../../test_helpers/stub_gql_response.dart';
 
 void main() {
   group('channels bottom sheet', () {
@@ -80,6 +82,36 @@ void main() {
       setUp(() {
         whenListen(mockMainCubit, Stream<MainState>.fromIterable([]),
             initialState: MainState.withClub(fakeAdminGroup));
+
+        stubGqlResponse<GQuerySelfThreadsInGroupData,
+                GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
+            data: (_) => GQuerySelfThreadsInGroupData.fromJson({})!,
+            requestMatcher: isA<GQuerySelfThreadsInGroupReq>());
+      });
+
+      testWidgets('should display view only threads', (tester) async {
+        const thread1Name = 'thread one';
+        const thread2Name = 'thread two';
+        stubGqlResponse<GQueryViewOnlyThreadsData, GQueryViewOnlyThreadsVars>(
+            getIt<AuthGqlClient>(),
+            data: (_) => GQueryViewOnlyThreadsData.fromJson({
+                  'threads': [
+                    {
+                      'name': thread1Name,
+                      'id': '348af35f-4444-494b-a980-c0a420384c61'
+                    },
+                    {
+                      'name': thread2Name,
+                      'id': '3481f35f-e444-494b-a980-c0a420384c61'
+                    }
+                  ]
+                })!,
+            requestMatcher: isA<GQueryViewOnlyThreadsReq>());
+
+        await tester.pumpApp(build());
+        await tester.pump();
+        await expectLater(find.text(thread1Name), findsOneWidget);
+        await expectLater(find.text(thread2Name), findsOneWidget);
       });
     });
 
@@ -87,6 +119,19 @@ void main() {
       setUp(() {
         whenListen(mockMainCubit, Stream<MainState>.fromIterable([]),
             initialState: MainState.withClub(fakeNotAdminGroup));
+      });
+
+      testWidgets('should not query view only threads', (tester) async {
+        stubGqlResponse<GQuerySelfThreadsInGroupData,
+                GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
+            data: (_) => GQuerySelfThreadsInGroupData.fromJson({})!,
+            requestMatcher: isA<GQuerySelfThreadsInGroupReq>());
+
+        await tester.pumpApp(build());
+        await tester.pump();
+
+        verifyNever(() => getIt<AuthGqlClient>()
+            .request(any(that: isA<GQueryViewOnlyThreadsReq>())));
       });
 
       testWidgets(

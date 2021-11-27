@@ -21,6 +21,4 @@ void main() {
 
     expect(find.text(fakeThread.name), findsOneWidget);
   });
-
-  //should display thread title on thread
 }

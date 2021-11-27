@@ -1,6 +1,7 @@
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/pages/chat/cubit/send_cubit.dart';
 import 'package:fe/pages/chat/view/widgets/chat_input/chat_bar.dart';
+import 'package:fe/pages/chat/view/widgets/chat_input/unsendable/unsendable_chatbar.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
@@ -36,6 +37,20 @@ void main() {
 
   setUp(() {
     registerAllMockServices();
+  });
+
+  testWidgets('should render unsendable chat bar on view only thread',
+      (tester) async {
+    await tester.pumpApp(wrapWithDependencies(
+        child: Provider.value(
+      value:
+          Thread(id: UuidType.generate(), name: 'asdasdasd', isViewOnly: true),
+      child: const ChatBar(),
+    )));
+
+    await tester.pumpAndSettle();
+
+    expect(find.byType(UnsendableChatbar), findsOneWidget);
   });
 
   group('send', () {

@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 
-class Group extends Equatable {
+abstract class Group extends Equatable {
   final String name;
   final UuidType id;
 

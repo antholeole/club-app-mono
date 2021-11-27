@@ -22,7 +22,7 @@ void main() {
     expect(crossFadeShows(), IconButton);
   });
 
-  testWidgets('should call manuallyShowButtons on ', (tester) async {
+  testWidgets('should call manuallyShowButtons on tap', (tester) async {
     final caller = MockCaller();
 
     await tester
@@ -32,5 +32,4 @@ void main() {
 
     verify(() => caller.call()).called(1);
   });
-  //should render icon button
 }

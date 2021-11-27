@@ -18,6 +18,9 @@ class ThreadMembersDrawer extends StatelessWidget {
   final Thread _thread;
   final Group _group;
 
+  @visibleForTesting
+  static const NO_USERS_COPY = 'There are no users in this thread.';
+
   static double getWidth(BuildContext context) {
     return MediaQuery.of(context).size.width * 0.85;
   }
@@ -64,18 +67,12 @@ class ThreadMembersDrawer extends StatelessWidget {
     return GqlOperation<GQueryUsersInDmData, GQueryUsersInDmVars>(
         operationRequest:
             GQueryUsersInDmReq((req) => req..vars.dmId = _thread.id),
-        onResponse: (data) {
-          if (data.user_to_dm.isEmpty) {
-            return const Center(child: Text('no users in this thread.'));
-          }
-
-          return _buildUsersWidget(
-              data.user_to_dm.map((user) => User(
-                  id: user.user.id,
-                  name: user.user.name,
-                  profilePictureUrl: user.user.profile_picture)),
-              []);
-        });
+        onResponse: (data) => _buildUsersWidget(
+            data.user_to_dm.map((user) => User(
+                id: user.user.id,
+                name: user.user.name,
+                profilePictureUrl: user.user.profile_picture)),
+            []));
   }
 
   Widget _groupInner() {
@@ -88,23 +85,23 @@ class ThreadMembersDrawer extends StatelessWidget {
     return GqlOperation<GQueryUsersInThreadData, GQueryUsersInThreadVars>(
         operationRequest:
             GQueryUsersInThreadReq((req) => req..vars.threadId = _thread.id),
-        onResponse: (data) {
-          if (data.user_to_thread.isEmpty) {
-            return const Center(child: Text('no users in this thread.'));
-          }
-
-          return _buildUsersWidget(
-              data.user_to_thread.map((user) => User(
-                  name: user.user!.name,
-                  id: user.user!.id,
-                  profilePictureUrl: user.user!.profile_picture)),
-              actions);
-        });
+        onResponse: (data) => _buildUsersWidget(
+            data.user_to_thread.map((user) => User(
+                name: user.user!.name,
+                id: user.user!.id,
+                profilePictureUrl: user.user!.profile_picture)),
+            actions));
   }
 
-  Widget _buildUsersWidget(Iterable<User> user, List<ActionButton> actions) {
+  Widget _buildUsersWidget(Iterable<User> users, List<ActionButton> actions) {
+    if (users.isEmpty) {
+      return const Center(
+        child: Text(NO_USERS_COPY),
+      );
+    }
+
     return ListView(
-      children: user
+      children: users
           .map((user) => UserTile(
                 user: user,
                 actions: actions,

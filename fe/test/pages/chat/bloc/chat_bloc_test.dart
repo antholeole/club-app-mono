@@ -335,8 +335,6 @@ void main() {
                     fakeMessage1.copyWithoutReaction(fakeReaction)
                   ], hasReachedMax: true)),
                 ]);
-
-        //should remove reaction on reaction deleted
       });
 
       group('messages', () {

@@ -89,5 +89,4 @@ void main() {
     verifyNever(() => mockMainCubit.initalizeMainPage());
     verify(() => getIt<Handler>().handleFailure(any(), any())).called(1);
   });
-  //should should update contexts on action click (tests toast, tests click)
 }

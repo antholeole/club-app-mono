@@ -19,12 +19,10 @@ class ThreadCubit extends Cubit<ThreadState> {
   Group? currentGroup;
 
   ThreadCubit({required Group group, Thread? initalThread})
-      : super(ThreadState.noThread()) {
+      : super(initalThread == null
+            ? ThreadState.noThread()
+            : ThreadState.thread(initalThread)) {
     newGroup(group);
-
-    if (initalThread != null) {
-      emit(ThreadState.thread(initalThread));
-    }
   }
 
   @override
