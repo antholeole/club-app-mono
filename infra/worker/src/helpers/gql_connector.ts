@@ -1,5 +1,4 @@
 import { StatusError } from 'itty-router-extras'
-import { HASURA_ENDPOINT } from '../constants'
 
 export const gqlReq = async <T>(req: string): Promise<T> => {
     let response: Response
@@ -13,9 +12,12 @@ export const gqlReq = async <T>(req: string): Promise<T> => {
                 'x-hasura-admin-secret': HASURA_PASSWORD
             },
         })
-    } catch (e) {
-        console.error(e)
-        throw new StatusError(502, `Error connecting to GQL endpoint: ${e.message}`)
+    } catch (e: unknown) {
+        if (e instanceof Error) {
+            throw new StatusError(502, `Error connecting to GQL endpoint: ${e.message}`)
+        } else {
+            throw new StatusError(502, `Unknown error connecting to GQL endpoint: ${e}`)
+        }
     }
 
     if (!response.ok) {

@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import '../../test_helpers/fixtures/mocks.dart';
+import '../../test_helpers/mocks.dart';
 import '../../test_helpers/pump_app.dart';
 import '../../test_helpers/reset_mock_bloc.dart';
 
@@ -22,7 +22,7 @@ void main() {
   }
 
   setUp(() {
-    resetMockCubit(mockToasterCubit);
+    resetMockBloc(mockToasterCubit);
   });
 
   ToastType.values.forEach((toastType) {

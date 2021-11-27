@@ -10,13 +10,13 @@ enum FailureStatus {
   //log this
   InternalServerError,
 
-  //specific reason (client)
-  RegexFail,
-
   //miscs
   HttpMisc,
   GQLMisc,
   Unknown,
+
+  //custom (used when need custom message)
+  Custom
 }
 
 extension FailureMessage on FailureStatus {
@@ -36,10 +36,10 @@ extension FailureMessage on FailureStatus {
         return "Sorry, we had an internal server error. We're working on it!";
       case FailureStatus.HttpMisc:
         return 'Unknown HTTP error';
-      case FailureStatus.RegexFail:
-        return 'Input validation failed';
       case FailureStatus.Unknown:
         return 'Sorry, unknown error.';
+      case FailureStatus.Custom:
+        throw Exception('custom error needs message');
     }
   }
 

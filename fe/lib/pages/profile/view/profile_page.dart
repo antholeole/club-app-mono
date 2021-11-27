@@ -1,6 +1,7 @@
 import 'package:fe/pages/main/cubit/main_cubit.dart';
+import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/pages/profile/cubit/name_change_cubit.dart';
-import 'package:fe/providers/user_provider.dart';
+import 'package:fe/services/local_data/token_manager.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
 import 'package:fe/stdlib/errors/handler.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
+import '../../../config.dart';
 import '../../../service_locator.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -34,19 +36,20 @@ class ProfileView extends StatelessWidget {
   static const CANCEL_NAME_CHANGE_COPY = 'cancel';
 
   final _handler = getIt<Handler>();
+  final _config = getIt<Config>();
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = UserProvider.of(context);
+    final user = context.watch<UserCubit>().user;
 
     return Column(
       children: [
         UserAvatar(
-          name: userProvider.user.name,
+          name: user.name,
           radius: 50,
         ),
         Text(
-          userProvider.user.name,
+          user.name,
           style: Theme.of(context).textTheme.headline5,
         ),
         Column(
@@ -66,6 +69,17 @@ class ProfileView extends StatelessWidget {
                           withPrefix: "Couldn't change name"),
                     )),
             _buildLogOutButton(context),
+            if (!_config.prod)
+              ButtonGroup(name: 'debug', buttons: [
+                LoadableTileButton(
+                    text: 'selfid',
+                    onClick: () => print(context.read<UserCubit>().user.id)),
+                LoadableTileButton(
+                    text: 'a-token',
+                    onClick: () => getIt<TokenManager>()
+                        .read()
+                        .then((t) => print('Bearer $t')))
+              ])
           ],
         )
       ],
@@ -119,7 +133,7 @@ class ProfileView extends StatelessWidget {
                       message: 'Sucessfully changed name!',
                       type: ToastType.Success,
                     ));
-                UserProvider.of(context).notifyUpdate();
+                context.read<UserCubit>().notifyUpdate();
               });
             },
             child: const Text(ProfileView.UPDATE_NAME_BUTTON_COPY),

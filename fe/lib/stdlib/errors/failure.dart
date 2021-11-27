@@ -4,10 +4,11 @@ import 'package:flutter/foundation.dart';
 
 @immutable
 class Failure extends Equatable {
-  final String? message;
+  final String message;
   final FailureStatus status;
 
-  const Failure({this.message, required this.status});
+  Failure({String? message, required this.status})
+      : message = message ?? status.message;
 
   @override
   List<Object?> get props => [status, message];

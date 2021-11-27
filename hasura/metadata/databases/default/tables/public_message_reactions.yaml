@@ -1,0 +1,65 @@
+table:
+  name: message_reactions
+  schema: public
+object_relationships:
+- name: message
+  using:
+    foreign_key_constraint_on: message_id
+- name: message_reaction_type
+  using:
+    foreign_key_constraint_on: reaction_type
+- name: user
+  using:
+    foreign_key_constraint_on: user_id
+insert_permissions:
+- permission:
+    backend_only: false
+    check:
+      message:
+        _or:
+        - dm:
+            user_to_dms:
+              user_id:
+                _eq: X-Hasura-User-Id
+        - group_thread:
+            users:
+              user_id:
+                _eq: X-Hasura-User-Id
+    columns:
+    - deleted
+    - message_id
+    - reaction_type
+    set:
+      user_id: x-hasura-User-Id
+  role: user
+select_permissions:
+- permission:
+    columns:
+    - created_at
+    - deleted
+    - id
+    - message_id
+    - reaction_type
+    - updated_at
+    - user_id
+    filter:
+      message:
+        _or:
+        - group_thread:
+            users:
+              user_id:
+                _eq: X-Hasura-User-Id
+        - dm:
+            user_to_dms:
+              user_id:
+                _eq: X-Hasura-User-Id
+  role: user
+update_permissions:
+- permission:
+    check: null
+    columns:
+    - deleted
+    filter:
+      user_id:
+        _eq: X-Hasura-User-Id
+  role: user

@@ -1,16 +1,16 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:fe/data/models/group.dart';
+import 'package:fe/data/models/club.dart';
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/chat/cubit/thread_state.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
+import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/channels_bottom_sheet_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/page_cubit.dart';
 import 'package:fe/pages/scaffold/view/widgets/channels_bottom_sheet.dart';
-import 'package:fe/providers/user_provider.dart';
 import 'package:fe/service_locator.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
-import 'package:ferry/ferry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,7 +18,7 @@ import 'package:fe/gql/query_self_threads_in_group.data.gql.dart';
 import 'package:fe/gql/query_self_threads_in_group.var.gql.dart';
 import 'package:fe/gql/query_self_threads_in_group.req.gql.dart';
 
-import '../../../test_helpers/fixtures/mocks.dart';
+import '../../../test_helpers/mocks.dart';
 import '../../../test_helpers/get_it_helpers.dart';
 import '../../../test_helpers/pump_app.dart';
 import '../../../test_helpers/reset_mock_bloc.dart';
@@ -37,7 +37,7 @@ void main() {
     group('bottom sheet', () {
       final fakeUser = User(id: UuidType.generate(), name: 'hann');
       final fakeGroup =
-          Group(id: UuidType.generate(), name: 'group', admin: false);
+          Club(id: UuidType.generate(), name: 'group', admin: false);
       final fakeThread = Thread(name: 'fake thread', id: UuidType.generate());
 
       const notBottomSheetKey = Key('notbottomsheetlmfao');
@@ -49,10 +49,10 @@ void main() {
           PageCubit cubit, WidgetTester tester) async {
         BuildContext? retContext;
 
-        await tester.pumpApp(UserProvider(
-          user: fakeUser,
-          child: MultiBlocProvider(
+        await tester.pumpApp(
+          MultiBlocProvider(
             providers: [
+              BlocProvider<UserCubit>(create: (_) => UserCubit(fakeUser)),
               BlocProvider<MainCubit>(create: (_) => mockMainCubit),
               BlocProvider<ChatBottomSheetCubit>(
                 create: (_) => mockChatBottomSheetCubit,
@@ -68,25 +68,23 @@ void main() {
               );
             }),
           ),
-        ));
+        );
 
         return retContext!;
       }
 
       setUp(() {
-        resetMockCubit(mockChatBottomSheetCubit);
+        resetMockBloc(mockChatBottomSheetCubit);
         registerAllMockServices();
       });
 
       testWidgets('should have selected thread if thread is selected',
           (tester) async {
-        final mockThreadCubit = MockThreadCubit.getMock();
-
         stubGqlResponse<GQuerySelfThreadsInGroupData,
-                GQuerySelfThreadsInGroupVars>(getIt<Client>(),
+                GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
             requestMatcher: isA<GQuerySelfThreadsInGroupReq>(),
             data: (_) => GQuerySelfThreadsInGroupData.fromJson({
-                  'group_threads': [
+                  'threads': [
                     fakeThread.toJson(),
                     {
                       'name': 'thread2',
@@ -98,11 +96,9 @@ void main() {
         whenListen(mockChatBottomSheetCubit, Stream<bool>.fromIterable([]),
             initialState: false);
         whenListen(mockMainCubit, const Stream<MainState>.empty(),
-            initialState: MainState.withGroup(fakeGroup));
-        whenListen(mockThreadCubit, const Stream<ThreadState>.empty(),
-            initialState: ThreadState.thread(fakeThread));
+            initialState: MainState.withClub(fakeGroup));
 
-        final pageCubit = PageCubit()..addThreadCubit(mockThreadCubit);
+        final pageCubit = PageCubit()..currentThread = fakeThread;
 
         final context = await getBottomSheetableContext(pageCubit, tester);
 
@@ -123,10 +119,10 @@ void main() {
         final mockThreadCubit = MockThreadCubit.getMock();
 
         stubGqlResponse<GQuerySelfThreadsInGroupData,
-                GQuerySelfThreadsInGroupVars>(getIt<Client>(),
+                GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
             requestMatcher: isA<GQuerySelfThreadsInGroupReq>(),
             data: (_) => GQuerySelfThreadsInGroupData.fromJson({
-                  'group_threads': [
+                  'threads': [
                     fakeThread.toJson(),
                     {
                       'name': 'thread2',
@@ -138,13 +134,11 @@ void main() {
         whenListen(mockChatBottomSheetCubit, Stream<bool>.fromIterable([]),
             initialState: false);
         whenListen(mockMainCubit, const Stream<MainState>.empty(),
-            initialState: MainState.withGroup(fakeGroup));
+            initialState: MainState.withClub(fakeGroup));
         whenListen(mockThreadCubit, const Stream<ThreadState>.empty(),
             initialState: ThreadState.thread(fakeThread));
 
-        final pageCubit = PageCubit()
-          ..addThreadCubit(mockThreadCubit)
-          ..removeThreadCubit();
+        final pageCubit = PageCubit();
 
         final context = await getBottomSheetableContext(pageCubit, tester);
 
@@ -163,10 +157,10 @@ void main() {
       testWidgets('should emit thread selected if thread selected',
           (tester) async {
         stubGqlResponse<GQuerySelfThreadsInGroupData,
-                GQuerySelfThreadsInGroupVars>(getIt<Client>(),
+                GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
             requestMatcher: isA<GQuerySelfThreadsInGroupReq>(),
             data: (_) => GQuerySelfThreadsInGroupData.fromJson({
-                  'group_threads': [
+                  'threads': [
                     fakeThread.toJson(),
                     {
                       'name': 'thread2',
@@ -178,7 +172,7 @@ void main() {
         whenListen(mockChatBottomSheetCubit, Stream<bool>.fromIterable([]),
             initialState: false);
         whenListen(mockMainCubit, const Stream<MainState>.empty(),
-            initialState: MainState.withGroup(fakeGroup));
+            initialState: MainState.withClub(fakeGroup));
 
         final pageCubit = PageCubit();
 
@@ -197,10 +191,10 @@ void main() {
 
       testWidgets('should emit nothing if not thread selected', (tester) async {
         stubGqlResponse<GQuerySelfThreadsInGroupData,
-                GQuerySelfThreadsInGroupVars>(getIt<Client>(),
+                GQuerySelfThreadsInGroupVars>(getIt<AuthGqlClient>(),
             requestMatcher: isA<GQuerySelfThreadsInGroupReq>(),
             data: (_) => GQuerySelfThreadsInGroupData.fromJson({
-                  'group_threads': [
+                  'threads': [
                     fakeThread.toJson(),
                     {
                       'name': 'thread2',
@@ -212,7 +206,7 @@ void main() {
         whenListen(mockChatBottomSheetCubit, Stream<bool>.fromIterable([]),
             initialState: false);
         whenListen(mockMainCubit, const Stream<MainState>.empty(),
-            initialState: MainState.withGroup(fakeGroup));
+            initialState: MainState.withClub(fakeGroup));
 
         final List<PageState> emittedStates = [];
         final pageCubit = PageCubit();

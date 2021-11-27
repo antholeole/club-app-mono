@@ -27,5 +27,5 @@ class ChatPageState extends Equatable {
   const ChatPageState({this.thread});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [thread];
 }

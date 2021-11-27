@@ -1,12 +1,11 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:fe/data/json/provider_access_token.dart';
 import 'package:fe/pages/login/cubit/login_cubit.dart';
 import 'package:fe/pages/login/view/widgets/sign_in_with_provider_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import '../../../../test_helpers/fixtures/mocks.dart';
+import '../../../../test_helpers/mocks.dart';
 import '../../../../test_helpers/pump_app.dart';
 import '../../../../test_helpers/reset_mock_bloc.dart';
 
@@ -14,7 +13,7 @@ void main() {
   final mockLoginCubit = MockLoginCubit.getMock();
 
   setUp(() {
-    resetMockCubit(mockLoginCubit);
+    resetMockBloc(mockLoginCubit);
     registerFallbackValue(LoginType.Google);
   });
 

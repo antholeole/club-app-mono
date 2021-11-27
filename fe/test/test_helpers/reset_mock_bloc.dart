@@ -1,7 +1,7 @@
-import 'package:bloc_test/bloc_test.dart';
+import 'package:bloc/bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
-void resetMockCubit(MockCubit mockBloc) {
+void resetMockBloc(BlocBase mockBloc) {
   reset(mockBloc);
   when(() => mockBloc.close()).thenAnswer((invocation) async => null);
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:fe/service_locator.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/errors/handler.dart';
@@ -13,10 +14,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fe/gql/fake/fake.data.gql.dart';
 import 'package:fe/gql/fake/fake.var.gql.dart';
 import 'package:fe/gql/fake/fake.req.gql.dart';
-import 'package:gql_exec/gql_exec.dart';
 import 'package:mocktail/mocktail.dart';
 
-import '../../test_helpers/fixtures/mocks.dart';
+import '../../test_helpers/mocks.dart';
 import '../../test_helpers/get_it_helpers.dart';
 import '../../test_helpers/pump_app.dart';
 import '../../test_helpers/stub_gql_response.dart';
@@ -37,8 +37,10 @@ void main() {
     setUp(() {
       respCompleter = Completer();
 
-      when(() => getIt<Client>().request<GFakeGqlData, GFakeGqlVars>(any()))
-          .thenAnswer((_) => Stream.fromFuture(respCompleter.future));
+      when(() =>
+              getIt<AuthGqlClient>().request<GFakeGqlData, GFakeGqlVars>(any()))
+          .thenAnswer((_) =>
+              Stream.fromFuture(respCompleter.future.then((rc) => rc.data!)));
     });
 
     tearDown(() {
@@ -72,14 +74,11 @@ void main() {
   });
 
   group('on error', () {
-    const fakeFailure = Failure(status: FailureStatus.GQLMisc);
+    final fakeFailure = Failure(status: FailureStatus.GQLMisc);
 
     testWidgets('should call basic GQL error handler', (tester) async {
-      stubGqlResponse<GFakeGqlData, GFakeGqlVars>(getIt<Client>(),
-          errors: (_) => [const GraphQLError(message: 'msg')]);
-
-      when(() => getIt<Handler>().basicGqlErrorHandler(any()))
-          .thenAnswer((_) async => fakeFailure);
+      stubGqlResponse<GFakeGqlData, GFakeGqlVars>(getIt<AuthGqlClient>(),
+          error: (_) => fakeFailure);
 
       await tester.pumpApp(GqlOperation(
         onResponse: (_) => Container(),
@@ -88,50 +87,7 @@ void main() {
 
       await tester.pump();
 
-      verify(() => getIt<Handler>().basicGqlErrorHandler(any())).called(1);
       verify(() => getIt<Handler>().handleFailure(any(), any())).called(1);
-    });
-
-    testWidgets('should attempt to return value from cache', (tester) async {
-      const renderKey = Key('value');
-
-      final req = GFakeGqlReq();
-
-      final gqlStreamController =
-          StreamController<OperationResponse<GFakeGqlData, GFakeGqlVars>>();
-      when(() => getIt<Client>().request(any()))
-          .thenAnswer((_) => gqlStreamController.stream);
-
-      when(() => getIt<Handler>().basicGqlErrorHandler(any()))
-          .thenAnswer((_) async => fakeFailure);
-
-      await tester.pumpApp(GqlOperation(
-        onResponse: (_) => Container(
-          key: renderKey,
-        ),
-        operationRequest: req,
-      ));
-
-      gqlStreamController.add(OperationResponse<GFakeGqlData, GFakeGqlVars>(
-          operationRequest: req,
-          dataSource: DataSource.Cache,
-          data: GFakeGqlData.fromJson({'group_join_tokens': []})!));
-
-      await tester.pump();
-
-      await expectLater(find.byKey(renderKey), findsOneWidget);
-
-      gqlStreamController.add(OperationResponse<GFakeGqlData, GFakeGqlVars>(
-          dataSource: DataSource.Link,
-          linkException:
-              const FakeLinkException(GraphQLError(message: 'fakeError')),
-          operationRequest: req,
-          graphqlErrors: [const GraphQLError(message: 'fakeError')]));
-
-      await tester.pump();
-
-      expect(find.byKey(renderKey), findsOneWidget,
-          reason: 'even on error, should render from cache');
     });
   });
 
@@ -149,6 +105,33 @@ void main() {
       await tester.pump();
 
       expect(find.byKey(renderKey), findsOneWidget);
+    });
+
+    testWidgets('should call again if changed', (tester) async {
+      stubGqlResponse<GFakeGqlData, GFakeGqlVars>(getIt<AuthGqlClient>(),
+          data: (_) => GFakeGqlData.fromJson({'group_join_tokens': []})!);
+
+      final controller = StreamController<GFakeGqlReq>();
+
+      await tester.pumpApp(StreamBuilder<GFakeGqlReq>(
+        stream: controller.stream,
+        builder: (_, snapshot) => GqlOperation(
+          operationRequest: snapshot.data,
+          onResponse: (_) => Container(),
+        ),
+      ));
+
+      controller.add(GFakeGqlReq((q) => q..requestId = 'first'));
+
+      await tester.pump();
+
+      controller.add(GFakeGqlReq((q) => q..requestId = 'second'));
+
+      await tester.pump();
+
+      verify(() =>
+              getIt<AuthGqlClient>().request(any(that: isA<GFakeGqlReq>())))
+          .called(2);
     });
   });
 }

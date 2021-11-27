@@ -12,8 +12,9 @@ declare module 'itty-router-extras' {
 //declared vars
 declare const PUBLIC_KEYS: KVNamespace
 declare const REFRESH_TOKENS: KVNamespace
-declare const ONLINE_USERS: KVNamespace
 
 declare const HASURA_PASSWORD: string
+declare const HASURA_ENDPOINT: string
+declare const WEBHOOK_SECRET_KEY: string
 declare const SECRET: string
 declare const ENVIRONMENT: string

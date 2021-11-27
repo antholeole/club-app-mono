@@ -1,0 +1,38 @@
+query QueryMessagesInChat(
+  $threadId: uuid!,
+  $before: timestamptz!
+) {
+  messages(
+    limit: 20,
+    order_by: {
+      created_at: desc
+    },
+    where: {
+      source_id: {
+        _eq: $threadId,
+      },
+      created_at: {
+        _lte: $before
+      }
+    }
+  ) {
+   created_at,
+    message,
+    user {
+      name,
+      profile_picture,
+      id
+    },
+  	message_reactions {
+      reaction_type,
+      id,
+      user {
+        id,
+        name
+      }
+    },
+    is_image,
+    updated_at,
+    id
+  }
+}

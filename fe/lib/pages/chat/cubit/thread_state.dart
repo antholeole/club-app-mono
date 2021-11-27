@@ -33,5 +33,5 @@ class WithThreadState extends Equatable {
   const WithThreadState({required this.thread});
 
   @override
-  List<Object?> get props => [Thread, thread];
+  List<Object?> get props => [thread];
 }

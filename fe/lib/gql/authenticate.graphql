@@ -1,0 +1,8 @@
+mutation Authenticate($identity_provider: IdentityProvider!, $id_token: String!) {
+  authenticate(identityProvider: $identity_provider, idToken: $id_token) {
+    accessToken,
+    refreshToken,
+    id,
+    name
+  }
+}

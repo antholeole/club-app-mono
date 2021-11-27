@@ -1,14 +1,8 @@
 import 'package:equatable/equatable.dart';
+import 'package:fe/data/models/reaction.dart';
 import 'package:fe/data/models/user.dart';
-import 'package:fe/stdlib/helpers/datetime_type_converter.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
-import 'package:json_annotation/json_annotation.dart';
 
-part 'message.g.dart';
-
-@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
-@CustomUuidConverter()
-@CustomDateTimeConverter()
 class Message extends Equatable {
   final User user;
   final String message;
@@ -16,6 +10,7 @@ class Message extends Equatable {
   final DateTime updatedAt;
   final bool isImage;
   final UuidType id;
+  final Set<Reaction> reactions;
 
   bool get updated => updatedAt != createdAt;
 
@@ -23,15 +18,37 @@ class Message extends Equatable {
       {required this.user,
       required this.id,
       required this.message,
+      Set<Reaction>? reactions,
       required this.isImage,
       required this.createdAt,
-      required this.updatedAt});
+      required this.updatedAt})
+      : reactions = reactions ?? const {};
 
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [id, reactions];
 
-  factory Message.fromJson(Map<String, dynamic> jsonString) =>
-      _$MessageFromJson(jsonString);
+  Message copyWithNewReaction(Reaction newReaction) {
+    return Message(
+        user: user,
+        id: id,
+        message: message,
+        isImage: isImage,
+        createdAt: createdAt,
+        reactions: {...reactions, newReaction},
+        updatedAt: updatedAt);
+  }
 
-  Map<String, dynamic> toJson() => _$MessageToJson(this);
+  Message copyWithoutReaction(Reaction removedReaction) {
+    final newReactions = Set.of(reactions.toList());
+    newReactions.remove(removedReaction);
+
+    return Message(
+        user: user,
+        id: id,
+        message: message,
+        isImage: isImage,
+        createdAt: createdAt,
+        reactions: newReactions,
+        updatedAt: updatedAt);
+  }
 }

@@ -1,0 +1,2 @@
+CREATE TABLE "public"."message_reactions" ("id" uuid NOT NULL DEFAULT gen_random_uuid(), "reaction_type" text NOT NULL, "user" uuid NOT NULL, "message" uuid NOT NULL, PRIMARY KEY ("id") , FOREIGN KEY ("reaction_type") REFERENCES "public"."message_reaction_types"("reaction_type") ON UPDATE restrict ON DELETE restrict, FOREIGN KEY ("user") REFERENCES "public"."users"("id") ON UPDATE restrict ON DELETE restrict, FOREIGN KEY ("message") REFERENCES "public"."messages"("id") ON UPDATE restrict ON DELETE restrict, UNIQUE ("id"));
+CREATE EXTENSION IF NOT EXISTS pgcrypto;

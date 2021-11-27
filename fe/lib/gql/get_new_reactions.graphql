@@ -1,0 +1,26 @@
+subscription GetNewReactions(
+  $sourceId: uuid!,
+) {
+  message_reactions(limit: 5, order_by: {
+    updated_at: desc
+  },
+    where: {
+     	message: {
+      source_id: {
+        _eq: $sourceId
+      } 
+    }
+    }) {
+    created_at,
+    user {
+      id,
+      name
+    },
+    reaction_type,
+    deleted,
+    message {
+      id
+    },
+    id
+  }
+}

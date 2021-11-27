@@ -1,9 +1,7 @@
 import 'package:fe/constants.dart';
 import 'package:fe/data/json/backend_access_tokens.dart';
-import 'package:fe/data/json/refresh_carrier.dart';
 import 'package:fe/service_locator.dart';
-import 'package:fe/services/clients/http_client/http_client.dart';
-import 'package:fe/services/clients/http_client/unauth_http_client.dart';
+import 'package:fe/services/clients/gql_client/unauth_gql_client.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:fe/services/local_data/token_manager.dart';
@@ -12,10 +10,12 @@ import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:fe/gql/refresh.data.gql.dart';
+import 'package:fe/gql/refresh.var.gql.dart';
 
 import '../../test_helpers/get_it_helpers.dart';
+import '../../test_helpers/stub_gql_response.dart';
 
 void main() {
   const rToken = 'adasd';
@@ -105,9 +105,14 @@ void main() {
         () async {
       when(() => getIt<FlutterSecureStorage>().read(key: REFRESH_TOKEN_KEY))
           .thenAnswer((_) async => rToken);
-      when(() => getIt<UnauthHttpClient>().postReq('/auth/refresh',
-              RefreshCarrier(refreshToken: rToken, userId: userId).toJson()))
-          .thenAnswer((_) async => Response(aToken, 200));
+
+      stubGqlResponse<GRefreshData, GRefreshVars>(
+        getIt<UnauthGqlClient>(),
+        data: (_) => GRefreshData.fromJson({
+          'refresh_access_token': {'accessToken': aToken}
+        })!,
+      );
+
       when(() => getIt<LocalFileStore>().serialize(
           LocalStorageType.AccessTokens, aToken)).thenAnswer((_) async => null);
 
@@ -121,25 +126,14 @@ void main() {
     test('should throw Refresh Failure on unsuccessful refresh', () async {
       when(() => getIt<FlutterSecureStorage>().read(key: REFRESH_TOKEN_KEY))
           .thenAnswer((_) async => rToken);
-      when(() => getIt<UnauthHttpClient>().postReq('/auth/refresh',
-              RefreshCarrier(refreshToken: rToken, userId: userId).toJson()))
-          .thenThrow(const HttpException(statusCode: 404, message: ''));
+
+      stubGqlResponse<GRefreshData, GRefreshVars>(getIt<UnauthGqlClient>(),
+          error: (_) => Failure(status: FailureStatus.GQLMisc));
 
       final tokenManager = TokenManager();
-      expect(() async => await tokenManager.refresh(),
-          throwsA(const Failure(status: FailureStatus.RefreshFail)));
-    });
 
-    test('should rethrow on misc errors', () {
-      when(() => getIt<FlutterSecureStorage>().read(key: REFRESH_TOKEN_KEY))
-          .thenAnswer((_) async => rToken);
-      when(() => getIt<UnauthHttpClient>().postReq('/auth/refresh',
-              RefreshCarrier(refreshToken: rToken, userId: userId).toJson()))
-          .thenThrow(const HttpException(statusCode: 321, message: ''));
-
-      final tokenManager = TokenManager();
       expect(() async => await tokenManager.refresh(),
-          throwsA(const HttpException(statusCode: 321, message: '')));
+          throwsA(Failure(status: FailureStatus.RefreshFail)));
     });
   });
 }

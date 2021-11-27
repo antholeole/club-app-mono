@@ -1,0 +1,50 @@
+table:
+  name: role_to_threads
+  schema: public
+object_relationships:
+- name: role
+  using:
+    foreign_key_constraint_on: role_id
+- name: thread
+  using:
+    foreign_key_constraint_on: thread_id
+insert_permissions:
+- permission:
+    backend_only: false
+    check:
+      role:
+        group:
+          users:
+            _and:
+            - owner:
+                _eq: true
+            - user_id:
+                _eq: X-Hasura-User-Id
+    columns:
+    - role_id
+    - thread_id
+  role: user
+select_permissions:
+- permission:
+    columns:
+    - role_id
+    - thread_id
+    filter:
+      thread:
+        group:
+          users:
+            user_id:
+              _eq: X-Hasura-User-Id
+  role: user
+delete_permissions:
+- permission:
+    filter:
+      role:
+        group:
+          users:
+            _and:
+            - owner:
+                _eq: true
+            - user_id:
+                _eq: X-Hasura-User-Id
+  role: user

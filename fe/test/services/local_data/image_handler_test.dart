@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import '../../test_helpers/fixtures/mocks.dart';
+import '../../test_helpers/mocks.dart';
 
 void main() {
   setUpAll(() {

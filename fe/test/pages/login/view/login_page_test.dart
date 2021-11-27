@@ -18,14 +18,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import '../../../test_helpers/fixtures/mocks.dart';
+import '../../../test_helpers/mocks.dart';
 import '../../../test_helpers/get_it_helpers.dart';
 import '../../../test_helpers/pump_app.dart';
 import '../../../test_helpers/reset_mock_bloc.dart';
 
 void main() {
   setUpAll(() async {
-    await registerAllMockServices(needCubitAutoEvents: true);
+    await registerAllMockServices();
   });
 
   group('login page', () {
@@ -56,7 +56,7 @@ void main() {
     }
 
     setUp(() {
-      resetMockCubit(mockLoginCubit);
+      resetMockBloc(mockLoginCubit);
     });
 
     testWidgets('should render login buttons on inital', (tester) async {
@@ -84,8 +84,8 @@ void main() {
       whenListen(
           mockLoginCubit,
           Stream<LoginState>.fromIterable([
-            LoginState.failure(const Failure(
-                status: FailureStatus.Unknown, message: failureMessage))
+            LoginState.failure(
+                Failure(status: FailureStatus.Unknown, message: failureMessage))
           ]),
           initialState: LoginState.loading());
 

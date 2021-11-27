@@ -17,14 +17,17 @@ services:
     environment:
       HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
       ## enable the console served by server
-      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
-      ## enable debugging mode. It is recommended to disable this in production
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_DEV_MODE: "true"
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: http-log, webhook-log, websocket-log, query-log
       HASURA_GRAPHQL_ADMIN_SECRET: '${ADMIN_SECRET}'
       HASURA_GRAPHQL_MIGRATIONS_DIR: /migrations
       HASURA_GRAPHQL_METADATA_DIR: /metadata
       HASURA_GRAPHQL_JWT_SECRET: '{"type": "HS256","key": "${JWT_SECRET}"}'
+      WEBHOOK_URL: '${WEBHOOK_URL}'
+      WEBHOOK_SECRET_KEY: '${WEBHOOK_SECRET_KEY}'
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: 'unauthenticated'
+      HASURA_GRAPHQL_ENABLE_ALLOWLIST: "true"
     volumes:
       - ./migrations:/migrations
       - ./metadata:/metadata

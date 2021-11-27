@@ -2,9 +2,8 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:fe/config.dart';
-import 'package:fe/data/json/provider_access_token.dart';
 import 'package:fe/data/models/user.dart';
+import 'package:fe/pages/login/cubit/login_cubit.dart';
 import 'package:fe/pages/login/view/widgets/sign_in_with_provider_button.dart';
 import 'package:fe/services/local_data/image_handler.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
@@ -19,10 +18,9 @@ part 'splash_state.dart';
 class SplashCubit extends Cubit<SplashState> {
   final LocalFileStore _localFileStore = getIt<LocalFileStore>();
   final ImageHandler _imageHandler = getIt<ImageHandler>();
-  final Config _config = getIt<Config>();
 
   SplashCubit() : super(SplashState.initial()) {
-    if (!_config.testing) beginLoads();
+    beginLoads();
   }
 
   void beginLoads() async {

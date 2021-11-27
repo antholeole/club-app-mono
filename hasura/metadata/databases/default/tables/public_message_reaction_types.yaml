@@ -1,0 +1,19 @@
+table:
+  name: message_reaction_types
+  schema: public
+is_enum: true
+array_relationships:
+- name: message_reactions
+  using:
+    foreign_key_constraint_on:
+      column: reaction_type
+      table:
+        name: message_reactions
+        schema: public
+select_permissions:
+- permission:
+    columns:
+    - description
+    - reaction_type
+    filter: {}
+  role: user

@@ -1,0 +1,34 @@
+subscription GetNewMessages(
+  $sourceId: uuid!,
+) {
+  messages(
+    order_by: {
+      created_at: desc
+    },
+    where: {
+      source_id: {
+        _eq: $sourceId,
+      },
+    },
+    limit: 10
+  ) {
+   created_at,
+    message,
+    id,
+    user {
+      name,
+      profile_picture,
+      id
+    },
+    message_reactions {
+      reaction_type,
+      id,
+      user {
+        id,
+        name
+      }
+    },
+    is_image,
+    updated_at
+  }
+}

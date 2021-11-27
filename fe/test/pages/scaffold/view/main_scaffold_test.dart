@@ -1,35 +1,40 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
-import 'package:fe/config.dart';
+import 'package:fe/data/models/club.dart';
+import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
+import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/data_carriers/main_scaffold_parts.dart';
 import 'package:fe/pages/scaffold/cubit/page_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/scaffold_cubit.dart' as sc;
 import 'package:fe/pages/scaffold/view/main_scaffold.dart';
 import 'package:fe/pages/scaffold/view/widgets/drawers/left_drawer/club_drawer.dart';
 import 'package:fe/service_locator.dart';
-import 'package:fe/services/clients/ws_client/ws_client.dart';
-import 'package:fe/services/local_data/local_user_service.dart';
-import 'package:ferry/ferry.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
+import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../../test_helpers/cubit_patch_close.dart';
-import '../../../test_helpers/fixtures/group.dart';
-import '../../../test_helpers/fixtures/mocks.dart';
+import '../../../test_helpers/mocks.dart';
 import '../../../test_helpers/get_it_helpers.dart';
 import '../../../test_helpers/pump_app.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:fe/gql/query_self_groups.data.gql.dart';
+import 'package:fe/gql/query_self_groups.var.gql.dart';
 
-import '../../../test_helpers/stub_cubit_stream.dart';
-import '../../../test_helpers/testing_config.dart';
+import '../../../test_helpers/stub_bloc_stream.dart';
+import '../../../test_helpers/stub_gql_response.dart';
 
 void main() {
+  final fakeUser = User(name: 'blah', id: UuidType.generate());
+  final fakeGroup =
+      Club(name: 'blah groop', id: UuidType.generate(), admin: false);
+
   MockScaffoldCubit mockScaffoldCubit = MockScaffoldCubit.getMock();
   MockMainCubit mockMainCubit = MockMainCubit.getMock();
-  MockWsClient mockWsClient = MockWsClient.getMock();
   MockPageCubit mockPageCubit = MockPageCubit.getMock();
 
   Widget wrapWithDependencies(Widget child) {
@@ -41,6 +46,7 @@ void main() {
         BlocProvider<MainCubit>(
           create: (_) => mockMainCubit,
         ),
+        BlocProvider<UserCubit>(create: (_) => UserCubit(fakeUser)),
         BlocProvider<sc.ScaffoldCubit>(
           create: (_) => mockScaffoldCubit,
         ),
@@ -48,10 +54,6 @@ void main() {
       child: child,
     );
   }
-
-  setUpAll(() {
-    getIt.registerSingleton<WsClient>(mockWsClient);
-  });
 
   setUp(() async {
     await registerAllMockServices();
@@ -61,11 +63,8 @@ void main() {
       patchCubitClose(cubit);
     });
 
-    reset(mockWsClient);
-    mockWsClient.emptyStub();
-
     whenListen(mockMainCubit, Stream<MainState>.fromIterable([]),
-        initialState: MainState.withGroup(mockGroupNotAdmin));
+        initialState: MainState.withClub(fakeGroup));
 
     whenListen(mockPageCubit, Stream<PageState>.fromIterable([]),
         initialState: PageState.eventPage());
@@ -99,13 +98,9 @@ void main() {
 
   group('scaffoldState', () {
     testWidgets('drawer should open on click', (tester) async {
-      final mockConfig = TestingConfig();
-      final mockLocalUserService = MockLocalUserService();
-      final mockGqlClient = MockGqlClient.getMock();
-
-      getIt.registerSingleton<LocalUserService>(mockLocalUserService);
-      getIt.registerSingleton<Client>(mockGqlClient);
-      getIt.registerSingleton<Config>(mockConfig);
+      stubGqlResponse<GQuerySelfGroupsData, GQuerySelfGroupsVars>(
+          getIt<AuthGqlClient>(),
+          data: (_) => GQuerySelfGroupsData.fromJson({})!);
 
       whenListen(
         mockScaffoldCubit,
@@ -128,7 +123,7 @@ void main() {
       const IconData actionButtonIcon = Icons.ac_unit;
       final MockCaller mockCaller = MockCaller();
 
-      final scaffoldCubitController = stubCubitStream(mockScaffoldCubit,
+      final scaffoldCubitController = stubBlocStream(mockScaffoldCubit,
           initialState: const sc.ScaffoldInitial());
 
       await tester

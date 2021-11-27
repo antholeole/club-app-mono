@@ -1,0 +1,6 @@
+mutation GetOrCreateDm($withUserId: uuid!) {
+  get_or_create_dm(with_user_id: $withUserId) {
+    name,
+    id
+  }
+}

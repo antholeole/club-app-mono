@@ -8,16 +8,20 @@ clean:
 	find . -maxdepth 20 -type f \( -name "*.ast.gql.dart" -o -name "**.req.gql.dart" -o -name "*.data.gql.dart" -name "*.var.gql.dart" -o -name "*.gql.g.dart" -o -name "*.g.dart" -o -name "*.gql.dart" -o -name "*.mocks.dart" \) -delete && flutter clean && flutter pub get && flutter pub run build_runner clean
 
 schema-pull:
-	get-graphql-schema --header x-hasura-admin-secret="*hV@?*xh0)aL,@1+Tza>Kj[zC(5akn" http://localhost:8080/v1/graphql > ./lib/schema.graphql
+	get-graphql-schema --header x-hasura-admin-secret="aodrkofkioermwieojrowiemfosdmfiosdmfisdmfiosdmfiosmaoisaosidmoi" http://localhost:8080/v1/graphql > ./lib/schema.graphql
 
 t:
-	flutter test --coverage && \
+	flutter test --coverage
+	
+	
+t-clean:
 	lcov --remove coverage/lcov.info \
 	'lib/data/*' \
 	'lib/gql/*' \
 	'lib/gql/*' \
 	'lib/schema.graphql' \
 	'lib/**/*_state.dart' \
+	'lib/**/*_event.dart' \
 	'lib/*.gql.g.dart' \
 	'lib/*.gql.dart' \
 	'lib/config.dart' \
@@ -27,7 +31,7 @@ t:
 	'**/data_carriers/*' \
 	'lib/stdlib/errors/failure_status.dart' \
 	'lib/stdlib/helpers/datetime_type_converter.dart' \
-	-o coverage/new_lcov.info
+	-o coverage/out_cov.info
 
 view-cov: 
-	genhtml coverage/new_lcov.info --output=coverage/html && open coverage/html/index.html
+	genhtml coverage/out_cov.info --output=coverage/html && open coverage/html/index.html

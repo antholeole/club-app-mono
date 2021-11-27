@@ -1,0 +1,13 @@
+query QueryUsersInDm($dmId: uuid!) {
+  user_to_dm(where: {
+    dm_id: {
+      _eq: $dmId
+    }
+  }) {
+    user {
+      name,
+      profile_picture,
+      id
+    }
+  }
+}
