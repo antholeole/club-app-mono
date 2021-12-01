@@ -11,11 +11,11 @@ object_relationships:
       remote_table:
         name: dms
         schema: public
-- name: group_thread
+- name: thread
   using:
     manual_configuration:
       column_mapping:
-        source_id: group_id
+        source_id: id
       insertion_order: null
       remote_table:
         name: threads
@@ -40,7 +40,7 @@ insert_permissions:
           user_to_dms:
             user_id:
               _eq: X-Hasura-User-Id
-      - group_thread:
+      - thread:
           users:
             user_id:
               _eq: X-Hasura-User-Id
@@ -69,7 +69,7 @@ select_permissions:
           user_to_dms:
             user_id:
               _eq: X-Hasura-User-Id
-      - group_thread:
+      - thread:
           users:
             user_id:
               _eq: X-Hasura-User-Id

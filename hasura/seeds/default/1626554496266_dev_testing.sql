@@ -212,4 +212,11 @@ INSERT INTO public.messages(user_sent, message, source_id)
 INSERT INTO public.messages(user_sent, message, source_id)
     VALUES ('d3ac2f6b-e56f-47d2-9121-c5444b959a3f', 'eaque rerum! Provident similique accusantium', '6481f35f-e444-494b-a980-c0a420384c61');
 
+/* finally, set self as owner of sports ball and charles of ISU dd club*/
+INSERT INTO public.group_metadata(group_id, owner_id)
+    VALUES ('b454d579-c4d2-403c-95cd-ac8dbc97476a', '04c9b164-8535-4ae0-a091-9681a425b935');
+
+INSERT INTO public.group_metadata(group_id, owner_id)
+    VALUES ('56610d26-d62d-4628-8c08-eabf7ab7e8ad', 'a1e459f1-b3aa-4e47-a3c7-cf6f7ff8f19f');
+
 

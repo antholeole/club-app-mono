@@ -1,6 +1,6 @@
 import 'package:fe/data/models/dm.dart';
 import 'package:fe/data/models/user.dart';
-import 'package:fe/pages/groups/view/widgets/groups_tabs/user_tile.dart';
+import 'package:fe/stdlib/shared_widgets/user_tile.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
@@ -15,10 +15,10 @@ import 'package:fe/gql/get_or_create_dm.data.gql.dart';
 import 'package:fe/gql/get_or_create_dm.var.gql.dart';
 import 'package:mocktail/mocktail.dart';
 
-import '../../../../../test_helpers/mocks.dart';
-import '../../../../../test_helpers/get_it_helpers.dart';
-import '../../../../../test_helpers/pump_app.dart';
-import '../../../../../test_helpers/stub_gql_response.dart';
+import '../../test_helpers/mocks.dart';
+import '../../test_helpers/get_it_helpers.dart';
+import '../../test_helpers/pump_app.dart';
+import '../../test_helpers/stub_gql_response.dart';
 
 void main() {
   final fakeUser = User(id: UuidType.generate(), name: 'asdasd');

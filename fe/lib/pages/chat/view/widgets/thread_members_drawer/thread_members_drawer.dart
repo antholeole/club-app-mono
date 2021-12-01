@@ -3,9 +3,10 @@ import 'package:fe/data/models/dm.dart';
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/data/models/group.dart';
 import 'package:fe/data/models/user.dart';
-import 'package:fe/pages/groups/view/widgets/groups_tabs/user_tile.dart';
 import 'package:fe/pages/scaffold/cubit/data_carriers/main_scaffold_parts.dart';
 import 'package:fe/stdlib/shared_widgets/gql_operation.dart';
+import 'package:fe/stdlib/shared_widgets/user_tile.dart';
+import 'package:ferry/ferry.dart';
 import 'package:flutter/material.dart';
 import 'package:fe/gql/query_users_in_thread.data.gql.dart';
 import 'package:fe/gql/query_users_in_thread.var.gql.dart';
@@ -83,8 +84,9 @@ class ThreadMembersDrawer extends StatelessWidget {
     }
 
     return GqlOperation<GQueryUsersInThreadData, GQueryUsersInThreadVars>(
-        operationRequest:
-            GQueryUsersInThreadReq((req) => req..vars.threadId = _thread.id),
+        operationRequest: GQueryUsersInThreadReq((req) => req
+          ..vars.threadId = _thread.id
+          ..fetchPolicy = FetchPolicy.CacheAndNetwork),
         onResponse: (data) => _buildUsersWidget(
             data.user_to_thread.map((user) => User(
                 name: user.user!.name,

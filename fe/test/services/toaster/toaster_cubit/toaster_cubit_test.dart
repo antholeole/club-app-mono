@@ -15,7 +15,7 @@ void main() {
   final fakeToast = Toast(
       message: 'hi',
       type: ToastType.Success,
-      expire: false,
+      expireAt: null,
       id: UuidType.generate());
 
   final fakeToastExpires = Toast.customExpire(

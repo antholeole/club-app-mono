@@ -11,6 +11,7 @@ import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gql_exec/gql_exec.dart';
 import 'package:http/http.dart' as http;
 
 class Handler {
@@ -61,6 +62,15 @@ class Handler {
     if (resp.linkException != null) {
       if (resp.linkException!.originalException is Failure) {
         return resp.linkException!.originalException;
+      } else if (resp.linkException is ServerException) {
+        return Failure(
+            status: FailureStatus.Unknown,
+            message: (resp.linkException as ServerException)
+                .parsedResponse
+                ?.context
+                .entry<ResponseExtensions>()
+                .runtimeType
+                .toString());
       }
     }
 
@@ -79,6 +89,8 @@ class Handler {
       return disconnectedFailure;
     }
 
+    await reportUnknown(resp.linkException ??
+        'unknown GQL error - on request ${resp.operationRequest.requestId}');
     return Failure(status: FailureStatus.Unknown);
   }
 

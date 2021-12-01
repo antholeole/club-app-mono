@@ -1,7 +1,7 @@
 import 'package:fe/data/models/club.dart';
 import 'package:fe/data/models/user.dart';
-import 'package:fe/pages/groups/view/widgets/groups_tabs/user_tile.dart';
-import 'package:fe/pages/groups/view/widgets/settings/users.dart';
+import 'package:fe/pages/groups/view/widgets/groups_tabs/club/settings/users/users.dart';
+import 'package:fe/stdlib/shared_widgets/user_tile.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
@@ -12,9 +12,9 @@ import 'package:provider/provider.dart';
 import 'package:fe/gql/query_users_in_group.data.gql.dart';
 import 'package:fe/gql/query_users_in_group.var.gql.dart';
 
-import '../../../../../test_helpers/get_it_helpers.dart';
-import '../../../../../test_helpers/pump_app.dart';
-import '../../../../../test_helpers/stub_gql_response.dart';
+import '../../../../../../../../test_helpers/get_it_helpers.dart';
+import '../../../../../../../../test_helpers/pump_app.dart';
+import '../../../../../../../../test_helpers/stub_gql_response.dart';
 
 void main() {
   final fakeClub = Club(admin: false, id: UuidType.generate(), name: 'blah');

@@ -1,7 +1,7 @@
 import 'package:fe/data/models/club.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/groups/cubit/group_req_cubit.dart';
-import 'package:fe/pages/groups/view/widgets/settings/leave_group_button.dart';
+import 'package:fe/pages/groups/view/widgets/groups_tabs/club/settings/leave_group_button.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/service_locator.dart';
@@ -21,10 +21,10 @@ import 'package:provider/provider.dart';
 import 'package:fe/gql/remove_self_from_group.data.gql.dart';
 import 'package:fe/gql/remove_self_from_group.var.gql.dart';
 
-import '../../../../../test_helpers/mocks.dart';
-import '../../../../../test_helpers/get_it_helpers.dart';
-import '../../../../../test_helpers/pump_app.dart';
-import '../../../../../test_helpers/stub_gql_response.dart';
+import '../../../../../../../test_helpers/get_it_helpers.dart';
+import '../../../../../../../test_helpers/mocks.dart';
+import '../../../../../../../test_helpers/pump_app.dart';
+import '../../../../../../../test_helpers/stub_gql_response.dart';
 
 void main() {
   final Club fakeClub =

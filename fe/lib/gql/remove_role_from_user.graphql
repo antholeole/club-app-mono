@@ -1,0 +1,16 @@
+mutation RemoveRoleFromUser($userId: uuid!, $roleId: uuid!) {
+  delete_user_to_role(where: {
+      _and: [
+        {
+          user_id: {
+            _eq: $userId
+          },
+          role_id: {
+            _eq: $roleId
+          }
+        }
+      ]
+  }) {
+    affected_rows
+  }
+}

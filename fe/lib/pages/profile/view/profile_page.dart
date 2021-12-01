@@ -51,6 +51,7 @@ class ProfileView extends StatelessWidget {
         Text(
           user.name,
           style: Theme.of(context).textTheme.headline5,
+          textAlign: TextAlign.center,
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,

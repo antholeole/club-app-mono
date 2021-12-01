@@ -34,11 +34,11 @@ class Toast extends Equatable {
     required this.message,
     required this.type,
     this.onDismiss,
-    bool expire = true,
+    Duration? expireAt = const Duration(seconds: 10),
     this.action,
   })  : id = id ?? UuidType.generate(),
         created = clock.now(),
-        expireAt = expire ? clock.now().add(const Duration(seconds: 10)) : null;
+        expireAt = expireAt != null ? clock.now().add(expireAt) : null;
 
   Toast.customExpire({
     UuidType? id,

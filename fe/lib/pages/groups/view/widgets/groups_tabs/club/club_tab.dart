@@ -65,7 +65,7 @@ class ClubTab extends StatelessWidget {
         ),
         backgroundColor: Colors.white,
         collapsedBackgroundColor: Colors.white,
-        initiallyExpanded: false,
+        initiallyExpanded: true,
         children: [const GroupSettings()],
       ),
     );

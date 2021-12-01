@@ -1,0 +1,10 @@
+query QueryRolesInGroup($groupId: uuid!) {
+  roles(where: {
+    group_id: {
+      _eq: $groupId
+    }
+  }) {
+    name,
+    id
+  }
+}

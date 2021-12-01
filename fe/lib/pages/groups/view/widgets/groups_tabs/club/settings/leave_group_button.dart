@@ -15,7 +15,7 @@ import 'package:fe/gql/remove_self_from_group.data.gql.dart';
 import 'package:fe/gql/remove_self_from_group.req.gql.dart';
 import 'package:fe/gql/remove_self_from_group.var.gql.dart';
 
-import '../../../../../service_locator.dart';
+import '../../../../../../../service_locator.dart';
 
 class LeaveGroupButton extends StatelessWidget {
   final _gqlClient = getIt<AuthGqlClient>();
@@ -34,7 +34,7 @@ class LeaveGroupButton extends StatelessWidget {
       onClick: () => context.read<ToasterCubit>().add(Toast(
           type: ToastType.Warning,
           message: "Are you sure you'd like to leave ${group.name}?",
-          expire: false,
+          expireAt: null,
           action: ToastAction(
               action: () => _leaveGroup(group, context),
               actionText: 'Leave Group'))),

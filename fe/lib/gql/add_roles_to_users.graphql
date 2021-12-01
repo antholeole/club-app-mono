@@ -1,0 +1,5 @@
+mutation AddRolesToUsers($roles: [user_to_role_insert_input!]!) {
+  insert_user_to_role(objects: $roles) {
+    affected_rows
+  }
+}

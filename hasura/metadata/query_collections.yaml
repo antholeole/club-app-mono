@@ -34,6 +34,9 @@
     - name: query_users_in_thread
       query: 'query QueryUsersInThread($threadId: uuid!) {  user_to_thread(where:
         {    thread_id: {      _eq: $threadId    }  }) {    user {      name,      profile_picture,      id    }  }}'
+    - name: query_roles_in_group
+      query: 'query QueryRolesInGroup($groupId: uuid!) {  roles(where: {    group_id:
+        {      _eq: $groupId    }  }) {    name,    id  }}'
     - name: insert_message
       query: 'mutation InsertMessage($message: String!, $sourceId: uuid!, $messageId:
         uuid!) {  insert_messages(objects: {    message: $message,    source_id: $sourceId,    id:
@@ -56,6 +59,9 @@
         {      source_id: {        _eq: $threadId,      },      created_at: {        _lte:
         $before      }    }  ) {   created_at,    message,    user {      name,      profile_picture,      id    },  message_reactions
         {      reaction_type,      id,      user {        id,        name      }    },    is_image,    updated_at,    id  }}'
+    - name: add_roles_to_users
+      query: 'mutation AddRolesToUsers($roles: [user_to_role_insert_input!]!) {  insert_user_to_role(objects:
+        $roles) {    affected_rows  }}'
     - name: get_new_reactions
       query: 'subscription GetNewReactions(  $sourceId: uuid!,) {  message_reactions(limit:
         5, order_by: {    updated_at: desc  },    where: {     message: {      source_id:
@@ -78,7 +84,9 @@
         $refreshToken, userId:$userId) {    accessToken  }}'
     - name: query_users_in_group
       query: 'query QueryUsersInGroup($groupId: uuid!) {  user_to_group(where: {    group_id:
-        {      _eq: $groupId    }  }) {    user {      name,      profile_picture,      id    }  }}'
+        {      _eq: $groupId    }  }) {    user {      name,      profile_picture,      id,      user_to_roles(where:
+        {        role: {          group_id: {            _eq: $groupId}        }      })
+        {        role {          name,          id        }      }    }  }}'
     - name: authenticate
       query: 'mutation Authenticate($identity_provider: IdentityProvider!, $id_token:
         String!) {  authenticate(identityProvider: $identity_provider, idToken: $id_token)
@@ -88,6 +96,10 @@
         {      created_at: desc    },    where: {      source_id: {        _eq: $sourceId,      },    },    limit:
         10  ) {   created_at,    message,    id,    user {      name,      profile_picture,      id    },    message_reactions
         {      reaction_type,      id,      user {        id,        name      }    },    is_image,    updated_at  }}'
+    - name: remove_role_from_user
+      query: 'mutation RemoveRoleFromUser($userId: uuid!, $roleId: uuid!) {  delete_user_to_role(where:
+        {      _and: [        {          user_id: {            _eq: $userId          },          role_id:
+        {            _eq: $roleId          }        }      ]  }) {    affected_rows  }}'
     - name: remove_self_from_group
       query: 'mutation RemoveSelfFromGroup($groupId: uuid!, $userId: uuid!) {  delete_user_to_role(where:
         {    _and: {      user_id:{        _eq: $userId      },      role: {        group_id:

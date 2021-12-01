@@ -1,6 +1,12 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
 import 'package:built_value/standard_json_plugin.dart' show StandardJsonPlugin;
+import 'package:fe/gql/add_roles_to_users.data.gql.dart'
+    show GAddRolesToUsersData, GAddRolesToUsersData_insert_user_to_role;
+import 'package:fe/gql/add_roles_to_users.req.gql.dart'
+    show GAddRolesToUsersReq;
+import 'package:fe/gql/add_roles_to_users.var.gql.dart'
+    show GAddRolesToUsersVars;
 import 'package:fe/gql/authenticate.data.gql.dart'
     show GAuthenticateData, GAuthenticateData_authenticate;
 import 'package:fe/gql/authenticate.req.gql.dart' show GAuthenticateReq;
@@ -49,6 +55,12 @@ import 'package:fe/gql/query_messages_in_chat.req.gql.dart'
     show GQueryMessagesInChatReq;
 import 'package:fe/gql/query_messages_in_chat.var.gql.dart'
     show GQueryMessagesInChatVars;
+import 'package:fe/gql/query_roles_in_group.data.gql.dart'
+    show GQueryRolesInGroupData, GQueryRolesInGroupData_roles;
+import 'package:fe/gql/query_roles_in_group.req.gql.dart'
+    show GQueryRolesInGroupReq;
+import 'package:fe/gql/query_roles_in_group.var.gql.dart'
+    show GQueryRolesInGroupVars;
 import 'package:fe/gql/query_self_group_preview.data.gql.dart'
     show
         GQuerySelfGroupsPreviewData,
@@ -90,7 +102,9 @@ import 'package:fe/gql/query_users_in_group.data.gql.dart'
     show
         GQueryUsersInGroupData,
         GQueryUsersInGroupData_user_to_group,
-        GQueryUsersInGroupData_user_to_group_user;
+        GQueryUsersInGroupData_user_to_group_user,
+        GQueryUsersInGroupData_user_to_group_user_user_to_roles,
+        GQueryUsersInGroupData_user_to_group_user_user_to_roles_role;
 import 'package:fe/gql/query_users_in_group.req.gql.dart'
     show GQueryUsersInGroupReq;
 import 'package:fe/gql/query_users_in_group.var.gql.dart'
@@ -123,6 +137,12 @@ import 'package:fe/gql/refresh.data.gql.dart'
     show GRefreshData, GRefreshData_refresh_access_token;
 import 'package:fe/gql/refresh.req.gql.dart' show GRefreshReq;
 import 'package:fe/gql/refresh.var.gql.dart' show GRefreshVars;
+import 'package:fe/gql/remove_role_from_user.data.gql.dart'
+    show GRemoveRoleFromUserData, GRemoveRoleFromUserData_delete_user_to_role;
+import 'package:fe/gql/remove_role_from_user.req.gql.dart'
+    show GRemoveRoleFromUserReq;
+import 'package:fe/gql/remove_role_from_user.var.gql.dart'
+    show GRemoveRoleFromUserVars;
 import 'package:fe/gql/remove_self_from_group.data.gql.dart'
     show GRemoveSelfFromGroupData, GRemoveSelfFromGroupData_delete_user_to_role;
 import 'package:fe/gql/remove_self_from_group.req.gql.dart'
@@ -321,6 +341,10 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   ..add(DateTimeSerializer())
   ..addPlugin(StandardJsonPlugin());
 @SerializersFor([
+  GAddRolesToUsersData,
+  GAddRolesToUsersData_insert_user_to_role,
+  GAddRolesToUsersReq,
+  GAddRolesToUsersVars,
   GAuthenticateData,
   GAuthenticateData_authenticate,
   GAuthenticateReq,
@@ -360,6 +384,10 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GQueryMessagesInChatData_messages_user,
   GQueryMessagesInChatReq,
   GQueryMessagesInChatVars,
+  GQueryRolesInGroupData,
+  GQueryRolesInGroupData_roles,
+  GQueryRolesInGroupReq,
+  GQueryRolesInGroupVars,
   GQuerySelfGroupsData,
   GQuerySelfGroupsData_admin_clubs,
   GQuerySelfGroupsData_admin_clubs_group,
@@ -387,6 +415,8 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GQueryUsersInGroupData,
   GQueryUsersInGroupData_user_to_group,
   GQueryUsersInGroupData_user_to_group_user,
+  GQueryUsersInGroupData_user_to_group_user_user_to_roles,
+  GQueryUsersInGroupData_user_to_group_user_user_to_roles_role,
   GQueryUsersInGroupReq,
   GQueryUsersInGroupVars,
   GQueryUsersInThreadData,
@@ -407,6 +437,10 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GRefreshData_refresh_access_token,
   GRefreshReq,
   GRefreshVars,
+  GRemoveRoleFromUserData,
+  GRemoveRoleFromUserData_delete_user_to_role,
+  GRemoveRoleFromUserReq,
+  GRemoveRoleFromUserVars,
   GRemoveSelfFromGroupData,
   GRemoveSelfFromGroupData_delete_user_to_role,
   GRemoveSelfFromGroupReq,

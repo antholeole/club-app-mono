@@ -10,7 +10,6 @@
         "editor.suggestSelection": "first",
         "editor.tabCompletion": "onlySnippets",
         "editor.wordBasedSuggestions": false,
-        
     },
     "files.exclude": {
         "**/*.ast.gql.dart": true,
