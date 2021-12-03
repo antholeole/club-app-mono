@@ -28,6 +28,9 @@
     - name: update_self_name
       query: 'mutation UpdateSelfName($id: uuid!, $name: String!) {  update_users_by_pk(    pk_columns:
         { id: $id }  _set: { name: $name }  ) {    name  }}'
+    - name: remove_role_from_group
+      query: 'mutation RemoveRoleFromGroup($roleId: uuid!) {  delete_roles(where:
+        {    id: {      _eq: $roleId    }  }) {    affected_rows  }}'
     - name: query_self_group_preview
       query: 'query QuerySelfGroupsPreview($self_id: uuid!) {  user_to_group(where:
         {    user_id: {    _eq: $self_id    }  }) {   group {        id,        name      },    owner    }}'
@@ -62,6 +65,9 @@
     - name: add_roles_to_users
       query: 'mutation AddRolesToUsers($roles: [user_to_role_insert_input!]!) {  insert_user_to_role(objects:
         $roles) {    affected_rows  }}'
+    - name: add_role_to_group
+      query: 'mutation AddRoleToGroup($roleName: String!, $groupId: uuid!) {  insert_roles_one(object:
+        {    name: $roleName,    group_id: $groupId  }) {    id,    name  }}'
     - name: get_new_reactions
       query: 'subscription GetNewReactions(  $sourceId: uuid!,) {  message_reactions(limit:
         5, order_by: {    updated_at: desc  },    where: {     message: {      source_id:

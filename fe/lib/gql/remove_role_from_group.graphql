@@ -1,0 +1,9 @@
+mutation RemoveRoleFromGroup($roleId: uuid!) {
+  delete_roles(where: {
+    id: {
+      _eq: $roleId
+    }
+  }) {
+    affected_rows
+  }
+}

@@ -1,6 +1,10 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
 import 'package:built_value/standard_json_plugin.dart' show StandardJsonPlugin;
+import 'package:fe/gql/add_role_to_group.data.gql.dart'
+    show GAddRoleToGroupData, GAddRoleToGroupData_insert_roles_one;
+import 'package:fe/gql/add_role_to_group.req.gql.dart' show GAddRoleToGroupReq;
+import 'package:fe/gql/add_role_to_group.var.gql.dart' show GAddRoleToGroupVars;
 import 'package:fe/gql/add_roles_to_users.data.gql.dart'
     show GAddRolesToUsersData, GAddRolesToUsersData_insert_user_to_role;
 import 'package:fe/gql/add_roles_to_users.req.gql.dart'
@@ -137,6 +141,12 @@ import 'package:fe/gql/refresh.data.gql.dart'
     show GRefreshData, GRefreshData_refresh_access_token;
 import 'package:fe/gql/refresh.req.gql.dart' show GRefreshReq;
 import 'package:fe/gql/refresh.var.gql.dart' show GRefreshVars;
+import 'package:fe/gql/remove_role_from_group.data.gql.dart'
+    show GRemoveRoleFromGroupData, GRemoveRoleFromGroupData_delete_roles;
+import 'package:fe/gql/remove_role_from_group.req.gql.dart'
+    show GRemoveRoleFromGroupReq;
+import 'package:fe/gql/remove_role_from_group.var.gql.dart'
+    show GRemoveRoleFromGroupVars;
 import 'package:fe/gql/remove_role_from_user.data.gql.dart'
     show GRemoveRoleFromUserData, GRemoveRoleFromUserData_delete_user_to_role;
 import 'package:fe/gql/remove_role_from_user.req.gql.dart'
@@ -341,6 +351,10 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   ..add(DateTimeSerializer())
   ..addPlugin(StandardJsonPlugin());
 @SerializersFor([
+  GAddRoleToGroupData,
+  GAddRoleToGroupData_insert_roles_one,
+  GAddRoleToGroupReq,
+  GAddRoleToGroupVars,
   GAddRolesToUsersData,
   GAddRolesToUsersData_insert_user_to_role,
   GAddRolesToUsersReq,
@@ -437,6 +451,10 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GRefreshData_refresh_access_token,
   GRefreshReq,
   GRefreshVars,
+  GRemoveRoleFromGroupData,
+  GRemoveRoleFromGroupData_delete_roles,
+  GRemoveRoleFromGroupReq,
+  GRemoveRoleFromGroupVars,
   GRemoveRoleFromUserData,
   GRemoveRoleFromUserData_delete_user_to_role,
   GRemoveRoleFromUserReq,

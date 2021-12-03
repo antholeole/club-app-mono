@@ -7,6 +7,7 @@ import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/handler.dart';
+import 'package:fe/stdlib/shared_widgets/toasting_dismiss.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
@@ -21,8 +22,6 @@ import 'addable_roles_dropdown.dart';
 class RoleList extends StatelessWidget {
   final _gqlClient = getIt<AuthGqlClient>();
   final _handler = getIt<Handler>();
-
-  static const EXPIRE_AT_DURATION = Duration(seconds: 5);
 
   RoleList({Key? key}) : super(key: key);
 
@@ -71,38 +70,14 @@ class RoleList extends StatelessWidget {
       ),
     );
 
-    Add / remove roles from group
-
     if (addableRoles != null) {
-      return Dismissible(
-        background: Container(
-          color: Colors.red,
-          child: const Icon(Icons.remove, color: Colors.white),
-        ),
-        confirmDismiss: (_) {
-          final Completer<bool> completer = Completer();
-
-          context.read<ToasterCubit>().add(Toast(
-              expireAt: RoleList.EXPIRE_AT_DURATION,
-              onDismiss: () {
-                if (!completer.isCompleted) completer.complete(false);
-              },
-              message:
-                  'Are you sure you\'d like to remove ${context.read<UserRoles>().user.name} from ${role.name}?',
-              action: ToastAction(
-                  actionText: 'Remove',
-                  action: () => _removeRole(role, context)),
-              type: ToastType.Warning));
-
-          Timer(RoleList.EXPIRE_AT_DURATION, () {
-            if (!completer.isCompleted) completer.complete(false);
-          });
-
-          return completer.future;
-        },
-        key: Key(role.id.uuid),
-        child: tile,
-      );
+      return ToastingDismissable(
+          key: Key(role.id.uuid),
+          confirmDismissText:
+              'Are you sure you\'d like to remove ${context.read<UserRoles>().user.name} from ${role.name}?',
+          onConfirm: () => _removeRole(role, context),
+          actionText: 'Remove',
+          child: tile);
     }
 
     return tile;

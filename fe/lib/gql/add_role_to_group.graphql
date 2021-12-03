@@ -1,0 +1,9 @@
+mutation AddRoleToGroup($roleName: String!, $groupId: uuid!) {
+  insert_roles_one(object: {
+    name: $roleName,
+    group_id: $groupId
+  }) {
+    id,
+    name
+  }
+}

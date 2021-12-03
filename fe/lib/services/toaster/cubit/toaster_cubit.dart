@@ -8,6 +8,8 @@ import 'data_carriers/toast.dart';
 part 'toaster_state.dart';
 
 class ToasterCubit extends Cubit<ToasterState> {
+  static const PROMPT_DURATION = Duration(seconds: 5);
+
   final Map<UuidType, Timer> _timers = {};
 
   ToasterCubit() : super(ToasterState());

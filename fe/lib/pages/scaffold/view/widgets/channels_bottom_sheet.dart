@@ -95,7 +95,6 @@ class ChannelsBottomSheet extends StatelessWidget {
                                 id: threadData.id,
                                 isViewOnly: false)),
                         operationRequest: GQuerySelfThreadsInGroupReq((q) => q
-                          ..fetchPolicy = FetchPolicy.CacheAndNetwork
                           ..vars.groupId = currentGroup.id
                           ..vars.userId = _providerReadableContext
                               .read<UserCubit>()
@@ -113,7 +112,6 @@ class ChannelsBottomSheet extends StatelessWidget {
                                   id: threadData.id,
                                   isViewOnly: true)),
                           operationRequest: GQueryViewOnlyThreadsReq((q) => q
-                            ..fetchPolicy = FetchPolicy.CacheAndNetwork
                             ..vars.groupId = currentGroup.id
                             ..vars.userId = _providerReadableContext
                                 .read<UserCubit>()

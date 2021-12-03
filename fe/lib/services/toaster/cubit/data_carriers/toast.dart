@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:clock/clock.dart';
 import 'package:equatable/equatable.dart';
+import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +37,7 @@ class Toast extends Equatable {
     required this.message,
     required this.type,
     this.onDismiss,
-    Duration? expireAt = const Duration(seconds: 10),
+    Duration? expireAt = ToasterCubit.PROMPT_DURATION,
     this.action,
   })  : id = id ?? UuidType.generate(),
         created = clock.now(),
@@ -52,4 +55,24 @@ class Toast extends Equatable {
 
   @override
   List<Object?> get props => [message, id, created, type];
+}
+
+class CompleterToast extends Toast {
+  CompleterToast(
+      {required String message,
+      required ToastType type,
+      required ToastAction action,
+      required Completer<bool> completer})
+      : super(
+            message: message,
+            type: type,
+            onDismiss: () {
+              if (!completer.isCompleted) completer.complete(false);
+            },
+            action: ToastAction(
+                action: () {
+                  completer.complete(true);
+                  action.action();
+                },
+                actionText: action.actionText));
 }

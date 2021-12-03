@@ -55,7 +55,8 @@ class AuthGqlClient extends GqlClient {
     ]);
 
     return AuthGqlClient._(
-        client:
-            Client(link: link, cache: await buildCache(memoryCache: false)));
+        client: Client(defaultFetchPolicies: {
+      OperationType.query: FetchPolicy.CacheAndNetwork
+    }, link: link, cache: await buildCache(memoryCache: false)));
   }
 }

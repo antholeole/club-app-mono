@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:fe/gql/query_self_groups.req.gql.dart';
 import 'package:fe/stdlib/helpers/random_string.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
-import 'package:ferry/ferry.dart';
 
 class GroupReqCubit extends Cubit<GQuerySelfGroupsReq> {
   final UuidType _userId;
@@ -16,11 +15,8 @@ class GroupReqCubit extends Cubit<GQuerySelfGroupsReq> {
   }
 
   static GQuerySelfGroupsReq _buildGroupReq(UuidType userId) {
-    return GQuerySelfGroupsReq(
-      (b) => b
-        ..requestId = generateRandomString(10)
-        ..vars.selfId = userId
-        ..fetchPolicy = FetchPolicy.CacheAndNetwork,
-    );
+    return GQuerySelfGroupsReq((b) => b
+      ..requestId = generateRandomString(10)
+      ..vars.selfId = userId);
   }
 }
