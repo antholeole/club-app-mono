@@ -63,6 +63,14 @@ import 'package:fe/gql/insert_message.data.gql.dart'
         GInsertMessageData_insert_messages_returning;
 import 'package:fe/gql/insert_message.req.gql.dart' show GInsertMessageReq;
 import 'package:fe/gql/insert_message.var.gql.dart' show GInsertMessageVars;
+import 'package:fe/gql/join_roles_with_join_codes.data.gql.dart'
+    show
+        GJoinRolesWithJoinCodesData,
+        GJoinRolesWithJoinCodesData_join_role_with_join_codes;
+import 'package:fe/gql/join_roles_with_join_codes.req.gql.dart'
+    show GJoinRolesWithJoinCodesReq;
+import 'package:fe/gql/join_roles_with_join_codes.var.gql.dart'
+    show GJoinRolesWithJoinCodesVars;
 import 'package:fe/gql/query_all_roles_relative_to_thread.data.gql.dart'
     show
         GQueryAllRolesRelativeToThreadData,
@@ -451,6 +459,10 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GInsertMessageData_insert_messages_returning,
   GInsertMessageReq,
   GInsertMessageVars,
+  GJoinRolesWithJoinCodesData,
+  GJoinRolesWithJoinCodesData_join_role_with_join_codes,
+  GJoinRolesWithJoinCodesReq,
+  GJoinRolesWithJoinCodesVars,
   GQueryAllRolesRelativeToThreadData,
   GQueryAllRolesRelativeToThreadData_roles,
   GQueryAllRolesRelativeToThreadData_roles_role_to_threads,

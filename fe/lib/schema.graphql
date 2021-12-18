@@ -404,7 +404,7 @@ columns and relationships of "groups"
 """
 type groups {
   """An object relationship"""
-  group_metadatum: group_metadata!
+  group_metadatum: group_metadata
   id: uuid!
   name: String!
 
@@ -799,6 +799,10 @@ enum join_tokens_update_column {
 
   """column name"""
   token
+}
+
+type JoinRoleWithJoinCodesOutput {
+  joined: [String]!
 }
 
 """
@@ -2036,6 +2040,7 @@ type mutation_root {
     """on conflict condition"""
     on_conflict: users_on_conflict
   ): users
+  join_role_with_join_codes(join_codes: [String]!): JoinRoleWithJoinCodesOutput
   refresh_access_token(refreshToken: String!, userId: uuid!): AccessToken
 
   """
@@ -3143,7 +3148,7 @@ type roles {
   id: uuid!
 
   """An object relationship"""
-  join_token: join_tokens!
+  join_token: join_tokens
   name: String!
 
   """An array relationship"""

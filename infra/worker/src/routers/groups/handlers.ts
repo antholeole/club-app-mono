@@ -7,7 +7,7 @@ export const joinRoleWithJoinCodes = async (req: IAuthActionInput<IJoinCodeReque
     const roleIds = await getRoleIdsByJoinCodes(req.input.join_codes)
 
     if (!roleIds.length) {
-        throw new StatusError(404, 'no roles with given id\'s found.')
+        throw new StatusError(404, 'no roles with given join code(s) found.')
     } else if (roleIds.length !== req.input.join_codes.length) {
         throw new StatusError(404, 'not all join codes were valid; please try again.')
     }

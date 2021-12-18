@@ -2,6 +2,7 @@ import 'package:fe/data/models/club.dart';
 import 'package:fe/data/models/role.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/groups/view/widgets/groups_tabs/club/settings/users/role_list.dart';
+import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/stdlib/shared_widgets/user_tile.dart';
 import 'package:fe/stdlib/shared_widgets/gql_operation.dart';
 import 'package:fe/gql/query_users_in_group.data.gql.dart';
@@ -39,19 +40,20 @@ class Users extends StatelessWidget {
                     return _buildUsers(
                         userData,
                         roles.roles
-                            .map((role) => Role(id: role.id, name: role.name)));
+                            .map((role) => Role(id: role.id, name: role.name)),
+                        context);
                   },
                 );
               } else {
-                return _buildUsers(userData, null);
+                return _buildUsers(userData, null, context);
               }
             })
       ],
     );
   }
 
-  Widget _buildUsers(
-      GQueryUsersInGroupData userData, Iterable<Role>? allRoles) {
+  Widget _buildUsers(GQueryUsersInGroupData userData, Iterable<Role>? allRoles,
+      BuildContext context) {
     return Column(
         children: userData.user_to_group.map(
       (userData) {
@@ -79,7 +81,8 @@ class Users extends StatelessWidget {
 
         return UserTile(
           user: user,
-          bottomWidget: RoleList(
+          showDmButton: context.read<UserCubit>().user.id != user.id,
+          subtitle: RoleList(
             user: user,
             hasRoles: userRoles,
             addableRoles: addableRole,

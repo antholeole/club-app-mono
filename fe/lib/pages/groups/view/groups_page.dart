@@ -79,7 +79,10 @@ class GroupsView extends StatelessWidget {
                     buildTab: () => const ClubTab(),
                     groups: clubs,
                     header: 'Your Clubs',
-                    onAdd: context.read<GroupJoiner>().showPrompt,
+                    onAdd: () => context
+                        .read<GroupJoiner>()
+                        .showPrompt()
+                        .then((_) => context.read<GroupReqCubit>().refresh()),
                     noElementsText: NO_CLUBS_TEXT,
                   ),
                   GroupsTab<Dm>(

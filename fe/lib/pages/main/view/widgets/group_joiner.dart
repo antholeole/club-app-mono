@@ -1,9 +1,17 @@
+import 'package:built_collection/built_collection.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:fe/gql/join_roles_with_join_codes.data.gql.dart';
+import 'package:fe/gql/join_roles_with_join_codes.req.gql.dart';
+import 'package:fe/gql/join_roles_with_join_codes.var.gql.dart';
+
+import '../../../../service_locator.dart';
 
 class GroupJoiner {
-  final VoidCallback showPrompt;
+  final AsyncCallback showPrompt;
 
   const GroupJoiner({required this.showPrompt});
 }
@@ -11,8 +19,9 @@ class GroupJoiner {
 // ignore: must_be_immutable
 class GroupJoinDisplay extends StatelessWidget {
   final Widget _child;
+  final _gqlClient = getIt<AuthGqlClient>();
 
-  const GroupJoinDisplay({Key? key, required Widget child})
+  GroupJoinDisplay({Key? key, required Widget child})
       : _child = child,
         super(key: key);
 
@@ -44,24 +53,18 @@ class GroupJoinDisplay extends StatelessWidget {
                   child: const Text('Cancel'),
                 ),
                 PlatformDialogAction(
-                  onPressed: () => print('hi'),
-
-                  /*_gqlClient.mutateFromUi<GAddRoleToGroupData,
-                          GAddRoleToGroupVars>(
-                      GAddRoleToGroupReq((q) => q
-                        ..vars.groupId = context.read<Club>().id
-                        ..vars.roleName = textEditingController.text),
-                      context, onComplete: (roleData) {
-                    setState(
-                        () {}); //requeries, adding the new role to the group
-
-                    Navigator.of(context).pop();
+                  onPressed: () {
+                    _gqlClient
+                        .mutateFromUi<GJoinRolesWithJoinCodesData,
+                                GJoinRolesWithJoinCodesVars>(
+                            GJoinRolesWithJoinCodesReq((q) => q
+                              ..vars.join_codes = ListBuilder<String>(
+                                  textEditingController.text.split('+'))),
+                            context,
+                            errorMessage: 'failed to join roles',
+                            successMessage: 'joined!')
+                        .then((value) => Navigator.of(context).pop());
                   },
-                      errorMessage:
-                          'failed to add role ${textEditingController.text}',
-                      successMessage:
-                          'added role ${textEditingController.text}.'),
-                          */
                   child: const Text('Join'),
                 ),
               ],

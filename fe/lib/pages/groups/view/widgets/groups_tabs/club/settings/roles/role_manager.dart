@@ -43,27 +43,26 @@ class _RoleManagerState extends State<RoleManager> {
                 (q) => q..vars.groupId = context.read<Club>().id),
             onResponse: (data) => Column(
                   children: data.roles
-                      .map((role) => Tooltip(
-                            triggerMode: TooltipTriggerMode.tap,
-                            message: 'join token: "${role.join_token.token}"',
-                            child: ToastingDismissable(
-                              key: ValueKey(role.id.uuid),
-                              confirmDismissText:
-                                  'Are you sure you\'d like to remove role ${role.name}?',
-                              onConfirm: () => _gqlClient.mutateFromUi(
-                                  GRemoveRoleFromGroupReq(
-                                      (q) => q..vars.roleId = role.id),
-                                  context,
-                                  errorMessage:
-                                      'Failed to remove role ${role.name} from ${context.read<Club>().name}',
-                                  successMessage:
-                                      'removed role ${role.name} from ${context.read<Club>().name}'),
-                              actionText: 'Remove',
-                              child: ListTile(
-                                  title: Text(
+                      .map((role) => ToastingDismissable(
+                            key: ValueKey(role.id.uuid),
+                            confirmDismissText:
+                                'Are you sure you\'d like to remove role ${role.name}?',
+                            onConfirm: () => _gqlClient.mutateFromUi(
+                                GRemoveRoleFromGroupReq(
+                                    (q) => q..vars.roleId = role.id),
+                                context,
+                                errorMessage:
+                                    'Failed to remove role ${role.name} from ${context.read<Club>().name}',
+                                successMessage:
+                                    'removed role ${role.name} from ${context.read<Club>().name}'),
+                            actionText: 'Remove',
+                            child: ListTile(
+                              title: Text(
                                 role.name,
                                 style: Theme.of(context).textTheme.bodyText2,
-                              )),
+                              ),
+                              subtitle: Text(
+                                  'join code: ${role.join_token?.token ?? 'NO JOIN CODE'}'),
                             ),
                           ))
                       .toList(),

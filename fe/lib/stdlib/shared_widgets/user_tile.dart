@@ -7,7 +7,7 @@ import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/shared_widgets/user_avatar.dart';
-import 'package:fe/stdlib/theme/tile.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fe/gql/get_or_create_dm.req.gql.dart';
@@ -21,51 +21,48 @@ class UserTile extends StatelessWidget {
   final User _user;
   final List<ActionButton> _actions;
   final bool _showDmButton;
-  final Widget? _bottomWidget;
+  final Widget? _subtitle;
 
   UserTile({
     required User user,
     Key? key,
     List<ActionButton> actions = const [],
-    Widget? bottomWidget,
+    Widget? subtitle,
     bool showDmButton = true,
   })  : _user = user,
-        _bottomWidget = bottomWidget,
         _actions = actions,
+        _subtitle = subtitle,
         _showDmButton = showDmButton,
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Tile(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: UserAvatar(
-                  name: _user.name,
-                  profileUrl: _user.profilePictureUrl,
-                ),
-              ),
-              Expanded(child: Text(_user.name)),
-              ..._actions.map((action) => Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: _buildActionButton(action, context),
-                  )),
-              if (_showDmButton)
-                _buildActionButton(
-                    ActionButton(
-                        icon: Icons.chat_outlined,
-                        onClick: () => _createNewDm(_user.id, context)),
-                    context)
-            ]),
+    return Column(
+      children: [
+        ListTile(
+          title: Text(
+            _user.name,
+            style: const TextStyle(fontWeight: FontWeight.normal),
           ),
-          if (_bottomWidget != null) _bottomWidget!
-        ],
-      ),
+          leading: UserAvatar(
+            name: _user.name,
+            profileUrl: _user.profilePictureUrl,
+          ),
+          trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+            ..._actions.map((action) => Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: _buildActionButton(action, context),
+                )),
+            if (_showDmButton)
+              _buildActionButton(
+                  ActionButton(
+                      icon: Icons.chat_outlined,
+                      onClick: () => _createNewDm(_user.id, context)),
+                  context)
+          ]),
+        ),
+        if (_subtitle != null) _subtitle!
+      ],
     );
   }
 
