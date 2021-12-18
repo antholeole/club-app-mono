@@ -17,7 +17,7 @@ class ClubSettings extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (context.read<Club>().admin) RoleManager(),
+        if (context.read<Club>().admin) const RoleManager(),
         const Users(),
         LeaveGroupButton(),
       ],

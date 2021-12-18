@@ -17,6 +17,12 @@
             name
           }
         }
+    - name: query_roles_in_thread
+      query: 'query QueryRolesInThread($threadId: uuid!) {  role_to_threads(where:
+        {thread_id: {    _eq: $threadId  }}) {    role {      name,      id    },   }}'
+    - name: add_role_to_thread
+      query: 'mutation AddRoleToThread($threadId: uuid!, $roleId: uuid!) {  insert_role_to_threads_one(object:
+        {    role_id: $roleId,    thread_id: $threadId  }) {    id  }}'
     - name: query_users_in_dm
       query: 'query QueryUsersInDm($dmId: uuid!) {  user_to_dm(where: {    dm_id:
         {      _eq: $dmId    }  }) {    user {      name,      profile_picture,      id    }  }}'
@@ -28,6 +34,12 @@
     - name: update_self_name
       query: 'mutation UpdateSelfName($id: uuid!, $name: String!) {  update_users_by_pk(    pk_columns:
         { id: $id }  _set: { name: $name }  ) {    name  }}'
+    - name: add_roles_to_thread
+      query: 'mutation AddRolesToThreads($roles: [role_to_threads_insert_input!]!)
+        {  insert_role_to_threads(objects: $roles) {    affected_rows  }}'
+    - name: add_thread_to_group
+      query: 'mutation AddThreadToGroup($groupId: uuid!, $threadName: String!) {  insert_threads_one(object:
+        {    name: $threadName,    group_id: $groupId  }) {    id,    name  }}'
     - name: remove_role_from_group
       query: 'mutation RemoveRoleFromGroup($roleId: uuid!) {  delete_roles(where:
         {    id: {      _eq: $roleId    }  }) {    affected_rows  }}'
@@ -67,7 +79,8 @@
         $roles) {    affected_rows  }}'
     - name: add_role_to_group
       query: 'mutation AddRoleToGroup($roleName: String!, $groupId: uuid!) {  insert_roles_one(object:
-        {    name: $roleName,    group_id: $groupId  }) {    id,    name  }}'
+        {    name: $roleName,    group_id: $groupId,    join_token: {      data: {}    }  })
+        {    id,    name,    join_token {token    }  }}'
     - name: get_new_reactions
       query: 'subscription GetNewReactions(  $sourceId: uuid!,) {  message_reactions(limit:
         5, order_by: {    updated_at: desc  },    where: {     message: {      source_id:
@@ -79,12 +92,20 @@
         $groupId      },      users: {        _and: {          user_id: {          _eq:
         $userId          },          thread_id: {          _eq: $threadId          }        }      },    }  })
         {    aggregate {      count    }  }}'
+    - name: query_roles_in_group_with_join_code
+      query: 'query QueryRolesInGroupWithJoinCode($groupId: uuid!) {  roles(where:
+        {    group_id: {      _eq: $groupId    }  }) {    name,    id,    join_token
+        {      token    }  }}'
     - name: upsert_reaction
       query: 'mutation UpsertReaction(  $deleted: Boolean!,   $messageId: uuid!,   $reaction:
         message_reaction_types_enum!) {  insert_message_reactions_one(object: {    deleted:
         $deleted,    message_id: $messageId,    reaction_type: $reaction,  },  on_conflict:
         {    constraint: message_reactions_pkey,    update_columns: [deleted]  }  )
         {    id,    deleted  }}'
+    - name: query_all_roles_relative_to_thread
+      query: 'query QueryAllRolesRelativeToThread($threadId: uuid!, $groupId: uuid!)
+        {  roles(where: {    group_id: {      _eq: $groupId    }  }) {    name,    role_to_threads(where:
+        {      thread_id: {        _eq: $threadId      }    }) {      role_id    },    name,    id  }}'
     - name: refresh
       query: 'mutation Refresh($refreshToken: String!, $userId: uuid!) {  refresh_access_token(refreshToken:
         $refreshToken, userId:$userId) {    accessToken  }}'
@@ -93,6 +114,13 @@
         {      _eq: $groupId    }  }) {    user {      name,      profile_picture,      id,      user_to_roles(where:
         {        role: {          group_id: {            _eq: $groupId}        }      })
         {        role {          name,          id        }      }    }  }}'
+    - name: remove_role_from_thread
+      query: 'mutation RemoveRoleFromThread($roleId:uuid!, $threadId: uuid!) {  delete_role_to_threads(where:
+        {    role_id: {      _eq: $roleId    },    thread_id: {      _eq: $threadId    }  })
+        {    affected_rows  }}'
+    - name: join_roles_with_join_codes
+      query: 'mutation JoinRolesWithJoinCodes($join_codes: [String]!) {  join_role_with_join_codes(join_codes:
+        $join_codes) {    joined  }}  '
     - name: authenticate
       query: 'mutation Authenticate($identity_provider: IdentityProvider!, $id_token:
         String!) {  authenticate(identityProvider: $identity_provider, idToken: $id_token)

@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fe/data/models/thread.dart';
-import 'package:fe/pages/scaffold/view/widgets/channels_bottom_sheet.dart';
+import 'package:fe/pages/chat/view/widgets/channels_bottom_sheet/channels_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
 

@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 
 import '../../../../../groups/view/groups_page.dart';
 
-class ClubDrawer extends StatefulWidget {
+class ClubsDrawer extends StatefulWidget {
   final List<Widget> _pages = [
     const GroupsPage(),
     ProfilePage(),
   ];
 
   @override
-  _ClubDrawerState createState() => _ClubDrawerState();
+  _ClubsDrawerState createState() => _ClubsDrawerState();
 }
 
-class _ClubDrawerState extends State<ClubDrawer> {
+class _ClubsDrawerState extends State<ClubsDrawer> {
   int _currentPage = 0;
   final PageController _pageController = PageController(initialPage: 0);
 
@@ -41,9 +41,6 @@ class _ClubDrawerState extends State<ClubDrawer> {
             Expanded(
               child: PageView(
                 controller: _pageController,
-                //onPageChanged: (newPage) => setState(() {
-                //  _currentPage = newPage;
-                //}),
                 children: widget._pages,
               ),
             ),

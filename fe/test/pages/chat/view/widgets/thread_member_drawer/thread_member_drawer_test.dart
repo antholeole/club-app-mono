@@ -2,7 +2,7 @@ import 'package:fe/data/models/club.dart';
 import 'package:fe/data/models/dm.dart';
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/data/models/user.dart';
-import 'package:fe/pages/chat/view/widgets/thread_members_drawer/thread_members_drawer.dart';
+import 'package:fe/pages/chat/view/widgets/thread_members_drawer/chat_right_drawer.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
@@ -42,10 +42,10 @@ void main() {
         data: (_) => GQueryUsersInThreadData.fromJson({'user_to_thread': []})!);
 
     await tester.pumpApp(wrapWithDependencies(
-        child: ThreadMembersDrawer(thread: fakeThread, group: fakeGroup)));
+        child: ChatRightDrawer(thread: fakeThread, group: fakeGroup)));
     await tester.pump();
 
-    expect(find.text(ThreadMembersDrawer.NO_USERS_COPY), findsOneWidget);
+    expect(find.text(ChatRightDrawer.NO_USERS_COPY), findsOneWidget);
   });
 
   group('on group', () {
@@ -58,7 +58,7 @@ void main() {
               })!);
 
       await tester.pumpApp(wrapWithDependencies(
-          child: ThreadMembersDrawer(thread: fakeThread, group: fakeGroup)));
+          child: ChatRightDrawer(thread: fakeThread, group: fakeGroup)));
       await tester.pump();
 
       fakeUsers.forEach((user) => expect(find.text(user.name), findsOneWidget));
@@ -75,7 +75,7 @@ void main() {
               })!);
 
       await tester.pumpApp(wrapWithDependencies(
-          child: ThreadMembersDrawer(thread: fakeThread, group: fakeDm)));
+          child: ChatRightDrawer(thread: fakeThread, group: fakeDm)));
       await tester.pump();
 
       fakeUsers.forEach((user) => expect(find.text(user.name), findsOneWidget));

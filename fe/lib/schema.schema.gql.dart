@@ -642,6 +642,206 @@ class GIdentityProvider extends EnumClass {
       _$gIdentityProviderValueOf(name);
 }
 
+abstract class Gjoin_tokens_bool_exp
+    implements Built<Gjoin_tokens_bool_exp, Gjoin_tokens_bool_expBuilder> {
+  Gjoin_tokens_bool_exp._();
+
+  factory Gjoin_tokens_bool_exp(
+          [Function(Gjoin_tokens_bool_expBuilder b) updates]) =
+      _$Gjoin_tokens_bool_exp;
+
+  @BuiltValueField(wireName: '_and')
+  BuiltList<Gjoin_tokens_bool_exp>? get G_and;
+  @BuiltValueField(wireName: '_not')
+  Gjoin_tokens_bool_exp? get G_not;
+  @BuiltValueField(wireName: '_or')
+  BuiltList<Gjoin_tokens_bool_exp>? get G_or;
+  Groles_bool_exp? get role;
+  Guuid_comparison_exp? get role_id;
+  GString_comparison_exp? get token;
+  static Serializer<Gjoin_tokens_bool_exp> get serializer =>
+      _$gjoinTokensBoolExpSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gjoin_tokens_bool_exp.serializer, this)
+          as Map<String, dynamic>);
+  static Gjoin_tokens_bool_exp? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(Gjoin_tokens_bool_exp.serializer, json);
+}
+
+class Gjoin_tokens_constraint extends EnumClass {
+  const Gjoin_tokens_constraint._(String name) : super(name);
+
+  static const Gjoin_tokens_constraint join_tokens_pkey =
+      _$gjoinTokensConstraintjoin_tokens_pkey;
+
+  static Serializer<Gjoin_tokens_constraint> get serializer =>
+      _$gjoinTokensConstraintSerializer;
+  static BuiltSet<Gjoin_tokens_constraint> get values =>
+      _$gjoinTokensConstraintValues;
+  static Gjoin_tokens_constraint valueOf(String name) =>
+      _$gjoinTokensConstraintValueOf(name);
+}
+
+abstract class Gjoin_tokens_insert_input
+    implements
+        Built<Gjoin_tokens_insert_input, Gjoin_tokens_insert_inputBuilder> {
+  Gjoin_tokens_insert_input._();
+
+  factory Gjoin_tokens_insert_input(
+          [Function(Gjoin_tokens_insert_inputBuilder b) updates]) =
+      _$Gjoin_tokens_insert_input;
+
+  Groles_obj_rel_insert_input? get role;
+  _i2.UuidType? get role_id;
+  String? get token;
+  static Serializer<Gjoin_tokens_insert_input> get serializer =>
+      _$gjoinTokensInsertInputSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gjoin_tokens_insert_input.serializer, this)
+          as Map<String, dynamic>);
+  static Gjoin_tokens_insert_input? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gjoin_tokens_insert_input.serializer, json);
+}
+
+abstract class Gjoin_tokens_obj_rel_insert_input
+    implements
+        Built<Gjoin_tokens_obj_rel_insert_input,
+            Gjoin_tokens_obj_rel_insert_inputBuilder> {
+  Gjoin_tokens_obj_rel_insert_input._();
+
+  factory Gjoin_tokens_obj_rel_insert_input(
+          [Function(Gjoin_tokens_obj_rel_insert_inputBuilder b) updates]) =
+      _$Gjoin_tokens_obj_rel_insert_input;
+
+  Gjoin_tokens_insert_input get data;
+  Gjoin_tokens_on_conflict? get on_conflict;
+  static Serializer<Gjoin_tokens_obj_rel_insert_input> get serializer =>
+      _$gjoinTokensObjRelInsertInputSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers
+          .serializeWith(Gjoin_tokens_obj_rel_insert_input.serializer, this)
+      as Map<String, dynamic>);
+  static Gjoin_tokens_obj_rel_insert_input? fromJson(
+          Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gjoin_tokens_obj_rel_insert_input.serializer, json);
+}
+
+abstract class Gjoin_tokens_on_conflict
+    implements
+        Built<Gjoin_tokens_on_conflict, Gjoin_tokens_on_conflictBuilder> {
+  Gjoin_tokens_on_conflict._();
+
+  factory Gjoin_tokens_on_conflict(
+          [Function(Gjoin_tokens_on_conflictBuilder b) updates]) =
+      _$Gjoin_tokens_on_conflict;
+
+  Gjoin_tokens_constraint get constraint;
+  BuiltList<Gjoin_tokens_update_column> get update_columns;
+  Gjoin_tokens_bool_exp? get where;
+  static Serializer<Gjoin_tokens_on_conflict> get serializer =>
+      _$gjoinTokensOnConflictSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gjoin_tokens_on_conflict.serializer, this)
+          as Map<String, dynamic>);
+  static Gjoin_tokens_on_conflict? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gjoin_tokens_on_conflict.serializer, json);
+}
+
+abstract class Gjoin_tokens_order_by
+    implements Built<Gjoin_tokens_order_by, Gjoin_tokens_order_byBuilder> {
+  Gjoin_tokens_order_by._();
+
+  factory Gjoin_tokens_order_by(
+          [Function(Gjoin_tokens_order_byBuilder b) updates]) =
+      _$Gjoin_tokens_order_by;
+
+  Groles_order_by? get role;
+  Gorder_by? get role_id;
+  Gorder_by? get token;
+  static Serializer<Gjoin_tokens_order_by> get serializer =>
+      _$gjoinTokensOrderBySerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gjoin_tokens_order_by.serializer, this)
+          as Map<String, dynamic>);
+  static Gjoin_tokens_order_by? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(Gjoin_tokens_order_by.serializer, json);
+}
+
+abstract class Gjoin_tokens_pk_columns_input
+    implements
+        Built<Gjoin_tokens_pk_columns_input,
+            Gjoin_tokens_pk_columns_inputBuilder> {
+  Gjoin_tokens_pk_columns_input._();
+
+  factory Gjoin_tokens_pk_columns_input(
+          [Function(Gjoin_tokens_pk_columns_inputBuilder b) updates]) =
+      _$Gjoin_tokens_pk_columns_input;
+
+  _i2.UuidType get role_id;
+  static Serializer<Gjoin_tokens_pk_columns_input> get serializer =>
+      _$gjoinTokensPkColumnsInputSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
+      Gjoin_tokens_pk_columns_input.serializer, this) as Map<String, dynamic>);
+  static Gjoin_tokens_pk_columns_input? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gjoin_tokens_pk_columns_input.serializer, json);
+}
+
+class Gjoin_tokens_select_column extends EnumClass {
+  const Gjoin_tokens_select_column._(String name) : super(name);
+
+  static const Gjoin_tokens_select_column role_id =
+      _$gjoinTokensSelectColumnrole_id;
+
+  static const Gjoin_tokens_select_column token =
+      _$gjoinTokensSelectColumntoken;
+
+  static Serializer<Gjoin_tokens_select_column> get serializer =>
+      _$gjoinTokensSelectColumnSerializer;
+  static BuiltSet<Gjoin_tokens_select_column> get values =>
+      _$gjoinTokensSelectColumnValues;
+  static Gjoin_tokens_select_column valueOf(String name) =>
+      _$gjoinTokensSelectColumnValueOf(name);
+}
+
+abstract class Gjoin_tokens_set_input
+    implements Built<Gjoin_tokens_set_input, Gjoin_tokens_set_inputBuilder> {
+  Gjoin_tokens_set_input._();
+
+  factory Gjoin_tokens_set_input(
+          [Function(Gjoin_tokens_set_inputBuilder b) updates]) =
+      _$Gjoin_tokens_set_input;
+
+  _i2.UuidType? get role_id;
+  String? get token;
+  static Serializer<Gjoin_tokens_set_input> get serializer =>
+      _$gjoinTokensSetInputSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gjoin_tokens_set_input.serializer, this)
+          as Map<String, dynamic>);
+  static Gjoin_tokens_set_input? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(Gjoin_tokens_set_input.serializer, json);
+}
+
+class Gjoin_tokens_update_column extends EnumClass {
+  const Gjoin_tokens_update_column._(String name) : super(name);
+
+  static const Gjoin_tokens_update_column role_id =
+      _$gjoinTokensUpdateColumnrole_id;
+
+  static const Gjoin_tokens_update_column token =
+      _$gjoinTokensUpdateColumntoken;
+
+  static Serializer<Gjoin_tokens_update_column> get serializer =>
+      _$gjoinTokensUpdateColumnSerializer;
+  static BuiltSet<Gjoin_tokens_update_column> get values =>
+      _$gjoinTokensUpdateColumnValues;
+  static Gjoin_tokens_update_column valueOf(String name) =>
+      _$gjoinTokensUpdateColumnValueOf(name);
+}
+
 abstract class Gmessage_reaction_types_bool_exp
     implements
         Built<Gmessage_reaction_types_bool_exp,
@@ -1315,12 +1515,12 @@ abstract class Gmessages_bool_exp
   Gtimestamptz_comparison_exp? get created_at;
   GBoolean_comparison_exp? get deleted;
   Gdms_bool_exp? get dm;
-  Gthreads_bool_exp? get group_thread;
   Guuid_comparison_exp? get id;
   GBoolean_comparison_exp? get is_image;
   GString_comparison_exp? get message;
   Gmessage_reactions_bool_exp? get message_reactions;
   Guuid_comparison_exp? get source_id;
+  Gthreads_bool_exp? get thread;
   Gtimestamptz_comparison_exp? get updated_at;
   Gusers_bool_exp? get user;
   Guuid_comparison_exp? get user_sent;
@@ -1358,12 +1558,12 @@ abstract class Gmessages_insert_input
   DateTime? get created_at;
   bool? get deleted;
   Gdms_obj_rel_insert_input? get dm;
-  Gthreads_obj_rel_insert_input? get group_thread;
   _i2.UuidType? get id;
   bool? get is_image;
   String? get message;
   Gmessage_reactions_arr_rel_insert_input? get message_reactions;
   _i2.UuidType? get source_id;
+  Gthreads_obj_rel_insert_input? get thread;
   DateTime? get updated_at;
   Gusers_obj_rel_insert_input? get user;
   _i2.UuidType? get user_sent;
@@ -1473,12 +1673,12 @@ abstract class Gmessages_order_by
   Gorder_by? get created_at;
   Gorder_by? get deleted;
   Gdms_order_by? get dm;
-  Gthreads_order_by? get group_thread;
   Gorder_by? get id;
   Gorder_by? get is_image;
   Gorder_by? get message;
   Gmessage_reactions_aggregate_order_by? get message_reactions_aggregate;
   Gorder_by? get source_id;
+  Gthreads_order_by? get thread;
   Gorder_by? get updated_at;
   Gusers_order_by? get user;
   Gorder_by? get user_sent;
@@ -1965,6 +2165,7 @@ abstract class Groles_bool_exp
   Ggroups_bool_exp? get group;
   Guuid_comparison_exp? get group_id;
   Guuid_comparison_exp? get id;
+  Gjoin_tokens_bool_exp? get join_token;
   GString_comparison_exp? get name;
   Grole_to_threads_bool_exp? get role_to_threads;
   Guser_to_role_bool_exp? get user_to_roles;
@@ -2001,6 +2202,7 @@ abstract class Groles_insert_input
   Ggroups_obj_rel_insert_input? get group;
   _i2.UuidType? get group_id;
   _i2.UuidType? get id;
+  Gjoin_tokens_obj_rel_insert_input? get join_token;
   String? get name;
   Grole_to_threads_arr_rel_insert_input? get role_to_threads;
   Guser_to_role_arr_rel_insert_input? get user_to_roles;
@@ -2100,6 +2302,7 @@ abstract class Groles_order_by
   Ggroups_order_by? get group;
   Gorder_by? get group_id;
   Gorder_by? get id;
+  Gjoin_tokens_order_by? get join_token;
   Gorder_by? get name;
   Grole_to_threads_aggregate_order_by? get role_to_threads_aggregate;
   Guser_to_role_aggregate_order_by? get user_to_roles_aggregate;

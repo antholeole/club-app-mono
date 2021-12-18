@@ -7,7 +7,7 @@ import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/channels_bottom_sheet_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/page_cubit.dart';
-import 'package:fe/pages/scaffold/view/widgets/channels_bottom_sheet.dart';
+import 'package:fe/pages/chat/view/widgets/channels_bottom_sheet/channels_bottom_sheet.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';

@@ -22,16 +22,16 @@ class MessageOptions extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<Widget> tiles = [];
     for (int i = 0; i < _options.length; i++) {
-      late BorderRadiusGeometry borderRadius;
+      BorderRadiusGeometry borderRadius = BorderRadius.zero;
 
       if (i == 0) {
-        borderRadius = const BorderRadius.vertical(
-            top: Radius.circular(MessageOptionsOverlay.BORDER_RADIUS));
-      } else if (i == _options.length - 1) {
-        borderRadius = const BorderRadius.vertical(
-            bottom: Radius.circular(MessageOptionsOverlay.BORDER_RADIUS));
-      } else {
-        borderRadius = BorderRadius.zero;
+        borderRadius = borderRadius.add(const BorderRadius.vertical(
+            top: Radius.circular(MessageOptionsOverlay.BORDER_RADIUS)));
+      }
+
+      if (i == _options.length - 1) {
+        borderRadius = borderRadius.add(const BorderRadius.vertical(
+            bottom: Radius.circular(MessageOptionsOverlay.BORDER_RADIUS)));
       }
 
       tiles.add(GestureDetector(

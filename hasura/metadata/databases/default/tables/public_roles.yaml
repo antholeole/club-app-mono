@@ -5,6 +5,13 @@ object_relationships:
 - name: group
   using:
     foreign_key_constraint_on: group_id
+- name: join_token
+  using:
+    foreign_key_constraint_on:
+      column: role_id
+      table:
+        name: join_tokens
+        schema: public
 array_relationships:
 - name: role_to_threads
   using:

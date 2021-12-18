@@ -1,6 +1,7 @@
 - "!include public_dms.yaml"
 - "!include public_group_metadata.yaml"
 - "!include public_groups.yaml"
+- "!include public_join_tokens.yaml"
 - "!include public_message_reaction_types.yaml"
 - "!include public_message_reactions.yaml"
 - "!include public_messages.yaml"

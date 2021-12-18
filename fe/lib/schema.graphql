@@ -662,6 +662,146 @@ enum IdentityProvider {
 }
 
 """
+columns and relationships of "join_tokens"
+"""
+type join_tokens {
+  """An object relationship"""
+  role: roles!
+  role_id: uuid!
+  token: String!
+}
+
+"""
+aggregated selection of "join_tokens"
+"""
+type join_tokens_aggregate {
+  aggregate: join_tokens_aggregate_fields
+  nodes: [join_tokens!]!
+}
+
+"""
+aggregate fields of "join_tokens"
+"""
+type join_tokens_aggregate_fields {
+  count(columns: [join_tokens_select_column!], distinct: Boolean): Int!
+  max: join_tokens_max_fields
+  min: join_tokens_min_fields
+}
+
+"""
+Boolean expression to filter rows from the table "join_tokens". All fields are combined with a logical 'AND'.
+"""
+input join_tokens_bool_exp {
+  _and: [join_tokens_bool_exp!]
+  _not: join_tokens_bool_exp
+  _or: [join_tokens_bool_exp!]
+  role: roles_bool_exp
+  role_id: uuid_comparison_exp
+  token: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "join_tokens"
+"""
+enum join_tokens_constraint {
+  """unique or primary key constraint"""
+  join_tokens_pkey
+}
+
+"""
+input type for inserting data into table "join_tokens"
+"""
+input join_tokens_insert_input {
+  role: roles_obj_rel_insert_input
+  role_id: uuid
+  token: String
+}
+
+"""aggregate max on columns"""
+type join_tokens_max_fields {
+  role_id: uuid
+  token: String
+}
+
+"""aggregate min on columns"""
+type join_tokens_min_fields {
+  role_id: uuid
+  token: String
+}
+
+"""
+response of any mutation on the table "join_tokens"
+"""
+type join_tokens_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [join_tokens!]!
+}
+
+"""
+input type for inserting object relation for remote table "join_tokens"
+"""
+input join_tokens_obj_rel_insert_input {
+  data: join_tokens_insert_input!
+
+  """on conflict condition"""
+  on_conflict: join_tokens_on_conflict
+}
+
+"""
+on conflict condition type for table "join_tokens"
+"""
+input join_tokens_on_conflict {
+  constraint: join_tokens_constraint!
+  update_columns: [join_tokens_update_column!]! = []
+  where: join_tokens_bool_exp
+}
+
+"""Ordering options when selecting data from "join_tokens"."""
+input join_tokens_order_by {
+  role: roles_order_by
+  role_id: order_by
+  token: order_by
+}
+
+"""primary key columns input for table: join_tokens"""
+input join_tokens_pk_columns_input {
+  role_id: uuid!
+}
+
+"""
+select columns of table "join_tokens"
+"""
+enum join_tokens_select_column {
+  """column name"""
+  role_id
+
+  """column name"""
+  token
+}
+
+"""
+input type for updating data in table "join_tokens"
+"""
+input join_tokens_set_input {
+  role_id: uuid
+  token: String
+}
+
+"""
+update columns of table "join_tokens"
+"""
+enum join_tokens_update_column {
+  """column name"""
+  role_id
+
+  """column name"""
+  token
+}
+
+"""
 columns and relationships of "message_reaction_types"
 """
 type message_reaction_types {
@@ -1123,9 +1263,6 @@ type messages {
 
   """An object relationship"""
   dm: dms
-
-  """An object relationship"""
-  group_thread: threads!
   id: uuid!
   is_image: Boolean!
   message: String!
@@ -1168,6 +1305,9 @@ type messages {
 
   """can be EITHER from DM or Thread"""
   source_id: uuid!
+
+  """An object relationship"""
+  thread: threads
   updated_at: timestamptz!
 
   """An object relationship"""
@@ -1221,12 +1361,12 @@ input messages_bool_exp {
   created_at: timestamptz_comparison_exp
   deleted: Boolean_comparison_exp
   dm: dms_bool_exp
-  group_thread: threads_bool_exp
   id: uuid_comparison_exp
   is_image: Boolean_comparison_exp
   message: String_comparison_exp
   message_reactions: message_reactions_bool_exp
   source_id: uuid_comparison_exp
+  thread: threads_bool_exp
   updated_at: timestamptz_comparison_exp
   user: users_bool_exp
   user_sent: uuid_comparison_exp
@@ -1247,7 +1387,6 @@ input messages_insert_input {
   created_at: timestamptz
   deleted: Boolean
   dm: dms_obj_rel_insert_input
-  group_thread: threads_obj_rel_insert_input
   id: uuid
   is_image: Boolean
   message: String
@@ -1255,6 +1394,7 @@ input messages_insert_input {
 
   """can be EITHER from DM or Thread"""
   source_id: uuid
+  thread: threads_obj_rel_insert_input
   updated_at: timestamptz
   user: users_obj_rel_insert_input
   user_sent: uuid
@@ -1347,12 +1487,12 @@ input messages_order_by {
   created_at: order_by
   deleted: order_by
   dm: dms_order_by
-  group_thread: threads_order_by
   id: order_by
   is_image: order_by
   message: order_by
   message_reactions_aggregate: message_reactions_aggregate_order_by
   source_id: order_by
+  thread: threads_order_by
   updated_at: order_by
   user: users_order_by
   user_sent: order_by
@@ -1479,6 +1619,19 @@ type mutation_root {
   delete single row from the table: "groups"
   """
   delete_groups_by_pk(id: uuid!): groups
+
+  """
+  delete data from the table: "join_tokens"
+  """
+  delete_join_tokens(
+    """filter the rows which have to be deleted"""
+    where: join_tokens_bool_exp!
+  ): join_tokens_mutation_response
+
+  """
+  delete single row from the table: "join_tokens"
+  """
+  delete_join_tokens_by_pk(role_id: uuid!): join_tokens
 
   """
   delete data from the table: "message_reaction_types"
@@ -1663,6 +1816,28 @@ type mutation_root {
     """on conflict condition"""
     on_conflict: groups_on_conflict
   ): groups
+
+  """
+  insert data into the table: "join_tokens"
+  """
+  insert_join_tokens(
+    """the rows to be inserted"""
+    objects: [join_tokens_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: join_tokens_on_conflict
+  ): join_tokens_mutation_response
+
+  """
+  insert a single row into the table: "join_tokens"
+  """
+  insert_join_tokens_one(
+    """the row to be inserted"""
+    object: join_tokens_insert_input!
+
+    """on conflict condition"""
+    on_conflict: join_tokens_on_conflict
+  ): join_tokens
 
   """
   insert data into the table: "message_reaction_types"
@@ -1922,6 +2097,26 @@ type mutation_root {
     _set: groups_set_input
     pk_columns: groups_pk_columns_input!
   ): groups
+
+  """
+  update data of the table: "join_tokens"
+  """
+  update_join_tokens(
+    """sets the columns of the filtered rows to the given values"""
+    _set: join_tokens_set_input
+
+    """filter the rows which have to be updated"""
+    where: join_tokens_bool_exp!
+  ): join_tokens_mutation_response
+
+  """
+  update single row of the table: "join_tokens"
+  """
+  update_join_tokens_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: join_tokens_set_input
+    pk_columns: join_tokens_pk_columns_input!
+  ): join_tokens
 
   """
   update data of the table: "message_reaction_types"
@@ -2254,6 +2449,49 @@ type query_root {
 
   """fetch data from the table: "groups" using primary key columns"""
   groups_by_pk(id: uuid!): groups
+
+  """
+  fetch data from the table: "join_tokens"
+  """
+  join_tokens(
+    """distinct select on columns"""
+    distinct_on: [join_tokens_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [join_tokens_order_by!]
+
+    """filter the rows returned"""
+    where: join_tokens_bool_exp
+  ): [join_tokens!]!
+
+  """
+  fetch aggregated fields from the table: "join_tokens"
+  """
+  join_tokens_aggregate(
+    """distinct select on columns"""
+    distinct_on: [join_tokens_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [join_tokens_order_by!]
+
+    """filter the rows returned"""
+    where: join_tokens_bool_exp
+  ): join_tokens_aggregate!
+
+  """fetch data from the table: "join_tokens" using primary key columns"""
+  join_tokens_by_pk(role_id: uuid!): join_tokens
 
   """
   fetch data from the table: "message_reaction_types"
@@ -2903,6 +3141,9 @@ type roles {
   group: groups!
   group_id: uuid!
   id: uuid!
+
+  """An object relationship"""
+  join_token: join_tokens!
   name: String!
 
   """An array relationship"""
@@ -3024,6 +3265,7 @@ input roles_bool_exp {
   group: groups_bool_exp
   group_id: uuid_comparison_exp
   id: uuid_comparison_exp
+  join_token: join_tokens_bool_exp
   name: String_comparison_exp
   role_to_threads: role_to_threads_bool_exp
   user_to_roles: user_to_role_bool_exp
@@ -3047,6 +3289,7 @@ input roles_insert_input {
   group: groups_obj_rel_insert_input
   group_id: uuid
   id: uuid
+  join_token: join_tokens_obj_rel_insert_input
   name: String
   role_to_threads: role_to_threads_arr_rel_insert_input
   user_to_roles: user_to_role_arr_rel_insert_input
@@ -3119,6 +3362,7 @@ input roles_order_by {
   group: groups_order_by
   group_id: order_by
   id: order_by
+  join_token: join_tokens_order_by
   name: order_by
   role_to_threads_aggregate: role_to_threads_aggregate_order_by
   user_to_roles_aggregate: user_to_role_aggregate_order_by
@@ -3349,6 +3593,49 @@ type subscription_root {
 
   """fetch data from the table: "groups" using primary key columns"""
   groups_by_pk(id: uuid!): groups
+
+  """
+  fetch data from the table: "join_tokens"
+  """
+  join_tokens(
+    """distinct select on columns"""
+    distinct_on: [join_tokens_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [join_tokens_order_by!]
+
+    """filter the rows returned"""
+    where: join_tokens_bool_exp
+  ): [join_tokens!]!
+
+  """
+  fetch aggregated fields from the table: "join_tokens"
+  """
+  join_tokens_aggregate(
+    """distinct select on columns"""
+    distinct_on: [join_tokens_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [join_tokens_order_by!]
+
+    """filter the rows returned"""
+    where: join_tokens_bool_exp
+  ): join_tokens_aggregate!
+
+  """fetch data from the table: "join_tokens" using primary key columns"""
+  join_tokens_by_pk(role_id: uuid!): join_tokens
 
   """
   fetch data from the table: "message_reaction_types"

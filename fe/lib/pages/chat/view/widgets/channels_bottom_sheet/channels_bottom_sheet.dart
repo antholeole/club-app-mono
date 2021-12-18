@@ -9,12 +9,19 @@ import 'package:fe/gql/query_view_only_threads.var.gql.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/channels_bottom_sheet_cubit.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/shared_widgets/gql_operation.dart';
 import 'package:ferry/ferry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:fe/gql/add_thread_to_group.req.gql.dart';
+import 'package:fe/gql/add_thread_to_group.var.gql.dart';
+import 'package:fe/gql/add_thread_to_group.data.gql.dart';
+
+import '../../../../../service_locator.dart';
 
 class ChannelsBottomSheet extends StatelessWidget {
   static const String ERROR_TEXT = 'Error loading threads';
@@ -22,6 +29,8 @@ class ChannelsBottomSheet extends StatelessWidget {
   static const String VIEW_ONLY_TEXT = 'VIEW ONLY CHANNELS';
   static const String NO_GROUP = 'No group selected!';
   static const String NO_THREADS = "You're not in any threads yet!";
+
+  final AuthGqlClient _authGqlClient = getIt<AuthGqlClient>();
 
   @visibleForTesting
   final Thread? selectedThread;
@@ -48,7 +57,7 @@ class ChannelsBottomSheet extends StatelessWidget {
     return thread;
   }
 
-  const ChannelsBottomSheet(
+  ChannelsBottomSheet(
       {this.selectedThread, required BuildContext providerReadableContext})
       : _providerReadableContext = providerReadableContext;
 
@@ -86,6 +95,7 @@ class ChannelsBottomSheet extends StatelessWidget {
                     ),
                     _buildThreadGroup<GQuerySelfThreadsInGroupData,
                             GQuerySelfThreadsInGroupVars>(
+                        addable: currentGroup.admin,
                         context: context,
                         title: ChannelsBottomSheet.CHANNELS_TEXT,
                         currentGroupId: currentGroup.id,
@@ -103,6 +113,7 @@ class ChannelsBottomSheet extends StatelessWidget {
                     if (currentGroup.admin)
                       _buildThreadGroup<GQueryViewOnlyThreadsData,
                               GQueryViewOnlyThreadsVars>(
+                          addable: false,
                           context: context,
                           title: ChannelsBottomSheet.VIEW_ONLY_TEXT,
                           currentGroupId: currentGroup.id,
@@ -133,15 +144,24 @@ class ChannelsBottomSheet extends StatelessWidget {
       required UuidType currentGroupId,
       required Iterable<Thread> Function(TData) dataMap,
       required OperationRequest<TData, TVars> operationRequest,
+      required bool addable,
       required String title}) {
     return Expanded(
         child: ListView(
       children: [
-        Text(
-          title,
-          textAlign: TextAlign.left,
-          style: TextStyle(
-              fontFamily: 'IBM Plex Mono', color: Colors.grey.shade700),
+        Row(
+          children: [
+            Text(
+              title,
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                  fontFamily: 'IBM Plex Mono', color: Colors.grey.shade700),
+            ),
+            if (addable)
+              GestureDetector(
+                  onTap: () => _addThread(context, currentGroupId),
+                  child: const Icon(Icons.add, color: Colors.grey))
+          ],
         ),
         GqlOperation<TData, TVars>(
             providerReadableContext: _providerReadableContext,
@@ -213,6 +233,50 @@ class ChannelsBottomSheet extends StatelessWidget {
                 )
               : null),
     );
+  }
+
+  Future<void> _addThread(BuildContext context, UuidType clubId) async {
+    final TextEditingController textEditingController = TextEditingController();
+
+    await showPlatformDialog(
+        context: context,
+        useRootNavigator: false,
+        builder: (_) => PlatformAlertDialog(
+              title: const Text('Enter the new thread\'s name'),
+              content: PlatformTextField(
+                controller: textEditingController,
+                hintText: 'New name...',
+              ),
+              actions: <Widget>[
+                PlatformDialogAction(
+                  cupertino: (_, __) =>
+                      CupertinoDialogActionData(isDestructiveAction: true),
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Cancel'),
+                ),
+                PlatformDialogAction(
+                  onPressed: () => _authGqlClient.mutateFromUi<
+                          GAddThreadToGroupData, GAddThreadToGroupVars>(
+                      GAddThreadToGroupReq((q) => q
+                        ..vars.groupId = clubId
+                        ..vars.threadName = textEditingController.text),
+                      context, onComplete: (threadData) {
+                    Navigator.of(context).pop();
+                    _selectThread(
+                        Thread(
+                            name: threadData.insert_threads_one!.name,
+                            isViewOnly: true,
+                            id: threadData.insert_threads_one!.id),
+                        context);
+                  },
+                      errorMessage:
+                          'failed to add thread ${textEditingController.text}',
+                      successMessage:
+                          'added thread ${textEditingController.text} - remember to add roles to the thread!'),
+                  child: const Text('Create'),
+                ),
+              ],
+            ));
   }
 
   void _selectThread(Thread v, BuildContext context) {

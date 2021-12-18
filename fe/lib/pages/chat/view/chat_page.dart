@@ -6,7 +6,7 @@ import 'package:fe/pages/chat/cubit/message_overlay_cubit.dart';
 import 'package:fe/pages/chat/cubit/send_cubit.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/pages/chat/view/widgets/chat_input/chat_bar.dart';
-import 'package:fe/pages/chat/view/widgets/thread_members_drawer/thread_members_drawer.dart';
+import 'package:fe/pages/chat/view/widgets/thread_members_drawer/chat_right_drawer.dart';
 import 'package:fe/pages/chat/view/widgets/title/chat_title.dart';
 import 'package:fe/pages/chat/view/widgets/title/club_chat_title.dart';
 import 'package:fe/pages/chat/view/widgets/chats/chats.dart';
@@ -52,7 +52,7 @@ class ChatPage extends StatelessWidget {
       return MainScaffoldParts(
           actionButtons: actionButtons,
           endDrawer: thread != null
-              ? ThreadMembersDrawer(
+              ? ChatRightDrawer(
                   thread: thread,
                   group: group,
                 )
@@ -68,7 +68,7 @@ class ChatPage extends StatelessWidget {
         actionButtons: actionButtons,
         titleBarWidget: ChatTitle(thread: thread),
         endDrawer: thread != null
-            ? ThreadMembersDrawer(
+            ? ChatRightDrawer(
                 group: group!, //safety: if there's a thread, there's a group
                 thread: thread,
               )

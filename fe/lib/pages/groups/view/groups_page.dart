@@ -6,6 +6,7 @@ import 'package:fe/pages/groups/view/widgets/groups_tabs/club/club_tab.dart';
 import 'package:fe/pages/groups/view/widgets/groups_tabs/dm/dm_tab.dart';
 import 'package:fe/pages/groups/view/widgets/groups_tabs/groups_tab.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
+import 'package:fe/pages/main/view/widgets/group_joiner.dart';
 import 'package:fe/stdlib/shared_widgets/gql_operation.dart';
 import 'package:fe/gql/query_self_groups.var.gql.dart';
 import 'package:fe/gql/query_self_groups.data.gql.dart';
@@ -78,6 +79,7 @@ class GroupsView extends StatelessWidget {
                     buildTab: () => const ClubTab(),
                     groups: clubs,
                     header: 'Your Clubs',
+                    onAdd: context.read<GroupJoiner>().showPrompt,
                     noElementsText: NO_CLUBS_TEXT,
                   ),
                   GroupsTab<Dm>(

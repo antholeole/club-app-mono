@@ -1,0 +1,7 @@
+mutation JoinRolesWithJoinCodes($join_codes: [String]!) {
+  join_role_with_join_codes(join_codes: $join_codes) {
+    joined
+  }
+}  
+
+

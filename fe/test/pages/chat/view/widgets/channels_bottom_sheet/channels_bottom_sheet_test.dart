@@ -9,7 +9,7 @@ import 'package:fe/gql/query_view_only_threads.var.gql.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
-import 'package:fe/pages/scaffold/view/widgets/channels_bottom_sheet.dart';
+import 'package:fe/pages/chat/view/widgets/channels_bottom_sheet/channels_bottom_sheet.dart';
 import 'package:fe/pages/scaffold/cubit/channels_bottom_sheet_cubit.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
@@ -26,11 +26,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../test_helpers/mocks.dart';
-import '../../../../test_helpers/get_it_helpers.dart';
-import '../../../../test_helpers/reset_mock_bloc.dart';
-import '../../../../test_helpers/pump_app.dart';
-import '../../../../test_helpers/stub_gql_response.dart';
+import '../../../../../test_helpers/mocks.dart';
+import '../../../../../test_helpers/get_it_helpers.dart';
+import '../../../../../test_helpers/reset_mock_bloc.dart';
+import '../../../../../test_helpers/pump_app.dart';
+import '../../../../../test_helpers/stub_gql_response.dart';
 
 void main() {
   group('channels bottom sheet', () {

@@ -39,7 +39,7 @@ void main() {
         getIt<AuthGqlClient>(),
         data: (_) => GQuerySelfGroupsData.fromJson({})!);
 
-    await tester.pumpApp(wrapWithDependencies(ClubDrawer()));
+    await tester.pumpApp(wrapWithDependencies(ClubsDrawer()));
     expect(find.byType(GroupsPage), findsOneWidget);
     await tester.drag(find.byType(GroupsPage), const Offset(-100, 0));
     await tester.pump();

@@ -40,12 +40,15 @@ select_permissions:
 delete_permissions:
 - permission:
     filter:
-      role:
-        group:
-          users:
-            _and:
-            - owner:
-                _eq: true
-            - user_id:
-                _eq: X-Hasura-User-Id
+      _or:
+      - role:
+          group:
+            users:
+              _and:
+              - owner:
+                  _eq: true
+              - user_id:
+                  _eq: X-Hasura-User-Id
+      - user_id:
+          _eq: X-Hasura-User-Id
   role: user

@@ -1,0 +1,5 @@
+mutation AddRolesToThreads($roles: [role_to_threads_insert_input!]!) {
+  insert_role_to_threads(objects: $roles) {
+    affected_rows
+  }
+}

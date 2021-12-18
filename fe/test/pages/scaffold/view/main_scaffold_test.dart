@@ -115,7 +115,7 @@ void main() {
 
       await tester.pump();
 
-      await expectLater(find.byType(ClubDrawer), findsOneWidget);
+      await expectLater(find.byType(ClubsDrawer), findsOneWidget);
     });
 
     testWidgets('should add widgets in scaffoldState', (tester) async {

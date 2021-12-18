@@ -52,16 +52,24 @@ INSERT INTO public.groups(id, name)
 /* DD club */
 INSERT INTO public.roles(id, group_id, name)
     VALUES ('2b9722cc-9ffb-4b5e-8245-7c76296cc4f6', '56610d26-d62d-4628-8c08-eabf7ab7e8ad', 'Dungeon Masters');
+INSERT INTO public.join_tokens(role_id)
+    VALUES ('2b9722cc-9ffb-4b5e-8245-7c76296cc4f6');
 
 INSERT INTO public.roles(id, group_id, name)
     VALUES ('a1c1b211-f834-4e45-8fb7-48f7e458b54a', '56610d26-d62d-4628-8c08-eabf7ab7e8ad', 'Players');
+INSERT INTO public.join_tokens(role_id)
+    VALUES ('a1c1b211-f834-4e45-8fb7-48f7e458b54a');
 
 /* Sports Ball Team */
 INSERT INTO public.roles(id, group_id, name)
     VALUES ('47568061-097f-4de7-ba07-67516d4b90a4', 'b454d579-c4d2-403c-95cd-ac8dbc97476a', 'Defense');
+INSERT INTO public.join_tokens(role_id)
+    VALUES ('47568061-097f-4de7-ba07-67516d4b90a4');
 
 INSERT INTO public.roles(id, group_id, name)
     VALUES ('850b9c83-38a0-4734-b7a2-0907650acbec', 'b454d579-c4d2-403c-95cd-ac8dbc97476a', 'Exec Board');
+INSERT INTO public.join_tokens(role_id)
+    VALUES ('850b9c83-38a0-4734-b7a2-0907650acbec');
 
 /* DD club 2 (dead) */
 INSERT INTO public.roles(id, group_id, name)

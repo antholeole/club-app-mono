@@ -2,15 +2,30 @@ import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
 import 'package:built_value/standard_json_plugin.dart' show StandardJsonPlugin;
 import 'package:fe/gql/add_role_to_group.data.gql.dart'
-    show GAddRoleToGroupData, GAddRoleToGroupData_insert_roles_one;
+    show
+        GAddRoleToGroupData,
+        GAddRoleToGroupData_insert_roles_one,
+        GAddRoleToGroupData_insert_roles_one_join_token;
 import 'package:fe/gql/add_role_to_group.req.gql.dart' show GAddRoleToGroupReq;
 import 'package:fe/gql/add_role_to_group.var.gql.dart' show GAddRoleToGroupVars;
+import 'package:fe/gql/add_roles_to_thread.data.gql.dart'
+    show GAddRolesToThreadsData, GAddRolesToThreadsData_insert_role_to_threads;
+import 'package:fe/gql/add_roles_to_thread.req.gql.dart'
+    show GAddRolesToThreadsReq;
+import 'package:fe/gql/add_roles_to_thread.var.gql.dart'
+    show GAddRolesToThreadsVars;
 import 'package:fe/gql/add_roles_to_users.data.gql.dart'
     show GAddRolesToUsersData, GAddRolesToUsersData_insert_user_to_role;
 import 'package:fe/gql/add_roles_to_users.req.gql.dart'
     show GAddRolesToUsersReq;
 import 'package:fe/gql/add_roles_to_users.var.gql.dart'
     show GAddRolesToUsersVars;
+import 'package:fe/gql/add_thread_to_group.data.gql.dart'
+    show GAddThreadToGroupData, GAddThreadToGroupData_insert_threads_one;
+import 'package:fe/gql/add_thread_to_group.req.gql.dart'
+    show GAddThreadToGroupReq;
+import 'package:fe/gql/add_thread_to_group.var.gql.dart'
+    show GAddThreadToGroupVars;
 import 'package:fe/gql/authenticate.data.gql.dart'
     show GAuthenticateData, GAuthenticateData_authenticate;
 import 'package:fe/gql/authenticate.req.gql.dart' show GAuthenticateReq;
@@ -48,6 +63,15 @@ import 'package:fe/gql/insert_message.data.gql.dart'
         GInsertMessageData_insert_messages_returning;
 import 'package:fe/gql/insert_message.req.gql.dart' show GInsertMessageReq;
 import 'package:fe/gql/insert_message.var.gql.dart' show GInsertMessageVars;
+import 'package:fe/gql/query_all_roles_relative_to_thread.data.gql.dart'
+    show
+        GQueryAllRolesRelativeToThreadData,
+        GQueryAllRolesRelativeToThreadData_roles,
+        GQueryAllRolesRelativeToThreadData_roles_role_to_threads;
+import 'package:fe/gql/query_all_roles_relative_to_thread.req.gql.dart'
+    show GQueryAllRolesRelativeToThreadReq;
+import 'package:fe/gql/query_all_roles_relative_to_thread.var.gql.dart'
+    show GQueryAllRolesRelativeToThreadVars;
 import 'package:fe/gql/query_messages_in_chat.data.gql.dart'
     show
         GQueryMessagesInChatData,
@@ -65,6 +89,15 @@ import 'package:fe/gql/query_roles_in_group.req.gql.dart'
     show GQueryRolesInGroupReq;
 import 'package:fe/gql/query_roles_in_group.var.gql.dart'
     show GQueryRolesInGroupVars;
+import 'package:fe/gql/query_roles_in_group_with_join_code.data.gql.dart'
+    show
+        GQueryRolesInGroupWithJoinCodeData,
+        GQueryRolesInGroupWithJoinCodeData_roles,
+        GQueryRolesInGroupWithJoinCodeData_roles_join_token;
+import 'package:fe/gql/query_roles_in_group_with_join_code.req.gql.dart'
+    show GQueryRolesInGroupWithJoinCodeReq;
+import 'package:fe/gql/query_roles_in_group_with_join_code.var.gql.dart'
+    show GQueryRolesInGroupWithJoinCodeVars;
 import 'package:fe/gql/query_self_group_preview.data.gql.dart'
     show
         GQuerySelfGroupsPreviewData,
@@ -147,6 +180,14 @@ import 'package:fe/gql/remove_role_from_group.req.gql.dart'
     show GRemoveRoleFromGroupReq;
 import 'package:fe/gql/remove_role_from_group.var.gql.dart'
     show GRemoveRoleFromGroupVars;
+import 'package:fe/gql/remove_role_from_thread.data.gql.dart'
+    show
+        GRemoveRoleFromThreadData,
+        GRemoveRoleFromThreadData_delete_role_to_threads;
+import 'package:fe/gql/remove_role_from_thread.req.gql.dart'
+    show GRemoveRoleFromThreadReq;
+import 'package:fe/gql/remove_role_from_thread.var.gql.dart'
+    show GRemoveRoleFromThreadVars;
 import 'package:fe/gql/remove_role_from_user.data.gql.dart'
     show GRemoveRoleFromUserData, GRemoveRoleFromUserData_delete_user_to_role;
 import 'package:fe/gql/remove_role_from_user.req.gql.dart'
@@ -202,6 +243,16 @@ import 'package:fe/schema.schema.gql.dart'
         Ggroups_select_column,
         Ggroups_set_input,
         Ggroups_update_column,
+        Gjoin_tokens_bool_exp,
+        Gjoin_tokens_constraint,
+        Gjoin_tokens_insert_input,
+        Gjoin_tokens_obj_rel_insert_input,
+        Gjoin_tokens_on_conflict,
+        Gjoin_tokens_order_by,
+        Gjoin_tokens_pk_columns_input,
+        Gjoin_tokens_select_column,
+        Gjoin_tokens_set_input,
+        Gjoin_tokens_update_column,
         Gmessage_reaction_types_bool_exp,
         Gmessage_reaction_types_constraint,
         Gmessage_reaction_types_enum,
@@ -353,12 +404,21 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
 @SerializersFor([
   GAddRoleToGroupData,
   GAddRoleToGroupData_insert_roles_one,
+  GAddRoleToGroupData_insert_roles_one_join_token,
   GAddRoleToGroupReq,
   GAddRoleToGroupVars,
+  GAddRolesToThreadsData,
+  GAddRolesToThreadsData_insert_role_to_threads,
+  GAddRolesToThreadsReq,
+  GAddRolesToThreadsVars,
   GAddRolesToUsersData,
   GAddRolesToUsersData_insert_user_to_role,
   GAddRolesToUsersReq,
   GAddRolesToUsersVars,
+  GAddThreadToGroupData,
+  GAddThreadToGroupData_insert_threads_one,
+  GAddThreadToGroupReq,
+  GAddThreadToGroupVars,
   GAuthenticateData,
   GAuthenticateData_authenticate,
   GAuthenticateReq,
@@ -391,6 +451,11 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GInsertMessageData_insert_messages_returning,
   GInsertMessageReq,
   GInsertMessageVars,
+  GQueryAllRolesRelativeToThreadData,
+  GQueryAllRolesRelativeToThreadData_roles,
+  GQueryAllRolesRelativeToThreadData_roles_role_to_threads,
+  GQueryAllRolesRelativeToThreadReq,
+  GQueryAllRolesRelativeToThreadVars,
   GQueryMessagesInChatData,
   GQueryMessagesInChatData_messages,
   GQueryMessagesInChatData_messages_message_reactions,
@@ -402,6 +467,11 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GQueryRolesInGroupData_roles,
   GQueryRolesInGroupReq,
   GQueryRolesInGroupVars,
+  GQueryRolesInGroupWithJoinCodeData,
+  GQueryRolesInGroupWithJoinCodeData_roles,
+  GQueryRolesInGroupWithJoinCodeData_roles_join_token,
+  GQueryRolesInGroupWithJoinCodeReq,
+  GQueryRolesInGroupWithJoinCodeVars,
   GQuerySelfGroupsData,
   GQuerySelfGroupsData_admin_clubs,
   GQuerySelfGroupsData_admin_clubs_group,
@@ -455,6 +525,10 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GRemoveRoleFromGroupData_delete_roles,
   GRemoveRoleFromGroupReq,
   GRemoveRoleFromGroupVars,
+  GRemoveRoleFromThreadData,
+  GRemoveRoleFromThreadData_delete_role_to_threads,
+  GRemoveRoleFromThreadReq,
+  GRemoveRoleFromThreadVars,
   GRemoveRoleFromUserData,
   GRemoveRoleFromUserData_delete_user_to_role,
   GRemoveRoleFromUserReq,
@@ -505,6 +579,16 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   Ggroups_select_column,
   Ggroups_set_input,
   Ggroups_update_column,
+  Gjoin_tokens_bool_exp,
+  Gjoin_tokens_constraint,
+  Gjoin_tokens_insert_input,
+  Gjoin_tokens_obj_rel_insert_input,
+  Gjoin_tokens_on_conflict,
+  Gjoin_tokens_order_by,
+  Gjoin_tokens_pk_columns_input,
+  Gjoin_tokens_select_column,
+  Gjoin_tokens_set_input,
+  Gjoin_tokens_update_column,
   Gmessage_reaction_types_bool_exp,
   Gmessage_reaction_types_constraint,
   Gmessage_reaction_types_enum,

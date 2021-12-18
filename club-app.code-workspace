@@ -21,10 +21,6 @@
 			"name": "🐦 Flutter"
 		},
 		{
-			"path": "knowledge",
-			"name": "🧠 Knowledge"
-		},
-		{
 			"path": "infra/cdk",
 			"name": "🎲 CDK"
 		},

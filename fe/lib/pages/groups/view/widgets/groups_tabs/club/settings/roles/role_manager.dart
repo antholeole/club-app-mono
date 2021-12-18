@@ -3,9 +3,9 @@ import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/shared_widgets/gql_operation.dart';
 import 'package:fe/stdlib/shared_widgets/toasting_dismiss.dart';
 import 'package:flutter/material.dart';
-import 'package:fe/gql/query_roles_in_group.req.gql.dart';
-import 'package:fe/gql/query_roles_in_group.data.gql.dart';
-import 'package:fe/gql/query_roles_in_group.var.gql.dart';
+import 'package:fe/gql/query_roles_in_group_with_join_code.req.gql.dart';
+import 'package:fe/gql/query_roles_in_group_with_join_code.data.gql.dart';
+import 'package:fe/gql/query_roles_in_group_with_join_code.var.gql.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/src/provider.dart';
 import 'package:fe/gql/remove_role_from_group.req.gql.dart';
@@ -37,29 +37,34 @@ class _RoleManagerState extends State<RoleManager> {
             child: const Icon(Icons.add, color: Colors.grey))
       ]),
       children: [
-        GqlOperation<GQueryRolesInGroupData, GQueryRolesInGroupVars>(
-            operationRequest: GQueryRolesInGroupReq(
+        GqlOperation<GQueryRolesInGroupWithJoinCodeData,
+                GQueryRolesInGroupWithJoinCodeVars>(
+            operationRequest: GQueryRolesInGroupWithJoinCodeReq(
                 (q) => q..vars.groupId = context.read<Club>().id),
             onResponse: (data) => Column(
                   children: data.roles
-                      .map((role) => ToastingDismissable(
-                            key: ValueKey(role.id.uuid),
-                            confirmDismissText:
-                                'Are you sure you\'d like to remove role ${role.name}?',
-                            onConfirm: () => _gqlClient.mutateFromUi(
-                                GRemoveRoleFromGroupReq(
-                                    (q) => q..vars.roleId = role.id),
-                                context,
-                                errorMessage:
-                                    'Failed to remove role ${role.name} from ${context.read<Club>().name}',
-                                successMessage:
-                                    'removed role ${role.name} from ${context.read<Club>().name}'),
-                            actionText: 'Remove',
-                            child: ListTile(
-                                title: Text(
-                              role.name,
-                              style: Theme.of(context).textTheme.bodyText2,
-                            )),
+                      .map((role) => Tooltip(
+                            triggerMode: TooltipTriggerMode.tap,
+                            message: 'join token: "${role.join_token.token}"',
+                            child: ToastingDismissable(
+                              key: ValueKey(role.id.uuid),
+                              confirmDismissText:
+                                  'Are you sure you\'d like to remove role ${role.name}?',
+                              onConfirm: () => _gqlClient.mutateFromUi(
+                                  GRemoveRoleFromGroupReq(
+                                      (q) => q..vars.roleId = role.id),
+                                  context,
+                                  errorMessage:
+                                      'Failed to remove role ${role.name} from ${context.read<Club>().name}',
+                                  successMessage:
+                                      'removed role ${role.name} from ${context.read<Club>().name}'),
+                              actionText: 'Remove',
+                              child: ListTile(
+                                  title: Text(
+                                role.name,
+                                style: Theme.of(context).textTheme.bodyText2,
+                              )),
+                            ),
                           ))
                       .toList(),
                 ))
