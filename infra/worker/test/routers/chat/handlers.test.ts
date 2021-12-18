@@ -1,62 +1,67 @@
-import * as chatGqlQueries from '../../../src/routers/chat/gql_queries'
-import { createOrGetSingletonDm } from '../../../src/routers/chat/handlers'
+import * as groupsGqlQueries from '../../../src/routers/groups/gql_queries'
+import { joinRoleWithJoinCodes } from '../../../src/routers/groups/handlers'
 
 describe('chat routes', () => {
-    const fakeId = 'ididid'
-    const fakeName = 'fakeName'
-    const fakeIdTwo = 'idtwoidtwo'
-    const userInputId = 'xhasurauserid'
+    const userId = 'asdasd'
+    const joinCode = 'asdasdasadasdasd'
 
-    describe('get or create singleton dm', () => {
-        test('should create dm if no existing dm', async () => {
-            const getExistingDmSpy = jest.spyOn(chatGqlQueries, 'getExistingDm')
-                .mockReturnValue(Promise.resolve({
-                    id: fakeId,
-                    name: fakeName,
-                }))
-
-            const resp = await createOrGetSingletonDm({
-                action: 'fkae',
+    test('should throw status error on no join codes', async () => {
+        await expect(
+            async () => await joinRoleWithJoinCodes({
                 session_variables: {
-                    'x-hasura-user-id': userInputId
+                    'x-hasura-user-id': userId
                 },
+                action: 'asdas',
                 input: {
-                    with_user_id: fakeIdTwo,
+                    join_codes: []
                 }
             })
-            expect(await resp.json()).toMatchObject({
-                id: fakeId,
-                name: fakeName,
-            })
-
-            expect(getExistingDmSpy.mock.calls[0][0]).toEqual([fakeIdTwo, userInputId])
-        })
-
-        test('should return existing dm if dm exists', async () => {
-            jest.spyOn(chatGqlQueries, 'getExistingDm')
-                .mockReturnValue(Promise.resolve())
-
-            const createDmSpy = jest.spyOn(chatGqlQueries, 'createDm')
-                .mockReturnValue(Promise.resolve({
-                    id: fakeId,
-                    name: fakeName,
-                }))
-
-            const resp = await createOrGetSingletonDm({
-                action: 'fkae',
-                session_variables: {
-                    'x-hasura-user-id': userInputId
-                },
-                input: {
-                    with_user_id: fakeIdTwo,
-                }
-            })
-            expect(await resp.json()).toMatchObject({
-                id: fakeId,
-                name: fakeName,
-            })
-
-            expect(createDmSpy.mock.calls[0][0]).toEqual([fakeIdTwo, userInputId])
-        })
+        ).toThrowStatusError(400, 'Please enter join codes.')
     })
+    test('should throw status error on not found join codes', async () => {
+        jest.spyOn(groupsGqlQueries, 'getRoleIdsByJoinCodes')
+            .mockReturnValue(Promise.resolve([]))
+
+
+        await expect(
+            async () => await joinRoleWithJoinCodes({
+                session_variables: {
+                    'x-hasura-user-id': userId
+                },
+                action: 'asdas',
+                input: {
+                    join_codes: [joinCode]
+                }
+            })
+        ).toThrowStatusError(404, 'not all join codes were valid; please try again.')
+    })
+
+    test('should return role names on joined', async () => {
+        const groupName = 'Sports'
+        const groupId = 'k;jkljkljkljlkj'
+
+        const getRoleIdByJoinCodeSpy = jest.spyOn(groupsGqlQueries, 'getRoleIdsByJoinCodes')
+            .mockReturnValue(Promise.resolve([groupId]))
+
+        const joinRolesSpy = jest.spyOn(groupsGqlQueries, 'joinRoles')
+            .mockReturnValue(Promise.resolve([groupName]))
+
+        const resp = await joinRoleWithJoinCodes({
+            session_variables: {
+                'x-hasura-user-id': userId
+            },
+            action: 'asdas',
+            input: {
+                join_codes: [joinCode]
+            }
+        })
+
+        expect(getRoleIdByJoinCodeSpy.mock.calls[0][0]).toEqual([joinCode])
+        expect(joinRolesSpy.mock.calls[0][0]).toEqual([groupId])
+        expect(await resp.json()).toMatchObject({
+            joined: [groupName]
+        })
+
+    })
+
 })

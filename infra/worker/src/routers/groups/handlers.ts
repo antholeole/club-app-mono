@@ -4,11 +4,13 @@ import { getRoleIdsByJoinCodes, joinRoles } from './gql_queries'
 import { IJoinCodeRequest } from './types'
 
 export const joinRoleWithJoinCodes = async (req: IAuthActionInput<IJoinCodeRequest>): Promise<Response> => {
+    if (!req.input.join_codes.length) {
+        throw new StatusError(400, 'Please enter join codes.')
+    }
+
     const roleIds = await getRoleIdsByJoinCodes(req.input.join_codes)
 
-    if (!roleIds.length) {
-        throw new StatusError(404, 'no roles with given join code(s) found.')
-    } else if (roleIds.length !== req.input.join_codes.length) {
+    if (roleIds.length !== req.input.join_codes.length) {
         throw new StatusError(404, 'not all join codes were valid; please try again.')
     }
 

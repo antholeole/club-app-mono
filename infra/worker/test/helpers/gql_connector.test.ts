@@ -37,11 +37,26 @@ describe('gql connector', () => {
     })
 
     describe('on ok', () => {
-        beforeEach(() => {
-            fetchMock.mockResolvedValueOnce(validResponse)
+        test('should throw if body.errors present', async () => {
+            const message = 'You have an error'
+            const errorResponse = new Response(JSON.stringify({
+                errors: [{
+                    message: message
+                }]
+            }), {
+                status: 200
+            })
+
+            fetchMock.mockResolvedValueOnce(errorResponse)
+
+            await expect(async () => await gqlReq(fakeQuery)).toThrowStatusError(400, 'You have an error')
+
+
         })
 
         test('should return body.data as json', async () => {
+            fetchMock.mockResolvedValueOnce(validResponse)
+
             const resp = await gqlReq(fakeQuery)
 
             expect((resp as { fake: string }).fake).toEqual('Data')
