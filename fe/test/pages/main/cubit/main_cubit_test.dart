@@ -16,7 +16,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:fe/gql/query_self_group_preview.data.gql.dart';
 import 'package:fe/gql/query_self_group_preview.var.gql.dart';
 
-import '../../../test_helpers/fixtures/mocks.dart';
+import '../../../test_helpers/mocks.dart';
 import '../../../test_helpers/get_it_helpers.dart';
 import '../../../test_helpers/stub_gql_response.dart';
 
@@ -164,16 +164,16 @@ void main() {
                     {
                       'group': {
                         'id': fakeGroup1.id.toString(),
-                        'group_name': fakeGroup1.name
+                        'name': fakeGroup1.name
                       },
-                      'admin': fakeGroup1.admin
+                      'owner': fakeGroup1.admin
                     },
                     {
                       'group': {
                         'id': 'b454d579-c4d2-403c-95cd-ac8dbc97476a',
-                        'group_name': 'Sports Ball Team'
+                        'name': 'Sports Ball Team'
                       },
-                      'admin': true
+                      'owner': true
                     }
                   ]
                 })!);

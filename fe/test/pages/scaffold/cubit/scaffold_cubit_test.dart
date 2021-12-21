@@ -4,9 +4,9 @@ import 'package:fe/pages/scaffold/cubit/scaffold_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../../test_helpers/fixtures/key.dart';
-
 void main() {
+  const testingKey = Key('testing');
+
   group('Scaffold Cubit', () {
     blocTest<ScaffoldCubit, ScaffoldState>(
         'initalized with inital scaffold state',

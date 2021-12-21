@@ -1,13 +1,11 @@
 import 'package:fe/stdlib/theme/tile_header.dart';
 import 'package:flutter/material.dart';
 
-import 'loadable_tile_button.dart';
-
 class ButtonGroup extends StatelessWidget {
   final String? _name;
-  final List<LoadableTileButton> _buttons;
+  final List<ListTile> _buttons;
 
-  const ButtonGroup({String? name, required List<LoadableTileButton> buttons})
+  const ButtonGroup({String? name, required List<ListTile> buttons})
       : _name = name,
         _buttons = buttons;
 

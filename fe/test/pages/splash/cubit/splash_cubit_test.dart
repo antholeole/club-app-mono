@@ -1,14 +1,15 @@
 import 'dart:convert';
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/splash/cubit/splash_cubit.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/local_data/image_handler.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
+import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../test_helpers/fixtures/mocks.dart';
-import '../../../test_helpers/fixtures/user.dart';
+import '../../../test_helpers/mocks.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../../test_helpers/get_it_helpers.dart';
@@ -18,6 +19,8 @@ void main() {
     late MockLocalFileStore mockLocalFileStore;
     late MockImageHandler mockImageHandler;
     late MockSharedPreferences mockSharedPreferences;
+
+    final User fakeUser = User(id: UuidType.generate(), name: 'Loons');
 
     setUpAll(() {
       mockLocalFileStore = MockLocalFileStore.getMock();
@@ -64,10 +67,10 @@ void main() {
       'emits login page when user is deserialized',
       setUp: () =>
           when(() => mockLocalFileStore.deserialize(LocalStorageType.LocalUser))
-              .thenAnswer((_) async => json.encode(mockUser.toJson())),
+              .thenAnswer((_) async => json.encode(fakeUser.toJson())),
       build: () => SplashCubit(),
       act: (cubit) => cubit.beginLoads(),
-      expect: () => [SplashState.loggedIn(mockUser)],
+      expect: () => [SplashState.loggedIn(fakeUser)],
     );
   });
 }

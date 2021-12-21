@@ -31,14 +31,12 @@ describe('test error handler', () => {
       test('should return 400', async () => {
          expect(await errorHandler(unknownError).json()).toEqual({
             'message': statusMessage,
-            'code': 400
          })
       })
 
       test('should return unown error on no message', async () => {
          expect(await errorHandler(Error()).json()).toEqual({
             'message': 'unknown error',
-            'code': 400
          })
       })
    })
@@ -50,7 +48,9 @@ describe('test error handler', () => {
 
       expect(await errorHandler(new StatusError(statusCode, statusMessage)).json()).toEqual({
          'message': statusMessage,
-         'code': statusCode
+         'extensions': {
+            'code': statusCode
+         }
       })
    })
 })

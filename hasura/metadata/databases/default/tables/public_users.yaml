@@ -2,6 +2,15 @@ table:
   name: users
   schema: public
 array_relationships:
+- name: groups
+  using:
+    manual_configuration:
+      column_mapping:
+        id: user_id
+      insertion_order: null
+      remote_table:
+        name: user_to_group
+        schema: public
 - name: message_reactions
   using:
     foreign_key_constraint_on:
@@ -16,19 +25,19 @@ array_relationships:
       table:
         name: messages
         schema: public
-- name: user_to_groups
+- name: user_to_dms
   using:
     foreign_key_constraint_on:
       column: user_id
       table:
-        name: user_to_group
+        name: user_to_dm
         schema: public
-- name: user_to_threads
+- name: user_to_roles
   using:
     foreign_key_constraint_on:
       column: user_id
       table:
-        name: user_to_thread
+        name: user_to_role
         schema: public
 select_permissions:
 - permission:
@@ -36,24 +45,14 @@ select_permissions:
     - id
     - name
     - profile_picture
-    filter:
-      _or:
-      - user_to_groups:
-          group:
-            user_to_groups:
-              user_id:
-                _eq: X-Hasura-User-Id
-      - user_to_threads:
-          thread:
-            user_to_threads:
-              user_id:
-                _eq: X-Hasura-User-Id
+    filter: {}
   role: user
 update_permissions:
 - permission:
     check: null
     columns:
     - name
+    - profile_picture
     filter:
       id:
         _eq: X-Hasura-User-Id

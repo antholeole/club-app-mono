@@ -12,7 +12,6 @@ import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
-import 'package:fe/stdlib/theme/loadable_tile_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +19,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import '../../../test_helpers/fixtures/mocks.dart';
+import '../../../test_helpers/mocks.dart';
 import '../../../test_helpers/get_it_helpers.dart';
 import '../../../test_helpers/pump_app.dart';
 import '../../../test_helpers/reset_mock_bloc.dart';
@@ -102,21 +101,6 @@ void main() {
         await tester.pumpAndSettle();
 
         verify(() => mockNameChangeCubit.changeName(fakeName, any()));
-      });
-
-      testWidgets('should build loader on name changing', (tester) async {
-        whenListen(
-            mockNameChangeCubit, Stream<NameChangeState>.fromIterable([]),
-            initialState: NameChangeState.changing());
-
-        await tester.pumpApp(wrapWithDependencies(ProfileView()));
-
-        expect(
-            tester
-                .firstWidget<LoadableTileButton>(
-                    find.byType(LoadableTileButton))
-                .loading,
-            true);
       });
 
       testWidgets('should not call any events if name submit canceled',

@@ -1,26 +1,24 @@
 import 'package:fe/data/models/club.dart';
-import 'package:fe/pages/groups/view/widgets/groups_tabs/club/join_token_tile.dart';
-import 'package:fe/pages/groups/view/widgets/settings/leave_group_button.dart';
-import 'package:fe/pages/groups/view/widgets/settings/users.dart';
+import 'package:fe/pages/groups/view/widgets/groups_tabs/club/settings/leave_group_button.dart';
+import 'package:fe/pages/groups/view/widgets/groups_tabs/club/settings/roles/group_role_manager.dart';
+import 'package:fe/pages/groups/view/widgets/groups_tabs/club/settings/users/users.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/src/provider.dart';
 
-class GroupSettings extends StatelessWidget {
+class ClubSettings extends StatelessWidget {
   @visibleForTesting
   static const String JOIN_TOKEN_HEADER = 'Join Token';
 
-  const GroupSettings();
+  const ClubSettings();
 
   @override
   Widget build(BuildContext context) {
-    final group = context.watch<Club>();
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        if (context.read<Club>().admin) const GroupRoleManager(),
         const Users(),
-        if (group.admin) JoinTokenTile(),
         LeaveGroupButton(),
       ],
     );

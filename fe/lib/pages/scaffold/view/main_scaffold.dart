@@ -39,7 +39,7 @@ class _MainScaffoldState extends State<MainScaffold> {
               onPressed: (sbContext) => Scaffold.of(sbContext).openDrawer()),
           actions: _buildContextButtons(mainScaffoldParts.actionButtons),
         ),
-        drawer: ClubDrawer(),
+        drawer: ClubsDrawer(),
         endDrawer: mainScaffoldParts.endDrawer,
         backgroundColor: Colors.white,
         body: GestureDetector(

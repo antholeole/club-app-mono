@@ -5,6 +5,7 @@ import 'package:fe/pages/chat/view/chat_page.dart';
 import 'package:fe/pages/events/events_page.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
+import 'package:fe/pages/main/view/widgets/group_joiner.dart';
 import 'package:fe/pages/main/view/widgets/join_group_button.dart';
 import 'package:fe/pages/scaffold/cubit/channels_bottom_sheet_cubit.dart';
 import 'package:fe/pages/scaffold/cubit/page_cubit.dart';
@@ -15,7 +16,6 @@ import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
 import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:fe/stdlib/theme/pill_button.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../service_locator.dart';
@@ -52,29 +52,31 @@ class MainView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MainScaffold(
-        child: BlocListener<PageCubit, PageState>(
-      listener: (context, state) => _pageController.jumpToPage(state.index),
-      child: BlocConsumer<MainCubit, MainState>(
-        listener: (bcContext, state) {
-          state.join(
-              (_) => null,
-              (mplf) =>
-                  _handler.handleFailure(mplf.failure, bcContext, toast: false),
-              (_) => null,
-              (_) => null,
-              (mplo) => _logOut(context, withError: mplo.withError),
-              (_) => null);
-        },
-        builder: (bcContext, state) => state.join(
-            (_) => _buildLoading(),
-            (_) => _buildErrorScreen(bcContext),
-            (_) => _buildGroupless(),
-            (mpwg) => _buildContent(bcContext, mpwg.club),
-            (_) => _buildErrorScreen(bcContext),
-            (mpwdm) => _buildContent(bcContext, mpwdm.dm)),
-      ),
-    ));
+    return GroupJoinDisplay(
+      child: MainScaffold(
+          child: BlocListener<PageCubit, PageState>(
+        listener: (context, state) => _pageController.jumpToPage(state.index),
+        child: BlocConsumer<MainCubit, MainState>(
+          listener: (bcContext, state) {
+            state.join(
+                (_) => null,
+                (mplf) => _handler.handleFailure(mplf.failure, bcContext,
+                    toast: false),
+                (_) => null,
+                (_) => null,
+                (mplo) => _logOut(context, withError: mplo.withError),
+                (_) => null);
+          },
+          builder: (bcContext, state) => state.join(
+              (_) => _buildLoading(),
+              (_) => _buildErrorScreen(bcContext),
+              (_) => _buildGroupless(),
+              (mpwg) => _buildContent(bcContext, mpwg.club),
+              (_) => _buildErrorScreen(bcContext),
+              (mpwdm) => _buildContent(bcContext, mpwdm.dm)),
+        ),
+      )),
+    );
   }
 
   Widget _buildLoading() {

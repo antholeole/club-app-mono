@@ -16,7 +16,7 @@ import 'package:gql_exec/gql_exec.dart';
 import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';
 
-import '../../test_helpers/fixtures/mocks.dart';
+import '../../test_helpers/mocks.dart';
 import '../../test_helpers/get_it_helpers.dart';
 import '../../test_helpers/reset_mock_bloc.dart';
 
@@ -77,6 +77,20 @@ void main() {
                 operationRequest: GFakeGqlReq(),
                 linkException: FakeLinkException(failure))),
             equals(failure));
+      });
+
+      test('inner exception is serverException should return unwrapped failure',
+          () async {
+        const serverException = ServerException(parsedResponse: Response());
+
+        final handler = Handler();
+
+        expect(
+            await handler.basicGqlErrorHandler(OperationResponse(
+                linkException: serverException,
+                operationRequest: GFakeGqlReq())),
+            equals(isA<Failure>()
+                .having((f) => f.status, 'status', FailureStatus.HttpMisc)));
       });
     });
 

@@ -1,8 +1,7 @@
-mutation InsertMessage($message: String!, $threadId: uuid!, $selfId: uuid!, $messageId: uuid!) {
+mutation InsertMessage($message: String!, $sourceId: uuid!, $messageId: uuid!) {
   insert_messages(objects: {
     message: $message,
-    thread_id: $threadId,
-    user_sent: $selfId,
+    source_id: $sourceId,
     id: $messageId
   }) {
     returning {

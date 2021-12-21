@@ -1,10 +1,12 @@
 import 'package:fe/data/models/club.dart';
 import 'package:fe/data/models/group.dart';
+import 'package:fe/data/models/thread.dart';
 import 'package:fe/pages/chat/bloc/chat_bloc.dart';
 import 'package:fe/pages/chat/cubit/message_overlay_cubit.dart';
 import 'package:fe/pages/chat/cubit/send_cubit.dart';
 import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/pages/chat/view/widgets/chat_input/chat_bar.dart';
+import 'package:fe/pages/chat/view/widgets/thread_members_drawer/chat_right_drawer.dart';
 import 'package:fe/pages/chat/view/widgets/title/chat_title.dart';
 import 'package:fe/pages/chat/view/widgets/title/club_chat_title.dart';
 import 'package:fe/pages/chat/view/widgets/chats/chats.dart';
@@ -21,17 +23,15 @@ class ChatPage extends StatelessWidget {
   final Group group;
 
   late final ThreadCubit _threadCubit;
-  late final ChatBloc _chatBloc;
 
   final ScrollController _scrollController = ScrollController();
 
   ChatPage({required this.group}) {
     _threadCubit = ThreadCubit(group: group);
-    _chatBloc = ChatBloc(threadCubit: _threadCubit);
   }
 
   static MainScaffoldParts scaffoldWidgets(BuildContext context) {
-    final group = Provider.of<MainCubit>(context, listen: true).state.join(
+    final group = BlocProvider.of<MainCubit>(context, listen: true).state.join(
         (p0) => null,
         (p0) => null,
         (_) => null,
@@ -39,14 +39,24 @@ class ChatPage extends StatelessWidget {
         (p0) => null,
         (mwdm) => mwdm.dm);
 
-    final thread = Provider.of<ThreadCubit>(context, listen: true).state.thread;
+    final thread =
+        BlocProvider.of<ThreadCubit>(context, listen: true).state.thread;
+
+    final List<ActionButton> actionButtons = [];
+    if (thread != null) {
+      actionButtons.add(ActionButton(
+          icon: Icons.group, onClick: Scaffold.of(context).openEndDrawer));
+    }
 
     if (group is Club) {
       return MainScaffoldParts(
-          actionButtons: [],
-          endDrawer: Container(
-            color: Colors.red,
-          ),
+          actionButtons: actionButtons,
+          endDrawer: thread != null
+              ? ChatRightDrawer(
+                  thread: thread,
+                  group: group,
+                )
+              : null,
           titleBarWidget: GestureDetector(
               onTap: () => context.read<PageCubit>().bottomSheet(context),
               child: ClubChatTitle(
@@ -54,7 +64,16 @@ class ChatPage extends StatelessWidget {
                 onClick: () => context.read<PageCubit>().bottomSheet(context),
               )));
     } else {
-      return MainScaffoldParts(titleBarWidget: ChatTitle(thread: thread));
+      return MainScaffoldParts(
+        actionButtons: actionButtons,
+        titleBarWidget: ChatTitle(thread: thread),
+        endDrawer: thread != null
+            ? ChatRightDrawer(
+                group: group!, //safety: if there's a thread, there's a group
+                thread: thread,
+              )
+            : null,
+      );
     }
   }
 
@@ -64,9 +83,6 @@ class ChatPage extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (_) => _threadCubit,
-        ),
-        BlocProvider(
-          create: (_) => _chatBloc,
         ),
         BlocProvider(
             create: (_) =>
@@ -88,8 +104,6 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
   //allows us to use this in didChangeAppLifecycleState
   //without lifecycle errors.
   Group? currentGroup;
-  ThreadCubit? threadCubit;
-  PageCubit? pageCubit;
 
   @override
   void initState() {
@@ -100,34 +114,11 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
   @override
   void didChangeDependencies() {
     updateScaffold(context);
-
-    if (threadCubit != null) {
-      pageCubit?.addThreadCubit(threadCubit!);
-    }
-
     super.didChangeDependencies();
   }
 
   @override
-  void dispose() {
-    pageCubit?.removeThreadCubit();
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (threadCubit != null &&
-        state == AppLifecycleState.paused &&
-        currentGroup != null) {
-      threadCubit!.cacheThread();
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    threadCubit = context.read<ThreadCubit>();
-    pageCubit = context.read<PageCubit>();
-
     return MultiBlocListener(
         listeners: [
           BlocListener<MainCubit, MainState>(listener: (context, state) {
@@ -147,18 +138,36 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
             });
           }),
         ],
-        child: BlocBuilder<ThreadCubit, ThreadState>(
-          builder: (context, state) => state.join(
-              (_) => Container(),
-              (_) => BlocProvider<SendCubit>(
-                    create: (_) => SendCubit(
-                        threadCubit: context.read<ThreadCubit>(),
-                        chatBloc: context.read<ChatBloc>()),
-                    child: const FooterLayout(
-                      footer: KeyboardAttachable(child: ChatBar()),
+        child: BlocConsumer<ThreadCubit, ThreadState>(
+          listener: (_, state) => context.read<PageCubit>().currentThread =
+              state.join((_) => null, (wts) => wts.thread),
+          builder: (context, state) => state.join((_) => Container(), (wts) {
+            return MultiProvider(
+                providers: [
+                  Provider<Thread>.value(value: wts.thread),
+                  ProxyProvider<Thread, ChatBloc>(
+                    create: (BuildContext context) =>
+                        ChatBloc(thread: context.read<Thread>()),
+                    update: (BuildContext _, Thread thread, ChatBloc? value) =>
+                        ChatBloc(thread: thread),
+                  ),
+                  ProxyProvider<ChatBloc, SendCubit>(
+                    create: (BuildContext context) => SendCubit(
+                        chatBloc: context.read<ChatBloc>(),
+                        thread: context.read<Thread>()),
+                    update: (BuildContext context, ChatBloc chatBloc,
+                            SendCubit? value) =>
+                        SendCubit(
+                            thread: context.read<Thread>(), chatBloc: chatBloc),
+                  )
+                ],
+                builder: (context, _) => const FooterLayout(
+                      footer: KeyboardAttachable(
+                        child: ChatBar(),
+                      ),
                       child: Chats(),
-                    ),
-                  )),
+                    ));
+          }),
         ));
   }
 

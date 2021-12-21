@@ -61,9 +61,9 @@ class MainCubit extends Cubit<MainState> {
       return MainState.groupless();
     } else {
       final group = Club(
-          id: data.user_to_group[0].group.id,
-          name: data.user_to_group[0].group.group_name,
-          admin: data.user_to_group[0].admin);
+          id: data.user_to_group[0].group!.id,
+          name: data.user_to_group[0].group!.name,
+          admin: data.user_to_group[0].owner ?? false);
 
       return MainState.withClub(group);
     }

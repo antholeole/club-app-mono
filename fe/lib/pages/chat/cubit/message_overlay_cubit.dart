@@ -2,9 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fe/data/models/message.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
-import 'package:sealed_unions/implementations/union_3_impl.dart';
 
 part 'message_overlay_state.dart';
 

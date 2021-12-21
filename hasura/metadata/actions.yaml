@@ -17,6 +17,15 @@ actions:
       value_from_env: WEBHOOK_SECRET_KEY
   permissions:
   - role: user
+- name: join_role_with_join_codes
+  definition:
+    kind: synchronous
+    handler: '{{WEBHOOK_URL}}/api/group/join/joincode'
+    headers:
+    - name: WEBHOOK_SECRET_KEY
+      value_from_env: WEBHOOK_SECRET_KEY
+  permissions:
+  - role: user
 - name: refresh_access_token
   definition:
     kind: synchronous
@@ -39,10 +48,12 @@ custom_types:
       value: Google
   input_objects:
   - name: RefreshRequest
+  - name: JoinRoleWithJoinCodesInput
   objects:
   - name: SampleOutput
   - name: accessToken
   - name: AccessToken
   - name: AuthenticationResponse
   - name: ThreadResponse
+  - name: JoinRoleWithJoinCodesOutput
   scalars: []

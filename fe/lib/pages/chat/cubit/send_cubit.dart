@@ -1,11 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:fe/data/models/thread.dart';
 import 'package:fe/pages/chat/bloc/chat_bloc.dart';
 import 'package:fe/pages/chat/cubit/data_carriers/sending_message.dart';
-import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
-import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter/material.dart';
@@ -15,27 +14,26 @@ import 'package:fe/gql/insert_message.req.gql.dart';
 part 'send_state.dart';
 
 class SendCubit extends Cubit<List<SendState>> {
-  final ThreadCubit _threadCubit;
+  final Thread _thread;
   final ChatBloc _chatBloc;
 
-  SendCubit({required ThreadCubit threadCubit, required ChatBloc chatBloc})
-      : _threadCubit = threadCubit,
+  SendCubit({required Thread thread, required ChatBloc chatBloc})
+      : _thread = thread,
         _chatBloc = chatBloc,
-        super([]) {
-    _threadCubit.stream.listen((event) => emit([]));
-  }
+        super([]);
 
   final _gqlClient = getIt<AuthGqlClient>();
-  final _localUserService = getIt<LocalUserService>();
 
   Future<void> send(String message) async {
-    final currentThreadId = _threadCubit.state.thread!.id;
-
     final sendingMessage = SendingMessage(message: message);
 
     emit(List.of(state)..add(SendState.sending(message: sendingMessage)));
 
-    await _send(sendingMessage, currentThreadId);
+    await _send(sendingMessage, _thread.id);
+  }
+
+  void clear() {
+    emit([]);
   }
 
   void _replaceSendState(SendState newSendState) {
@@ -50,15 +48,12 @@ class SendCubit extends Cubit<List<SendState>> {
   }
 
   Future<void> _send(SendingMessage sendingMessage, UuidType threadId) async {
-    final selfId = await _localUserService.getLoggedInUserId();
-
     try {
       await _gqlClient
           .request(GInsertMessageReq((q) => q
             ..vars.message = sendingMessage.message
-            ..vars.selfId = selfId
             ..vars.messageId = sendingMessage.id
-            ..vars.threadId = threadId))
+            ..vars.sourceId = threadId))
           .first;
     } on Failure catch (f) {
       _replaceSendState(

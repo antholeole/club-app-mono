@@ -1,5 +1,6 @@
 import 'package:badges/badges.dart';
 import 'package:fe/data/models/reaction.dart';
+import 'package:fe/data/models/thread.dart';
 import 'package:fe/pages/chat/view/widgets/chats/message/overlays/reactions_overlay/reaction_display.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
@@ -13,30 +14,37 @@ import 'package:fe/gql/upsert_reaction.var.gql.dart';
 import 'package:fe/gql/upsert_reaction.req.gql.dart';
 import 'package:fe/gql/upsert_reaction.data.gql.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../../../../test_helpers/get_it_helpers.dart';
 import '../../../../../../../../test_helpers/pump_app.dart';
 import '../../../../../../../../test_helpers/stub_gql_response.dart';
 
 void main() {
+  final fakeThread = Thread(name: 'asdasdasdasdas', id: UuidType.generate());
+
   setUp(() async {
     await registerAllMockServices();
   });
 
+  Widget wrapWithDependencies({required Widget child}) {
+    return Provider.value(value: fakeThread, child: child);
+  }
+
   testWidgets('should show badge based on reaction count', (tester) async {
     const reactionCount = 3;
 
-    await tester.pumpApp(Column(
+    await tester.pumpApp(wrapWithDependencies(
+        child: Column(
       children: [
         ReactionDisplay(
-            reactionType: ReactionType.Cry,
+            reactionType: ReactionType.Angry,
             reactionCount: reactionCount,
             selfReacted: false,
             messageId: UuidType.generate(),
-            userId: UuidType.generate(),
             onReacted: (_, __) {})
       ],
-    ));
+    )));
     expect(
         ((find.byType(Badge).evaluate().first.widget as Badge).badgeContent
                 as Text)
@@ -53,17 +61,17 @@ void main() {
         return GUpsertReactionData.fromJson({})!;
       });
 
-      await tester.pumpApp(Column(
+      await tester.pumpApp(wrapWithDependencies(
+          child: Column(
         children: [
           ReactionDisplay(
-              reactionType: ReactionType.Cry,
+              reactionType: ReactionType.Angry,
               reactionCount: 3,
               selfReacted: true,
               messageId: UuidType.generate(),
-              userId: UuidType.generate(),
               onReacted: (_, __) {})
         ],
-      ));
+      )));
 
       await tester.tap(find.byType(ReactionDisplay));
 
@@ -85,17 +93,17 @@ void main() {
         return GUpsertReactionData.fromJson({})!;
       });
 
-      await tester.pumpApp(Column(
+      await tester.pumpApp(wrapWithDependencies(
+          child: Column(
         children: [
           ReactionDisplay(
-              reactionType: ReactionType.Cry,
+              reactionType: ReactionType.Angry,
               reactionCount: 3,
               selfReacted: false,
               messageId: UuidType.generate(),
-              userId: UuidType.generate(),
               onReacted: (_, __) {})
         ],
-      ));
+      )));
 
       await tester.tap(find.byType(ReactionDisplay));
 
@@ -113,17 +121,17 @@ void main() {
           getIt<AuthGqlClient>(),
           error: (_) => Failure(status: FailureStatus.GQLMisc));
 
-      await tester.pumpApp(Column(
+      await tester.pumpApp(wrapWithDependencies(
+          child: Column(
         children: [
           ReactionDisplay(
-              reactionType: ReactionType.Cry,
+              reactionType: ReactionType.Angry,
               reactionCount: 3,
               selfReacted: true,
               messageId: UuidType.generate(),
-              userId: UuidType.generate(),
               onReacted: (_, __) {})
         ],
-      ));
+      )));
 
       await tester.tap(find.byType(ReactionDisplay));
 

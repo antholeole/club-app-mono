@@ -1,16 +1,18 @@
 import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/pages/profile/cubit/name_change_cubit.dart';
+import 'package:fe/services/local_data/token_manager.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
 import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/shared_widgets/user_avatar.dart';
 import 'package:fe/stdlib/theme/button_group.dart';
-import 'package:fe/stdlib/theme/loadable_tile_button.dart';
+import 'package:fe/stdlib/theme/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
+import '../../../config.dart';
 import '../../../service_locator.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -34,6 +36,7 @@ class ProfileView extends StatelessWidget {
   static const CANCEL_NAME_CHANGE_COPY = 'cancel';
 
   final _handler = getIt<Handler>();
+  final _config = getIt<Config>();
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +51,7 @@ class ProfileView extends StatelessWidget {
         Text(
           user.name,
           style: Theme.of(context).textTheme.headline5,
+          textAlign: TextAlign.center,
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,6 +70,17 @@ class ProfileView extends StatelessWidget {
                           withPrefix: "Couldn't change name"),
                     )),
             _buildLogOutButton(context),
+            if (!_config.prod)
+              ButtonGroup(name: 'debug', buttons: [
+                ListTile(
+                    title: const Text('selfid'),
+                    onTap: () => print(context.read<UserCubit>().user.id)),
+                ListTile(
+                    title: const Text('a-token'),
+                    onTap: () => getIt<TokenManager>()
+                        .read()
+                        .then((t) => print('Bearer $t')))
+              ])
           ],
         )
       ],
@@ -74,19 +89,25 @@ class ProfileView extends StatelessWidget {
 
   Widget _buildChangeNameButton(bool loading, BuildContext context) {
     return ButtonGroup(name: 'Profile', buttons: [
-      LoadableTileButton(
-          onClick: () => _showChangeNameDialog(context),
-          text: ProfileView.CHANGE_NAME_COPY,
-          loading: loading),
+      ListTile(
+        onTap: () => _showChangeNameDialog(context),
+        title: loading
+            ? const Loader(
+                size: 12,
+              )
+            : const Text(ProfileView.CHANGE_NAME_COPY),
+      ),
     ]);
   }
 
   Widget _buildLogOutButton(BuildContext context) {
     return ButtonGroup(buttons: [
-      LoadableTileButton(
-          onClick: context.read<MainCubit>().logOut,
-          color: Colors.red,
-          text: ProfileView.LOGOUT_COPY),
+      ListTile(
+          onTap: context.read<MainCubit>().logOut,
+          title: const Text(
+            ProfileView.LOGOUT_COPY,
+            style: TextStyle(color: Colors.red),
+          )),
     ]);
   }
 

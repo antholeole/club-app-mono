@@ -1,0 +1,12 @@
+mutation RemoveRoleFromThread($roleId:uuid!, $threadId: uuid!) {
+  delete_role_to_threads(where: {
+    role_id: {
+      _eq: $roleId
+    },
+    thread_id: {
+      _eq: $threadId
+    }
+  }) {
+    affected_rows
+  }
+}

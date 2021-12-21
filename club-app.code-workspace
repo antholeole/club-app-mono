@@ -21,8 +21,8 @@
 			"name": "🐦 Flutter"
 		},
 		{
-			"path": "knowledge",
-			"name": "🧠 Knowledge"
+			"path": "infra/cdk",
+			"name": "🎲 CDK"
 		},
 		{
 			"path": "site",
@@ -37,20 +37,14 @@
 			{
 				"splitTerminals": [
 					{
-						"name": "flutter",
-						"commands": [
-							"cd fe"
-						]
+						"name": "flutter"
 					}
 				]
 			},
 			{
 				"splitTerminals": [
 					{
-						"name": "backend",
-						"commands": [
-							"make run"
-						]
+						"name": "backend"
 					}
 				]
 			},

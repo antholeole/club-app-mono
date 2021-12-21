@@ -7,7 +7,19 @@ query QueryUsersInGroup($groupId: uuid!) {
     user {
       name,
       profile_picture,
-      id
+      id,
+      user_to_roles(where: {
+        role: {
+          group_id: {
+            _eq: $groupId
+					}
+        }
+      }) {
+        role {
+          name,
+          id
+        }
+      }
     }
   }
 }

@@ -18,9 +18,9 @@ void main() {
 
   testWidgets('should display all unique reaction types', (tester) async {
     final reactionTypes = [
-      [ReactionType.Angry, ReactionType.Angry, ReactionType.Cry],
+      [ReactionType.Angry, ReactionType.Angry, ReactionType.Straight],
       [ReactionType.Angry, ReactionType.Wow, ReactionType.Laugh],
-      [ReactionType.Like, ReactionType.Like, ReactionType.Laugh],
+      [ReactionType.Straight, ReactionType.Straight, ReactionType.Laugh],
       [ReactionType.Wow],
       []
     ];

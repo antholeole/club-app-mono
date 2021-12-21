@@ -1,7 +1,11 @@
 import 'package:fe/data/models/club.dart';
+import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/groups/view/widgets/groups_tabs/club/club_tab.dart';
 import 'package:fe/pages/groups/view/widgets/groups_tabs/selected_tab_indicator.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
+import 'package:fe/pages/main/cubit/user_cubit.dart';
+import 'package:fe/service_locator.dart';
+import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,21 +13,31 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../../test_helpers/fixtures/mocks.dart';
+import 'package:fe/gql/query_users_in_group.data.gql.dart';
+import 'package:fe/gql/query_users_in_group.var.gql.dart';
+
+import '../../../../../../test_helpers/get_it_helpers.dart';
+import '../../../../../../test_helpers/mocks.dart';
 import '../../../../../../test_helpers/pump_app.dart';
+import '../../../../../../test_helpers/stub_gql_response.dart';
 
 void main() {
   final MainCubit mockMainCubit = MockMainCubit.getMock();
+  final User fakeUser = User(id: UuidType.generate(), name: 'asdsd');
   final Club fakeClub =
       Club(id: UuidType.generate(), name: 'fake club', admin: false);
   final Club otherFakeClub =
       Club(id: UuidType.generate(), name: 'fake club 2', admin: false);
 
+  setUp(() {
+    registerAllMockServices();
+  });
+
   Widget wrapWithDependencies({required Widget child}) {
-    return BlocProvider<MainCubit>(
-      create: (context) => mockMainCubit,
-      child: child,
-    );
+    return MultiBlocProvider(providers: [
+      BlocProvider<MainCubit>(create: (_) => mockMainCubit),
+      BlocProvider<UserCubit>(create: (_) => UserCubit(fakeUser)),
+    ], child: child);
   }
 
   testWidgets('should display selected if selected', (tester) async {
@@ -55,11 +69,16 @@ void main() {
   testWidgets('should switch group if tapped', (tester) async {
     when(() => mockMainCubit.state).thenReturn(MainState.withClub(fakeClub));
 
+    stubGqlResponse<GQueryUsersInGroupData, GQueryUsersInGroupVars>(
+        getIt<AuthGqlClient>(),
+        data: (_) => GQueryUsersInGroupData.fromJson({})!);
+
     await tester.pumpApp(wrapWithDependencies(
       child: Provider(create: (_) => fakeClub, child: const ClubTab()),
     ));
 
-    await tester.tap(find.byType(ClubTab));
+    await tester.tap(find.text(fakeClub.name), warnIfMissed: false);
+    await tester.pump();
 
     verify(() => mockMainCubit.setClub(fakeClub)).called(1);
   });

@@ -5,8 +5,8 @@ import 'package:clock/clock.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fe/data/models/message.dart';
 import 'package:fe/data/models/reaction.dart';
+import 'package:fe/data/models/thread.dart';
 import 'package:fe/data/models/user.dart';
-import 'package:fe/pages/chat/cubit/thread_cubit.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
@@ -16,8 +16,8 @@ import 'package:fe/gql/get_new_messages.req.gql.dart';
 import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
-import 'package:fe/gql/query_messages_in_thread.req.gql.dart';
-import 'package:fe/gql/query_messages_in_thread.data.gql.dart';
+import 'package:fe/gql/query_messages_in_chat.req.gql.dart';
+import 'package:fe/gql/query_messages_in_chat.data.gql.dart';
 import 'package:fe/gql/get_new_reactions.req.gql.dart';
 
 import '../../../service_locator.dart';
@@ -29,17 +29,17 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   static const SINGLE_QUERY_LIMIT = 20;
 
   final _gqlClient = getIt<AuthGqlClient>();
-  final ThreadCubit _threadCubit;
+  final Thread _thread;
 
   final List<StreamSubscription> _subscriptions = [];
 
-  ChatBloc({required ThreadCubit threadCubit})
-      : _threadCubit = threadCubit,
+  ChatBloc({required Thread thread})
+      : _thread = thread,
         super(ChatState.loading()) {
     on<FetchMessagesEvent>((event, emit) => _fetchMessages(emit),
         transformer: droppable());
     on<ThreadChangeEvent>((event, emit) => _switchThread(emit));
-    _threadCubit.stream.listen((event) => add(ThreadChangeEvent()));
+
     on<_NewMessageEvent>((event, emit) => emit(ChatState.fetchedMessages(
         FetchedMessages.withNewMessage(
             old: state.join((fm) => fm, (_) => null, (_) => null, (_) => null)!,
@@ -49,9 +49,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     add(ThreadChangeEvent());
   }
 
-  Stream<_UpdatedReactionEvent> _newReactionsStream(UuidType threadId) async* {
+  Stream<_UpdatedReactionEvent> _newReactionsStream(UuidType chatId) async* {
     await for (final reactions in _gqlClient
-        .request(GGetNewReactionsReq((q) => q..vars.threadId = threadId))) {
+        .request(GGetNewReactionsReq((q) => q..vars.sourceId = chatId))) {
       for (final reactionData in reactions.message_reactions) {
         final reaction = Reaction(
             messageId: reactionData.message.id,
@@ -80,9 +80,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
   }
 
-  Stream<Message> _newMessageStream(UuidType threadId) async* {
+  Stream<Message> _newMessageStream(UuidType chatId) async* {
     await for (final messages in _gqlClient
-        .request(GGetNewMessagesReq((q) => q..vars.threadId = threadId))
+        .request(GGetNewMessagesReq((q) => q..vars.sourceId = chatId))
         .map((resp) => resp.messages.map((data) => Message(
               user: User(
                   id: data.user.id,
@@ -112,7 +112,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   Future<void> _fetchMessages(Emitter<ChatState> emit) async {
-    GQueryMessagesInThreadData resp;
+    GQueryMessagesInChatData resp;
 
     final before = state.join((fm) {
           if (fm.messages.isNotEmpty) {
@@ -123,10 +123,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     try {
       resp = await _gqlClient
-          .request(GQueryMessagesInThreadReq((q) => q
+          .request(GQueryMessagesInChatReq((q) => q
             ..fetchPolicy = FetchPolicy.NetworkOnly
             ..vars.before = before
-            ..vars.threadId = _threadCubit.state.thread!.id))
+            ..vars.threadId = _thread.id))
           .first;
     } on Failure catch (f) {
       emit(ChatState.failure(f));
@@ -164,7 +164,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   void _handleUpdatedReaction(
-      _UpdatedReactionEvent event, Emitter<ChatState> emitter) {
+      _UpdatedReactionEvent event, Emitter<ChatState> emit) {
     FetchedMessages? old =
         state.join((fm) => fm, (_) => null, (_) => null, (_) => null);
     if (old == null) {
@@ -181,23 +181,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   Future<void> _switchThread(Emitter<ChatState> emit) async {
-    final newThread = _threadCubit.state.thread;
-
-    _subscriptions.clear();
-
-    if (newThread == null) {
-      emit(ChatState.noThread());
-      return;
-    }
-
     emit(ChatState.loading());
 
     await _fetchMessages(emit);
 
     _subscriptions.addAll([
-      _newMessageStream(newThread.id).listen(
+      _newMessageStream(_thread.id).listen(
           (newMessage) => add(_NewMessageEvent(newMessage: newMessage))),
-      _newReactionsStream(newThread.id)
+      _newReactionsStream(_thread.id)
           .listen((updatedReactionEvent) => add(updatedReactionEvent))
     ]);
   }

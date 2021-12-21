@@ -1,6 +1,7 @@
 import 'package:fe/flows/app_state.dart';
 import 'package:fe/service_locator.dart';
-import 'package:fe/stdlib/theme/colors.dart';
+import 'package:fe/stdlib/theme/club_theme.dart';
+
 import 'package:fe/services/toaster/toaster.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,22 +27,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-          primaryColorBrightness: Brightness.light,
-          textTheme: const TextTheme(
-              caption: TextStyle(
-            color: Colors.grey,
-            fontSize: 14,
-          )),
-          primaryColor: primaryColor,
-          primarySwatch: Colors.red,
-          bottomSheetTheme: BottomSheetThemeData(
-              backgroundColor: Colors.black.withOpacity(0))),
+      theme: clubTheme,
       home: AppState.getFlow(context),
       builder: (innerContext, router) => PlatformWidgetBuilder(
-          cupertino: (_, child, __) => CupertinoTheme(
-              data: const CupertinoThemeData(primaryColor: primaryColor),
-              child: child!),
+          cupertino: (_, child, __) =>
+              CupertinoTheme(data: const CupertinoThemeData(), child: child!),
           //need toaster to be able to access overlay
           child: Overlay(
             initialEntries: [

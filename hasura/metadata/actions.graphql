@@ -12,6 +12,12 @@ type Mutation {
 }
 
 type Mutation {
+  join_role_with_join_codes (
+    join_codes: [String]!
+  ): JoinRoleWithJoinCodesOutput
+}
+
+type Mutation {
   refresh_access_token (
     refreshToken: String!
     userId: uuid!
@@ -26,6 +32,10 @@ enum IdentityProvider {
 input RefreshRequest {
   refreshToken : String!
   userId : uuid!
+}
+
+input JoinRoleWithJoinCodesInput {
+  join_codes : [String]!
 }
 
 type SampleOutput {
@@ -53,5 +63,9 @@ type AuthenticationResponse {
 type ThreadResponse {
   id : uuid!
   name : String
+}
+
+type JoinRoleWithJoinCodesOutput {
+  joined : [String]!
 }
 

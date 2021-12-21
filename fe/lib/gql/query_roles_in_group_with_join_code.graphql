@@ -1,0 +1,13 @@
+query QueryRolesInGroupWithJoinCode($groupId: uuid!) {
+  roles(where: {
+    group_id: {
+      _eq: $groupId
+    }
+  }) {
+    name,
+    id,
+    join_token {
+      token
+    }
+  }
+}

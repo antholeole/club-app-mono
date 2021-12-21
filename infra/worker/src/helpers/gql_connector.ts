@@ -1,5 +1,4 @@
 import { StatusError } from 'itty-router-extras'
-import { HASURA_ENDPOINT } from '../constants'
 
 export const gqlReq = async <T>(req: string): Promise<T> => {
     let response: Response
@@ -26,5 +25,10 @@ export const gqlReq = async <T>(req: string): Promise<T> => {
     }
 
     const json = await response.json()
+
+    if (json.errors) {
+        throw new StatusError(400, json.errors[0].message)
+    }
+
     return json.data
 }

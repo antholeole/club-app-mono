@@ -5,7 +5,6 @@ import 'package:fe/pages/chat/view/widgets/chats/message/message_display.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/theme/loader.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
 

@@ -7,7 +7,7 @@ import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import '../../../test_helpers/fixtures/mocks.dart';
+import '../../../test_helpers/mocks.dart';
 
 void main() {
   final caller = MockCaller();
@@ -15,7 +15,7 @@ void main() {
   final fakeToast = Toast(
       message: 'hi',
       type: ToastType.Success,
-      expire: false,
+      expireAt: null,
       id: UuidType.generate());
 
   final fakeToastExpires = Toast.customExpire(

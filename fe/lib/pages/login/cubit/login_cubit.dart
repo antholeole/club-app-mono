@@ -42,7 +42,8 @@ class LoginCubit extends Cubit<LoginState> {
           break;
       }
     } on _UserDeniedException catch (_) {
-      emit(LoginState.initial());
+      emit(LoginState.failure(Failure(
+          status: FailureStatus.Unknown, message: 'Login process aborted.')));
       return;
     } on Exception catch (e) {
       emit(LoginState.failure(

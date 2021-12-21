@@ -6,12 +6,12 @@ import 'package:fe/pages/groups/view/widgets/groups_tabs/club/club_tab.dart';
 import 'package:fe/pages/groups/view/widgets/groups_tabs/dm/dm_tab.dart';
 import 'package:fe/pages/groups/view/widgets/groups_tabs/groups_tab.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
+import 'package:fe/pages/main/view/widgets/group_joiner.dart';
 import 'package:fe/stdlib/shared_widgets/gql_operation.dart';
 import 'package:fe/gql/query_self_groups.var.gql.dart';
 import 'package:fe/gql/query_self_groups.data.gql.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 
 class GroupsPage extends StatelessWidget {
   const GroupsPage({Key? key}) : super(key: key);
@@ -47,20 +47,17 @@ class GroupsView extends StatelessWidget {
             final clubs = [
               ...data.admin_clubs.map((adminGroup) => Club(
                   admin: true,
-                  id: adminGroup.group.id,
-                  joinToken: adminGroup.group.group_join_tokens.isEmpty
-                      ? null
-                      : adminGroup.group.group_join_tokens.first.join_token,
-                  name: adminGroup.group.group_name)),
+                  id: adminGroup.group!.id,
+                  name: adminGroup.group!.name)),
               ...data.member_clubs.map((memberGroup) => Club(
                   admin: false,
-                  id: memberGroup.group.id,
-                  name: memberGroup.group.group_name))
+                  id: memberGroup.group!.id,
+                  name: memberGroup.group!.name))
             ];
 
             final dms = data.dms
                 .map((memberGroup) => Dm(
-                    users: memberGroup.thread.user_to_threads
+                    users: memberGroup.user_to_dms
                         .where((user) =>
                             user.user.id != context.read<UserCubit>().user.id)
                         .map((user) => User(
@@ -68,8 +65,8 @@ class GroupsView extends StatelessWidget {
                             id: user.user.id,
                             profilePictureUrl: user.user.profile_picture))
                         .toList(),
-                    id: memberGroup.thread.id,
-                    name: memberGroup.thread.name))
+                    id: memberGroup.id,
+                    name: memberGroup.name))
                 .toList();
 
             return Theme(
@@ -81,6 +78,10 @@ class GroupsView extends StatelessWidget {
                     buildTab: () => const ClubTab(),
                     groups: clubs,
                     header: 'Your Clubs',
+                    onAdd: () => context
+                        .read<GroupJoiner>()
+                        .showPrompt()
+                        .then((_) => context.read<GroupReqCubit>().refresh()),
                     noElementsText: NO_CLUBS_TEXT,
                   ),
                   GroupsTab<Dm>(

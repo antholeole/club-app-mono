@@ -1,0 +1,18 @@
+query QueryAllRolesRelativeToThread($threadId: uuid!, $groupId: uuid!) {
+  roles(where: {
+    group_id: {
+      _eq: $groupId
+    }
+  }) {
+    name,
+    role_to_threads(where: {
+      thread_id: {
+        _eq: $threadId
+      }
+    }) {
+      role_id
+    },
+    name,
+    id
+  }
+}

@@ -1,5 +1,4 @@
-import 'dart:ui';
-
+import 'package:fe/data/models/thread.dart';
 import 'package:fe/pages/chat/bloc/chat_bloc.dart';
 import 'package:fe/pages/chat/cubit/message_overlay_cubit.dart';
 import 'package:fe/pages/chat/cubit/send_cubit.dart';
@@ -60,7 +59,7 @@ class _ChatsState extends State<Chats> {
     int itemCount;
 
     if (messagesState.messages.isEmpty && unsents.isEmpty) {
-      return _buildNoChats();
+      return _buildNoChats(context.read<Thread>());
     }
 
     if (messagesState.hasReachedMax) {
@@ -124,7 +123,7 @@ class _ChatsState extends State<Chats> {
     ));
   }
 
-  Widget _buildNoChats() {
+  Widget _buildNoChats(Thread thread) {
     return Container(
       width: double.infinity,
       child: Padding(
@@ -132,7 +131,7 @@ class _ChatsState extends State<Chats> {
         child: Column(
           children: [
             Chats.NO_MESSAGES_COPY,
-            'Send one to start the conversation!'
+            if (!thread.isViewOnly) 'Send one to start the conversation!'
           ]
               .map((e) => Text(e, style: Theme.of(context).textTheme.caption))
               .toList(),

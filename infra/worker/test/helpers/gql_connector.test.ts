@@ -1,4 +1,3 @@
-import { HASURA_ENDPOINT } from '../../src/constants'
 import { gqlReq } from '../../src/helpers/gql_connector'
 
 describe('gql connector', () => {
@@ -11,7 +10,7 @@ describe('gql connector', () => {
                 fake: 'Data'
             }
         }), {
-            status: 200 
+            status: 200
         })
     })
 
@@ -20,7 +19,7 @@ describe('gql connector', () => {
             id
       }
     }`
-        
+
     test('should post to HASURA_ENDPOINT w/ admin header and stringified body', async () => {
         fetchMock.mockResolvedValueOnce(validResponse)
 
@@ -38,14 +37,29 @@ describe('gql connector', () => {
     })
 
     describe('on ok', () => {
-        beforeEach(() => {
-            fetchMock.mockResolvedValueOnce(validResponse)
+        test('should throw if body.errors present', async () => {
+            const message = 'You have an error'
+            const errorResponse = new Response(JSON.stringify({
+                errors: [{
+                    message: message
+                }]
+            }), {
+                status: 200
+            })
+
+            fetchMock.mockResolvedValueOnce(errorResponse)
+
+            await expect(async () => await gqlReq(fakeQuery)).toThrowStatusError(400, 'You have an error')
+
+
         })
 
         test('should return body.data as json', async () => {
+            fetchMock.mockResolvedValueOnce(validResponse)
+
             const resp = await gqlReq(fakeQuery)
 
-            expect((resp as { fake: string}).fake).toEqual('Data')
+            expect((resp as { fake: string }).fake).toEqual('Data')
         })
     })
 
@@ -60,7 +74,7 @@ describe('gql connector', () => {
             fetchMock.mockResolvedValueOnce(new Response(JSON.stringify({
                 data: 'Im a json'
             }), {
-                status: 400 
+                status: 400
             }))
 
             await expect(async () => await gqlReq(fakeQuery)).toThrowStatusError(502)

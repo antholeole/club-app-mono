@@ -28,12 +28,12 @@ export const Cards = () => {
     <div className={CardStyles.trifold}>
       <Card
         header="Schedule Events"
-        body="Schedule reoccuring or one-time events. Then, RSVP & send reminders by email or notification."
+        body="Schedule reoccuring or one-time events. Then, send reminders by notification."
         icon={<Calendar />}
       />
       <Card
         header="Keep Constant Communication"
-        body="Create chatrooms with as many people as you need."
+        body="Create threads with as many people as you need, or 1-on-1 direct messages."
         icon={<ChatbubbleEllipses />}
       />
       <Card

@@ -1,13 +1,13 @@
 subscription GetNewMessages(
-  $threadId: uuid!,
+  $sourceId: uuid!,
 ) {
   messages(
     order_by: {
       created_at: desc
     },
     where: {
-      thread_id: {
-        _eq: $threadId,
+      source_id: {
+        _eq: $sourceId,
       },
     },
     limit: 10

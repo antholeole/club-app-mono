@@ -1,0 +1,9 @@
+mutation AddThreadToGroup($groupId: uuid!, $threadName: String!) {
+  insert_threads_one(object: {
+    name: $threadName,
+    group_id: $groupId
+  }) {
+    id,
+    name
+  }
+}

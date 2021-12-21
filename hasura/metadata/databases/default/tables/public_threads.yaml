@@ -8,28 +8,79 @@ object_relationships:
 array_relationships:
 - name: messages
   using:
-    foreign_key_constraint_on:
-      column: thread_id
-      table:
+    manual_configuration:
+      column_mapping:
+        id: source_id
+      insertion_order: null
+      remote_table:
         name: messages
         schema: public
-- name: user_to_threads
+- name: role_to_threads
   using:
     foreign_key_constraint_on:
       column: thread_id
       table:
+        name: role_to_threads
+        schema: public
+- name: users
+  using:
+    manual_configuration:
+      column_mapping:
+        id: thread_id
+      insertion_order: null
+      remote_table:
         name: user_to_thread
         schema: public
+insert_permissions:
+- permission:
+    backend_only: false
+    check:
+      group:
+        users:
+          _and:
+          - user_id:
+              _eq: X-Hasura-User-Id
+          - owner:
+              _eq: true
+    columns:
+    - group_id
+    - name
+  role: user
 select_permissions:
 - permission:
     allow_aggregations: true
     columns:
     - group_id
     - id
-    - is_dm
     - name
     filter:
-      user_to_threads:
-        user_id:
-          _eq: X-Hasura-User-Id
+      group:
+        users:
+          user_id:
+            _eq: X-Hasura-User-Id
+  role: user
+update_permissions:
+- permission:
+    check: null
+    columns:
+    - name
+    filter:
+      group:
+        users:
+          _and:
+          - user_id:
+              _eq: X-Hasura-User-Id
+          - owner:
+              _eq: true
+  role: user
+delete_permissions:
+- permission:
+    filter:
+      group:
+        users:
+          _and:
+          - user_id:
+              _eq: X-Hasura-User-Id
+          - owner:
+              _eq: true
   role: user

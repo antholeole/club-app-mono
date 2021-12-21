@@ -6,8 +6,12 @@ export const errorHandler = (e: Error): Response => {
     if (e instanceof StatusError) {
         return new Response(JSON.stringify({
             'message': e.message,
-            'code': e.status
-        }))
+            extensions: {
+                'code': e.status
+            }
+        }), {
+            status: 400
+        })
     } else if (DEBUG) {
         console.error(e)
         console.error(e.message)
@@ -16,8 +20,9 @@ export const errorHandler = (e: Error): Response => {
     } else {
         return new Response(JSON.stringify({
             'message': e.message || 'unknown error',
-            'code': 400
-        }))
+        }), {
+            status: 400,
+        })
     }
 
 }

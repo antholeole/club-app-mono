@@ -15,22 +15,22 @@ insert_permissions:
 - permission:
     backend_only: false
     check:
-      _and:
-      - message:
-          group_thread:
-            user_to_threads:
-              user:
-                id:
-                  _eq: X-Hasura-User-Id
-      - user_id:
-          _eq: X-Hasura-User-Id
-      - deleted:
-          _eq: false
+      message:
+        _or:
+        - dm:
+            user_to_dms:
+              user_id:
+                _eq: X-Hasura-User-Id
+        - thread:
+            users:
+              user_id:
+                _eq: X-Hasura-User-Id
     columns:
     - deleted
     - message_id
     - reaction_type
-    - user_id
+    set:
+      user_id: x-hasura-User-Id
   role: user
 select_permissions:
 - permission:
@@ -44,16 +44,19 @@ select_permissions:
     - user_id
     filter:
       message:
-        group_thread:
-          user_to_threads:
-            user:
-              user_to_threads:
-                user_id:
-                  _eq: X-Hasura-User-Id
+        _or:
+        - dm:
+            user_to_dms:
+              user_id:
+                _eq: X-Hasura-User-Id
+        - thread:
+            users:
+              user_id:
+                _eq: X-Hasura-User-Id
   role: user
 update_permissions:
 - permission:
-    check: {}
+    check: null
     columns:
     - deleted
     filter:

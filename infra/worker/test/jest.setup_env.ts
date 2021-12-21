@@ -12,7 +12,7 @@ Object.assign(global, makeServiceWorkerEnv())
 
 global.PUBLIC_KEYS = new MockKvs()
 global.REFRESH_TOKENS = new MockKvs()
-global.ONLINE_USERS = new MockKvs()
 global.encryptWorkersKv = encryptWorkersKv
+global.HASURA_ENDPOINT = 'asdadi19042398489238499'
 global.WEBHOOK_SECRET_KEY = 'asdkaiskdaisk'
 

@@ -29,6 +29,7 @@ if (process.env.NODE_ENV === 'development') {
     new webpack.DefinePlugin({
       ENVIRONMENT: JSON.stringify('dev'),
       HASURA_PASSWORD: hasuraPassword,
+      HASURA_ENDPOINT: '"http://localhost:8080/v1/graphql"',
       SECRET: jwtSecret,
       WEBHOOK_SECRET_KEY: webhookKey
     })

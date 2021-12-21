@@ -1,6 +1,6 @@
 import 'package:fe/data/models/dm.dart';
 import 'package:fe/pages/main/cubit/main_cubit.dart';
-import 'package:fe/stdlib/theme/tile.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
 
@@ -15,7 +15,8 @@ class DmTab extends StatelessWidget {
 
     return GestureDetector(
       onTap: () => _onTap(context, dm),
-      child: Tile(
+      child: Container(
+        color: Colors.white,
         child: Row(
           children: [
             Padding(
@@ -24,10 +25,14 @@ class DmTab extends StatelessWidget {
                   height: 36,
                   selected: context.watch<MainCubit>().state.groupId == dm.id),
             ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-              child: Text(dm.name),
+            Expanded(
+              child: ListTile(
+                title: Text(
+                  dm.name,
+                  textAlign: TextAlign.start,
+                  style: const TextStyle(fontWeight: FontWeight.normal),
+                ),
+              ),
             ),
           ],
         ),
