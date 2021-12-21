@@ -3,7 +3,6 @@ import 'package:fe/data/models/reaction.dart';
 import 'package:fe/pages/chat/view/widgets/chats/message/overlays/reactions_overlay/reaction_display.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 class MessageReactionOverlay extends StatefulWidget {
   final LayerLink _link;

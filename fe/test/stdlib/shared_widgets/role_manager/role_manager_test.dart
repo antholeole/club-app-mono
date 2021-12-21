@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:fe/data/models/role.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';

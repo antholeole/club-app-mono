@@ -3,7 +3,6 @@ import 'package:fe/services/clients/gql_client/refresh_link.dart';
 import 'package:fe/services/local_data/token_manager.dart';
 import 'package:ferry/ferry.dart';
 import 'package:gql_http_link/gql_http_link.dart';
-import 'package:gql_link/gql_link.dart';
 import 'package:gql_websocket_link/gql_websocket_link.dart';
 import 'package:normalize/utils.dart';
 import 'package:http/http.dart' as http;

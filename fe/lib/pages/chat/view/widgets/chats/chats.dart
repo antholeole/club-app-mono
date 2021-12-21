@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/pages/chat/bloc/chat_bloc.dart';
 import 'package:fe/pages/chat/cubit/message_overlay_cubit.dart';

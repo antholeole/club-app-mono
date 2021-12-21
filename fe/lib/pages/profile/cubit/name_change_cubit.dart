@@ -6,7 +6,6 @@ import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
 import 'package:fe/gql/update_self_name.req.gql.dart';
 import 'package:fe/service_locator.dart';

@@ -9,7 +9,6 @@ import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/shared_widgets/user_avatar.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:fe/gql/get_or_create_dm.req.gql.dart';
 import 'package:provider/src/provider.dart';
 

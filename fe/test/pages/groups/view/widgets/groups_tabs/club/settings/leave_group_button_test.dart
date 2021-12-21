@@ -7,20 +7,16 @@ import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
-
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
-
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-
 import 'package:provider/provider.dart';
 import 'package:fe/gql/remove_self_from_group.req.gql.dart';
 import 'package:fe/gql/remove_self_from_group.data.gql.dart';
 import 'package:fe/gql/remove_self_from_group.var.gql.dart';
-
 import '../../../../../../../test_helpers/get_it_helpers.dart';
 import '../../../../../../../test_helpers/mocks.dart';
 import '../../../../../../../test_helpers/pump_app.dart';

@@ -1,5 +1,4 @@
 import 'package:fe/stdlib/shared_widgets/no_overflow_crossfade.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SendButton extends StatelessWidget {

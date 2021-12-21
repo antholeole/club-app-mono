@@ -12,7 +12,6 @@ import 'package:fe/gql/query_self_groups.var.gql.dart';
 import 'package:fe/gql/query_self_groups.data.gql.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 
 class GroupsPage extends StatelessWidget {
   const GroupsPage({Key? key}) : super(key: key);

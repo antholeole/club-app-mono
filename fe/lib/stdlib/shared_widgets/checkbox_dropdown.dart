@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class CheckboxDropdown<T extends Equatable> extends StatelessWidget {
   final List<T> _checkableItems;
