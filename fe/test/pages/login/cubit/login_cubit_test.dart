@@ -32,12 +32,17 @@ void main() {
 
     group('google auth', () {
       blocTest<LoginCubit, LoginState>(
-          'should emit inital if google auth returns null',
+          'should emit failure: aborted if google auth returns null',
           setUp: () => when(() => getIt<GoogleSignIn>().signIn())
               .thenAnswer((_) async => null),
           build: () => LoginCubit(),
           act: (cubit) => cubit.login(LoginType.Google),
-          expect: () => [LoginState.loading(), LoginState.initial()]);
+          expect: () => [
+                LoginState.loading(),
+                LoginState.failure(Failure(
+                    status: FailureStatus.Unknown,
+                    message: 'Login process aborted.'))
+              ]);
 
       blocTest<LoginCubit, LoginState>('should emit exception on exception',
           setUp: () =>

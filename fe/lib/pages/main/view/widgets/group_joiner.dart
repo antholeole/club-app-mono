@@ -18,6 +18,10 @@ class GroupJoiner {
 
 // ignore: must_be_immutable
 class GroupJoinDisplay extends StatelessWidget {
+  static const JOIN_GROUP_PROMPT_COPY = 'Enter a club\'s join code';
+  static const CANCEL_JOIN_GROUP_BUTTON_COPY = 'Cancel';
+  static const JOIN_GROUP_BUTTON_COPY = 'Join';
+
   final Widget _child;
   final _gqlClient = getIt<AuthGqlClient>();
 
@@ -40,7 +44,7 @@ class GroupJoinDisplay extends StatelessWidget {
         context: context,
         useRootNavigator: false,
         builder: (_) => PlatformAlertDialog(
-              title: const Text('Enter a club\'s join code'),
+              title: const Text(JOIN_GROUP_PROMPT_COPY),
               content: PlatformTextField(
                 controller: textEditingController,
                 hintText: 'Join code...',
@@ -50,7 +54,7 @@ class GroupJoinDisplay extends StatelessWidget {
                   cupertino: (_, __) =>
                       CupertinoDialogActionData(isDestructiveAction: true),
                   onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Cancel'),
+                  child: const Text(CANCEL_JOIN_GROUP_BUTTON_COPY),
                 ),
                 PlatformDialogAction(
                   onPressed: () {
@@ -65,7 +69,7 @@ class GroupJoinDisplay extends StatelessWidget {
                             successMessage: 'joined!')
                         .then((value) => Navigator.of(context).pop());
                   },
-                  child: const Text('Join'),
+                  child: const Text(JOIN_GROUP_BUTTON_COPY),
                 ),
               ],
             ));

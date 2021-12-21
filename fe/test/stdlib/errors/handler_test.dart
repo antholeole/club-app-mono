@@ -78,6 +78,20 @@ void main() {
                 linkException: FakeLinkException(failure))),
             equals(failure));
       });
+
+      test('inner exception is serverException should return unwrapped failure',
+          () async {
+        const serverException = ServerException(parsedResponse: Response());
+
+        final handler = Handler();
+
+        expect(
+            await handler.basicGqlErrorHandler(OperationResponse(
+                linkException: serverException,
+                operationRequest: GFakeGqlReq())),
+            equals(isA<Failure>()
+                .having((f) => f.status, 'status', FailureStatus.HttpMisc)));
+      });
     });
 
     test('should write all gql errors to custom error', () async {

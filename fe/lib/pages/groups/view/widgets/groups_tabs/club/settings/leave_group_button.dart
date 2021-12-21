@@ -14,6 +14,8 @@ import 'package:fe/gql/remove_self_from_group.req.gql.dart';
 import '../../../../../../../service_locator.dart';
 
 class LeaveGroupButton extends StatelessWidget {
+  static const LEAVE_GROUP_PROMPT_COPY = 'Leave Group';
+
   final _gqlClient = getIt<AuthGqlClient>();
 
   @visibleForTesting
@@ -47,7 +49,7 @@ class LeaveGroupButton extends StatelessWidget {
                   },
                       errorMessage: 'failed to leave group',
                       successMessage: 'Left group ${group.name}'),
-              actionText: 'Leave Group'))),
+              actionText: LEAVE_GROUP_PROMPT_COPY))),
     );
   }
 }

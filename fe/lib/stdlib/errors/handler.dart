@@ -64,7 +64,7 @@ class Handler {
         return resp.linkException!.originalException;
       } else if (resp.linkException is ServerException) {
         return Failure(
-            status: FailureStatus.Unknown,
+            status: FailureStatus.HttpMisc,
             message: (resp.linkException as ServerException)
                 .parsedResponse
                 ?.context

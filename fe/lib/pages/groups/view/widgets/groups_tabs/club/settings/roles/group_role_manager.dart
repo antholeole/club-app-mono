@@ -15,14 +15,17 @@ import 'package:fe/gql/add_role_to_group.var.gql.dart';
 
 import '../../../../../../../../service_locator.dart';
 
-class RoleManager extends StatefulWidget {
-  const RoleManager({Key? key}) : super(key: key);
+class GroupRoleManager extends StatefulWidget {
+  static const NEW_ROLE_PROMPT_COPY = 'Enter the new role\'s name';
+  static const ADD_NEW_ROLE_BUTTON_COPY = 'Create';
+
+  const GroupRoleManager({Key? key}) : super(key: key);
 
   @override
-  State<RoleManager> createState() => _RoleManagerState();
+  State<GroupRoleManager> createState() => _GroupRoleManagerState();
 }
 
-class _RoleManagerState extends State<RoleManager> {
+class _GroupRoleManagerState extends State<GroupRoleManager> {
   final AuthGqlClient _gqlClient = getIt<AuthGqlClient>();
 
   @override
@@ -78,7 +81,7 @@ class _RoleManagerState extends State<RoleManager> {
         context: context,
         useRootNavigator: false,
         builder: (_) => PlatformAlertDialog(
-              title: const Text('Enter the new role\'s name'),
+              title: const Text(GroupRoleManager.NEW_ROLE_PROMPT_COPY),
               content: PlatformTextField(
                 controller: textEditingController,
                 hintText: 'New name...',
@@ -106,7 +109,7 @@ class _RoleManagerState extends State<RoleManager> {
                           'failed to add role ${textEditingController.text}',
                       successMessage:
                           'added role ${textEditingController.text}.'),
-                  child: const Text('Create'),
+                  child: const Text(GroupRoleManager.ADD_NEW_ROLE_BUTTON_COPY),
                 ),
               ],
             ));

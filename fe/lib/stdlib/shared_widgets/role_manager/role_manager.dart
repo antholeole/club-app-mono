@@ -36,6 +36,8 @@ class RoleManagerData {
 
 /// make initalAddableRoles null if not addable.
 class RoleManager extends StatefulWidget {
+  static const CONFIRM_REMOVE_TEXT = 'Remove';
+
   final Widget _header;
   final List<Role> _hasRoles;
   final RoleManagerData? _roleManagerData;
@@ -113,7 +115,7 @@ class _RoleManagerState extends State<RoleManager> {
           confirmDismissText:
               widget._roleManagerData!.removeRolePromptText(role),
           onConfirm: () => _removeRole(role, context),
-          actionText: 'Remove',
+          actionText: RoleManager.CONFIRM_REMOVE_TEXT,
           child: tile);
     }
 
