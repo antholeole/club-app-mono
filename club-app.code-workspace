@@ -25,6 +25,10 @@
 			"name": "🎲 CDK"
 		},
 		{
+			"path": "infra/cdk",
+			"name": "🎲 CDK"
+		},
+		{
 			"path": "site",
 			"name": "⚛️ Website"
 		}
