@@ -14,6 +14,7 @@ import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
 import 'package:fe/gql/query_self_group_preview.data.gql.dart';
 import 'package:fe/gql/query_self_group_preview.req.gql.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../../../service_locator.dart';
 
@@ -51,8 +52,9 @@ class MainCubit extends Cubit<MainState> {
     await Future.wait([
       _localFileStore.delete(LocalStorageType.LocalUser),
       _secureStorage.deleteAll(),
-      _tokenManager.delete()
+      _tokenManager.delete(),
     ]);
+    Sentry.configureScope((scope) => scope.user = null);
     emit(MainState.logOut(withError: withError));
   }
 

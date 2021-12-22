@@ -13,6 +13,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gql_exec/gql_exec.dart';
 import 'package:http/http.dart' as http;
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 class Handler {
   final http.Client _client = getIt<http.Client>();
@@ -20,7 +21,7 @@ class Handler {
   final Connectivity _connectivity = getIt<Connectivity>();
 
   Future<void> reportUnknown(Object e) async {
-    debugPrint(e.toString());
+    await Sentry.captureException(e);
   }
 
   Future<Failure?> checkConnectivity() async {
@@ -57,6 +58,12 @@ class Handler {
   }
 
   Future<Failure> basicGqlErrorHandler(OperationResponse resp) async {
+    final f = await _basicGqlErrorHandler(resp);
+    await Sentry.captureException(f, hint: 'basicGqlErrorHandler');
+    return f;
+  }
+
+  Future<Failure> _basicGqlErrorHandler(OperationResponse resp) async {
     final errors = resp.graphqlErrors;
 
     if (resp.linkException != null) {
@@ -89,9 +96,10 @@ class Handler {
       return disconnectedFailure;
     }
 
-    await reportUnknown(resp.linkException ??
-        'unknown GQL error - on request ${resp.operationRequest.requestId}');
-    return Failure(status: FailureStatus.Unknown);
+    return Failure(
+        status: FailureStatus.Unknown,
+        message: resp.linkException?.toString() ??
+            'unknown GQL error - on request ${resp.operationRequest.requestId}');
   }
 
   void handleFailure(Failure f, BuildContext context,

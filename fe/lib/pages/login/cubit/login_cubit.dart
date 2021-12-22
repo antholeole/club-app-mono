@@ -12,6 +12,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:meta/meta.dart';
 import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
 import 'package:fe/schema.schema.gql.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../../../service_locator.dart';
 
@@ -67,6 +68,9 @@ class LoginCubit extends Cubit<LoginState> {
         id: backendAccessTokens.id);
 
     await _localUserService.saveChanges(localUser);
+
+    Sentry.configureScope((scope) => scope.user =
+        SentryUser(id: localUser.id.uuid, email: providerLoginDetails.email));
 
     emit(LoginState.success(localUser));
   }

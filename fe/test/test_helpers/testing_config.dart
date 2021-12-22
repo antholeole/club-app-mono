@@ -20,4 +20,7 @@ class TestingConfig extends Config {
 
   @override
   bool get prod => true;
+
+  @override
+  String get repr => 'testing';
 }

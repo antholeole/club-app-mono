@@ -136,7 +136,8 @@ void main() {
       expect(
           await handler.basicGqlErrorHandler(
               OperationResponse(operationRequest: GFakeGqlReq())),
-          equals(Failure(status: FailureStatus.Unknown)));
+          isA<Failure>()
+              .having((f) => f.status, 'status', FailureStatus.Unknown));
     });
   });
 

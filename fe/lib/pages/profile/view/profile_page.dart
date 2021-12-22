@@ -4,6 +4,8 @@ import 'package:fe/pages/profile/cubit/name_change_cubit.dart';
 import 'package:fe/services/local_data/token_manager.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
+import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/shared_widgets/user_avatar.dart';
 import 'package:fe/stdlib/theme/button_group.dart';
@@ -72,6 +74,14 @@ class ProfileView extends StatelessWidget {
             _buildLogOutButton(context),
             if (!_config.prod)
               ButtonGroup(name: 'debug', buttons: [
+                ListTile(
+                  title: const Text('throw'),
+                  onTap: () => getIt<Handler>()
+                      .reportUnknown(Exception('hi'))
+                      .then((value) => context
+                          .read<ToasterCubit>()
+                          .add(Toast(message: 'se2nd', type: ToastType.Error))),
+                ),
                 ListTile(
                     title: const Text('selfid'),
                     onTap: () => print(context.read<UserCubit>().user.id)),
