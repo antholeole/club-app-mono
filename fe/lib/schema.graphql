@@ -661,6 +661,15 @@ enum IdentityProvider {
   Google
 }
 
+input InsertImageInput {
+  sourceId: uuid!
+  uploadType: UploadType!
+}
+
+type InsertImageOutput {
+  uploadUrl: String!
+}
+
 """
 columns and relationships of "join_tokens"
 """
@@ -1259,17 +1268,157 @@ enum message_reactions_update_column {
 }
 
 """
+columns and relationships of "message_types"
+"""
+type message_types {
+  description: String
+  message_type: String!
+}
+
+"""
+aggregated selection of "message_types"
+"""
+type message_types_aggregate {
+  aggregate: message_types_aggregate_fields
+  nodes: [message_types!]!
+}
+
+"""
+aggregate fields of "message_types"
+"""
+type message_types_aggregate_fields {
+  count(columns: [message_types_select_column!], distinct: Boolean): Int!
+  max: message_types_max_fields
+  min: message_types_min_fields
+}
+
+"""
+Boolean expression to filter rows from the table "message_types". All fields are combined with a logical 'AND'.
+"""
+input message_types_bool_exp {
+  _and: [message_types_bool_exp!]
+  _not: message_types_bool_exp
+  _or: [message_types_bool_exp!]
+  description: String_comparison_exp
+  message_type: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "message_types"
+"""
+enum message_types_constraint {
+  """unique or primary key constraint"""
+  message_types_pkey
+}
+
+enum message_types_enum {
+  """default plain text message"""
+  TEXT
+}
+
+"""
+Boolean expression to compare columns of type "message_types_enum". All fields are combined with logical 'AND'.
+"""
+input message_types_enum_comparison_exp {
+  _eq: message_types_enum
+  _in: [message_types_enum!]
+  _is_null: Boolean
+  _neq: message_types_enum
+  _nin: [message_types_enum!]
+}
+
+"""
+input type for inserting data into table "message_types"
+"""
+input message_types_insert_input {
+  description: String
+  message_type: String
+}
+
+"""aggregate max on columns"""
+type message_types_max_fields {
+  description: String
+  message_type: String
+}
+
+"""aggregate min on columns"""
+type message_types_min_fields {
+  description: String
+  message_type: String
+}
+
+"""
+response of any mutation on the table "message_types"
+"""
+type message_types_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [message_types!]!
+}
+
+"""
+on conflict condition type for table "message_types"
+"""
+input message_types_on_conflict {
+  constraint: message_types_constraint!
+  update_columns: [message_types_update_column!]! = []
+  where: message_types_bool_exp
+}
+
+"""Ordering options when selecting data from "message_types"."""
+input message_types_order_by {
+  description: order_by
+  message_type: order_by
+}
+
+"""primary key columns input for table: message_types"""
+input message_types_pk_columns_input {
+  message_type: String!
+}
+
+"""
+select columns of table "message_types"
+"""
+enum message_types_select_column {
+  """column name"""
+  description
+
+  """column name"""
+  message_type
+}
+
+"""
+input type for updating data in table "message_types"
+"""
+input message_types_set_input {
+  description: String
+  message_type: String
+}
+
+"""
+update columns of table "message_types"
+"""
+enum message_types_update_column {
+  """column name"""
+  description
+
+  """column name"""
+  message_type
+}
+
+"""
 columns and relationships of "messages"
 """
 type messages {
+  body: String!
   created_at: timestamptz!
   deleted: Boolean!
 
   """An object relationship"""
   dm: dms
   id: uuid!
-  is_image: Boolean!
-  message: String!
 
   """An array relationship"""
   message_reactions(
@@ -1306,6 +1455,7 @@ type messages {
     """filter the rows returned"""
     where: message_reactions_bool_exp
   ): message_reactions_aggregate!
+  message_type: message_types_enum!
 
   """can be EITHER from DM or Thread"""
   source_id: uuid!
@@ -1362,13 +1512,13 @@ input messages_bool_exp {
   _and: [messages_bool_exp!]
   _not: messages_bool_exp
   _or: [messages_bool_exp!]
+  body: String_comparison_exp
   created_at: timestamptz_comparison_exp
   deleted: Boolean_comparison_exp
   dm: dms_bool_exp
   id: uuid_comparison_exp
-  is_image: Boolean_comparison_exp
-  message: String_comparison_exp
   message_reactions: message_reactions_bool_exp
+  message_type: message_types_enum_comparison_exp
   source_id: uuid_comparison_exp
   thread: threads_bool_exp
   updated_at: timestamptz_comparison_exp
@@ -1388,13 +1538,13 @@ enum messages_constraint {
 input type for inserting data into table "messages"
 """
 input messages_insert_input {
+  body: String
   created_at: timestamptz
   deleted: Boolean
   dm: dms_obj_rel_insert_input
   id: uuid
-  is_image: Boolean
-  message: String
   message_reactions: message_reactions_arr_rel_insert_input
+  message_type: message_types_enum
 
   """can be EITHER from DM or Thread"""
   source_id: uuid
@@ -1406,9 +1556,9 @@ input messages_insert_input {
 
 """aggregate max on columns"""
 type messages_max_fields {
+  body: String
   created_at: timestamptz
   id: uuid
-  message: String
 
   """can be EITHER from DM or Thread"""
   source_id: uuid
@@ -1420,9 +1570,9 @@ type messages_max_fields {
 order by max() on columns of table "messages"
 """
 input messages_max_order_by {
+  body: order_by
   created_at: order_by
   id: order_by
-  message: order_by
 
   """can be EITHER from DM or Thread"""
   source_id: order_by
@@ -1432,9 +1582,9 @@ input messages_max_order_by {
 
 """aggregate min on columns"""
 type messages_min_fields {
+  body: String
   created_at: timestamptz
   id: uuid
-  message: String
 
   """can be EITHER from DM or Thread"""
   source_id: uuid
@@ -1446,9 +1596,9 @@ type messages_min_fields {
 order by min() on columns of table "messages"
 """
 input messages_min_order_by {
+  body: order_by
   created_at: order_by
   id: order_by
-  message: order_by
 
   """can be EITHER from DM or Thread"""
   source_id: order_by
@@ -1488,13 +1638,13 @@ input messages_on_conflict {
 
 """Ordering options when selecting data from "messages"."""
 input messages_order_by {
+  body: order_by
   created_at: order_by
   deleted: order_by
   dm: dms_order_by
   id: order_by
-  is_image: order_by
-  message: order_by
   message_reactions_aggregate: message_reactions_aggregate_order_by
+  message_type: order_by
   source_id: order_by
   thread: threads_order_by
   updated_at: order_by
@@ -1512,6 +1662,9 @@ select columns of table "messages"
 """
 enum messages_select_column {
   """column name"""
+  body
+
+  """column name"""
   created_at
 
   """column name"""
@@ -1521,10 +1674,7 @@ enum messages_select_column {
   id
 
   """column name"""
-  is_image
-
-  """column name"""
-  message
+  message_type
 
   """column name"""
   source_id
@@ -1540,11 +1690,11 @@ enum messages_select_column {
 input type for updating data in table "messages"
 """
 input messages_set_input {
+  body: String
   created_at: timestamptz
   deleted: Boolean
   id: uuid
-  is_image: Boolean
-  message: String
+  message_type: message_types_enum
 
   """can be EITHER from DM or Thread"""
   source_id: uuid
@@ -1557,6 +1707,9 @@ update columns of table "messages"
 """
 enum messages_update_column {
   """column name"""
+  body
+
+  """column name"""
   created_at
 
   """column name"""
@@ -1566,10 +1719,7 @@ enum messages_update_column {
   id
 
   """column name"""
-  is_image
-
-  """column name"""
-  message
+  message_type
 
   """column name"""
   source_id
@@ -1662,6 +1812,19 @@ type mutation_root {
   delete single row from the table: "message_reactions"
   """
   delete_message_reactions_by_pk(message_id: uuid!, reaction_type: message_reaction_types_enum!, user_id: uuid!): message_reactions
+
+  """
+  delete data from the table: "message_types"
+  """
+  delete_message_types(
+    """filter the rows which have to be deleted"""
+    where: message_types_bool_exp!
+  ): message_types_mutation_response
+
+  """
+  delete single row from the table: "message_types"
+  """
+  delete_message_types_by_pk(message_type: String!): message_types
 
   """
   delete data from the table: "messages"
@@ -1820,6 +1983,7 @@ type mutation_root {
     """on conflict condition"""
     on_conflict: groups_on_conflict
   ): groups
+  insert_image(imageData: InsertImageInput!): InsertImageOutput
 
   """
   insert data into the table: "join_tokens"
@@ -1886,6 +2050,28 @@ type mutation_root {
     """on conflict condition"""
     on_conflict: message_reactions_on_conflict
   ): message_reactions
+
+  """
+  insert data into the table: "message_types"
+  """
+  insert_message_types(
+    """the rows to be inserted"""
+    objects: [message_types_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: message_types_on_conflict
+  ): message_types_mutation_response
+
+  """
+  insert a single row into the table: "message_types"
+  """
+  insert_message_types_one(
+    """the row to be inserted"""
+    object: message_types_insert_input!
+
+    """on conflict condition"""
+    on_conflict: message_types_on_conflict
+  ): message_types
 
   """
   insert data into the table: "messages"
@@ -2162,6 +2348,26 @@ type mutation_root {
     _set: message_reactions_set_input
     pk_columns: message_reactions_pk_columns_input!
   ): message_reactions
+
+  """
+  update data of the table: "message_types"
+  """
+  update_message_types(
+    """sets the columns of the filtered rows to the given values"""
+    _set: message_types_set_input
+
+    """filter the rows which have to be updated"""
+    where: message_types_bool_exp!
+  ): message_types_mutation_response
+
+  """
+  update single row of the table: "message_types"
+  """
+  update_message_types_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: message_types_set_input
+    pk_columns: message_types_pk_columns_input!
+  ): message_types
 
   """
   update data of the table: "messages"
@@ -2583,6 +2789,49 @@ type query_root {
   fetch data from the table: "message_reactions" using primary key columns
   """
   message_reactions_by_pk(message_id: uuid!, reaction_type: message_reaction_types_enum!, user_id: uuid!): message_reactions
+
+  """
+  fetch data from the table: "message_types"
+  """
+  message_types(
+    """distinct select on columns"""
+    distinct_on: [message_types_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [message_types_order_by!]
+
+    """filter the rows returned"""
+    where: message_types_bool_exp
+  ): [message_types!]!
+
+  """
+  fetch aggregated fields from the table: "message_types"
+  """
+  message_types_aggregate(
+    """distinct select on columns"""
+    distinct_on: [message_types_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [message_types_order_by!]
+
+    """filter the rows returned"""
+    where: message_types_bool_exp
+  ): message_types_aggregate!
+
+  """fetch data from the table: "message_types" using primary key columns"""
+  message_types_by_pk(message_type: String!): message_types
 
   """An array relationship"""
   messages(
@@ -3728,6 +3977,49 @@ type subscription_root {
   """
   message_reactions_by_pk(message_id: uuid!, reaction_type: message_reaction_types_enum!, user_id: uuid!): message_reactions
 
+  """
+  fetch data from the table: "message_types"
+  """
+  message_types(
+    """distinct select on columns"""
+    distinct_on: [message_types_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [message_types_order_by!]
+
+    """filter the rows returned"""
+    where: message_types_bool_exp
+  ): [message_types!]!
+
+  """
+  fetch aggregated fields from the table: "message_types"
+  """
+  message_types_aggregate(
+    """distinct select on columns"""
+    distinct_on: [message_types_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [message_types_order_by!]
+
+    """filter the rows returned"""
+    where: message_types_bool_exp
+  ): message_types_aggregate!
+
+  """fetch data from the table: "message_types" using primary key columns"""
+  message_types_by_pk(message_type: String!): message_types
+
   """An array relationship"""
   messages(
     """distinct select on columns"""
@@ -4421,6 +4713,12 @@ input timestamptz_comparison_exp {
   _lte: timestamptz
   _neq: timestamptz
   _nin: [timestamptz!]
+}
+
+enum UploadType {
+  GroupAvatar
+  Message
+  UserAvatar
 }
 
 """

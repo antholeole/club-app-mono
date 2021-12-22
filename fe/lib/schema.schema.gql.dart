@@ -642,6 +642,24 @@ class GIdentityProvider extends EnumClass {
       _$gIdentityProviderValueOf(name);
 }
 
+abstract class GInsertImageInput
+    implements Built<GInsertImageInput, GInsertImageInputBuilder> {
+  GInsertImageInput._();
+
+  factory GInsertImageInput([Function(GInsertImageInputBuilder b) updates]) =
+      _$GInsertImageInput;
+
+  _i2.UuidType get sourceId;
+  GUploadType get uploadType;
+  static Serializer<GInsertImageInput> get serializer =>
+      _$gInsertImageInputSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(GInsertImageInput.serializer, this)
+          as Map<String, dynamic>);
+  static GInsertImageInput? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(GInsertImageInput.serializer, json);
+}
+
 abstract class Gjoin_tokens_bool_exp
     implements Built<Gjoin_tokens_bool_exp, Gjoin_tokens_bool_expBuilder> {
   Gjoin_tokens_bool_exp._();
@@ -1456,6 +1474,224 @@ class Gmessage_reactions_update_column extends EnumClass {
       _$gmessageReactionsUpdateColumnValueOf(name);
 }
 
+abstract class Gmessage_types_bool_exp
+    implements Built<Gmessage_types_bool_exp, Gmessage_types_bool_expBuilder> {
+  Gmessage_types_bool_exp._();
+
+  factory Gmessage_types_bool_exp(
+          [Function(Gmessage_types_bool_expBuilder b) updates]) =
+      _$Gmessage_types_bool_exp;
+
+  @BuiltValueField(wireName: '_and')
+  BuiltList<Gmessage_types_bool_exp>? get G_and;
+  @BuiltValueField(wireName: '_not')
+  Gmessage_types_bool_exp? get G_not;
+  @BuiltValueField(wireName: '_or')
+  BuiltList<Gmessage_types_bool_exp>? get G_or;
+  GString_comparison_exp? get description;
+  GString_comparison_exp? get message_type;
+  static Serializer<Gmessage_types_bool_exp> get serializer =>
+      _$gmessageTypesBoolExpSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gmessage_types_bool_exp.serializer, this)
+          as Map<String, dynamic>);
+  static Gmessage_types_bool_exp? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(Gmessage_types_bool_exp.serializer, json);
+}
+
+class Gmessage_types_constraint extends EnumClass {
+  const Gmessage_types_constraint._(String name) : super(name);
+
+  static const Gmessage_types_constraint message_types_pkey =
+      _$gmessageTypesConstraintmessage_types_pkey;
+
+  static Serializer<Gmessage_types_constraint> get serializer =>
+      _$gmessageTypesConstraintSerializer;
+  static BuiltSet<Gmessage_types_constraint> get values =>
+      _$gmessageTypesConstraintValues;
+  static Gmessage_types_constraint valueOf(String name) =>
+      _$gmessageTypesConstraintValueOf(name);
+}
+
+class Gmessage_types_enum extends EnumClass {
+  const Gmessage_types_enum._(String name) : super(name);
+
+  static const Gmessage_types_enum TEXT = _$gmessageTypesEnumTEXT;
+
+  static Serializer<Gmessage_types_enum> get serializer =>
+      _$gmessageTypesEnumSerializer;
+  static BuiltSet<Gmessage_types_enum> get values => _$gmessageTypesEnumValues;
+  static Gmessage_types_enum valueOf(String name) =>
+      _$gmessageTypesEnumValueOf(name);
+}
+
+abstract class Gmessage_types_enum_comparison_exp
+    implements
+        Built<Gmessage_types_enum_comparison_exp,
+            Gmessage_types_enum_comparison_expBuilder> {
+  Gmessage_types_enum_comparison_exp._();
+
+  factory Gmessage_types_enum_comparison_exp(
+          [Function(Gmessage_types_enum_comparison_expBuilder b) updates]) =
+      _$Gmessage_types_enum_comparison_exp;
+
+  @BuiltValueField(wireName: '_eq')
+  Gmessage_types_enum? get G_eq;
+  @BuiltValueField(wireName: '_in')
+  BuiltList<Gmessage_types_enum>? get G_in;
+  @BuiltValueField(wireName: '_is_null')
+  bool? get G_is_null;
+  @BuiltValueField(wireName: '_neq')
+  Gmessage_types_enum? get G_neq;
+  @BuiltValueField(wireName: '_nin')
+  BuiltList<Gmessage_types_enum>? get G_nin;
+  static Serializer<Gmessage_types_enum_comparison_exp> get serializer =>
+      _$gmessageTypesEnumComparisonExpSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers
+          .serializeWith(Gmessage_types_enum_comparison_exp.serializer, this)
+      as Map<String, dynamic>);
+  static Gmessage_types_enum_comparison_exp? fromJson(
+          Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gmessage_types_enum_comparison_exp.serializer, json);
+}
+
+abstract class Gmessage_types_insert_input
+    implements
+        Built<Gmessage_types_insert_input, Gmessage_types_insert_inputBuilder> {
+  Gmessage_types_insert_input._();
+
+  factory Gmessage_types_insert_input(
+          [Function(Gmessage_types_insert_inputBuilder b) updates]) =
+      _$Gmessage_types_insert_input;
+
+  String? get description;
+  String? get message_type;
+  static Serializer<Gmessage_types_insert_input> get serializer =>
+      _$gmessageTypesInsertInputSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
+      Gmessage_types_insert_input.serializer, this) as Map<String, dynamic>);
+  static Gmessage_types_insert_input? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gmessage_types_insert_input.serializer, json);
+}
+
+abstract class Gmessage_types_on_conflict
+    implements
+        Built<Gmessage_types_on_conflict, Gmessage_types_on_conflictBuilder> {
+  Gmessage_types_on_conflict._();
+
+  factory Gmessage_types_on_conflict(
+          [Function(Gmessage_types_on_conflictBuilder b) updates]) =
+      _$Gmessage_types_on_conflict;
+
+  Gmessage_types_constraint get constraint;
+  BuiltList<Gmessage_types_update_column> get update_columns;
+  Gmessage_types_bool_exp? get where;
+  static Serializer<Gmessage_types_on_conflict> get serializer =>
+      _$gmessageTypesOnConflictSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
+      Gmessage_types_on_conflict.serializer, this) as Map<String, dynamic>);
+  static Gmessage_types_on_conflict? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gmessage_types_on_conflict.serializer, json);
+}
+
+abstract class Gmessage_types_order_by
+    implements Built<Gmessage_types_order_by, Gmessage_types_order_byBuilder> {
+  Gmessage_types_order_by._();
+
+  factory Gmessage_types_order_by(
+          [Function(Gmessage_types_order_byBuilder b) updates]) =
+      _$Gmessage_types_order_by;
+
+  Gorder_by? get description;
+  Gorder_by? get message_type;
+  static Serializer<Gmessage_types_order_by> get serializer =>
+      _$gmessageTypesOrderBySerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gmessage_types_order_by.serializer, this)
+          as Map<String, dynamic>);
+  static Gmessage_types_order_by? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(Gmessage_types_order_by.serializer, json);
+}
+
+abstract class Gmessage_types_pk_columns_input
+    implements
+        Built<Gmessage_types_pk_columns_input,
+            Gmessage_types_pk_columns_inputBuilder> {
+  Gmessage_types_pk_columns_input._();
+
+  factory Gmessage_types_pk_columns_input(
+          [Function(Gmessage_types_pk_columns_inputBuilder b) updates]) =
+      _$Gmessage_types_pk_columns_input;
+
+  String get message_type;
+  static Serializer<Gmessage_types_pk_columns_input> get serializer =>
+      _$gmessageTypesPkColumnsInputSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers
+          .serializeWith(Gmessage_types_pk_columns_input.serializer, this)
+      as Map<String, dynamic>);
+  static Gmessage_types_pk_columns_input? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gmessage_types_pk_columns_input.serializer, json);
+}
+
+class Gmessage_types_select_column extends EnumClass {
+  const Gmessage_types_select_column._(String name) : super(name);
+
+  static const Gmessage_types_select_column description =
+      _$gmessageTypesSelectColumndescription;
+
+  static const Gmessage_types_select_column message_type =
+      _$gmessageTypesSelectColumnmessage_type;
+
+  static Serializer<Gmessage_types_select_column> get serializer =>
+      _$gmessageTypesSelectColumnSerializer;
+  static BuiltSet<Gmessage_types_select_column> get values =>
+      _$gmessageTypesSelectColumnValues;
+  static Gmessage_types_select_column valueOf(String name) =>
+      _$gmessageTypesSelectColumnValueOf(name);
+}
+
+abstract class Gmessage_types_set_input
+    implements
+        Built<Gmessage_types_set_input, Gmessage_types_set_inputBuilder> {
+  Gmessage_types_set_input._();
+
+  factory Gmessage_types_set_input(
+          [Function(Gmessage_types_set_inputBuilder b) updates]) =
+      _$Gmessage_types_set_input;
+
+  String? get description;
+  String? get message_type;
+  static Serializer<Gmessage_types_set_input> get serializer =>
+      _$gmessageTypesSetInputSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gmessage_types_set_input.serializer, this)
+          as Map<String, dynamic>);
+  static Gmessage_types_set_input? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gmessage_types_set_input.serializer, json);
+}
+
+class Gmessage_types_update_column extends EnumClass {
+  const Gmessage_types_update_column._(String name) : super(name);
+
+  static const Gmessage_types_update_column description =
+      _$gmessageTypesUpdateColumndescription;
+
+  static const Gmessage_types_update_column message_type =
+      _$gmessageTypesUpdateColumnmessage_type;
+
+  static Serializer<Gmessage_types_update_column> get serializer =>
+      _$gmessageTypesUpdateColumnSerializer;
+  static BuiltSet<Gmessage_types_update_column> get values =>
+      _$gmessageTypesUpdateColumnValues;
+  static Gmessage_types_update_column valueOf(String name) =>
+      _$gmessageTypesUpdateColumnValueOf(name);
+}
+
 abstract class Gmessages_aggregate_order_by
     implements
         Built<Gmessages_aggregate_order_by,
@@ -1512,13 +1748,13 @@ abstract class Gmessages_bool_exp
   Gmessages_bool_exp? get G_not;
   @BuiltValueField(wireName: '_or')
   BuiltList<Gmessages_bool_exp>? get G_or;
+  GString_comparison_exp? get body;
   Gtimestamptz_comparison_exp? get created_at;
   GBoolean_comparison_exp? get deleted;
   Gdms_bool_exp? get dm;
   Guuid_comparison_exp? get id;
-  GBoolean_comparison_exp? get is_image;
-  GString_comparison_exp? get message;
   Gmessage_reactions_bool_exp? get message_reactions;
+  Gmessage_types_enum_comparison_exp? get message_type;
   Guuid_comparison_exp? get source_id;
   Gthreads_bool_exp? get thread;
   Gtimestamptz_comparison_exp? get updated_at;
@@ -1555,13 +1791,13 @@ abstract class Gmessages_insert_input
           [Function(Gmessages_insert_inputBuilder b) updates]) =
       _$Gmessages_insert_input;
 
+  String? get body;
   DateTime? get created_at;
   bool? get deleted;
   Gdms_obj_rel_insert_input? get dm;
   _i2.UuidType? get id;
-  bool? get is_image;
-  String? get message;
   Gmessage_reactions_arr_rel_insert_input? get message_reactions;
+  Gmessage_types_enum? get message_type;
   _i2.UuidType? get source_id;
   Gthreads_obj_rel_insert_input? get thread;
   DateTime? get updated_at;
@@ -1584,9 +1820,9 @@ abstract class Gmessages_max_order_by
           [Function(Gmessages_max_order_byBuilder b) updates]) =
       _$Gmessages_max_order_by;
 
+  Gorder_by? get body;
   Gorder_by? get created_at;
   Gorder_by? get id;
-  Gorder_by? get message;
   Gorder_by? get source_id;
   Gorder_by? get updated_at;
   Gorder_by? get user_sent;
@@ -1607,9 +1843,9 @@ abstract class Gmessages_min_order_by
           [Function(Gmessages_min_order_byBuilder b) updates]) =
       _$Gmessages_min_order_by;
 
+  Gorder_by? get body;
   Gorder_by? get created_at;
   Gorder_by? get id;
-  Gorder_by? get message;
   Gorder_by? get source_id;
   Gorder_by? get updated_at;
   Gorder_by? get user_sent;
@@ -1670,13 +1906,13 @@ abstract class Gmessages_order_by
   factory Gmessages_order_by([Function(Gmessages_order_byBuilder b) updates]) =
       _$Gmessages_order_by;
 
+  Gorder_by? get body;
   Gorder_by? get created_at;
   Gorder_by? get deleted;
   Gdms_order_by? get dm;
   Gorder_by? get id;
-  Gorder_by? get is_image;
-  Gorder_by? get message;
   Gmessage_reactions_aggregate_order_by? get message_reactions_aggregate;
+  Gorder_by? get message_type;
   Gorder_by? get source_id;
   Gthreads_order_by? get thread;
   Gorder_by? get updated_at;
@@ -1713,6 +1949,8 @@ abstract class Gmessages_pk_columns_input
 class Gmessages_select_column extends EnumClass {
   const Gmessages_select_column._(String name) : super(name);
 
+  static const Gmessages_select_column body = _$gmessagesSelectColumnbody;
+
   static const Gmessages_select_column created_at =
       _$gmessagesSelectColumncreated_at;
 
@@ -1720,10 +1958,8 @@ class Gmessages_select_column extends EnumClass {
 
   static const Gmessages_select_column id = _$gmessagesSelectColumnid;
 
-  static const Gmessages_select_column is_image =
-      _$gmessagesSelectColumnis_image;
-
-  static const Gmessages_select_column message = _$gmessagesSelectColumnmessage;
+  static const Gmessages_select_column message_type =
+      _$gmessagesSelectColumnmessage_type;
 
   static const Gmessages_select_column source_id =
       _$gmessagesSelectColumnsource_id;
@@ -1749,11 +1985,11 @@ abstract class Gmessages_set_input
   factory Gmessages_set_input(
       [Function(Gmessages_set_inputBuilder b) updates]) = _$Gmessages_set_input;
 
+  String? get body;
   DateTime? get created_at;
   bool? get deleted;
   _i2.UuidType? get id;
-  bool? get is_image;
-  String? get message;
+  Gmessage_types_enum? get message_type;
   _i2.UuidType? get source_id;
   DateTime? get updated_at;
   _i2.UuidType? get user_sent;
@@ -1769,6 +2005,8 @@ abstract class Gmessages_set_input
 class Gmessages_update_column extends EnumClass {
   const Gmessages_update_column._(String name) : super(name);
 
+  static const Gmessages_update_column body = _$gmessagesUpdateColumnbody;
+
   static const Gmessages_update_column created_at =
       _$gmessagesUpdateColumncreated_at;
 
@@ -1776,10 +2014,8 @@ class Gmessages_update_column extends EnumClass {
 
   static const Gmessages_update_column id = _$gmessagesUpdateColumnid;
 
-  static const Gmessages_update_column is_image =
-      _$gmessagesUpdateColumnis_image;
-
-  static const Gmessages_update_column message = _$gmessagesUpdateColumnmessage;
+  static const Gmessages_update_column message_type =
+      _$gmessagesUpdateColumnmessage_type;
 
   static const Gmessages_update_column source_id =
       _$gmessagesUpdateColumnsource_id;
@@ -2765,6 +3001,20 @@ abstract class Gtimestamptz_comparison_exp
   static Gtimestamptz_comparison_exp? fromJson(Map<String, dynamic> json) =>
       _i1.serializers
           .deserializeWith(Gtimestamptz_comparison_exp.serializer, json);
+}
+
+class GUploadType extends EnumClass {
+  const GUploadType._(String name) : super(name);
+
+  static const GUploadType GroupAvatar = _$gUploadTypeGroupAvatar;
+
+  static const GUploadType Message = _$gUploadTypeMessage;
+
+  static const GUploadType UserAvatar = _$gUploadTypeUserAvatar;
+
+  static Serializer<GUploadType> get serializer => _$gUploadTypeSerializer;
+  static BuiltSet<GUploadType> get values => _$gUploadTypeValues;
+  static GUploadType valueOf(String name) => _$gUploadTypeValueOf(name);
 }
 
 abstract class Guser_to_dm_aggregate_order_by

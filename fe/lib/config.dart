@@ -6,6 +6,8 @@ abstract class Config {
   bool get refreshLocalCacheOnReload;
   bool get prod;
 
+  String get bucketBaseUrl;
+
   String get sentryUrl =>
       'https://7f657ba305c143df8671d07a863e2265@o929930.ingest.sentry.io/6117405';
   String get repr;
@@ -32,6 +34,9 @@ class LocalConfig extends Config {
 
   @override
   String get repr => 'local';
+
+  @override
+  String get bucketBaseUrl => throw UnimplementedError();
 }
 
 class DevConfig extends Config {
@@ -55,6 +60,9 @@ class DevConfig extends Config {
 
   @override
   String get repr => 'dev';
+
+  @override
+  String get bucketBaseUrl => throw UnimplementedError();
 }
 
 class ProdConfig extends Config {
@@ -78,4 +86,7 @@ class ProdConfig extends Config {
 
   @override
   String get repr => 'prod';
+
+  @override
+  String get bucketBaseUrl => throw UnimplementedError();
 }

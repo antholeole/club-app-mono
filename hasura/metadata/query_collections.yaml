@@ -23,6 +23,12 @@
     - name: add_role_to_thread
       query: 'mutation AddRoleToThread($threadId: uuid!, $roleId: uuid!) {  insert_role_to_threads_one(object:
         {    role_id: $roleId,    thread_id: $threadId  }) {    id  }}'
+    - name: query_verify_self_in_thread
+      query: 'query QueryVerifySelfInThread($userId: uuid!, $groupId: uuid!, $threadId:
+        uuid!) {  threads_aggregate(where: {  _and: {      group_id: {        _eq:
+        $groupId      },      users: {        _and: {          user_id: {          _eq:
+        $userId          },          thread_id: {          _eq: $threadId          }        }      },    }  })
+        {    aggregate {      count    }  }}'
     - name: query_users_in_dm
       query: 'query QueryUsersInDm($dmId: uuid!) {  user_to_dm(where: {    dm_id:
         {      _eq: $dmId    }  }) {    user {      name,      profile_picture,      id    }  }}'
@@ -72,8 +78,8 @@
       query: 'query QueryMessagesInChat(  $threadId: uuid!,  $before: timestamptz!)
         {  messages(    limit: 20,    order_by: {      created_at: desc    },    where:
         {      source_id: {        _eq: $threadId,      },      created_at: {        _lte:
-        $before      }    }  ) {   created_at,    message,    user {      name,      profile_picture,      id    },  message_reactions
-        {      reaction_type,      id,      user {        id,        name      }    },    is_image,    updated_at,    id  }}'
+        $before      }    }  ) {   created_at,    body,    user {      name,      profile_picture,      id    },  message_reactions
+        {      reaction_type,      id,      user {        id,        name      }    },    message_type,    updated_at,    id  }}'
     - name: add_roles_to_users
       query: 'mutation AddRolesToUsers($roles: [user_to_role_insert_input!]!) {  insert_user_to_role(objects:
         $roles) {    affected_rows  }}'
@@ -86,12 +92,6 @@
         5, order_by: {    updated_at: desc  },    where: {     message: {      source_id:
         {        _eq: $sourceId      }     }    }) {    created_at,    user {      id,      name    },    reaction_type,    deleted,    message
         {      id    },    id  }}'
-    - name: query_verify_self_in_thread
-      query: 'query QueryVerifySelfInThread($userId: uuid!, $groupId: uuid!, $threadId:
-        uuid!) {  threads_aggregate(where: {  _and: {      group_id: {        _eq:
-        $groupId      },      users: {        _and: {          user_id: {          _eq:
-        $userId          },          thread_id: {          _eq: $threadId          }        }      },    }  })
-        {    aggregate {      count    }  }}'
     - name: query_roles_in_group_with_join_code
       query: 'query QueryRolesInGroupWithJoinCode($groupId: uuid!) {  roles(where:
         {    group_id: {      _eq: $groupId    }  }) {    name,    id,    join_token
@@ -109,6 +109,10 @@
     - name: refresh
       query: 'mutation Refresh($refreshToken: String!, $userId: uuid!) {  refresh_access_token(refreshToken:
         $refreshToken, userId:$userId) {    accessToken  }}'
+    - name: insert_image
+      query: 'mutation GetSignedInsertImageLink($sourceId: uuid!, $uploadType: UploadType!)
+        {  insert_image(imageData: {      sourceId: $sourceId,      uploadType: $uploadType  })
+        {    uploadUrl  }}'
     - name: query_users_in_group
       query: 'query QueryUsersInGroup($groupId: uuid!) {  user_to_group(where: {    group_id:
         {      _eq: $groupId    }  }) {    user {      name,      profile_picture,      id,      user_to_roles(where:
@@ -128,8 +132,8 @@
     - name: get_new_messages
       query: 'subscription GetNewMessages(  $sourceId: uuid!,) {  messages(    order_by:
         {      created_at: desc    },    where: {      source_id: {        _eq: $sourceId,      },    },    limit:
-        10  ) {   created_at,    message,    id,    user {      name,      profile_picture,      id    },    message_reactions
-        {      reaction_type,      id,      user {        id,        name      }    },    is_image,    updated_at  }}'
+        10  ) {   created_at,    body,    id,    user {      name,      profile_picture,      id    },    message_reactions
+        {      reaction_type,      id,      user {        id,        name      }    },    message_type,    updated_at  }}'
     - name: remove_role_from_user
       query: 'mutation RemoveRoleFromUser($userId: uuid!, $roleId: uuid!) {  delete_user_to_role(where:
         {      _and: [        {          user_id: {            _eq: $userId          },          role_id:

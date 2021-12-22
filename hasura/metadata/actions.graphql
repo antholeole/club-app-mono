@@ -12,6 +12,12 @@ type Mutation {
 }
 
 type Mutation {
+  insert_image (
+    imageData: InsertImageInput!
+  ): InsertImageOutput
+}
+
+type Mutation {
   join_role_with_join_codes (
     join_codes: [String]!
   ): JoinRoleWithJoinCodesOutput
@@ -29,6 +35,12 @@ enum IdentityProvider {
   Google
 }
 
+enum UploadType {
+  GroupAvatar
+  UserAvatar
+  Message
+}
+
 input RefreshRequest {
   refreshToken : String!
   userId : uuid!
@@ -36,6 +48,11 @@ input RefreshRequest {
 
 input JoinRoleWithJoinCodesInput {
   join_codes : [String]!
+}
+
+input InsertImageInput {
+  sourceId : uuid!
+  uploadType : UploadType!
 }
 
 type SampleOutput {
@@ -67,5 +84,9 @@ type ThreadResponse {
 
 type JoinRoleWithJoinCodesOutput {
   joined : [String]!
+}
+
+type InsertImageOutput {
+  uploadUrl : String!
 }
 

@@ -13,7 +13,7 @@ subscription GetNewMessages(
     limit: 10
   ) {
    created_at,
-    message,
+    body,
     id,
     user {
       name,
@@ -28,7 +28,7 @@ subscription GetNewMessages(
         name
       }
     },
-    is_image,
+    message_type,
     updated_at
   }
 }

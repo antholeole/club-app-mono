@@ -56,6 +56,14 @@ import 'package:fe/gql/get_or_create_dm.data.gql.dart'
     show GGetOrCreateDmData, GGetOrCreateDmData_get_or_create_dm;
 import 'package:fe/gql/get_or_create_dm.req.gql.dart' show GGetOrCreateDmReq;
 import 'package:fe/gql/get_or_create_dm.var.gql.dart' show GGetOrCreateDmVars;
+import 'package:fe/gql/insert_image.data.gql.dart'
+    show
+        GGetSignedInsertImageLinkData,
+        GGetSignedInsertImageLinkData_insert_image;
+import 'package:fe/gql/insert_image.req.gql.dart'
+    show GGetSignedInsertImageLinkReq;
+import 'package:fe/gql/insert_image.var.gql.dart'
+    show GGetSignedInsertImageLinkVars;
 import 'package:fe/gql/insert_message.data.gql.dart'
     show
         GInsertMessageData,
@@ -163,15 +171,6 @@ import 'package:fe/gql/query_users_in_thread.req.gql.dart'
     show GQueryUsersInThreadReq;
 import 'package:fe/gql/query_users_in_thread.var.gql.dart'
     show GQueryUsersInThreadVars;
-import 'package:fe/gql/query_verify_self_in_thread.data.gql.dart'
-    show
-        GQueryVerifySelfInThreadData,
-        GQueryVerifySelfInThreadData_threads_aggregate,
-        GQueryVerifySelfInThreadData_threads_aggregate_aggregate;
-import 'package:fe/gql/query_verify_self_in_thread.req.gql.dart'
-    show GQueryVerifySelfInThreadReq;
-import 'package:fe/gql/query_verify_self_in_thread.var.gql.dart'
-    show GQueryVerifySelfInThreadVars;
 import 'package:fe/gql/query_view_only_threads.data.gql.dart'
     show GQueryViewOnlyThreadsData, GQueryViewOnlyThreadsData_threads;
 import 'package:fe/gql/query_view_only_threads.req.gql.dart'
@@ -220,7 +219,9 @@ import 'package:fe/schema.schema.gql.dart'
     show
         GBoolean_comparison_exp,
         GIdentityProvider,
+        GInsertImageInput,
         GString_comparison_exp,
+        GUploadType,
         Gdms_bool_exp,
         Gdms_constraint,
         Gdms_insert_input,
@@ -286,6 +287,17 @@ import 'package:fe/schema.schema.gql.dart'
         Gmessage_reactions_select_column,
         Gmessage_reactions_set_input,
         Gmessage_reactions_update_column,
+        Gmessage_types_bool_exp,
+        Gmessage_types_constraint,
+        Gmessage_types_enum,
+        Gmessage_types_enum_comparison_exp,
+        Gmessage_types_insert_input,
+        Gmessage_types_on_conflict,
+        Gmessage_types_order_by,
+        Gmessage_types_pk_columns_input,
+        Gmessage_types_select_column,
+        Gmessage_types_set_input,
+        Gmessage_types_update_column,
         Gmessages_aggregate_order_by,
         Gmessages_arr_rel_insert_input,
         Gmessages_bool_exp,
@@ -453,7 +465,12 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GGetOrCreateDmData_get_or_create_dm,
   GGetOrCreateDmReq,
   GGetOrCreateDmVars,
+  GGetSignedInsertImageLinkData,
+  GGetSignedInsertImageLinkData_insert_image,
+  GGetSignedInsertImageLinkReq,
+  GGetSignedInsertImageLinkVars,
   GIdentityProvider,
+  GInsertImageInput,
   GInsertMessageData,
   GInsertMessageData_insert_messages,
   GInsertMessageData_insert_messages_returning,
@@ -520,11 +537,6 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GQueryUsersInThreadData_user_to_thread_user,
   GQueryUsersInThreadReq,
   GQueryUsersInThreadVars,
-  GQueryVerifySelfInThreadData,
-  GQueryVerifySelfInThreadData_threads_aggregate,
-  GQueryVerifySelfInThreadData_threads_aggregate_aggregate,
-  GQueryVerifySelfInThreadReq,
-  GQueryVerifySelfInThreadVars,
   GQueryViewOnlyThreadsData,
   GQueryViewOnlyThreadsData_threads,
   GQueryViewOnlyThreadsReq,
@@ -554,6 +566,7 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GUpdateSelfNameData_update_users_by_pk,
   GUpdateSelfNameReq,
   GUpdateSelfNameVars,
+  GUploadType,
   GUpsertReactionData,
   GUpsertReactionData_insert_message_reactions_one,
   GUpsertReactionReq,
@@ -626,6 +639,17 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   Gmessage_reactions_select_column,
   Gmessage_reactions_set_input,
   Gmessage_reactions_update_column,
+  Gmessage_types_bool_exp,
+  Gmessage_types_constraint,
+  Gmessage_types_enum,
+  Gmessage_types_enum_comparison_exp,
+  Gmessage_types_insert_input,
+  Gmessage_types_on_conflict,
+  Gmessage_types_order_by,
+  Gmessage_types_pk_columns_input,
+  Gmessage_types_select_column,
+  Gmessage_types_set_input,
+  Gmessage_types_update_column,
   Gmessages_aggregate_order_by,
   Gmessages_arr_rel_insert_input,
   Gmessages_bool_exp,

@@ -4,6 +4,7 @@
 - "!include public_join_tokens.yaml"
 - "!include public_message_reaction_types.yaml"
 - "!include public_message_reactions.yaml"
+- "!include public_message_types.yaml"
 - "!include public_messages.yaml"
 - "!include public_role_to_threads.yaml"
 - "!include public_roles.yaml"

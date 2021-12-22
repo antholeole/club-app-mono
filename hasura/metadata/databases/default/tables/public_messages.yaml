@@ -45,9 +45,9 @@ insert_permissions:
             user_id:
               _eq: X-Hasura-User-Id
     columns:
+    - body
     - id
-    - is_image
-    - message
+    - message_type
     - source_id
     - updated_at
     set:
@@ -56,10 +56,10 @@ insert_permissions:
 select_permissions:
 - permission:
     columns:
+    - body
     - created_at
     - id
-    - is_image
-    - message
+    - message_type
     - source_id
     - updated_at
     - user_sent

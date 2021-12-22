@@ -17,6 +17,15 @@ actions:
       value_from_env: WEBHOOK_SECRET_KEY
   permissions:
   - role: user
+- name: insert_image
+  definition:
+    kind: synchronous
+    handler: '{{WEBHOOK_URL}}/api/upload/image'
+    headers:
+    - name: WEBHOOK_SECRET_KEY
+      value_from_env: WEBHOOK_SECRET_KEY
+  permissions:
+  - role: user
 - name: join_role_with_join_codes
   definition:
     kind: synchronous
@@ -46,9 +55,21 @@ custom_types:
     - description: null
       is_deprecated: null
       value: Google
+  - name: UploadType
+    values:
+    - description: null
+      is_deprecated: null
+      value: GroupAvatar
+    - description: null
+      is_deprecated: null
+      value: UserAvatar
+    - description: null
+      is_deprecated: null
+      value: Message
   input_objects:
   - name: RefreshRequest
   - name: JoinRoleWithJoinCodesInput
+  - name: InsertImageInput
   objects:
   - name: SampleOutput
   - name: accessToken
@@ -56,4 +77,5 @@ custom_types:
   - name: AuthenticationResponse
   - name: ThreadResponse
   - name: JoinRoleWithJoinCodesOutput
+  - name: InsertImageOutput
   scalars: []

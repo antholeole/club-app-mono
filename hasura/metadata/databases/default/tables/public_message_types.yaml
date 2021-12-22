@@ -1,0 +1,4 @@
+table:
+  name: message_types
+  schema: public
+is_enum: true
