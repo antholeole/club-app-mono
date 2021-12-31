@@ -1,5 +1,4 @@
-import 'package:fe/data/models/club.dart';
-import 'package:fe/data/models/dm.dart';
+import 'package:fe/data/models/group.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/groups/cubit/group_req_cubit.dart';
 import 'package:fe/pages/groups/view/widgets/groups_tabs/club/club_tab.dart';
@@ -66,7 +65,7 @@ class GroupsView extends StatelessWidget {
                             profilePictureUrl: user.user.profile_picture))
                         .toList(),
                     id: memberGroup.id,
-                    name: memberGroup.name))
+                    dmName: memberGroup.name))
                 .toList();
 
             return Theme(

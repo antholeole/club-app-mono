@@ -1,0 +1,15 @@
+mutation GetImageUploadUrl(
+  $fileSize: Int!,
+  $sourceId: uuid!,
+  $uploadType: UploadType!,
+  $contentType: String!
+) {
+  insert_image(
+    fileSize: $fileSize,
+    sourceId: $sourceId,
+    uploadType: $uploadType,
+    contentType: $contentType
+  ) {
+    uploadUrl
+  }
+}

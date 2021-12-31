@@ -1,6 +1,6 @@
 part of 'toaster_cubit.dart';
 
-class ToasterState extends Equatable {
+class ToasterState {
   final Map<UuidType, Toast> _toasts;
 
   ToasterState() : _toasts = {};
@@ -9,7 +9,9 @@ class ToasterState extends Equatable {
       : _toasts = {...toasterState._toasts};
 
   @override
-  List<Object?> get props => [_toasts];
+  bool operator ==(covariant ToasterState other) {
+    return mapEquals(other._toasts, _toasts);
+  }
 
   List<Toast> get toasts =>
       _toasts.values.toList()..sort((a, b) => a.created.compareTo(b.created));

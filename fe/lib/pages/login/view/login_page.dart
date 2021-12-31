@@ -1,5 +1,6 @@
 import 'package:fe/flows/app_state.dart';
 import 'package:fe/pages/login/cubit/login_cubit.dart';
+import 'package:fe/pages/login/cubit/login_state.dart';
 import 'package:fe/pages/login/view/widgets/sign_in_with_provider_button.dart';
 import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/theme/loader.dart';
@@ -39,21 +40,18 @@ class LoginView extends StatelessWidget {
                   filled: true,
                 ),
                 BlocConsumer<LoginCubit, LoginState>(
-                    builder: (context, state) => state.join(
-                        (_) => _buildInitLoginButtons(),
-                        (_) => const Loader(),
-                        (_) => const Text('logging in...'),
-                        (_) => _buildInitLoginButtons()),
-                    listener: (context, state) => state.join(
-                        (_) => null,
-                        (_) => null,
-                        (success) => context
+                    builder: (context, state) => state.when(
+                        initial: () => _buildInitLoginButtons(),
+                        loading: () => const Loader(),
+                        success: (_) => const Text('logging in...'),
+                        failure: (_) => _buildInitLoginButtons()),
+                    listener: (context, state) => state.maybeWhen(
+                        orElse: () => null,
+                        success: (user) => context
                             .flow<AppState>()
-                            .update((_) => AppState.loggedIn(success.user)),
-                        (error) => error.failure != null
-                            ? _handler.handleFailure(error.failure!, context,
-                                withPrefix: 'Error logging in')
-                            : null)),
+                            .update((_) => AppState.loggedIn(user)),
+                        failure: (f) => _handler.handleFailure(f, context,
+                            withPrefix: 'Error logging in'))),
                 Container(),
               ],
             ),

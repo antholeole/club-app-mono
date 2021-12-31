@@ -1,24 +1,20 @@
-import 'package:equatable/equatable.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/schema.schema.gql.dart' show Gmessage_reaction_types_enum;
 
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'reaction.freezed.dart';
+
 enum ReactionType { Heart, Laugh, Wow, Straight, Angry }
 
-class Reaction extends Equatable {
-  final ReactionType type;
-  final UuidType id;
-  final User likedBy;
-  final UuidType messageId;
-
-  const Reaction(
-      {required this.type,
-      required this.id,
-      required this.likedBy,
-      required this.messageId});
-
-  @override
-  List<Object?> get props => [type, id, likedBy, messageId];
+@freezed
+class Reaction with _$Reaction {
+  factory Reaction(
+      {required ReactionType type,
+      required UuidType id,
+      required User likedBy,
+      required UuidType messageId}) = _Reaction;
 }
 
 extension ReactionEmoji on ReactionType {

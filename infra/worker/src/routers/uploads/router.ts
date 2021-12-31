@@ -1,6 +1,6 @@
 import { Router } from 'itty-router'
 import { authRoute } from '../../helpers/action_input'
-import { joinRoleWithJoinCodes } from './handlers'
+import { getSignedUrl } from './handlers'
 
 
 

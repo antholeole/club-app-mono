@@ -1,21 +1,15 @@
-import 'package:equatable/equatable.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'thread.freezed.dart';
 part 'thread.g.dart';
 
-@JsonSerializable()
-@CustomUuidConverter()
-class Thread extends Equatable {
-  final String name;
-  final UuidType id;
-  final bool isViewOnly;
-
-  const Thread({required this.name, required this.id, this.isViewOnly = false});
+@freezed
+class Thread with _$Thread {
+  factory Thread(
+      {required String name,
+      @CustomUuidConverter() required UuidType id,
+      @Default(false) bool isViewOnly}) = _Thread;
 
   factory Thread.fromJson(Map<String, dynamic> json) => _$ThreadFromJson(json);
-  Map<String, dynamic> toJson() => _$ThreadToJson(this);
-
-  @override
-  List<Object?> get props => [name, id];
 }

@@ -1,7 +1,7 @@
 import 'package:badges/badges.dart';
-import 'package:fe/data/models/club.dart';
+import 'package:fe/data/models/group.dart';
 import 'package:fe/pages/groups/view/widgets/groups_tabs/selected_tab_indicator.dart';
-import 'package:fe/pages/main/cubit/main_cubit.dart';
+import 'package:fe/stdlib/shared_widgets/hydrated_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -31,9 +31,7 @@ class ClubTab extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               SelectedTabIndicator(
-                  height: 72,
-                  selected:
-                      context.watch<MainCubit>().state.groupId == club.id),
+                  height: 72, selected: context.watch<Group?>()?.id == club.id),
               Padding(
                 padding: const EdgeInsets.only(left: 12.0),
                 child: GestureDetector(
@@ -72,5 +70,5 @@ class ClubTab extends StatelessWidget {
   }
 
   void _onTap(BuildContext context, Club group) =>
-      context.read<MainCubit>().setClub(group);
+      context.read<HydratedSetter<Group>>().set(group);
 }

@@ -2,12 +2,14 @@ import 'package:fe/data/models/thread.dart';
 import 'package:fe/pages/chat/cubit/send_cubit.dart';
 import 'package:fe/pages/chat/view/widgets/chat_input/sendable/chat_buttons.dart';
 import 'package:fe/pages/chat/view/widgets/chat_input/sendable/chat_text_field.dart';
+import 'package:fe/pages/chat/view/widgets/chat_input/sendable/image_presend.dart';
 import 'package:fe/pages/chat/view/widgets/chat_input/sendable/send_button.dart';
 import 'package:fe/pages/chat/view/widgets/chat_input/unsendable/unsendable_chatbar.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/handler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../../../service_locator.dart';
 
@@ -22,7 +24,11 @@ class _ChatBarState extends State<ChatBar> {
   final Handler _handler = getIt<Handler>();
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
-  bool _settingsIsOpen = true;
+
+  XFile? _image;
+
+  bool _hasContent = true;
+  bool _manuallyShowingSettings = false;
 
   @override
   void initState() {
@@ -59,39 +65,63 @@ class _ChatBarState extends State<ChatBar> {
       return Row(
         children: [
           ChatButtons(
-              isOpen: _settingsIsOpen,
-              manuallyShowButtons: () => setState(() {
-                    _settingsIsOpen = true;
-                  })),
+            isOpen: !_hasContent || _manuallyShowingSettings,
+            manuallyShowButtons: () => setState(() {
+              _manuallyShowingSettings = true;
+            }),
+            pickedImage: (image) => setState(() {
+              _hasContent = true;
+              _manuallyShowingSettings = false;
+              _image = image;
+            }),
+          ),
           Expanded(
-              child: ChatTextField(
-            focusNode: _focusNode,
-            controller: _controller,
+              child: Column(
+            children: [
+              if (_image != null) ImagePresend(image: _image!),
+              ChatTextField(
+                focusNode: _focusNode,
+                controller: _controller,
+              ),
+            ],
           )),
-          SendButton(isSendable: _controller.text.isNotEmpty, onClick: _onSend)
+          SendButton(isSendable: _hasContent, onClick: _onSend)
         ],
       );
     }
   }
 
   void _onTextUpdate() {
-    if (_controller.text.isEmpty && !_settingsIsOpen) {
-      setState(() {
-        _settingsIsOpen = true;
-      });
-    } else {
-      setState(() {
-        _settingsIsOpen = false;
-      });
-    }
+    final hasText = _controller.text.isNotEmpty;
+    final hasImage = _image != null;
+
+    setState(() {
+      _hasContent = hasText || hasImage;
+      _manuallyShowingSettings = false;
+    });
   }
 
   Future<void> _onSend() async {
-    try {
-      await context.read<SendCubit>().send(_controller.text);
-      _controller.clear();
-    } on Failure catch (f) {
-      _handler.handleFailure(f, context);
+    if (_controller.text.isNotEmpty) {
+      try {
+        await context.read<SendCubit>().sendText(_controller.text);
+      } on Failure catch (f) {
+        _handler.handleFailure(f, context);
+      } finally {
+        _controller.clear();
+      }
+    }
+
+    if (_image != null) {
+      try {
+        await context.read<SendCubit>().sendImage(_image!);
+      } on Failure catch (f) {
+        _handler.handleFailure(f, context);
+      } finally {
+        setState(() {
+          _image = null;
+        });
+      }
     }
   }
 }

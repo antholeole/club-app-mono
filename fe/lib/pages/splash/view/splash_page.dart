@@ -1,5 +1,6 @@
 import 'package:fe/flows/app_state.dart';
 import 'package:fe/pages/splash/cubit/splash_cubit.dart';
+import 'package:fe/pages/splash/cubit/splash_state.dart';
 import 'package:fe/pages/splash/view/widgets/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,12 +22,14 @@ class SplashView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<SplashCubit, SplashState>(
-      listener: (context, state) => state.join(
-          (_) {},
-          (_) => context.flow<AppState>().update((_) => AppState.needLogIn()),
-          (loggedIn) => context
-              .flow<AppState>()
-              .update((_) => AppState.loggedIn(loggedIn.user))),
+      listener: (context, state) => state.when(
+        initial: () =>
+            context.flow<AppState>().update((_) => const AppState.needLogin()),
+        notLoggedIn: () =>
+            context.flow<AppState>().update((_) => const AppState.needLogin()),
+        loggedIn: (user) =>
+            context.flow<AppState>().update((_) => AppState.loggedIn(user)),
+      ),
       child: const Splash(),
     );
   }

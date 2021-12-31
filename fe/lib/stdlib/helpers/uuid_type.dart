@@ -1,9 +1,8 @@
-import 'package:equatable/equatable.dart';
 import 'package:uuid/uuid.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:built_value/serializer.dart';
 
-class UuidType extends Equatable {
+class UuidType {
   final String _uuid;
 
   UuidType(String uuid)
@@ -34,7 +33,7 @@ class UuidType extends Equatable {
   bool operator ==(covariant UuidType other) => other.uuid == uuid;
 
   @override
-  List<Object> get props => [_uuid];
+  int get hashCode => uuid.hashCode;
 }
 
 class CustomUuidConverter implements JsonConverter<UuidType, String> {

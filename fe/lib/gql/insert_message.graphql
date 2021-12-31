@@ -1,8 +1,14 @@
-mutation InsertMessage($message: String!, $sourceId: uuid!, $messageId: uuid!) {
+mutation InsertMessage(
+  $message: String!, 
+  $sourceId: uuid!, 
+  $messageId: uuid!,
+	$messageType: message_types_enum!
+) {
   insert_messages(objects: {
-    message: $message,
+    body: $message,
     source_id: $sourceId,
-    id: $messageId
+    id: $messageId,
+    message_type: $messageType
   }) {
     returning {
       created_at

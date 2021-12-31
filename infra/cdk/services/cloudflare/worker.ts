@@ -28,6 +28,14 @@ export const createWorker = (config: pulumi.Config, hasuraEndpoint: pulumi.Outpu
         })),
         secretTextBindings: [
             {
+                text: '0007bb043992e560000000003',
+                name: 'B2_ACCESS_KEY_ID'
+            },
+            {         
+                name: 'B2_SECRET_ACCESS_KEY',
+                text: config.requireSecret('b2_secret_access_key')
+            },
+            {
                 name: 'HASURA_PASSWORD',
                 text: config.requireSecret('hasura_admin_key')
             },

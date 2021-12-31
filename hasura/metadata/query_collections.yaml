@@ -59,9 +59,10 @@
       query: 'query QueryRolesInGroup($groupId: uuid!) {  roles(where: {    group_id:
         {      _eq: $groupId    }  }) {    name,    id  }}'
     - name: insert_message
-      query: 'mutation InsertMessage($message: String!, $sourceId: uuid!, $messageId:
-        uuid!) {  insert_messages(objects: {    message: $message,    source_id: $sourceId,    id:
-        $messageId  }) {    returning {      created_at    }  }}'
+      query: 'mutation InsertMessage(  $message: String!,   $sourceId: uuid!,   $messageId:
+        uuid!,$messageType: message_types_enum!) {  insert_messages(objects: {    body:
+        $message,    source_id: $sourceId,    id: $messageId,    message_type: $messageType  })
+        {    returning {      created_at    }  }}'
     - name: query_self_threads_in_group
       query: 'query QuerySelfThreadsInGroup($userId: uuid!, $groupId: uuid!) {  threads(where:
         {  _and: {      group_id: {        _eq: $groupId      },      users: {        user_id:
@@ -74,6 +75,10 @@
         {        _eq: $selfId      }    }  ) {    group {      ...group_base_fields    }  },  dms(    where:
         {      user_to_dms: {        user_id: {          _eq: $selfId        }      }    }  )
         {    id,    name,    user_to_dms {      user {        id,        name,        profile_picture      }    }  }}'
+    - name: get_image_upload_url
+      query: 'mutation GetImageUploadUrl(  $fileSize: Int!,  $sourceId: uuid!,  $uploadType:
+        UploadType!,  $contentType: String!) {  insert_image(    fileSize: $fileSize,    sourceId:
+        $sourceId,    uploadType: $uploadType,    contentType: $contentType  ) {    uploadUrl  }}'
     - name: query_messages_in_chat
       query: 'query QueryMessagesInChat(  $threadId: uuid!,  $before: timestamptz!)
         {  messages(    limit: 20,    order_by: {      created_at: desc    },    where:

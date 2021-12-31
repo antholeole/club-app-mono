@@ -147,8 +147,9 @@ class _MessageOptionsOverlayState extends State<MessageOptionsOverlay>
                     MessageOption(
                         icon: Icons.copy,
                         onClick: () {
-                          ClipboardData data =
-                              ClipboardData(text: widget.message.message);
+                          ClipboardData data = ClipboardData(
+                              text: widget.message.maybeMap(
+                                  text: (text) => text.text, orElse: () => ''));
                           Clipboard.setData(data).then((_) => context
                               .read<ToasterCubit>()
                               .add(Toast(

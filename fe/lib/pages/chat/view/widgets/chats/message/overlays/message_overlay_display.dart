@@ -1,6 +1,7 @@
 import 'package:fe/data/models/message.dart';
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/pages/chat/cubit/message_overlay_cubit.dart';
+import 'package:fe/pages/chat/cubit/message_overlay_state.dart';
 import 'package:fe/pages/chat/view/widgets/chats/message/overlays/hold_overlay/message_options_overlay.dart';
 import 'package:fe/pages/chat/view/widgets/chats/message/overlays/reactions_overlay/message_reaction_overlay.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
@@ -23,40 +24,29 @@ class MessageOverlayDisplay extends StatefulWidget {
 
 class _MessageOverlayDisplayState extends State<MessageOverlayDisplay> {
   OverlayEntry? _currentMessageOverlay;
-  Message? _currentlySelectedMessage;
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<MessageOverlayCubit, MessageOverlayState>(
-      listener: (context, state) => state.join(
-          (_) => null,
-          (mos) => _onDisplaySettings(mos.message, mos.layerLink),
-          (mor) => _onDisplayReaction(mor.message, mor.layerLink)),
+      listener: (context, state) => state.when(
+          none: _dismissOverlay,
+          settings: _onDisplaySettings,
+          reactions: _onDisplayReaction),
       child: widget._child,
     );
   }
 
-  void _onDisplayReaction(Message message, LayerLink link) {
-    // if there is a currently selected message and it's the same
-    // one as we just tapped, we want to dismiss only.
-    if (_currentlySelectedMessage != null &&
-        message == _currentlySelectedMessage) {
-      _dismissOverlay();
-      return;
-    }
-
+  void _onDisplayReaction(LayerLink link, Message message) {
     _displayOverlay(
         MessageReactionOverlay(
             link: link,
             message: message,
             selfId: context.read<UserCubit>().user.id,
-            scrollController:
-                context.read<MessageOverlayCubit>().scrollController,
             dismissSelf: _dismissOverlay),
         message);
   }
 
-  void _onDisplaySettings(Message message, LayerLink link) {
+  void _onDisplaySettings(LayerLink link, Message message) {
     _displayOverlay(
         Scaffold(
           backgroundColor: Colors.transparent,
@@ -68,7 +58,6 @@ class _MessageOverlayDisplayState extends State<MessageOverlayDisplay> {
   }
 
   void _displayOverlay(Widget widget, Message message) {
-    _currentlySelectedMessage = message;
     FocusScope.of(context).requestFocus();
     if (_currentMessageOverlay != null) {
       _currentMessageOverlay!.remove();
@@ -86,9 +75,8 @@ class _MessageOverlayDisplayState extends State<MessageOverlayDisplay> {
   }
 
   void _dismissOverlay() {
-    _currentMessageOverlay!.remove();
+    _currentMessageOverlay?.remove();
     _currentMessageOverlay = null;
-    _currentlySelectedMessage = null;
     context.read<MessageOverlayCubit>().dismissOverlay();
   }
 }

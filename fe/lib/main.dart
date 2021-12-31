@@ -20,7 +20,7 @@ void main() async {
       options.tracesSampleRate = 0.2;
       options.environment = getIt<Config>().repr;
     },
-    appRunner: () => runApp(MyApp()),
+    appRunner: () => runApp(ClubApp()),
   );
 }
 
@@ -32,11 +32,11 @@ Future<void> asyncStartup() async {
   ]);
 }
 
-class MyApp extends StatelessWidget {
+class ClubApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Club App',
       theme: clubTheme,
       home: AppState.getFlow(context),
       builder: (innerContext, router) => PlatformWidgetBuilder(

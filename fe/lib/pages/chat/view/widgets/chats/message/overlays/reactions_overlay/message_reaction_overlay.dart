@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class MessageReactionOverlay extends StatefulWidget {
   final LayerLink _link;
   final VoidCallback _dismissSelf;
-  final ScrollController _scrollController;
+
   final Message _message;
   final UuidType _selfId;
 
@@ -16,11 +16,9 @@ class MessageReactionOverlay extends StatefulWidget {
       required LayerLink link,
       required Message message,
       required UuidType selfId,
-      required VoidCallback dismissSelf,
-      required ScrollController scrollController})
+      required VoidCallback dismissSelf})
       : _link = link,
         _selfId = selfId,
-        _scrollController = scrollController,
         _message = message,
         _dismissSelf = dismissSelf,
         super(key: key);
@@ -45,18 +43,18 @@ class _MessageReactionOverlayState extends State<MessageReactionOverlay>
 
   @override
   void initState() {
-    widget._message.reactions.forEach((reaction) =>
+    widget._message.reactions.values.forEach((reaction) =>
         reactionCounts[reaction.type] = reactionCounts[reaction.type]! + 1);
     _appearController.addListener(() => setState(() {}));
     _appearController.forward();
-    widget._scrollController.addListener(_onScroll);
+
     super.initState();
   }
 
   @override
   void dispose() {
     _appearController.dispose();
-    widget._scrollController.removeListener(_onScroll);
+
     super.dispose();
   }
 
@@ -104,7 +102,7 @@ class _MessageReactionOverlayState extends State<MessageReactionOverlay>
   }
 
   bool _getReacted(ReactionType reaction) {
-    for (final existingReaction in widget._message.reactions) {
+    for (final existingReaction in widget._message.reactions.values) {
       if (existingReaction.type == reaction &&
           existingReaction.likedBy.id == widget._selfId) {
         return true;
@@ -112,9 +110,5 @@ class _MessageReactionOverlayState extends State<MessageReactionOverlay>
     }
 
     return false;
-  }
-
-  void _onScroll() {
-    widget._dismissSelf();
   }
 }

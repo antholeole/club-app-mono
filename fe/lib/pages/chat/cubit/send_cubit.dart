@@ -1,39 +1,91 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
+
+import 'package:fe/data/models/message.dart';
 import 'package:fe/data/models/thread.dart';
-import 'package:fe/pages/chat/bloc/chat_bloc.dart';
-import 'package:fe/pages/chat/cubit/data_carriers/sending_message.dart';
+import 'package:fe/data/models/user.dart';
+import 'package:fe/pages/chat/cubit/chat_cubit.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
-import 'package:fe/stdlib/helpers/uuid_type.dart';
-import 'package:flutter/material.dart';
-import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
 import 'package:fe/gql/insert_message.req.gql.dart';
+import 'package:fe/gql/get_image_upload_url.req.gql.dart';
+import 'package:fe/schema.schema.gql.dart'
+    show Gmessage_types_enum, GUploadType;
+import 'package:fe/stdlib/helpers/uuid_type.dart';
 
-part 'send_state.dart';
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
+
+import 'chat_state.dart';
+import 'send_state.dart';
 
 class SendCubit extends Cubit<List<SendState>> {
   final Thread _thread;
-  final ChatBloc _chatBloc;
+  final ChatCubit _chatCubit;
+  final User _self;
 
-  SendCubit({required Thread thread, required ChatBloc chatBloc})
+  SendCubit(
+      {required Thread thread,
+      required ChatCubit chatCubit,
+      required User self})
       : _thread = thread,
-        _chatBloc = chatBloc,
+        _self = self,
+        _chatCubit = chatCubit,
         super([]);
 
   final _gqlClient = getIt<AuthGqlClient>();
 
-  Future<void> send(String message) async {
-    final sendingMessage = SendingMessage(message: message);
+  Future<void> sendImage(XFile image) async {
+    final sendingMessage = Message.image(
+        id: UuidType.generate(),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        image: await image.readAsBytes(),
+        user: _self);
 
-    emit(List.of(state)..add(SendState.sending(message: sendingMessage)));
+    emit(List.of(state)..add(SendState.sending(sendingMessage)));
 
-    await _send(sendingMessage, _thread.id);
+    final sendImage = () async {
+      final fileLength = await image.length();
+
+      final uploadUrl = (await _gqlClient
+              .request(GGetImageUploadUrlReq((q) => q
+                ..vars.fileSize = fileLength
+                ..vars.sourceId = _thread.id
+                ..vars.contentType =
+                    image.mimeType ?? lookupMimeType(image.path)
+                ..vars.uploadType = GUploadType.Message))
+              .first)
+          .insert_image!
+          .uploadUrl;
+
+      await getIt<http.Client>()
+          .put(Uri.parse(uploadUrl), body: await image.readAsBytes());
+    };
+
+    await _send(sendingMessage, sendImage);
   }
 
-  void clear() {
-    emit([]);
+  Future<void> sendText(String message) async {
+    final messageId = UuidType.generate();
+
+    final sendingMessage = Message.text(
+        id: messageId,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        text: message,
+        user: _self);
+
+    await _send(
+        sendingMessage,
+        () => _gqlClient
+            .request(GInsertMessageReq((q) => q
+              ..vars.message = message
+              ..vars.messageId = messageId
+              ..vars.messageType = Gmessage_types_enum.TEXT
+              ..vars.sourceId = _thread.id))
+            .first);
   }
 
   void _replaceSendState(SendState newSendState) {
@@ -41,38 +93,30 @@ class SendCubit extends Cubit<List<SendState>> {
         (e) => e.message.id == newSendState.message.id ? newSendState : e)));
   }
 
-  Future<void> _resend(
-      SendingMessage sendingMessage, UuidType currentThreadId) async {
-    _replaceSendState(SendState.sending(message: sendingMessage));
-    await _send(sendingMessage, currentThreadId);
-  }
+  Future<void> _send<TData, TVars>(
+      Message sendingMessage, Future<void> Function() sendFn) async {
+    emit(List.of(state)..add(SendState.sending(sendingMessage)));
 
-  Future<void> _send(SendingMessage sendingMessage, UuidType threadId) async {
     try {
-      await _gqlClient
-          .request(GInsertMessageReq((q) => q
-            ..vars.message = sendingMessage.message
-            ..vars.messageId = sendingMessage.id
-            ..vars.sourceId = threadId))
-          .first;
+      await sendFn();
     } on Failure catch (f) {
-      _replaceSendState(
-        SendState.failure(
-            failure: f,
-            message: sendingMessage,
-            resend: () => _resend(sendingMessage, threadId)),
-      );
+      _replaceSendState(SendState.failure(
+        sendingMessage,
+        f,
+        resend: () => _send(sendingMessage, sendFn),
+      ));
       return;
     }
 
     // ignore: unawaited_futures
-    _chatBloc.stream
+    _chatCubit.stream
         .firstWhere(
-            (element) => element.join((fm) {
-                  return fm.messages.any((msg) => msg.id == sendingMessage.id);
-                }, (_) => false, (_) => false, (_) => false),
+            (element) => element.maybeWhen(
+                withMessages: (messages, _) =>
+                    messages[sendingMessage.id] != null,
+                orElse: () => false),
             //dummy or else prevents state errors when app closes and no stream was found.
-            orElse: () => ChatState.loading())
+            orElse: () => const ChatState.loading())
         .then((_) => emit(List.of(state
             .where((msgState) => msgState.message.id != sendingMessage.id))));
   }

@@ -1,4 +1,5 @@
 import 'package:fe/pages/scaffold/cubit/page_cubit.dart';
+import 'package:fe/pages/scaffold/cubit/page_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
@@ -18,8 +19,7 @@ class BottomNav extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.only(bottom: 12.5, top: 7.5),
           child: BlocBuilder<PageCubit, PageState>(builder: (context, state) {
-            final selected =
-                state.join((_) => AppPage.Events, (_) => AppPage.Chat);
+            final selected = state.index;
 
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -27,12 +27,14 @@ class BottomNav extends StatelessWidget {
                 _buildTab(
                   context,
                   icon: CHAT_TAB_ICON,
-                  active: selected == AppPage.Chat,
+                  active: selected == 0,
                   onClick: () {
-                    if (selected == AppPage.Chat) {
+                    if (selected == 0) {
                       context.read<PageCubit>().bottomSheet(context);
                     } else {
-                      context.read<PageCubit>().switchTo(AppPage.Chat);
+                      context
+                          .read<PageCubit>()
+                          .switchTo(const PageState.chat());
                     }
                   },
                   onHeld: () => context.read<PageCubit>().bottomSheet(context),
@@ -40,9 +42,10 @@ class BottomNav extends StatelessWidget {
                 _buildTab(
                   context,
                   icon: EVENT_TAB_ICON,
-                  active: selected == AppPage.Events,
-                  onClick: () =>
-                      context.read<PageCubit>().switchTo(AppPage.Events),
+                  active: selected == 1,
+                  onClick: () => context
+                      .read<PageCubit>()
+                      .switchTo(const PageState.events()),
                 )
               ],
             );

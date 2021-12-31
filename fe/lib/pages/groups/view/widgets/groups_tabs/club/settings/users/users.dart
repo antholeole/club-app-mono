@@ -1,4 +1,4 @@
-import 'package:fe/data/models/club.dart';
+import 'package:fe/data/models/group.dart';
 import 'package:fe/data/models/role.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/groups/view/widgets/groups_tabs/club/settings/users/role_list.dart';

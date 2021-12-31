@@ -1,4 +1,4 @@
-import 'package:fe/data/models/club.dart';
+import 'package:fe/data/models/group.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/shared_widgets/gql_operation.dart';
 import 'package:fe/stdlib/shared_widgets/toasting_dismiss.dart';

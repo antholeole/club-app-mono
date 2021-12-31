@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
+import 'package:flutter/foundation.dart';
 import 'data_carriers/toast.dart';
 
 part 'toaster_state.dart';

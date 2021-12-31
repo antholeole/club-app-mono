@@ -31,7 +31,9 @@ if (process.env.NODE_ENV === 'development') {
       HASURA_PASSWORD: hasuraPassword,
       HASURA_ENDPOINT: '"http://localhost:8080/v1/graphql"',
       SECRET: jwtSecret,
-      WEBHOOK_SECRET_KEY: webhookKey
+      WEBHOOK_SECRET_KEY: webhookKey,
+      B2_ACCESS_KEY_ID: '"0007bb043992e560000000003"',
+      B2_SECRET_ACCESS_KEY: '"K000YIySISbUeeyWQpmIU7xIxRTA1VY"'
     })
   )
 

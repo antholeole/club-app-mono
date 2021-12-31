@@ -1,5 +1,5 @@
 import 'package:built_collection/built_collection.dart';
-import 'package:fe/data/models/club.dart';
+import 'package:fe/data/models/group.dart';
 import 'package:fe/data/models/role.dart';
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';

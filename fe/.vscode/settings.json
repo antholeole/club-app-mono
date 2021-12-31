@@ -20,7 +20,8 @@
         "**/*.g.dart": true,
         "**/*.mocks.dart": true,
         "**/*.gql.dart": true,
-        "**/*.gr.dart": true
+        "**/*.gr.dart": true,
+        "**/*.freezed.dart": true
     },
     "dart.debugExternalLibraries": false,
     "dart.debugSdkLibraries": false,

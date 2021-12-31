@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:fe/config.dart';
-import 'package:fe/pages/main/cubit/main_cubit.dart';
+import 'package:fe/pages/main/view/widgets/log_outer.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
@@ -105,9 +105,9 @@ class Handler {
   void handleFailure(Failure f, BuildContext context,
       {String? withPrefix, bool toast = true}) {
     if (f.status.fatal) {
-      context.read<MainCubit>().logOut(withError: f.message);
+      context.read<LogOuter>().logOut(withError: f.message);
     } else {
-      String errorString = f.message;
+      String errorString = f.message ?? f.status.message;
 
       if (withPrefix != null) {
         errorString = withPrefix + ': ' + errorString;

@@ -1,12 +1,7 @@
-import 'package:clock/clock.dart';
-import 'package:fe/data/models/message.dart';
-import 'package:fe/pages/chat/cubit/send_cubit.dart';
+import 'package:fe/pages/chat/cubit/send_state.dart';
 import 'package:fe/pages/chat/view/widgets/chats/message/message_display.dart';
-import 'package:fe/pages/main/cubit/user_cubit.dart';
-import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/src/provider.dart';
 
 class SendingMessageDisplay extends StatelessWidget {
   final SendState _sendState;
@@ -29,26 +24,23 @@ class SendingMessageDisplay extends StatelessWidget {
                 BlendMode.lighten,
               ),
               child: MessageDisplay(
-                message: Message(
-                    user: context.read<UserCubit>().user,
-                    id: UuidType.generate(), //does't matter
-                    message: _sendState.message.message,
-                    isImage: false,
-                    createdAt: clock.now(),
-                    updatedAt: clock.now()),
+                message: _sendState.message,
                 sentBySelf: true,
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(right: 25),
-            child: _sendState.join(
-                (_) => const Loader(
+            child: _sendState.map(
+                sending: (_) => const Loader(
                       size: 14,
                     ),
-                (sf) => GestureDetector(
-                      onTap: sf.resend,
-                      child: const Icon(Icons.refresh),
+                failure: (sendingFailure) => GestureDetector(
+                      onTap: sendingFailure.resend,
+                      child: const Icon(
+                        Icons.refresh,
+                        color: Colors.red,
+                      ),
                     )),
           ),
         ],

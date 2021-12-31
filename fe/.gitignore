@@ -53,6 +53,7 @@ app.*.map.json
 **/*.data.gql.dart
 **/*.var.gql.dart
 **/*.gql.g.dart
+**/*.freezed.dart
 generated_plugin_registrant.dart
 **/*.g.dart
 

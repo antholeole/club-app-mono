@@ -34,6 +34,12 @@ import 'package:fe/gql/fake/fake.data.gql.dart'
     show GFakeGqlData, GFakeGqlData_dms;
 import 'package:fe/gql/fake/fake.req.gql.dart' show GFakeGqlReq;
 import 'package:fe/gql/fake/fake.var.gql.dart' show GFakeGqlVars;
+import 'package:fe/gql/get_image_upload_url.data.gql.dart'
+    show GGetImageUploadUrlData, GGetImageUploadUrlData_insert_image;
+import 'package:fe/gql/get_image_upload_url.req.gql.dart'
+    show GGetImageUploadUrlReq;
+import 'package:fe/gql/get_image_upload_url.var.gql.dart'
+    show GGetImageUploadUrlVars;
 import 'package:fe/gql/get_new_messages.data.gql.dart'
     show
         GGetNewMessagesData,
@@ -448,6 +454,10 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GFakeGqlData_dms,
   GFakeGqlReq,
   GFakeGqlVars,
+  GGetImageUploadUrlData,
+  GGetImageUploadUrlData_insert_image,
+  GGetImageUploadUrlReq,
+  GGetImageUploadUrlVars,
   GGetNewMessagesData,
   GGetNewMessagesData_messages,
   GGetNewMessagesData_messages_message_reactions,

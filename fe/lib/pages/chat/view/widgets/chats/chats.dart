@@ -1,13 +1,18 @@
+import 'package:fe/data/models/message.dart';
 import 'package:fe/data/models/thread.dart';
-import 'package:fe/pages/chat/bloc/chat_bloc.dart';
-import 'package:fe/pages/chat/cubit/message_overlay_cubit.dart';
+import 'package:fe/pages/chat/cubit/chat_cubit.dart';
+import 'package:fe/pages/chat/cubit/chat_state.dart';
 import 'package:fe/pages/chat/cubit/send_cubit.dart';
+import 'package:fe/pages/chat/cubit/send_state.dart';
 import 'package:fe/pages/chat/view/widgets/chats/message/overlays/message_overlay_display.dart';
 import 'package:fe/pages/chat/view/widgets/chats/message/sending_message.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
+import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
+import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
 import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/errors/handler.dart';
-import 'package:fe/stdlib/errors/unreachable_state.dart';
+import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:fe/stdlib/theme/pill_button.dart';
 import 'package:flutter/material.dart';
@@ -31,49 +36,59 @@ class Chats extends StatefulWidget {
 
 class _ChatsState extends State<Chats> {
   final _handler = getIt<Handler>();
+  final _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(color: Colors.grey.shade50),
-      child: BlocBuilder<SendCubit, List<SendState>>(
-        builder: (_, unsents) => BlocConsumer<ChatBloc, ChatState>(
-          listener: (_, chatState) => chatState.join(
-              (_) => null,
-              (fmf) => _handler.handleFailure(fmf.failure, context),
-              (_) => null,
-              (_) => null),
-          builder: (_, state) {
-            return state.join(
-                (fm) => _buildChats(fm, unsents),
-                (fmf) => _buildError(fmf.failure),
-                (_) => _buildLoading(),
-                (_) => throw UnreachableStateError(_));
-          },
+      child: BlocConsumer<SendCubit, List<SendState>>(
+        listener: (_, unsents) => unsents
+            .where((sendState) =>
+                sendState.map(sending: (_) => false, failure: (_) => true))
+            .forEach((element) => context.read<ToasterCubit>().add(Toast(
+                message: element.when(
+                    sending: (_) => throw Exception('unreachable state'),
+                    failure: (_, f, __) => f.message ?? f.status.message),
+                type: ToastType.Error))),
+        builder: (_, unsents) => BlocConsumer<ChatCubit, ChatState>(
+          listener: (_, chatState) => chatState.maybeWhen(
+            orElse: () => null,
+            failure: (failure) => _handler.handleFailure(failure, context),
+          ),
+          builder: (_, state) => state.when(
+              withMessages: (fm, hasMaxed) =>
+                  _buildChats(fm, hasMaxed, unsents),
+              failure: (failure) => _buildError(failure),
+              loading: () => _buildLoading()),
         ),
       ),
     );
   }
 
-  Widget _buildChats(FetchedMessages messagesState, List<SendState> unsents) {
+  Widget _buildChats(
+      Map<UuidType, Message> messages, bool hasMaxed, List<SendState> unsents) {
     int itemCount;
 
-    if (messagesState.messages.isEmpty && unsents.isEmpty) {
+    if (messages.isEmpty && unsents.isEmpty) {
       return _buildNoChats(context.read<Thread>());
     }
 
-    if (messagesState.hasReachedMax) {
-      itemCount = messagesState.messages.length;
+    if (hasMaxed) {
+      itemCount = messages.length;
     } else {
-      itemCount = messagesState.messages.length + 1;
+      itemCount = messages.length + 1;
     }
 
     itemCount += unsents.length;
 
+    final List<Message> messagesOrdered = messages.values.toList()
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
     return MessageOverlayDisplay(
       child: ListView.builder(
           reverse: true,
-          controller: context.read<MessageOverlayCubit>().scrollController,
+          controller: _scrollController,
           itemCount: itemCount,
           itemBuilder: (context, i) {
             if (i < unsents.length) {
@@ -81,15 +96,15 @@ class _ChatsState extends State<Chats> {
                   sendState: unsents[unsents.length - 1 - i]);
             }
 
-            if (i >= messagesState.messages.length + unsents.length) {
-              context.read<ChatBloc>().add(const FetchMessagesEvent());
+            if (i >= messages.length + unsents.length) {
+              context.read<ChatCubit>().fetchMessages();
               return const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Loader(),
               );
             }
 
-            final message = messagesState.messages.toList()[i - unsents.length];
+            final message = messagesOrdered[i - unsents.length];
 
             return ChatPageMessageDisplay(
                 message: message,
@@ -116,7 +131,7 @@ class _ChatsState extends State<Chats> {
         ),
         PillButton(
           text: 'retry',
-          onClick: () => context.read<ChatBloc>().add(ThreadChangeEvent()),
+          onClick: () => context.read<ChatCubit>().fetchMessages(),
           icon: Icons.refresh,
         ),
       ],

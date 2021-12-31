@@ -17,6 +17,12 @@ class _LoaderState extends State<Loader> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
   @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SpinKitThreeBounce(
       size: widget._size,

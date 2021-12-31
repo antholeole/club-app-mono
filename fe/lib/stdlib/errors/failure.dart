@@ -1,15 +1,14 @@
-import 'package:equatable/equatable.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
-import 'package:flutter/foundation.dart';
 
-@immutable
-class Failure extends Equatable {
-  final String message;
-  final FailureStatus status;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  Failure({String? message, required this.status})
-      : message = message ?? status.message;
+part 'failure.freezed.dart';
+part 'failure.g.dart';
 
-  @override
-  List<Object?> get props => [status, message];
+@freezed
+class Failure with _$Failure {
+  factory Failure({String? message, required FailureStatus status}) = _Failure;
+
+  factory Failure.fromJson(Map<String, dynamic> json) =>
+      _$FailureFromJson(json);
 }

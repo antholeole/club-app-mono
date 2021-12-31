@@ -16,7 +16,6 @@ class GroupJoiner {
   const GroupJoiner({required this.showPrompt});
 }
 
-// ignore: must_be_immutable
 class GroupJoinDisplay extends StatelessWidget {
   static const JOIN_GROUP_PROMPT_COPY = 'Enter a club\'s join code';
   static const CANCEL_JOIN_GROUP_BUTTON_COPY = 'Cancel';

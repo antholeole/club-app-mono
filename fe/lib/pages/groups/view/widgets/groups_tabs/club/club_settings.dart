@@ -1,4 +1,4 @@
-import 'package:fe/data/models/club.dart';
+import 'package:fe/data/models/group.dart';
 import 'package:fe/pages/groups/view/widgets/groups_tabs/club/settings/leave_group_button.dart';
 import 'package:fe/pages/groups/view/widgets/groups_tabs/club/settings/roles/group_role_manager.dart';
 import 'package:fe/pages/groups/view/widgets/groups_tabs/club/settings/users/users.dart';

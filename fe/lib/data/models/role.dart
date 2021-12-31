@@ -1,12 +1,9 @@
-import 'package:equatable/equatable.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class Role extends Equatable {
-  final UuidType id;
-  final String name;
+part 'role.freezed.dart';
 
-  const Role({required this.id, required this.name});
-
-  @override
-  List<Object?> get props => [id, name];
+@freezed
+class Role with _$Role {
+  factory Role({required UuidType id, required String name}) = _Role;
 }

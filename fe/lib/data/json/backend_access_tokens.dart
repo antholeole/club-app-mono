@@ -1,25 +1,17 @@
-import 'dart:convert';
-
 import 'package:fe/stdlib/helpers/uuid_type.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'backend_access_tokens.freezed.dart';
 part 'backend_access_tokens.g.dart';
 
-@JsonSerializable()
-@CustomUuidConverter()
-class BackendAccessTokens {
-  final String accessToken;
-  final String refreshToken;
-  final UuidType id;
-  final String name;
+@freezed
+class BackendAccessTokens with _$BackendAccessTokens {
+  factory BackendAccessTokens(
+      {required String accessToken,
+      required String refreshToken,
+      required String name,
+      @CustomUuidConverter() required UuidType id}) = _BackendAccessTokens;
 
-  BackendAccessTokens(
-      {required this.accessToken,
-      required this.refreshToken,
-      required this.name,
-      required this.id});
-
-  factory BackendAccessTokens.fromJson(String jsonString) =>
-      _$BackendAccessTokensFromJson(json.decode(jsonString));
-  Map<String, dynamic> toJson() => _$BackendAccessTokensToJson(this);
+  factory BackendAccessTokens.fromJson(Map<String, dynamic> json) =>
+      _$BackendAccessTokensFromJson(json);
 }

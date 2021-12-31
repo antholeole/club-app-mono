@@ -1,7 +1,6 @@
 export interface IInsertImageRequest {
-    imageData: {
-        sourceId: string,
-        uploadType: 'GroupAvatar' | 'UserAvatar' | 'Message'
-    }
-
+    sourceId: string,
+    uploadType: 'GroupAvatar' | 'UserAvatar' | 'Message',
+    fileSize: number,
+    contentType: string
 }

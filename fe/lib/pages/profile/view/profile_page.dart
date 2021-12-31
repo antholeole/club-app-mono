@@ -1,11 +1,10 @@
-import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
+import 'package:fe/pages/main/view/widgets/log_outer.dart';
 import 'package:fe/pages/profile/cubit/name_change_cubit.dart';
+import 'package:fe/pages/profile/cubit/name_change_state.dart';
 import 'package:fe/services/local_data/token_manager.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
-import 'package:fe/stdlib/errors/failure.dart';
-import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/shared_widgets/user_avatar.dart';
 import 'package:fe/stdlib/theme/button_group.dart';
@@ -13,6 +12,7 @@ import 'package:fe/stdlib/theme/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../config.dart';
 import '../../../service_locator.dart';
@@ -59,16 +59,15 @@ class ProfileView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             BlocConsumer<NameChangeCubit, NameChangeState>(
-                builder: (context, state) => state.join(
-                      (_) => _buildChangeNameButton(false, context),
-                      (_) => _buildChangeNameButton(true, context),
-                      (_) => _buildChangeNameButton(false, context),
+                builder: (context, state) => state.when(
+                      notChanging: () => _buildChangeNameButton(false, context),
+                      changing: () => _buildChangeNameButton(true, context),
+                      failure: (_) => _buildChangeNameButton(false, context),
                     ),
-                listener: (context, state) => state.join(
-                      (_) => null,
-                      (_) => null,
-                      (errorState) => _handler.handleFailure(
-                          errorState.failure, context,
+                listener: (context, state) => state.maybeWhen(
+                      orElse: () => null,
+                      failure: (failure) => _handler.handleFailure(
+                          failure, context,
                           withPrefix: "Couldn't change name"),
                     )),
             _buildLogOutButton(context),
@@ -89,7 +88,13 @@ class ProfileView extends StatelessWidget {
                     title: const Text('a-token'),
                     onTap: () => getIt<TokenManager>()
                         .read()
-                        .then((t) => print('Bearer $t')))
+                        .then((t) => print('Bearer $t'))),
+                ListTile(
+                    title: const Text('clear shared pref'),
+                    onTap: () => getIt<SharedPreferences>().clear().then(
+                        (value) => context.read<ToasterCubit>().add(Toast(
+                            message: 'shared pref cleared',
+                            type: ToastType.Success))))
               ])
           ],
         )
@@ -113,7 +118,7 @@ class ProfileView extends StatelessWidget {
   Widget _buildLogOutButton(BuildContext context) {
     return ButtonGroup(buttons: [
       ListTile(
-          onTap: context.read<MainCubit>().logOut,
+          onTap: context.read<LogOuter>().logOut,
           title: const Text(
             ProfileView.LOGOUT_COPY,
             style: TextStyle(color: Colors.red),

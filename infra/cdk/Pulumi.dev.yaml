@@ -8,6 +8,8 @@ config:
     secure: AAABAIvC7jVUhQbB86BtZzwrdzjXWSUfrwJcZEWoZK8IfwL+hd25K43xZ4sQBd3FLBznw822
   club-app:CF_ZONE:
     secure: AAABAFs3y2EBKW23LXfUy9lMLEbZ2rQ0J5ofksSeSKDHnnOMgEKmfJMNf92G5ldLt0HDDbutr4XH5P3jaGU1yA==
+  club-app:b2_secret_access_key:
+    secure: AAABANMpit/mRUyOLN+hYPn2j6omT/lAveknijF2U/l6IqJvm707ambJJ2vwwvu/JoSR6TDtyfydnB+DRcfu
   club-app:base_url: getclub.app
   club-app:db_password:
     secure: AAABAAutketKXQ1kr5JKkvxDaswXsDY/+wwnaBRx2ixehNaf89wgxfUMP+UzXONfuIa4MLkFF94/

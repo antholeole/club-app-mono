@@ -1,6 +1,6 @@
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/pages/chat/view/widgets/title/chat_title.dart';
-import 'package:fe/pages/scaffold/cubit/channels_bottom_sheet_cubit.dart';
+import 'package:fe/pages/scaffold/cubit/chat_bottom_sheet_cubit.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';

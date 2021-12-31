@@ -1,10 +1,10 @@
-import 'package:fe/data/models/club.dart';
+import 'package:fe/data/models/group.dart';
 import 'package:fe/pages/groups/cubit/group_req_cubit.dart';
-import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
+import 'package:fe/stdlib/shared_widgets/hydrated_builder.dart';
 
 import 'package:ferry/ferry.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +45,10 @@ class LeaveGroupButton extends StatelessWidget {
                         ..fetchPolicy = FetchPolicy.NetworkOnly),
                       context, onComplete: (_) {
                     context.read<GroupReqCubit>().refresh();
-                    context.read<MainCubit>().initalizeMainPage();
+
+                    if (context.read<Group>().id == group.id) {
+                      context.read<HydratedSetter<Group>>().set(null);
+                    }
                   },
                       errorMessage: 'failed to leave group',
                       successMessage: 'Left group ${group.name}'),

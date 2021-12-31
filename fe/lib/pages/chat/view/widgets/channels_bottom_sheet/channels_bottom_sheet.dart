@@ -1,4 +1,4 @@
-import 'package:fe/data/models/club.dart';
+import 'package:fe/data/models/group.dart';
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/gql/query_self_threads_in_group.data.gql.dart';
 import 'package:fe/gql/query_self_threads_in_group.req.gql.dart';
@@ -6,9 +6,8 @@ import 'package:fe/gql/query_self_threads_in_group.var.gql.dart';
 import 'package:fe/gql/query_view_only_threads.data.gql.dart';
 import 'package:fe/gql/query_view_only_threads.req.gql.dart';
 import 'package:fe/gql/query_view_only_threads.var.gql.dart';
-import 'package:fe/pages/main/cubit/main_cubit.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
-import 'package:fe/pages/scaffold/cubit/channels_bottom_sheet_cubit.dart';
+import 'package:fe/pages/scaffold/cubit/chat_bottom_sheet_cubit.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/shared_widgets/gql_operation.dart';
@@ -63,9 +62,9 @@ class ChannelsBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final state = _providerReadableContext.watch<MainCubit>().state;
-    Club? currentGroup = state.join((_) => null, (_) => null, (p0) => null,
-        (mwc) => mwc.club, (_) => null, (_) => null);
+    final club = _providerReadableContext
+        .watch<Group?>()
+        ?.maybeMap(orElse: () => null, club: (club) => club);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -76,7 +75,7 @@ class ChannelsBottomSheet extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: currentGroup != null
+          child: club != null
               ? Column(
                   children: [
                     Padding(
@@ -95,35 +94,35 @@ class ChannelsBottomSheet extends StatelessWidget {
                     ),
                     _buildThreadGroup<GQuerySelfThreadsInGroupData,
                             GQuerySelfThreadsInGroupVars>(
-                        addable: currentGroup.admin,
+                        addable: club.admin,
                         context: context,
                         title: ChannelsBottomSheet.CHANNELS_TEXT,
-                        currentGroupId: currentGroup.id,
+                        currentGroupId: club.id,
                         dataMap: (data) => data.threads.map((threadData) =>
                             Thread(
                                 name: threadData.name,
                                 id: threadData.id,
                                 isViewOnly: false)),
                         operationRequest: GQuerySelfThreadsInGroupReq((q) => q
-                          ..vars.groupId = currentGroup.id
+                          ..vars.groupId = club.id
                           ..vars.userId = _providerReadableContext
                               .read<UserCubit>()
                               .state
                               .id)),
-                    if (currentGroup.admin)
+                    if (club.admin)
                       _buildThreadGroup<GQueryViewOnlyThreadsData,
                               GQueryViewOnlyThreadsVars>(
                           addable: false,
                           context: context,
                           title: ChannelsBottomSheet.VIEW_ONLY_TEXT,
-                          currentGroupId: currentGroup.id,
+                          currentGroupId: club.id,
                           dataMap: (data) => data.threads.map((threadData) =>
                               Thread(
                                   name: threadData.name,
                                   id: threadData.id,
                                   isViewOnly: true)),
                           operationRequest: GQueryViewOnlyThreadsReq((q) => q
-                            ..vars.groupId = currentGroup.id
+                            ..vars.groupId = club.id
                             ..vars.userId = _providerReadableContext
                                 .read<UserCubit>()
                                 .state

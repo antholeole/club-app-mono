@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:clock/clock.dart';
-import 'package:equatable/equatable.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter/material.dart';
@@ -12,17 +11,14 @@ enum ToastType {
   Success,
 }
 
-class ToastAction extends Equatable {
+class ToastAction {
   final String actionText;
   final void Function() action;
 
   const ToastAction({required this.actionText, required this.action});
-
-  @override
-  List<Object?> get props => [actionText];
 }
 
-class Toast extends Equatable {
+class Toast {
   final UuidType id;
   final String message;
   final ToastType type;
@@ -53,8 +49,30 @@ class Toast extends Equatable {
   })  : id = id ?? UuidType.generate(),
         created = DateTime.now();
 
+  Toast.completer(
+      {UuidType? id,
+      required this.message,
+      required this.type,
+      required ToastAction action,
+      Duration? expireAt = ToasterCubit.PROMPT_DURATION,
+      required Completer<bool> completer})
+      : created = clock.now(),
+        expireAt = expireAt != null ? clock.now().add(expireAt) : null,
+        id = id ?? UuidType.generate(),
+        action = ToastAction(
+            action: () {
+              completer.complete(true);
+              action.action();
+            },
+            actionText: action.actionText),
+        onDismiss = (() {
+          if (!completer.isCompleted) completer.complete(false);
+        });
+
   @override
-  List<Object?> get props => [message, id, created, type];
+  bool operator ==(covariant Toast other) {
+    return other.id == id;
+  }
 }
 
 class CompleterToast extends Toast {

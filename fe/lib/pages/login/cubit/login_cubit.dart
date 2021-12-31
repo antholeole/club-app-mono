@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:fe/data/json/backend_access_tokens.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/services/clients/gql_client/unauth_gql_client.dart';
@@ -10,13 +9,10 @@ import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:fe/gql/authenticate.req.gql.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:meta/meta.dart';
-import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
 import 'package:fe/schema.schema.gql.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-
 import '../../../service_locator.dart';
-
-part 'login_state.dart';
+import 'login_state.dart';
 
 enum LoginType {
   Google,

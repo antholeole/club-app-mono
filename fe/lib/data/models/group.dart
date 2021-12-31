@@ -1,12 +1,27 @@
-import 'package:equatable/equatable.dart';
-import 'package:fe/stdlib/helpers/uuid_type.dart';
+import 'package:fe/data/models/user.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import '../../stdlib/helpers/uuid_type.dart';
 
-abstract class Group extends Equatable {
-  final String name;
-  final UuidType id;
+part 'group.freezed.dart';
+part 'group.g.dart';
 
-  const Group({required this.name, required this.id});
+@freezed
+class Group with _$Group {
+  Group._();
 
-  @override
-  List<Object?> get props => [name, id];
+  factory Group.dm(
+      {String? dmName,
+      @CustomUuidConverter() required UuidType id,
+      required List<User> users}) = Dm;
+
+  factory Group.club(
+      {required String name,
+      @CustomUuidConverter() required UuidType id,
+      required bool admin}) = Club;
+
+  String get name => map(
+      dm: (dm) => dm.dmName ?? dm.users.map((e) => e.name).join(' '),
+      club: (club) => club.name);
+
+  factory Group.fromJson(Map<String, dynamic> json) => _$GroupFromJson(json);
 }

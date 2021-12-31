@@ -1,19 +1,16 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/login/cubit/login_cubit.dart';
 import 'package:fe/pages/login/view/widgets/sign_in_with_provider_button.dart';
 import 'package:fe/services/local_data/image_handler.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
 import 'package:flutter/widgets.dart';
-import 'package:sealed_flutter_bloc/sealed_flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../service_locator.dart';
 
-part 'splash_state.dart';
+import 'splash_state.dart';
 
 class SplashCubit extends Cubit<SplashState> {
   final LocalFileStore _localFileStore = getIt<LocalFileStore>();

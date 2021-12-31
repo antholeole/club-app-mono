@@ -22,6 +22,7 @@ export const createHasura = (
 
     const web = atg.createListener('web', { port: 80 }) 
     
+    
     new awsx.ecs.FargateService(generateName(config, 'hasura'), {
         cluster,
         desiredCount: 1,
