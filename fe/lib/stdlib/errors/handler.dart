@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:fe/config.dart';
-import 'package:fe/pages/main/view/widgets/log_outer.dart';
+import 'package:fe/services/fn_providers/log_outer.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
@@ -26,12 +26,12 @@ class Handler {
 
   Future<Failure?> checkConnectivity() async {
     if (!(await isConnected())) {
-      return Failure(status: FailureStatus.NoConn);
+      return const Failure(status: FailureStatus.NoConn);
     }
 
     final hasServerConnection = await this.hasServerConnection();
     if (!hasServerConnection) {
-      return Failure(status: FailureStatus.ServersDown);
+      return const Failure(status: FailureStatus.ServersDown);
     }
   }
 
@@ -72,7 +72,7 @@ class Handler {
       } else if (resp.linkException is ServerException) {
         return Failure(
             status: FailureStatus.HttpMisc,
-            message: (resp.linkException as ServerException)
+            customMessage: (resp.linkException as ServerException)
                 .parsedResponse
                 ?.context
                 .entry<ResponseExtensions>()
@@ -87,7 +87,7 @@ class Handler {
         errorBuff.write(error.message);
       });
       return Failure(
-          message: errorBuff.toString(), status: FailureStatus.GQLMisc);
+          customMessage: errorBuff.toString(), status: FailureStatus.GQLMisc);
     }
 
     final disconnectedFailure = await checkConnectivity();
@@ -98,8 +98,16 @@ class Handler {
 
     return Failure(
         status: FailureStatus.Unknown,
-        message: resp.linkException?.toString() ??
+        customMessage: resp.linkException?.toString() ??
             'unknown GQL error - on request ${resp.operationRequest.requestId}');
+  }
+
+  Failure exceptionToFailure(Exception e) {
+    if (e is Failure) {
+      return e as Failure;
+    }
+
+    return Failure(status: FailureStatus.Unknown, customMessage: e.toString());
   }
 
   void handleFailure(Failure f, BuildContext context,
@@ -107,7 +115,7 @@ class Handler {
     if (f.status.fatal) {
       context.read<LogOuter>().logOut(withError: f.message);
     } else {
-      String errorString = f.message ?? f.status.message;
+      String errorString = f.message;
 
       if (withPrefix != null) {
         errorString = withPrefix + ': ' + errorString;

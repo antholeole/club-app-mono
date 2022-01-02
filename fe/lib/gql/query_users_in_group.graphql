@@ -6,7 +6,6 @@ query QueryUsersInGroup($groupId: uuid!) {
   }) {
     user {
       name,
-      profile_picture,
       id,
       user_to_roles(where: {
         role: {

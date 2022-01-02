@@ -1,6 +1,5 @@
 import 'package:fe/data/models/group.dart';
 import 'package:fe/data/models/thread.dart';
-import 'package:fe/data/models/group.dart';
 import 'package:fe/pages/chat/view/widgets/thread_members_drawer/club_drawer/club_drawer.dart';
 import 'package:fe/pages/chat/view/widgets/thread_members_drawer/dm_drawer.dart';
 import 'package:flutter/material.dart';

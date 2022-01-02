@@ -17,7 +17,6 @@ subscription GetNewMessages(
     id,
     user {
       name,
-      profile_picture,
       id
     },
     message_reactions {

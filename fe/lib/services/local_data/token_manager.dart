@@ -2,7 +2,6 @@ import 'package:fe/constants.dart';
 import 'package:fe/data/json/backend_access_tokens.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/clients/gql_client/unauth_gql_client.dart';
-
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/gql/refresh.req.gql.dart';
@@ -71,7 +70,7 @@ class TokenManager {
     UuidType userId = await _localUserService.getLoggedInUserId();
 
     if (refreshToken == null) {
-      throw Failure(status: FailureStatus.RefreshFail);
+      throw const Failure(status: FailureStatus.RefreshFail);
     }
 
     try {
@@ -87,7 +86,7 @@ class TokenManager {
       await _writeAccessToken(token);
       return token;
     } on Failure catch (_) {
-      throw Failure(status: FailureStatus.RefreshFail);
+      throw const Failure(status: FailureStatus.RefreshFail);
     }
   }
 

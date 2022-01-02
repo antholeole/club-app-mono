@@ -2,7 +2,8 @@ import 'package:connectivity/connectivity.dart';
 import 'package:fe/config.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/services/clients/gql_client/unauth_gql_client.dart';
-import 'package:fe/services/local_data/image_handler.dart';
+import 'package:fe/services/clients/image_client.dart';
+import 'package:fe/services/local_data/image_cache_handler.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
 import 'package:fe/services/local_data/token_manager.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
@@ -39,7 +40,7 @@ void setupLocator({required bool isProd}) {
 
   getIt
       .registerSingletonAsync<SharedPreferences>(SharedPreferences.getInstance);
-  getIt.registerSingleton(ImageHandler());
+  getIt.registerSingleton(ImageCacheHandler());
   getIt.registerSingleton<http.Client>(http.Client());
   getIt.registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
   getIt.registerSingleton<LocalFileStore>(LocalFileStore());
@@ -54,4 +55,7 @@ void setupLocator({required bool isProd}) {
 
   getIt.registerSingletonAsync<AuthGqlClient>(() => AuthGqlClient.build(),
       dependsOn: [TokenManager]);
+
+  getIt.registerSingletonWithDependencies(() => ImageClient(),
+      dependsOn: [AuthGqlClient]);
 }

@@ -12,6 +12,13 @@ type Mutation {
 }
 
 type Mutation {
+  get_signed_download_link (
+    sourceId: uuid!
+    uploadType: UploadType!
+  ): DownloadImageOutput
+}
+
+type Mutation {
   insert_image (
     sourceId: uuid!
     uploadType: UploadType!
@@ -59,9 +66,7 @@ input InsertImageInput {
 }
 
 type SampleOutput {
-  accessToken : String!
-  refreshToken : String!
-  userId : uuid!
+  downloadUrl : String!
 }
 
 type accessToken {
@@ -91,5 +96,10 @@ type JoinRoleWithJoinCodesOutput {
 
 type InsertImageOutput {
   uploadUrl : String!
+  imageName : String
+}
+
+type DownloadImageOutput {
+  downloadUrl : String
 }
 

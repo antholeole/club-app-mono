@@ -17,10 +17,19 @@ actions:
       value_from_env: WEBHOOK_SECRET_KEY
   permissions:
   - role: user
+- name: get_signed_download_link
+  definition:
+    kind: synchronous
+    handler: '{{WEBHOOK_URL}}/api/file/download'
+    headers:
+    - name: WEBHOOK_SECRET_KEY
+      value_from_env: WEBHOOK_SECRET_KEY
+  permissions:
+  - role: user
 - name: insert_image
   definition:
     kind: synchronous
-    handler: '{{WEBHOOK_URL}}/api/upload/image'
+    handler: '{{WEBHOOK_URL}}/api/file/upload'
     headers:
     - name: WEBHOOK_SECRET_KEY
       value_from_env: WEBHOOK_SECRET_KEY
@@ -78,4 +87,5 @@ custom_types:
   - name: ThreadResponse
   - name: JoinRoleWithJoinCodesOutput
   - name: InsertImageOutput
+  - name: DownloadImageOutput
   scalars: []

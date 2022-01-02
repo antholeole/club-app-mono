@@ -10,7 +10,6 @@ import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
 import 'package:fe/stdlib/errors/failure.dart';
-import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:fe/stdlib/theme/loader.dart';
@@ -49,7 +48,7 @@ class _ChatsState extends State<Chats> {
             .forEach((element) => context.read<ToasterCubit>().add(Toast(
                 message: element.when(
                     sending: (_) => throw Exception('unreachable state'),
-                    failure: (_, f, __) => f.message ?? f.status.message),
+                    failure: (_, f, __) => f.message),
                 type: ToastType.Error))),
         builder: (_, unsents) => BlocConsumer<ChatCubit, ChatState>(
           listener: (_, chatState) => chatState.maybeWhen(
@@ -131,7 +130,7 @@ class _ChatsState extends State<Chats> {
         ),
         PillButton(
           text: 'retry',
-          onClick: () => context.read<ChatCubit>().fetchMessages(),
+          onClick: () => context.read<ChatCubit>().initalize(),
           icon: Icons.refresh,
         ),
       ],

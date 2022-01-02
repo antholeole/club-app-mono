@@ -4,14 +4,14 @@ import 'package:fe/data/models/group.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/chat/view/chat_page.dart';
 import 'package:fe/pages/events/events_page.dart';
+import 'package:fe/pages/main/cubit/page_cubit.dart';
+import 'package:fe/pages/main/cubit/page_state.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
-import 'package:fe/pages/main/view/widgets/group_joiner.dart';
+import 'package:fe/pages/scaffold/features/threads_bottom_sheet/cubit/threads_bottom_sheet_cubit.dart';
+import 'package:fe/services/fn_providers/group_joiner.dart';
 import 'package:fe/pages/main/view/widgets/join_group_button.dart';
-import 'package:fe/pages/main/view/widgets/log_outer.dart';
-import 'package:fe/pages/scaffold/cubit/chat_bottom_sheet_cubit.dart';
-import 'package:fe/pages/scaffold/cubit/page_cubit.dart';
-import 'package:fe/pages/scaffold/cubit/page_state.dart';
-import 'package:fe/pages/scaffold/view/main_scaffold.dart';
+import 'package:fe/services/fn_providers/log_outer.dart';
+import 'package:fe/pages/scaffold/main_scaffold.dart';
 import 'package:fe/stdlib/shared_widgets/hydrated_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,7 +31,7 @@ class MainPage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => PageCubit()),
-        BlocProvider(create: (_) => ChatBottomSheetCubit()),
+        BlocProvider(create: (_) => ThreadsBottomSheetCubit()),
         BlocProvider(create: (_) => UserCubit(_user)),
       ],
       child: LogOutRunner(

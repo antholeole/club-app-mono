@@ -18,9 +18,9 @@ class ThreadUsers extends StatelessWidget {
             (req) => req..vars.threadId = context.read<Thread>().id),
         onResponse: (data) => UsersList(
               users: data.user_to_thread.map((user) => User(
-                  name: user.user!.name,
-                  id: user.user!.id,
-                  profilePictureUrl: user.user!.profile_picture)),
+                    name: user.user!.name,
+                    id: user.user!.id,
+                  )),
             ));
   }
 }

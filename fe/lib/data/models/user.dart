@@ -8,7 +8,6 @@ part 'user.g.dart';
 class User with _$User {
   factory User(
       {required String name,
-      String? profilePictureUrl,
       @CustomUuidConverter() required UuidType id}) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

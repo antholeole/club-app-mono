@@ -10,6 +10,7 @@ mutation GetImageUploadUrl(
     uploadType: $uploadType,
     contentType: $contentType
   ) {
-    uploadUrl
+    uploadUrl,
+    imageName
   }
 }

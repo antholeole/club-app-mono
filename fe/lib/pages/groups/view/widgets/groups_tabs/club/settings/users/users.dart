@@ -76,7 +76,6 @@ class Users extends StatelessWidget {
         final user = User(
           id: userData.user!.id,
           name: userData.user!.name,
-          profilePictureUrl: userData.user!.profile_picture,
         );
 
         return UserTile(

@@ -1,5 +1,6 @@
 import 'package:fe/data/models/message.dart';
 import 'package:fe/stdlib/errors/failure.dart';
+
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 

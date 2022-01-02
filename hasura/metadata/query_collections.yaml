@@ -29,9 +29,17 @@
         $groupId      },      users: {        _and: {          user_id: {          _eq:
         $userId          },          thread_id: {          _eq: $threadId          }        }      },    }  })
         {    aggregate {      count    }  }}'
+    - name: insert_image
+      query: 'mutation GetSignedInsertImageLink($sourceId: uuid!, $uploadType: UploadType!)
+        {  insert_image(imageData: {      sourceId: $sourceId,      uploadType: $uploadType  })
+        {    uploadUrl,    imageName  }}'
+    - name: get_image_download_url
+      query: 'mutation GetImageDownloadUrl(  $sourceId: uuid!,  $uploadType: UploadType!,)
+        {  get_signed_download_link(sourceId: $sourceId, uploadType: $uploadType)
+        {    downloadUrl  }}'
     - name: query_users_in_dm
       query: 'query QueryUsersInDm($dmId: uuid!) {  user_to_dm(where: {    dm_id:
-        {      _eq: $dmId    }  }) {    user {      name,      profile_picture,      id    }  }}'
+        {      _eq: $dmId    }  }) {    user {      name,      id    }  }}'
     - name: query_view_only_threads
       query: 'query QueryViewOnlyThreads($groupId: uuid!, $userId: uuid!) {  threads(where:
         {  _and: {      group_id: {        _eq: $groupId      },      _not: {      users:
@@ -54,7 +62,7 @@
         {    user_id: {    _eq: $self_id    }  }) {   group {        id,        name      },    owner    }}'
     - name: query_users_in_thread
       query: 'query QueryUsersInThread($threadId: uuid!) {  user_to_thread(where:
-        {    thread_id: {      _eq: $threadId    }  }) {    user {      name,      profile_picture,      id    }  }}'
+        {    thread_id: {      _eq: $threadId    }  }) {    user {      name,      id    }  }}'
     - name: query_roles_in_group
       query: 'query QueryRolesInGroup($groupId: uuid!) {  roles(where: {    group_id:
         {      _eq: $groupId    }  }) {    name,    id  }}'
@@ -74,16 +82,16 @@
         user_to_group(    where: {      owner: {      _eq:false      },      user_id:
         {        _eq: $selfId      }    }  ) {    group {      ...group_base_fields    }  },  dms(    where:
         {      user_to_dms: {        user_id: {          _eq: $selfId        }      }    }  )
-        {    id,    name,    user_to_dms {      user {        id,        name,        profile_picture      }    }  }}'
+        {    id,    name,    user_to_dms {      user {        id,        name      }    }  }}'
     - name: get_image_upload_url
       query: 'mutation GetImageUploadUrl(  $fileSize: Int!,  $sourceId: uuid!,  $uploadType:
         UploadType!,  $contentType: String!) {  insert_image(    fileSize: $fileSize,    sourceId:
-        $sourceId,    uploadType: $uploadType,    contentType: $contentType  ) {    uploadUrl  }}'
+        $sourceId,    uploadType: $uploadType,    contentType: $contentType  ) {    uploadUrl,    imageName  }}'
     - name: query_messages_in_chat
       query: 'query QueryMessagesInChat(  $threadId: uuid!,  $before: timestamptz!)
         {  messages(    limit: 20,    order_by: {      created_at: desc    },    where:
         {      source_id: {        _eq: $threadId,      },      created_at: {        _lte:
-        $before      }    }  ) {   created_at,    body,    user {      name,      profile_picture,      id    },  message_reactions
+        $before      }    }  ) {   created_at,    body,    user {      name,      id    },  message_reactions
         {      reaction_type,      id,      user {        id,        name      }    },    message_type,    updated_at,    id  }}'
     - name: add_roles_to_users
       query: 'mutation AddRolesToUsers($roles: [user_to_role_insert_input!]!) {  insert_user_to_role(objects:
@@ -114,13 +122,9 @@
     - name: refresh
       query: 'mutation Refresh($refreshToken: String!, $userId: uuid!) {  refresh_access_token(refreshToken:
         $refreshToken, userId:$userId) {    accessToken  }}'
-    - name: insert_image
-      query: 'mutation GetSignedInsertImageLink($sourceId: uuid!, $uploadType: UploadType!)
-        {  insert_image(imageData: {      sourceId: $sourceId,      uploadType: $uploadType  })
-        {    uploadUrl  }}'
     - name: query_users_in_group
       query: 'query QueryUsersInGroup($groupId: uuid!) {  user_to_group(where: {    group_id:
-        {      _eq: $groupId    }  }) {    user {      name,      profile_picture,      id,      user_to_roles(where:
+        {      _eq: $groupId    }  }) {    user {      name,      id,      user_to_roles(where:
         {        role: {          group_id: {            _eq: $groupId}        }      })
         {        role {          name,          id        }      }    }  }}'
     - name: remove_role_from_thread
@@ -137,7 +141,7 @@
     - name: get_new_messages
       query: 'subscription GetNewMessages(  $sourceId: uuid!,) {  messages(    order_by:
         {      created_at: desc    },    where: {      source_id: {        _eq: $sourceId,      },    },    limit:
-        10  ) {   created_at,    body,    id,    user {      name,      profile_picture,      id    },    message_reactions
+        10  ) {   created_at,    body,    id,    user {      name,      id    },    message_reactions
         {      reaction_type,      id,      user {        id,        name      }    },    message_type,    updated_at  }}'
     - name: remove_role_from_user
       query: 'mutation RemoveRoleFromUser($userId: uuid!, $roleId: uuid!) {  delete_user_to_role(where:

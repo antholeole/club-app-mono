@@ -46,8 +46,7 @@ query QuerySelfGroups($selfId: uuid!) {
     user_to_dms {
       user {
         id,
-        name,
-        profile_picture
+        name
       }
     }
   }

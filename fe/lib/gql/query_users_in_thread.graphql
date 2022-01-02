@@ -6,7 +6,6 @@ query QueryUsersInThread($threadId: uuid!) {
   }) {
     user {
       name,
-      profile_picture,
       id
     }
   }

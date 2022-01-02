@@ -642,24 +642,6 @@ class GIdentityProvider extends EnumClass {
       _$gIdentityProviderValueOf(name);
 }
 
-abstract class GInsertImageInput
-    implements Built<GInsertImageInput, GInsertImageInputBuilder> {
-  GInsertImageInput._();
-
-  factory GInsertImageInput([Function(GInsertImageInputBuilder b) updates]) =
-      _$GInsertImageInput;
-
-  _i2.UuidType get sourceId;
-  GUploadType get uploadType;
-  static Serializer<GInsertImageInput> get serializer =>
-      _$gInsertImageInputSerializer;
-  Map<String, dynamic> toJson() =>
-      (_i1.serializers.serializeWith(GInsertImageInput.serializer, this)
-          as Map<String, dynamic>);
-  static GInsertImageInput? fromJson(Map<String, dynamic> json) =>
-      _i1.serializers.deserializeWith(GInsertImageInput.serializer, json);
-}
-
 abstract class Gjoin_tokens_bool_exp
     implements Built<Gjoin_tokens_bool_exp, Gjoin_tokens_bool_expBuilder> {
   Gjoin_tokens_bool_exp._();
@@ -1515,6 +1497,8 @@ class Gmessage_types_constraint extends EnumClass {
 
 class Gmessage_types_enum extends EnumClass {
   const Gmessage_types_enum._(String name) : super(name);
+
+  static const Gmessage_types_enum IMAGE = _$gmessageTypesEnumIMAGE;
 
   static const Gmessage_types_enum TEXT = _$gmessageTypesEnumTEXT;
 
@@ -3948,7 +3932,6 @@ abstract class Gusers_bool_exp
   Gmessage_reactions_bool_exp? get message_reactions;
   Gmessages_bool_exp? get messages;
   GString_comparison_exp? get name;
-  GString_comparison_exp? get profile_picture;
   GString_comparison_exp? get sub;
   Guser_to_dm_bool_exp? get user_to_dms;
   Guser_to_role_bool_exp? get user_to_roles;
@@ -3989,7 +3972,6 @@ abstract class Gusers_insert_input
   Gmessage_reactions_arr_rel_insert_input? get message_reactions;
   Gmessages_arr_rel_insert_input? get messages;
   String? get name;
-  String? get profile_picture;
   String? get sub;
   Guser_to_dm_arr_rel_insert_input? get user_to_dms;
   Guser_to_role_arr_rel_insert_input? get user_to_roles;
@@ -4054,7 +4036,6 @@ abstract class Gusers_order_by
   Gmessage_reactions_aggregate_order_by? get message_reactions_aggregate;
   Gmessages_aggregate_order_by? get messages_aggregate;
   Gorder_by? get name;
-  Gorder_by? get profile_picture;
   Gorder_by? get sub;
   Guser_to_dm_aggregate_order_by? get user_to_dms_aggregate;
   Guser_to_role_aggregate_order_by? get user_to_roles_aggregate;
@@ -4095,9 +4076,6 @@ class Gusers_select_column extends EnumClass {
   @BuiltValueEnumConst(wireName: 'name')
   static const Gusers_select_column Gname = _$gusersSelectColumnGname;
 
-  static const Gusers_select_column profile_picture =
-      _$gusersSelectColumnprofile_picture;
-
   static const Gusers_select_column sub = _$gusersSelectColumnsub;
 
   static Serializer<Gusers_select_column> get serializer =>
@@ -4118,7 +4096,6 @@ abstract class Gusers_set_input
   String? get email;
   _i2.UuidType? get id;
   String? get name;
-  String? get profile_picture;
   String? get sub;
   static Serializer<Gusers_set_input> get serializer =>
       _$gusersSetInputSerializer;
@@ -4138,9 +4115,6 @@ class Gusers_update_column extends EnumClass {
 
   @BuiltValueEnumConst(wireName: 'name')
   static const Gusers_update_column Gname = _$gusersUpdateColumnGname;
-
-  static const Gusers_update_column profile_picture =
-      _$gusersUpdateColumnprofile_picture;
 
   static const Gusers_update_column sub = _$gusersUpdateColumnsub;
 

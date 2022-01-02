@@ -1,4 +1,5 @@
 import 'package:fe/data/models/message.dart';
+import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/chat/view/widgets/chats/message/message_tile_reaction_summary.dart';
 import 'package:fe/stdlib/shared_widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
@@ -37,16 +38,17 @@ class MessageDisplay extends StatelessWidget {
           children: [
             ListTile(
               minVerticalPadding: 0,
-              leading: UserAvatar(
-                name: _message.user.name,
-                profileUrl: _message.user.profilePictureUrl,
-              ),
+              leading: UserAvatar(user: _message.user),
               title: Text(_message.user.name),
-              subtitle: Text(
-                _message.maybeMap(
-                    text: (p0) => p0.text, orElse: () => 'IM AN IMAGE'),
-                style: Theme.of(context).textTheme.bodyText2,
-              ),
+              subtitle: _message.map(
+                  text: (text) => Text(
+                        text.text,
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
+                  image: (image) => Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Image.memory(image.image),
+                      )),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 16.0),

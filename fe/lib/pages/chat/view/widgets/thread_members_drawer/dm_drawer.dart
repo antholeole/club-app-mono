@@ -18,9 +18,9 @@ class DmDrawer extends StatelessWidget {
             (req) => req..vars.dmId = context.read<Thread>().id),
         onResponse: (data) => UsersList(
               users: data.user_to_dm.map((user) => User(
-                  id: user.user.id,
-                  name: user.user.name,
-                  profilePictureUrl: user.user.profile_picture)),
+                    id: user.user.id,
+                    name: user.user.name,
+                  )),
             ));
   }
 }

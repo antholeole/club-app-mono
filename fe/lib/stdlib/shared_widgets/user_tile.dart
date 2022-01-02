@@ -40,8 +40,7 @@ class UserTile extends StatelessWidget {
             style: const TextStyle(fontWeight: FontWeight.normal),
           ),
           leading: UserAvatar(
-            name: _user.name,
-            profileUrl: _user.profilePictureUrl,
+            user: _user,
           ),
           trailing: Row(mainAxisSize: MainAxisSize.min, children: [
             if (_showDmButton)

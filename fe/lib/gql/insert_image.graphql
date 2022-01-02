@@ -1,9 +1,0 @@
-
-mutation GetSignedInsertImageLink($sourceId: uuid!, $uploadType: UploadType!) {
-  insert_image(imageData: {
-      sourceId: $sourceId,
-      uploadType: $uploadType
-  }) {
-    uploadUrl
-  }
-}

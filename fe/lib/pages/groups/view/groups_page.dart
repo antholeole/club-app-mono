@@ -5,7 +5,7 @@ import 'package:fe/pages/groups/view/widgets/groups_tabs/club/club_tab.dart';
 import 'package:fe/pages/groups/view/widgets/groups_tabs/dm/dm_tab.dart';
 import 'package:fe/pages/groups/view/widgets/groups_tabs/groups_tab.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
-import 'package:fe/pages/main/view/widgets/group_joiner.dart';
+import 'package:fe/services/fn_providers/group_joiner.dart';
 import 'package:fe/stdlib/shared_widgets/gql_operation.dart';
 import 'package:fe/gql/query_self_groups.var.gql.dart';
 import 'package:fe/gql/query_self_groups.data.gql.dart';
@@ -60,9 +60,9 @@ class GroupsView extends StatelessWidget {
                         .where((user) =>
                             user.user.id != context.read<UserCubit>().user.id)
                         .map((user) => User(
-                            name: user.user.name,
-                            id: user.user.id,
-                            profilePictureUrl: user.user.profile_picture))
+                              name: user.user.name,
+                              id: user.user.id,
+                            ))
                         .toList(),
                     id: memberGroup.id,
                     dmName: memberGroup.name))

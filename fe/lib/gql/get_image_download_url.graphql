@@ -1,0 +1,8 @@
+mutation GetImageDownloadUrl(
+  $sourceId: uuid!,
+  $uploadType: UploadType!,
+) {
+  get_signed_download_link(sourceId: $sourceId, uploadType: $uploadType) {
+    downloadUrl
+  }
+}

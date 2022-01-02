@@ -3,9 +3,9 @@ import 'package:fe/data/models/thread.dart';
 import 'package:fe/pages/chat/view/widgets/thread_members_drawer/chat_right_drawer.dart';
 import 'package:fe/pages/chat/view/widgets/title/chat_title.dart';
 import 'package:fe/pages/chat/view/widgets/title/club_chat_title.dart';
-import 'package:fe/pages/scaffold/cubit/page_cubit.dart';
-import 'package:fe/pages/scaffold/view/main_scaffold.dart';
-import 'package:fe/pages/scaffold/view/widgets/scaffold_button.dart';
+import 'package:fe/pages/main/cubit/page_cubit.dart';
+import 'package:fe/pages/scaffold/main_scaffold.dart';
+import 'package:fe/pages/scaffold/widgets/scaffold_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

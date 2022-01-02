@@ -34,6 +34,14 @@ import 'package:fe/gql/fake/fake.data.gql.dart'
     show GFakeGqlData, GFakeGqlData_dms;
 import 'package:fe/gql/fake/fake.req.gql.dart' show GFakeGqlReq;
 import 'package:fe/gql/fake/fake.var.gql.dart' show GFakeGqlVars;
+import 'package:fe/gql/get_image_download_url.data.gql.dart'
+    show
+        GGetImageDownloadUrlData,
+        GGetImageDownloadUrlData_get_signed_download_link;
+import 'package:fe/gql/get_image_download_url.req.gql.dart'
+    show GGetImageDownloadUrlReq;
+import 'package:fe/gql/get_image_download_url.var.gql.dart'
+    show GGetImageDownloadUrlVars;
 import 'package:fe/gql/get_image_upload_url.data.gql.dart'
     show GGetImageUploadUrlData, GGetImageUploadUrlData_insert_image;
 import 'package:fe/gql/get_image_upload_url.req.gql.dart'
@@ -62,14 +70,6 @@ import 'package:fe/gql/get_or_create_dm.data.gql.dart'
     show GGetOrCreateDmData, GGetOrCreateDmData_get_or_create_dm;
 import 'package:fe/gql/get_or_create_dm.req.gql.dart' show GGetOrCreateDmReq;
 import 'package:fe/gql/get_or_create_dm.var.gql.dart' show GGetOrCreateDmVars;
-import 'package:fe/gql/insert_image.data.gql.dart'
-    show
-        GGetSignedInsertImageLinkData,
-        GGetSignedInsertImageLinkData_insert_image;
-import 'package:fe/gql/insert_image.req.gql.dart'
-    show GGetSignedInsertImageLinkReq;
-import 'package:fe/gql/insert_image.var.gql.dart'
-    show GGetSignedInsertImageLinkVars;
 import 'package:fe/gql/insert_message.data.gql.dart'
     show
         GInsertMessageData,
@@ -225,7 +225,6 @@ import 'package:fe/schema.schema.gql.dart'
     show
         GBoolean_comparison_exp,
         GIdentityProvider,
-        GInsertImageInput,
         GString_comparison_exp,
         GUploadType,
         Gdms_bool_exp,
@@ -454,6 +453,10 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GFakeGqlData_dms,
   GFakeGqlReq,
   GFakeGqlVars,
+  GGetImageDownloadUrlData,
+  GGetImageDownloadUrlData_get_signed_download_link,
+  GGetImageDownloadUrlReq,
+  GGetImageDownloadUrlVars,
   GGetImageUploadUrlData,
   GGetImageUploadUrlData_insert_image,
   GGetImageUploadUrlReq,
@@ -475,12 +478,7 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GGetOrCreateDmData_get_or_create_dm,
   GGetOrCreateDmReq,
   GGetOrCreateDmVars,
-  GGetSignedInsertImageLinkData,
-  GGetSignedInsertImageLinkData_insert_image,
-  GGetSignedInsertImageLinkReq,
-  GGetSignedInsertImageLinkVars,
   GIdentityProvider,
-  GInsertImageInput,
   GInsertMessageData,
   GInsertMessageData_insert_messages,
   GInsertMessageData_insert_messages_returning,

@@ -1,7 +1,7 @@
 import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/login/view/login_page.dart';
 import 'package:fe/pages/main/view/main_page.dart';
-import 'package:fe/pages/splash/view/splash_page.dart';
+import 'package:fe/pages/splash/splash_page.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -25,7 +25,7 @@ class AppState with _$AppState {
                   loading: (_) => platformPage(
                         context: context,
                         title: 'splash',
-                        child: const SplashPage(),
+                        child: SplashPage(),
                       ),
                   loggedIn: (loggedIn) => platformPage(
                         context: context,

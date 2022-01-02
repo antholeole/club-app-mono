@@ -253,6 +253,10 @@ enum dms_update_column {
   name
 }
 
+type DownloadImageOutput {
+  downloadUrl: String
+}
+
 """
 columns and relationships of "group_metadata"
 """
@@ -661,12 +665,8 @@ enum IdentityProvider {
   Google
 }
 
-input InsertImageInput {
-  sourceId: uuid!
-  uploadType: UploadType!
-}
-
 type InsertImageOutput {
+  imageName: String
   uploadUrl: String!
 }
 
@@ -1312,6 +1312,11 @@ enum message_types_constraint {
 }
 
 enum message_types_enum {
+  """
+  image. body is url, relative to: <bucket-base>/<group-id>/<thread-id>/<body> 
+  """
+  IMAGE
+
   """default plain text message"""
   TEXT
 }
@@ -1917,6 +1922,7 @@ type mutation_root {
   """
   delete_users_by_pk(id: uuid!): users
   get_or_create_dm(with_user_id: uuid!): ThreadResponse
+  get_signed_download_link(sourceId: uuid!, uploadType: UploadType!): DownloadImageOutput
 
   """
   insert data into the table: "dms"
@@ -1983,7 +1989,7 @@ type mutation_root {
     """on conflict condition"""
     on_conflict: groups_on_conflict
   ): groups
-  insert_image(imageData: InsertImageInput!): InsertImageOutput
+  insert_image(contentType: String!, fileSize: Int!, sourceId: uuid!, uploadType: UploadType!): InsertImageOutput
 
   """
   insert data into the table: "join_tokens"
@@ -5452,7 +5458,6 @@ type users {
     where: messages_bool_exp
   ): messages_aggregate!
   name: String!
-  profile_picture: String
   sub: String!
 
   """An array relationship"""
@@ -5558,7 +5563,6 @@ input users_bool_exp {
   message_reactions: message_reactions_bool_exp
   messages: messages_bool_exp
   name: String_comparison_exp
-  profile_picture: String_comparison_exp
   sub: String_comparison_exp
   user_to_dms: user_to_dm_bool_exp
   user_to_roles: user_to_role_bool_exp
@@ -5585,7 +5589,6 @@ input users_insert_input {
   message_reactions: message_reactions_arr_rel_insert_input
   messages: messages_arr_rel_insert_input
   name: String
-  profile_picture: String
   sub: String
   user_to_dms: user_to_dm_arr_rel_insert_input
   user_to_roles: user_to_role_arr_rel_insert_input
@@ -5596,7 +5599,6 @@ type users_max_fields {
   email: String
   id: uuid
   name: String
-  profile_picture: String
   sub: String
 }
 
@@ -5605,7 +5607,6 @@ type users_min_fields {
   email: String
   id: uuid
   name: String
-  profile_picture: String
   sub: String
 }
 
@@ -5647,7 +5648,6 @@ input users_order_by {
   message_reactions_aggregate: message_reactions_aggregate_order_by
   messages_aggregate: messages_aggregate_order_by
   name: order_by
-  profile_picture: order_by
   sub: order_by
   user_to_dms_aggregate: user_to_dm_aggregate_order_by
   user_to_roles_aggregate: user_to_role_aggregate_order_by
@@ -5672,9 +5672,6 @@ enum users_select_column {
   name
 
   """column name"""
-  profile_picture
-
-  """column name"""
   sub
 }
 
@@ -5685,7 +5682,6 @@ input users_set_input {
   email: String
   id: uuid
   name: String
-  profile_picture: String
   sub: String
 }
 
@@ -5701,9 +5697,6 @@ enum users_update_column {
 
   """column name"""
   name
-
-  """column name"""
-  profile_picture
 
   """column name"""
   sub

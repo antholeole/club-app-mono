@@ -13,5 +13,6 @@ export const VALID_CONTENT_TYPES = [
     'image/png'
 ]
 export const MAX_FILE_SIZE = 5_242_880
-export const B2_ENDPOINT = ENVIRONMENT !== 'dev' ?
+export const BUCKET_NAME = ENVIRONMENT === 'dev' ? 'dev-club-app' : 'club-app'
+export const B2_ENDPOINT = ENVIRONMENT === 'dev' ?
     'http://localhost:9876' : 'https://s3.us-west-000.backblazeb2.com'

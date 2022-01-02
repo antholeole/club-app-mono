@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 class ButtonGroup extends StatelessWidget {
   final String? _name;
-  final List<ListTile> _buttons;
+  final List<Widget> _buttons;
 
-  const ButtonGroup({String? name, required List<ListTile> buttons})
+  const ButtonGroup({String? name, required List<Widget> buttons})
       : _name = name,
         _buttons = buttons;
 

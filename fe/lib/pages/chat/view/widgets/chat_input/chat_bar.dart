@@ -104,23 +104,23 @@ class _ChatBarState extends State<ChatBar> {
   Future<void> _onSend() async {
     if (_controller.text.isNotEmpty) {
       try {
-        await context.read<SendCubit>().sendText(_controller.text);
-      } on Failure catch (f) {
-        _handler.handleFailure(f, context);
-      } finally {
+        final text = _controller.text;
         _controller.clear();
+        await context.read<SendCubit>().sendText(text);
+      } on Failure catch (f) {
+        _handler.handleFailure(f, context, withPrefix: 'error sending message');
       }
     }
 
     if (_image != null) {
       try {
-        await context.read<SendCubit>().sendImage(_image!);
-      } on Failure catch (f) {
-        _handler.handleFailure(f, context);
-      } finally {
+        final image = _image!;
         setState(() {
           _image = null;
         });
+        await context.read<SendCubit>().sendImage(image);
+      } on Failure catch (f) {
+        _handler.handleFailure(f, context, withPrefix: 'error sending file');
       }
     }
   }

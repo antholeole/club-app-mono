@@ -44,7 +44,6 @@ select_permissions:
     columns:
     - id
     - name
-    - profile_picture
     filter: {}
   role: user
 update_permissions:
@@ -52,7 +51,6 @@ update_permissions:
     check: null
     columns:
     - name
-    - profile_picture
     filter:
       id:
         _eq: X-Hasura-User-Id

@@ -1,5 +1,5 @@
 import 'package:fe/data/models/group.dart';
-import 'package:fe/pages/scaffold/view/main_scaffold.dart';
+import 'package:fe/pages/scaffold/main_scaffold.dart';
 import 'package:flutter/material.dart';
 
 class EventsPage extends StatelessWidget {

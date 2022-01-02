@@ -6,17 +6,14 @@ import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/chat/cubit/chat_cubit.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
-import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/gql/insert_message.req.gql.dart';
-import 'package:fe/gql/get_image_upload_url.req.gql.dart';
 import 'package:fe/schema.schema.gql.dart'
     show Gmessage_types_enum, GUploadType;
+import 'package:fe/services/clients/image_client.dart';
+import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
-
-import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:mime/mime.dart';
-
 import 'chat_state.dart';
 import 'send_state.dart';
 
@@ -35,36 +32,28 @@ class SendCubit extends Cubit<List<SendState>> {
         super([]);
 
   final _gqlClient = getIt<AuthGqlClient>();
+  final _imageHandler = getIt<ImageClient>();
 
   Future<void> sendImage(XFile image) async {
-    final sendingMessage = Message.image(
-        id: UuidType.generate(),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        image: await image.readAsBytes(),
-        user: _self);
+    final messageId = UuidType.generate();
 
-    emit(List.of(state)..add(SendState.sending(sendingMessage)));
-
-    final sendImage = () async {
-      final fileLength = await image.length();
-
-      final uploadUrl = (await _gqlClient
-              .request(GGetImageUploadUrlReq((q) => q
-                ..vars.fileSize = fileLength
-                ..vars.sourceId = _thread.id
-                ..vars.contentType =
-                    image.mimeType ?? lookupMimeType(image.path)
-                ..vars.uploadType = GUploadType.Message))
-              .first)
-          .insert_image!
-          .uploadUrl;
-
-      await getIt<http.Client>()
-          .put(Uri.parse(uploadUrl), body: await image.readAsBytes());
-    };
-
-    await _send(sendingMessage, sendImage);
+    await _send(
+        Message.image(
+            id: messageId,
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+            image: await image.readAsBytes(),
+            user: _self), () async {
+      final messageName =
+          await _imageHandler.sendImage(image, _thread.id, GUploadType.Message);
+      await _gqlClient
+          .request(GInsertMessageReq((q) => q
+            ..vars.message = messageName.imageName
+            ..vars.messageId = messageId
+            ..vars.messageType = Gmessage_types_enum.IMAGE
+            ..vars.sourceId = _thread.id))
+          .first;
+    });
   }
 
   Future<void> sendText(String message) async {
@@ -94,8 +83,13 @@ class SendCubit extends Cubit<List<SendState>> {
   }
 
   Future<void> _send<TData, TVars>(
-      Message sendingMessage, Future<void> Function() sendFn) async {
-    emit(List.of(state)..add(SendState.sending(sendingMessage)));
+      Message sendingMessage, Future<void> Function() sendFn,
+      {firstSend = true}) async {
+    if (firstSend) {
+      emit(List.of(state)..add(SendState.sending(sendingMessage)));
+    } else {
+      _replaceSendState(SendState.sending(sendingMessage));
+    }
 
     try {
       await sendFn();
@@ -103,7 +97,14 @@ class SendCubit extends Cubit<List<SendState>> {
       _replaceSendState(SendState.failure(
         sendingMessage,
         f,
-        resend: () => _send(sendingMessage, sendFn),
+        resend: () => _send(sendingMessage, sendFn, firstSend: false),
+      ));
+      return;
+    } on Exception catch (e) {
+      _replaceSendState(SendState.failure(
+        sendingMessage,
+        Failure(status: FailureStatus.Custom, customMessage: e.toString()),
+        resend: () => _send(sendingMessage, sendFn, firstSend: false),
       ));
       return;
     }

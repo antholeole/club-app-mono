@@ -1,6 +1,6 @@
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/pages/chat/view/widgets/title/chat_title.dart';
-import 'package:fe/pages/scaffold/cubit/chat_bottom_sheet_cubit.dart';
+import 'package:fe/pages/scaffold/features/threads_bottom_sheet/cubit/threads_bottom_sheet_cubit.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
@@ -27,7 +27,8 @@ class ClubChatTitle extends StatelessWidget {
           GestureDetector(
               onTap: () => _onClick(),
               child: AnimatedRotation(
-                  turns: !context.watch<ChatBottomSheetCubit>().state ? 0 : 0.5,
+                  turns:
+                      !context.watch<ThreadsBottomSheetCubit>().state ? 0 : 0.5,
                   duration: const Duration(milliseconds: 20),
                   child: const Icon(Icons.expand_more)))
         ]);
