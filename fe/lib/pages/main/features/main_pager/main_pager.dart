@@ -1,4 +1,4 @@
-import 'package:fe/pages/chat/view/chat_page.dart';
+import 'package:fe/pages/chat/chat_page.dart';
 import 'package:fe/pages/events/events_page.dart';
 import 'package:fe/pages/main/features/main_pager/cubit/page_cubit.dart';
 import 'package:fe/pages/main/features/main_pager/cubit/page_state.dart';

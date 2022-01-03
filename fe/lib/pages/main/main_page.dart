@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:fe/data/models/group.dart';
 import 'package:fe/data/models/user.dart';
-import 'package:fe/pages/chat/view/chat_page.dart';
+import 'package:fe/pages/chat/chat_page.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/pages/main/features/groupless/groupless_main.dart';
 import 'package:fe/pages/main/features/main_pager/cubit/page_cubit.dart';
