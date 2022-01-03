@@ -9,6 +9,7 @@ import 'package:fe/gql/query_view_only_threads.var.gql.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/pages/scaffold/features/threads_bottom_sheet/widgets/thread_group.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
+import 'package:fe/stdlib/shared_widgets/prompt_injector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -23,9 +24,10 @@ class ThreadsBottomSheet extends StatelessWidget {
   @visibleForTesting
   final Thread? selectedThread;
   final BuildContext _providerReadableContext;
+  final Club _club;
 
   static Future<Thread?> show(BuildContext context,
-      {Thread? selectedThread}) async {
+      {Thread? selectedThread, required Club club}) async {
     // ignore: unawaited_futures
     HapticFeedback.mediumImpact();
 
@@ -33,9 +35,13 @@ class ThreadsBottomSheet extends StatelessWidget {
 
     final thread = await showModalBottomSheet<Thread?>(
         context: context,
-        builder: (_) => ThreadsBottomSheet(
-              selectedThread: selectedThread,
-              providerReadableContext: context,
+        builder: (_) => PromptInjector(
+              readableContext: context,
+              child: ThreadsBottomSheet(
+                selectedThread: selectedThread,
+                club: club,
+                providerReadableContext: context,
+              ),
             ));
 
     //in cases where the logout is forced by the bottom sheet,
@@ -46,28 +52,26 @@ class ThreadsBottomSheet extends StatelessWidget {
   }
 
   const ThreadsBottomSheet(
-      {this.selectedThread, required BuildContext providerReadableContext})
-      : _providerReadableContext = providerReadableContext;
+      {this.selectedThread,
+      required BuildContext providerReadableContext,
+      required Club club})
+      : _club = club,
+        _providerReadableContext = providerReadableContext;
 
   @override
   Widget build(BuildContext context) {
-    final club = _providerReadableContext
-        .watch<Group?>()
-        ?.maybeMap(orElse: () => null, club: (club) => club);
-
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: club != null
-              ? MultiProvider(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+            ),
+            child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MultiProvider(
                   providers: [
-                    Provider<Club>.value(value: club),
+                    Provider<Club>.value(value: _club),
                     Provider<ToasterCubit>.value(
                         value: _providerReadableContext.read<ToasterCubit>()),
                   ],
@@ -89,47 +93,40 @@ class ThreadsBottomSheet extends StatelessWidget {
                       ),
                       ThreadGroup<GQuerySelfThreadsInGroupData,
                               GQuerySelfThreadsInGroupVars>(
-                          addable: club.admin,
+                          addable: _club.admin,
                           selectedThread: selectedThread,
                           title: ThreadsBottomSheet.CHANNELS_TEXT,
-                          currentGroupId: club.id,
+                          currentGroupId: _club.id,
                           dataMap: (data) => data.threads.map((threadData) =>
                               Thread(
                                   name: threadData.name,
                                   id: threadData.id,
                                   isViewOnly: false)),
                           operationRequest: GQuerySelfThreadsInGroupReq((q) => q
-                            ..vars.groupId = club.id
+                            ..vars.groupId = _club.id
                             ..vars.userId = _providerReadableContext
                                 .read<UserCubit>()
                                 .state
                                 .id)),
-                      if (club.admin)
+                      if (_club.admin)
                         ThreadGroup<GQueryViewOnlyThreadsData,
                                 GQueryViewOnlyThreadsVars>(
                             addable: false,
                             title: ThreadsBottomSheet.VIEW_ONLY_TEXT,
-                            currentGroupId: club.id,
+                            currentGroupId: _club.id,
                             dataMap: (data) => data.threads.map((threadData) =>
                                 Thread(
                                     name: threadData.name,
                                     id: threadData.id,
                                     isViewOnly: true)),
                             operationRequest: GQueryViewOnlyThreadsReq((q) => q
-                              ..vars.groupId = club.id
+                              ..vars.groupId = _club.id
                               ..vars.userId = _providerReadableContext
                                   .read<UserCubit>()
                                   .state
                                   .id))
                     ],
                   ),
-                )
-              : SizedBox(
-                  height: MediaQuery.of(context).size.height / 4,
-                  child:
-                      const Center(child: Text(ThreadsBottomSheet.NO_GROUP))),
-        ),
-      ),
-    );
+                ))));
   }
 }

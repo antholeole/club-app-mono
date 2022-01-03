@@ -1,6 +1,6 @@
 import 'package:fe/data/models/user.dart';
-import 'package:fe/pages/login/view/login_page.dart';
-import 'package:fe/pages/main/view/main_page.dart';
+import 'package:fe/pages/login/login_page.dart';
+import 'package:fe/pages/main/main_page.dart';
 import 'package:fe/pages/splash/splash_page.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';

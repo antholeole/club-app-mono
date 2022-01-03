@@ -15,6 +15,11 @@ class GqlClient {
 
   GqlClient({required Client client}) : _client = client;
 
+  Future<void> reRequest<TData, TVars>(
+      OperationRequest<TData, TVars> request) async {
+    _client.requestController.add(request);
+  }
+
   Stream<TData> request<TData, TVars>(OperationRequest<TData, TVars> request) {
     return _client.request(request).asyncMap((resp) async {
       if (resp.hasErrors) {

@@ -1,5 +1,4 @@
 import 'package:fe/data/models/message.dart';
-import 'package:fe/data/models/user.dart';
 import 'package:fe/pages/chat/view/widgets/chats/message/message_tile_reaction_summary.dart';
 import 'package:fe/stdlib/shared_widgets/user_avatar.dart';
 import 'package:flutter/material.dart';

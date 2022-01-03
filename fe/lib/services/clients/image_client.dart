@@ -28,6 +28,10 @@ class ImageClient {
   final Map<String, Uint8List?> _imageCache = {};
   final Map<String, Future<Uint8List?>> _currentlyFetching = {};
 
+  Uint8List? fromCache(UuidType sourceId, GUploadType uploadType) {
+    return _imageCache[_serializeCacheKey(sourceId, uploadType)];
+  }
+
   Future<Uint8List?> downloadImage(
       UuidType sourceId, GUploadType uploadType) async {
     final cacheKey = _serializeCacheKey(sourceId, uploadType);

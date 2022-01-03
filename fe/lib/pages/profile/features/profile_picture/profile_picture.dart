@@ -1,4 +1,3 @@
-import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/pages/profile/features/profile_picture/cubit/profile_picture_change_cubit.dart';
 import 'package:fe/pages/profile/features/profile_picture/cubit/profile_picture_change_state.dart';
 import 'package:fe/pages/profile/features/profile_picture/widgets/change_profile_picture_button.dart';

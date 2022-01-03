@@ -66,7 +66,7 @@ class GroupJoinDisplay extends StatelessWidget {
                             context,
                             errorMessage: 'failed to join roles',
                             successMessage: 'joined!')
-                        .then((value) => Navigator.of(context).pop());
+                        .then((_) => Navigator.of(context).pop());
                   },
                   child: const Text(JOIN_GROUP_BUTTON_COPY),
                 ),

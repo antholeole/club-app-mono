@@ -2,7 +2,7 @@ import 'package:fe/pages/profile/profile_page.dart';
 import 'package:fe/stdlib/theme/option_pill.dart';
 import 'package:flutter/material.dart';
 
-import '../../../groups/view/groups_page.dart';
+import '../../../groups/groups_page.dart';
 
 class ClubsDrawer extends StatefulWidget {
   final List<Widget> _pages = [

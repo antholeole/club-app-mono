@@ -40,11 +40,20 @@ class _UserAvatarState extends State<UserAvatar> {
     if (widget._imageOverride != null) {
       _pfp = widget._imageOverride;
     } else {
-      _imageClient
-          .downloadImage(widget._user.id, GUploadType.UserAvatar)
-          .then((value) => setState(() {
-                _pfp = value;
-              }));
+      final fromCache =
+          _imageClient.fromCache(widget._user.id, GUploadType.UserAvatar);
+
+      if (fromCache != null) {
+        _pfp = fromCache;
+      } else {
+        _imageClient
+            .downloadImage(widget._user.id, GUploadType.UserAvatar)
+            .then((value) => mounted
+                ? setState(() {
+                    _pfp = value;
+                  })
+                : null);
+      }
     }
 
     super.initState();

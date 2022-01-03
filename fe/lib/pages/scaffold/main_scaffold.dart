@@ -47,7 +47,8 @@ class MainScaffold extends StatelessWidget {
           onTap: FocusScope.of(context).unfocus,
           child: _child,
         ),
-        bottomNavigationBar:
-            context.watch<Group?>() != null ? const BottomNav() : null);
+        bottomNavigationBar: context
+            .watch<Group?>()
+            ?.map(dm: (_) => null, club: (club) => const BottomNav()));
   }
 }

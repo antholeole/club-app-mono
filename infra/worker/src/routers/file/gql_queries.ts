@@ -5,6 +5,8 @@ given message ID, return the group id if the user is in the thread
 */
 
 export const getGroupFromMessage = async (userId: string, messageId: string): Promise<[groupId: string, threadId: string, imagePath: string] | null> => {
+  //select message OR DM
+
   const { messages } = await gqlReq(`
   query {
     messages(where: {

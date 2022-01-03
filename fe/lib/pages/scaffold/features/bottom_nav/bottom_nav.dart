@@ -1,5 +1,5 @@
-import 'package:fe/pages/main/cubit/page_cubit.dart';
-import 'package:fe/pages/main/cubit/page_state.dart';
+import 'package:fe/pages/main/features/main_pager/cubit/page_state.dart';
+import 'package:fe/pages/main/features/main_pager/cubit/page_cubit.dart';
 import 'package:fe/pages/scaffold/features/bottom_nav/widgets/bottom_nav_tab.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';

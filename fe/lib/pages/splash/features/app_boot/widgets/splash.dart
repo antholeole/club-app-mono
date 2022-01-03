@@ -1,4 +1,4 @@
-import 'package:fe/stdlib/theme/logo.dart';
+import 'package:fe/pages/login/view/features/logo/logo.dart';
 import 'package:flutter/material.dart';
 
 class Splash extends StatelessWidget {

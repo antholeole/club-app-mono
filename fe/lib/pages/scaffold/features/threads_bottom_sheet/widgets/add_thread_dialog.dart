@@ -2,6 +2,7 @@ import 'package:fe/data/models/group.dart';
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
+import 'package:fe/stdlib/shared_widgets/prompt_injector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:fe/gql/add_thread_to_group.req.gql.dart';
@@ -17,7 +18,9 @@ class AddThreadDialog extends StatelessWidget {
 
   static Future<Thread?> show(BuildContext context) {
     return showPlatformDialog(
-        context: context, builder: (_) => AddThreadDialog());
+        context: context,
+        builder: (_) =>
+            PromptInjector(readableContext: context, child: AddThreadDialog()));
   }
 
   @override

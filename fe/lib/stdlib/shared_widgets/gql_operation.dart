@@ -5,7 +5,14 @@ import 'package:fe/stdlib/theme/loader.dart';
 import 'package:ferry/ferry.dart';
 import 'package:ferry/typed_links.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../service_locator.dart';
+
+class ReRequester<TData, TVars> {
+  final VoidCallback reRequest;
+
+  const ReRequester({required this.reRequest});
+}
 
 class GqlOperation<TData, TVars> extends StatefulWidget {
   //overrides the lookup context in contexts where widget in inserted
@@ -56,7 +63,13 @@ class _GqlOperationState<TData, TVars>
         stream: widget.operationRequest != null
             ? _client.request(widget.operationRequest!)
             : null,
-        builder: _builder);
+        builder: (context, snapshot) => Provider<ReRequester<TData, TVars>>(
+            create: (_) => ReRequester(
+                  reRequest: () => widget.operationRequest != null
+                      ? _client.reRequest(widget.operationRequest!)
+                      : null,
+                ),
+            child: _builder(context, snapshot)));
   }
 
   Widget _builder(BuildContext context, AsyncSnapshot<TData> snapshot) {

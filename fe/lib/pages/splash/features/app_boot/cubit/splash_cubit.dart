@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:fe/data/models/user.dart';
-import 'package:fe/pages/login/cubit/login_cubit.dart';
-import 'package:fe/pages/login/view/widgets/sign_in_with_provider_button.dart';
+import 'package:fe/pages/login/view/features/login/cubit/login_cubit.dart';
+import 'package:fe/pages/login/view/features/login_buttons/widgets/sign_in_with_provider_button.dart';
 import 'package:fe/services/local_data/image_cache_handler.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
 import 'package:flutter/widgets.dart';
