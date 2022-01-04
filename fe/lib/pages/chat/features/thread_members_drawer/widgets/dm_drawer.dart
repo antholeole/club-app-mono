@@ -1,6 +1,6 @@
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/data/models/user.dart';
-import 'package:fe/pages/chat/view/features/thread_members_drawer/widgets/users_list.dart';
+import 'package:fe/pages/chat/features/thread_members_drawer/widgets/users_list.dart';
 import 'package:fe/stdlib/shared_widgets/gql_operation.dart';
 import 'package:flutter/material.dart';
 import 'package:fe/gql/query_users_in_dm.data.gql.dart';

@@ -4,7 +4,7 @@ import { B2_ENDPOINT, BUCKET_NAME } from '../../constants'
 import { S3Client } from '@aws-sdk/client-s3'
 import { cryptoRandomString } from '../../helpers/crypto'
 import { join } from 'path'
-import { getGroupFromMessage, getGroupFromThread, validateUserIsOwner } from './gql_queries'
+import { getDmFromMessage, getGroupFromMessage, getGroupFromThread, validateUserIsOwner, verifyUserInDm } from './gql_queries'
 import { StatusError } from 'itty-router-extras'
 
 /// validates that the required permissions are satisfied;
@@ -24,13 +24,23 @@ export const validateUploadBucketPaths = {
    */
 
    message: async (threadId: string, userId: string): Promise<[path: string, needImageName: boolean]> => {
-      const maybeGroupId = await getGroupFromThread(userId, threadId)
+      let imagePath: string | null = null
 
-      if (!maybeGroupId) {
-         throw new StatusError(400, 'user not in thread')
+      const maybeGroupId = await getGroupFromThread(userId, threadId)
+      if (maybeGroupId) {
+         imagePath = `groups/${maybeGroupId}/${threadId}`
       }
 
-      return [`groups/${maybeGroupId}/${threadId}`, true]
+      const userInDm = await verifyUserInDm(userId, threadId)
+      if (userInDm) {
+         imagePath = `dms/${threadId}`
+      }
+
+      if (!imagePath) {
+         throw new StatusError(400, 'user not in source group')
+      }
+
+      return [imagePath, true]
    },
    groupAvatarUrl: async (groupId: string, userId: string): Promise<[path: string, needImageName: boolean]> => {
       const userOwnsGroup = await validateUserIsOwner(userId, groupId)
@@ -83,15 +93,22 @@ export const generateUploadBucketLink = async (
 
 export const validateDownloadBucketPaths = {
    message: async (messageId: string, userId: string): Promise<string> => {
+      console.log(`checking if user ${userId} is in group with message ${messageId}`)
       const maybeGroup = await getGroupFromMessage(userId, messageId)
+      if (maybeGroup) {
+         const [groupId, threadId, imageName] = maybeGroup
 
-      if (!maybeGroup) {
-         throw new StatusError(400, 'user not in thread')
+         return `groups/${groupId}/${threadId}/${imageName}`
       }
 
-      const [groupId, threadId, imageName] = maybeGroup
+      const maybeDm = await getDmFromMessage(userId, messageId)
+      if (maybeDm) {
+         const [dmId, imagePath] = maybeDm
 
-      return `groups/${groupId}/${threadId}/${imageName}`
+         return `dms/${dmId}/${imagePath}`
+      }
+
+      throw new StatusError(400, 'user not in source')
    },
    groupAvatarUrl: async (groupId: string): Promise<string> => {
       //no validation required: all users can see the pfp of all groups

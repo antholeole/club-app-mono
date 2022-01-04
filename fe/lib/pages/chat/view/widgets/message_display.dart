@@ -1,6 +1,8 @@
 import 'package:fe/data/models/message.dart';
 import 'package:fe/pages/chat/features/chat_display/widgets/message_tile_reaction_summary.dart';
+import 'package:fe/stdlib/shared_widgets/cached_bucket_image.dart';
 import 'package:fe/stdlib/shared_widgets/user_avatar.dart';
+import 'package:fe/schema.schema.gql.dart' show GUploadType;
 import 'package:flutter/material.dart';
 
 class MessageDisplay extends StatelessWidget {
@@ -37,7 +39,7 @@ class MessageDisplay extends StatelessWidget {
           children: [
             ListTile(
               minVerticalPadding: 0,
-              leading: UserAvatar(user: _message.user),
+              leading: Avatar.user(user: _message.user),
               title: Text(_message.user.name),
               subtitle: _message.map(
                   text: (text) => Text(
@@ -46,7 +48,11 @@ class MessageDisplay extends StatelessWidget {
                       ),
                   image: (image) => Padding(
                         padding: const EdgeInsets.only(top: 8.0),
-                        child: Image.memory(image.image),
+                        child: CachedBucketImage(
+                          imageOverride: image.imageData,
+                          sourceId: _message.id,
+                          uploadType: GUploadType.Message,
+                        ),
                       )),
             ),
             Padding(

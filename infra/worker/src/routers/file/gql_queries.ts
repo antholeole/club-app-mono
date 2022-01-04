@@ -1,12 +1,76 @@
 import { gqlReq } from '../../helpers/gql_connector'
 
+export const getDmFromMessage = async (userId: string, messageId: string): Promise<[dmId: string, imagePath: string] | null> => {
+  console.log(userId, messageId)
+  const { messages } = await gqlReq(`
+  query {
+    messages(
+      where: {
+        _and: [
+            {
+                id: {
+                  _eq: "${messageId}"
+                }
+            },
+          {
+            dm: {
+              user_to_dms: {
+                user_id: {
+                  _eq: "${userId}"
+                }
+              }
+            }
+          }
+        ]
+      }
+    ) {
+      body,
+      source_id
+    }
+  }
+  `)
+
+  if (!messages[0]) {
+    return null
+  }
+
+  return [messages[0].source_id, messages[0].body]
+}
+
+export const verifyUserInDm = async (userId: string, dmId: string): Promise<boolean> => {
+  const { dms } = await gqlReq(`
+  query {
+    dms(
+      where: {
+        _and: [
+            {
+              id: {
+                _eq: "${dmId}"
+              }
+            },
+          {
+            user_to_dms: {
+              user_id: {
+                _eq: "${userId}"
+              }
+            }
+          }
+        ]
+      }
+    ) {
+      id
+    }
+  }
+  `)
+
+  return !!dms[0]
+}
+
 /*
 given message ID, return the group id if the user is in the thread
 */
 
 export const getGroupFromMessage = async (userId: string, messageId: string): Promise<[groupId: string, threadId: string, imagePath: string] | null> => {
-  //select message OR DM
-
   const { messages } = await gqlReq(`
   query {
     messages(where: {

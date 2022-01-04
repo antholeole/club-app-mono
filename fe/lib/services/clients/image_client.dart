@@ -1,16 +1,14 @@
 import 'dart:typed_data';
-
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 import 'package:fe/gql/get_image_upload_url.req.gql.dart';
-import 'package:http/http.dart' as http;
 import 'package:fe/schema.schema.gql.dart' show GUploadType;
 import 'package:fe/gql/get_image_download_url.req.gql.dart';
+import 'package:http/http.dart' as http;
 
 import '../../service_locator.dart';
 
@@ -25,53 +23,38 @@ class ImageClient {
   final _gqlClient = getIt<AuthGqlClient>();
   final _httpClient = getIt<http.Client>();
 
-  final Map<String, Uint8List?> _imageCache = {};
-  final Map<String, Future<Uint8List?>> _currentlyFetching = {};
+  final Map<String, String?> _imageCache = {};
+  final Map<String, Future<String?>> _fetching = {};
 
-  Uint8List? fromCache(UuidType sourceId, GUploadType uploadType) {
+  String? getImageDownloadUrlFromCache(
+      UuidType sourceId, GUploadType uploadType) {
     return _imageCache[_serializeCacheKey(sourceId, uploadType)];
   }
 
-  Future<Uint8List?> downloadImage(
+  Future<String?> getImageDownloadUrl(
       UuidType sourceId, GUploadType uploadType) async {
-    final cacheKey = _serializeCacheKey(sourceId, uploadType);
+    var future = _fetching[_serializeCacheKey(sourceId, uploadType)];
 
-    final fromCache = _imageCache[cacheKey];
-    if (fromCache != null) {
-      return fromCache;
+    if (future != null) {
+      return future;
     }
 
-    final currentlyFetching = _currentlyFetching[cacheKey];
-    if (currentlyFetching != null) {
-      return currentlyFetching;
-    }
+    future = _gqlClient
+        .request(GGetImageDownloadUrlReq((q) => q
+          ..vars.sourceId = sourceId
+          ..vars.uploadType = uploadType))
+        .first
+        .then((value) {
+      final url = value.get_signed_download_link?.downloadUrl;
+      _imageCache[_serializeCacheKey(sourceId, uploadType)] = url;
+      _fetching.remove(_serializeCacheKey(sourceId, uploadType));
 
-    _currentlyFetching[cacheKey] = _downloadImage(sourceId, uploadType);
-    return _currentlyFetching[cacheKey]!;
-  }
+      return url;
+    });
 
-  Future<Uint8List?> _downloadImage(
-      UuidType sourceId, GUploadType uploadType) async {
-    final url = (await _gqlClient
-            .request(GGetImageDownloadUrlReq((q) => q
-              ..vars.sourceId = sourceId
-              ..vars.uploadType = uploadType))
-            .first)
-        .get_signed_download_link!
-        .downloadUrl;
+    _fetching[_serializeCacheKey(sourceId, uploadType)] = future;
 
-    final bytes = url == null
-        ? null
-        : (await NetworkAssetBundle(Uri.parse(url)).load(url))
-            .buffer
-            .asUint8List();
-
-    _addToCache(sourceId, uploadType, bytes);
-
-    // ignore: unawaited_futures
-    _currentlyFetching.remove(_serializeCacheKey(sourceId, uploadType));
-
-    return bytes;
+    return future;
   }
 
   Future<_ImageData> sendImage(
@@ -90,11 +73,11 @@ class ImageClient {
           .insert_image!;
 
       final bytes = await image.readAsBytes();
-
       await _httpClient.put(Uri.parse(uploadVerification.uploadUrl),
           body: bytes);
 
-      _addToCache(sourceId, uploadType, bytes);
+      _imageCache[_serializeCacheKey(sourceId, uploadType)] =
+          uploadVerification.uploadUrl;
 
       return _ImageData(image: bytes, imageName: uploadVerification.imageName);
     } on Exception catch (e) {
@@ -106,11 +89,6 @@ class ImageClient {
             customMessage: 'unable to upload image: ${e.toString()}');
       }
     }
-  }
-
-  void _addToCache(
-      UuidType sourceId, GUploadType uploadType, Uint8List? image) {
-    _imageCache[_serializeCacheKey(sourceId, uploadType)] = image;
   }
 
   String _serializeCacheKey(UuidType sourceId, GUploadType uploadType) =>

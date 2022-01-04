@@ -24,7 +24,7 @@ class _LoaderState extends State<Loader> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return SpinKitThreeBounce(
+    return SpinKitFadingGrid(
       size: widget._size,
       color: widget._white ? Colors.white : Theme.of(context).primaryColor,
       controller: _animationController,

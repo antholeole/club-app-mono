@@ -3,7 +3,7 @@ import 'package:fe/pages/chat/view/widgets/message_display.dart';
 import 'package:fe/stdlib/theme/loader.dart';
 import 'package:flutter/material.dart';
 
-class SendingMessageDisplay extends StatelessWidget {
+class SendingMessageDisplay extends StatefulWidget {
   final SendState _sendState;
 
   const SendingMessageDisplay({required SendState sendState, Key? key})
@@ -11,7 +11,15 @@ class SendingMessageDisplay extends StatelessWidget {
         super(key: key);
 
   @override
+  State<SendingMessageDisplay> createState() => _SendingMessageDisplayState();
+}
+
+class _SendingMessageDisplayState extends State<SendingMessageDisplay>
+    with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Container(
       color: MessageDisplay.SELF_SENT_COLOR,
       child: Row(
@@ -24,14 +32,14 @@ class SendingMessageDisplay extends StatelessWidget {
                 BlendMode.lighten,
               ),
               child: MessageDisplay(
-                message: _sendState.message,
+                message: widget._sendState.message,
                 sentBySelf: true,
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(right: 25),
-            child: _sendState.map(
+            child: widget._sendState.map(
                 sending: (_) => const Loader(
                       size: 14,
                     ),
@@ -47,4 +55,7 @@ class SendingMessageDisplay extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

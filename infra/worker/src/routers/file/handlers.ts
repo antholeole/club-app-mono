@@ -21,18 +21,14 @@ export const getSignedDownloadUrl = async (req: IAuthActionInput<IGetSignedDownl
             break
         case 'UserAvatar':
             url = await validateDownloadBucketPaths.userAvatarUrl(sourceId)
-            console.log('user avatar url: ', url)
             break
     }
 
     if (!(await fileExists(url))) {
-        console.log('file does not exist @ ', url)
         return json({
             downloadUrl: null
         })
     }
-
-    console.log('file exists @ ', url)
 
     return json({
         downloadUrl: await generateDownloadBucketLink(url)

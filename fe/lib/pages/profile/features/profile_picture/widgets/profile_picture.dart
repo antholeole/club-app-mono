@@ -14,7 +14,7 @@ class ProfilePicture extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return UserAvatar(
+    return Avatar.user(
       imageOverride: _image,
       radius: PFP_RADIUS,
       user: context.watch<UserCubit>().user,

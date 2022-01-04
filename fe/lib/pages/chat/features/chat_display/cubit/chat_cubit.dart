@@ -6,9 +6,9 @@ import 'package:fe/data/models/reaction.dart';
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
-import 'package:fe/services/clients/image_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:ferry/ferry.dart';
 import 'package:fe/gql/get_new_messages.req.gql.dart';
@@ -16,7 +16,6 @@ import 'package:fe/gql/get_new_messages.req.gql.dart';
 import 'package:fe/gql/query_messages_in_chat.req.gql.dart';
 import 'package:fe/gql/query_messages_in_chat.data.gql.dart';
 import 'package:fe/gql/get_new_reactions.req.gql.dart';
-import 'package:fe/schema.schema.gql.dart' show GUploadType;
 import 'package:fe/schema.schema.gql.dart' show Gmessage_types_enum;
 
 import '../../../../../service_locator.dart';
@@ -54,7 +53,7 @@ class ChatCubit extends Cubit<ChatState> {
   static const SINGLE_QUERY_LIMIT = 20;
 
   final _gqlClient = getIt<AuthGqlClient>();
-  final _imageClient = getIt<ImageClient>();
+  final _handler = getIt<Handler>();
   final Thread _thread;
 
   final List<StreamSubscription> _subscriptions = [];
@@ -70,7 +69,12 @@ class ChatCubit extends Cubit<ChatState> {
   Future<void> initalize() async {
     emit(const ChatState.loading());
 
-    await fetchMessages();
+    try {
+      await fetchMessages();
+    } on Exception catch (e) {
+      emit(ChatState.failure(_handler.exceptionToFailure(e)));
+      return;
+    }
 
     _subscriptions.clear();
     _subscriptions.addAll([
@@ -233,8 +237,7 @@ class ChatCubit extends Cubit<ChatState> {
           user: messageData.user,
           id: messageData.id,
           createdAt: messageData.createdAt,
-          image: (await _imageClient.downloadImage(
-              messageData.id, GUploadType.Message))!,
+          sourceId: messageData.id,
           updatedAt: messageData.updatedAt,
         );
       default:

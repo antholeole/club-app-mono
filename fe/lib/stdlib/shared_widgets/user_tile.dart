@@ -39,7 +39,7 @@ class UserTile extends StatelessWidget {
             _user.name,
             style: const TextStyle(fontWeight: FontWeight.normal),
           ),
-          leading: UserAvatar(
+          leading: Avatar.user(
             user: _user,
           ),
           trailing: Row(mainAxisSize: MainAxisSize.min, children: [

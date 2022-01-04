@@ -19,7 +19,8 @@ class ChatPageMessageDisplay extends StatefulWidget {
   State<ChatPageMessageDisplay> createState() => _ChatPageMessageDisplayState();
 }
 
-class _ChatPageMessageDisplayState extends State<ChatPageMessageDisplay> {
+class _ChatPageMessageDisplayState extends State<ChatPageMessageDisplay>
+    with AutomaticKeepAliveClientMixin {
   //the layer link MUST be an element of the state;
   //this is because when this message gets re-rendered, we want to
   //keep the old layer link as opposed to creating a new one
@@ -29,6 +30,7 @@ class _ChatPageMessageDisplayState extends State<ChatPageMessageDisplay> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return CompositedTransformTarget(
       link: _link,
       child: GestureDetector(
@@ -45,4 +47,8 @@ class _ChatPageMessageDisplayState extends State<ChatPageMessageDisplay> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive =>
+      widget._message.map(text: (_) => false, image: (_) => true);
 }

@@ -1,23 +1,54 @@
 import 'dart:typed_data';
-
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fe/data/models/group.dart';
 import 'package:fe/data/models/user.dart';
-import 'package:fe/services/clients/image_client.dart';
 import 'package:fe/schema.schema.gql.dart' show GUploadType;
+import 'package:fe/services/clients/image_client.dart';
+import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter/material.dart';
 
 import '../../service_locator.dart';
 
-class UserAvatar extends StatefulWidget {
+class Avatar extends StatefulWidget {
   late final String _initals;
   final double? _radius;
-  final User _user;
+  final UuidType _id;
   final Uint8List? _imageOverride;
+  final GUploadType _type;
 
-  UserAvatar({required User user, double? radius, Uint8List? imageOverride})
-      : _user = user,
-        _imageOverride = imageOverride,
+  factory Avatar.user(
+      {required User user, double? radius, Uint8List? imageOverride}) {
+    return Avatar._(
+      name: user.name,
+      radius: radius,
+      type: GUploadType.UserAvatar,
+      imageOverride: imageOverride,
+      id: user.id,
+    );
+  }
+
+  factory Avatar.club(
+      {required Club club, double? radius, Uint8List? imageOverride}) {
+    return Avatar._(
+      name: club.name,
+      radius: radius,
+      type: GUploadType.GroupAvatar,
+      imageOverride: imageOverride,
+      id: club.id,
+    );
+  }
+
+  Avatar._(
+      {required UuidType id,
+      required String name,
+      double? radius,
+      required GUploadType type,
+      Uint8List? imageOverride})
+      : _imageOverride = imageOverride,
+        _id = id,
+        _type = type,
         _radius = radius {
-    _initals = _user.name.split(' ').map((e) {
+    _initals = name.split(' ').map((e) {
       if (e.isNotEmpty) {
         return e[0];
       } else {
@@ -27,51 +58,59 @@ class UserAvatar extends StatefulWidget {
   }
 
   @override
-  State<UserAvatar> createState() => _UserAvatarState();
+  State<Avatar> createState() => _AvatarState();
 }
 
-class _UserAvatarState extends State<UserAvatar> {
-  final _imageClient = getIt<ImageClient>();
+class _AvatarState extends State<Avatar> {
+  final ImageClient _imageClient = getIt<ImageClient>();
 
-  Uint8List? _pfp;
+  String? _url;
 
   @override
   void initState() {
-    if (widget._imageOverride != null) {
-      _pfp = widget._imageOverride;
-    } else {
-      final fromCache =
-          _imageClient.fromCache(widget._user.id, GUploadType.UserAvatar);
+    if (widget._imageOverride == null) {
+      _url =
+          _imageClient.getImageDownloadUrlFromCache(widget._id, widget._type);
 
-      if (fromCache != null) {
-        _pfp = fromCache;
-      } else {
-        _imageClient
-            .downloadImage(widget._user.id, GUploadType.UserAvatar)
-            .then((value) => mounted
-                ? setState(() {
-                    _pfp = value;
-                  })
-                : null);
+      if (_url == null) {
+        _beginUrlSet();
       }
     }
-
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget._imageOverride != null) {
+      return _buildCircleAvatar(MemoryImage(widget._imageOverride!));
+    }
+
+    if (_url == null) {
+      return _buildCircleAvatar(null);
+    } else {
+      return _buildCircleAvatar(CachedNetworkImageProvider(_url!));
+    }
+  }
+
+  Widget _buildCircleAvatar(ImageProvider? image) {
     return CircleAvatar(
-        maxRadius: widget._radius,
-        minRadius: widget._radius,
-        foregroundImage: _pfp != null ? MemoryImage(_pfp!) : null,
-        child: _pfp == null
-            ? Text(
-                widget._initals,
-                style: TextStyle(
-                    fontSize:
-                        widget._radius != null ? widget._radius! / 2 : null),
-              )
-            : null);
+      maxRadius: widget._radius,
+      minRadius: widget._radius,
+      foregroundImage: image,
+      child: Text(widget._initals,
+          style: TextStyle(
+              fontSize: widget._radius != null ? widget._radius! / 2 : null)),
+    );
+  }
+
+  Future<void> _beginUrlSet() async {
+    final url =
+        await _imageClient.getImageDownloadUrl(widget._id, widget._type);
+
+    if (mounted) {
+      setState(() {
+        _url = url;
+      });
+    }
   }
 }

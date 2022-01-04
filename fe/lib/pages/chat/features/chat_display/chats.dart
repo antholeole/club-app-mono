@@ -87,6 +87,7 @@ class _ChatsState extends State<Chats> {
     return MessageOverlayDisplay(
       child: ListView.builder(
           reverse: true,
+          addAutomaticKeepAlives: true,
           controller: _scrollController,
           itemCount: itemCount,
           itemBuilder: (context, i) {

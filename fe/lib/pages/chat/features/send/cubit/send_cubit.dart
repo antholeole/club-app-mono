@@ -10,6 +10,7 @@ import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/gql/insert_message.req.gql.dart';
 import 'package:fe/schema.schema.gql.dart'
     show Gmessage_types_enum, GUploadType;
+
 import 'package:fe/services/clients/image_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
 import 'package:fe/stdlib/errors/failure_status.dart';
@@ -42,7 +43,8 @@ class SendCubit extends Cubit<List<SendState>> {
             id: messageId,
             createdAt: DateTime.now(),
             updatedAt: DateTime.now(),
-            image: await image.readAsBytes(),
+            imageData: await image.readAsBytes(),
+            sourceId: messageId,
             user: _self), () async {
       final messageName =
           await _imageHandler.sendImage(image, _thread.id, GUploadType.Message);
