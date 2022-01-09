@@ -1,0 +1,11 @@
+mutation ManageDeviceToken(
+  $deviceToken: String!, 
+  $handle: DeviceTokenHandleType!
+) {
+  handle_device_token(
+    deviceToken: $deviceToken, 
+    handle: $handle
+  ) {
+    success
+  }
+}

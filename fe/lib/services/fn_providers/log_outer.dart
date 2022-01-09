@@ -1,8 +1,11 @@
 import 'package:fe/flows/app_state.dart';
+import 'package:fe/services/clients/notification_client.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
 import 'package:fe/services/local_data/token_manager.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
+import 'package:fe/stdlib/errors/failure.dart';
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -25,6 +28,8 @@ class LogOutRunner extends StatelessWidget {
   final _localFileStore = getIt<LocalFileStore>();
   final _secureStorage = getIt<FlutterSecureStorage>();
   final _tokenManager = getIt<TokenManager>();
+  final _notificationClient = getIt<NotificationClient>();
+  final _handler = getIt<Handler>();
 
   final Widget _child;
 
@@ -43,10 +48,21 @@ class LogOutRunner extends StatelessWidget {
   }
 
   Future<void> _logOut(BuildContext context, {String? withError}) async {
+    final forced = withError != null;
+
+    try {
+      await _notificationClient.removeDeviceToken(failSilently: forced);
+    } on Failure catch (f) {
+      //removeDeviceToken can only error if failSilently is true;
+      //thus, we will only fail to log out if we manually attempt logout.
+      _handler.handleFailure(f, context, withPrefix: 'failed to log out');
+      return;
+    }
+
     await Future.wait([
       _localFileStore.delete(LocalStorageType.LocalUser),
       _secureStorage.deleteAll(),
-      _tokenManager.delete(),
+      _tokenManager.delete()
     ]);
     Sentry.configureScope((scope) => scope.user = null);
 

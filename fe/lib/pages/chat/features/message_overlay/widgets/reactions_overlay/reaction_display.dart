@@ -109,7 +109,10 @@ class _ReactionDisplayState extends State<ReactionDisplay>
                 child: ScaleTransition(
                     scale: Tween(begin: 1.0, end: 1.5).animate(CurvedAnimation(
                         parent: _bounceController, curve: Curves.easeIn)),
-                    child: Text(widget._reactionType.emoji)),
+                    child: Text(
+                      widget._reactionType.emoji,
+                      style: const TextStyle(fontSize: 32),
+                    )),
               ),
             ),
           ),

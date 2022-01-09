@@ -40,6 +40,11 @@ input Boolean_comparison_exp {
   _nin: [Boolean!]
 }
 
+enum DeviceTokenHandleType {
+  Add
+  Remove
+}
+
 """
 columns and relationships of "dms"
 """
@@ -658,6 +663,10 @@ enum groups_update_column {
 
   """column name"""
   name
+}
+
+type HandleDeviceTokenOutput {
+  success: Boolean!
 }
 
 enum IdentityProvider {
@@ -1923,6 +1932,9 @@ type mutation_root {
   delete_users_by_pk(id: uuid!): users
   get_or_create_dm(with_user_id: uuid!): ThreadResponse
   get_signed_download_link(sourceId: uuid!, uploadType: UploadType!): DownloadImageOutput
+
+  """adds/removes a device token from a user"""
+  handle_device_token(deviceToken: String!, handle: DeviceTokenHandleType!): HandleDeviceTokenOutput
 
   """
   insert data into the table: "dms"

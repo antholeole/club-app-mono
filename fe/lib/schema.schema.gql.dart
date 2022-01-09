@@ -43,6 +43,21 @@ abstract class GBoolean_comparison_exp
       _i1.serializers.deserializeWith(GBoolean_comparison_exp.serializer, json);
 }
 
+class GDeviceTokenHandleType extends EnumClass {
+  const GDeviceTokenHandleType._(String name) : super(name);
+
+  static const GDeviceTokenHandleType Add = _$gDeviceTokenHandleTypeAdd;
+
+  static const GDeviceTokenHandleType Remove = _$gDeviceTokenHandleTypeRemove;
+
+  static Serializer<GDeviceTokenHandleType> get serializer =>
+      _$gDeviceTokenHandleTypeSerializer;
+  static BuiltSet<GDeviceTokenHandleType> get values =>
+      _$gDeviceTokenHandleTypeValues;
+  static GDeviceTokenHandleType valueOf(String name) =>
+      _$gDeviceTokenHandleTypeValueOf(name);
+}
+
 abstract class Gdms_bool_exp
     implements Built<Gdms_bool_exp, Gdms_bool_expBuilder> {
   Gdms_bool_exp._();

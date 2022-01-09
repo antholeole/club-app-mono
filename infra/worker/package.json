@@ -7,7 +7,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack",
-    "cloudworker": "cross-env IN_CLOUDWORKER=true cloudworker -d -p 8787 --kv-set PUBLIC_KEYS.key=value --kv-set REFRESH_TOKENS.key=value  --watch \"./dist/worker.dev.js\"",
+    "cloudworker": "cross-env IN_CLOUDWORKER=true cloudworker -d -p 8787 --kv-set PUBLIC_KEYS.key=value --kv-set REFRESH_TOKENS.key=value --kv-set DEVICE_TOKENS.key=value  --watch \"./dist/worker.dev.js\"",
     "stop-dev": "kill$(lsof -ti:8787) ; rm dist/worker.js",
     "build:dev": "cross-env NODE_ENV=development webpack",
     "build:watch": "nodemon --watch src --exec \"npm run build:dev && mv dist/worker.js dist/worker.dev.js\" -e ts",
@@ -20,7 +20,6 @@
     "@aws-sdk/client-s3": "^3.45.0",
     "@aws-sdk/s3-request-presigner": "^3.45.0",
     "@cloudflare/kv-asset-handler": "^0.1.1",
-    "aws4fetch": "^1.0.13",
     "encrypt-workers-kv": "^0.0.3",
     "itty-router": "^2.3.10",
     "itty-router-extras": "^0.2.3",

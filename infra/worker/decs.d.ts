@@ -14,6 +14,7 @@ declare module 'itty-router-extras' {
 //kv's
 declare const PUBLIC_KEYS: KVNamespace
 declare const REFRESH_TOKENS: KVNamespace
+declare const DEVICE_TOKENS: KVNamespace
 
 //hasura
 declare const HASURA_PASSWORD: string

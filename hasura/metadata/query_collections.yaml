@@ -71,6 +71,10 @@
         uuid!,$messageType: message_types_enum!) {  insert_messages(objects: {    body:
         $message,    source_id: $sourceId,    id: $messageId,    message_type: $messageType  })
         {    returning {      created_at    }  }}'
+    - name: manage_device_token
+      query: 'mutation ManageDeviceToken(  $deviceToken: String!,   $handle: DeviceTokenHandleType!)
+        {  handle_device_token(    deviceToken: $deviceToken,     handle: $handle  )
+        {    success  }}'
     - name: query_self_threads_in_group
       query: 'query QuerySelfThreadsInGroup($userId: uuid!, $groupId: uuid!) {  threads(where:
         {  _and: {      group_id: {        _eq: $groupId      },      users: {        user_id:

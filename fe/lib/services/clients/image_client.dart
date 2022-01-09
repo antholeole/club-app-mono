@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/stdlib/errors/failure.dart';
@@ -10,6 +11,7 @@ import 'package:fe/schema.schema.gql.dart' show GUploadType;
 import 'package:fe/gql/get_image_download_url.req.gql.dart';
 import 'package:http/http.dart' as http;
 
+import '../../config.dart';
 import '../../service_locator.dart';
 
 class _ImageData {
@@ -22,6 +24,7 @@ class _ImageData {
 class ImageClient {
   final _gqlClient = getIt<AuthGqlClient>();
   final _httpClient = getIt<http.Client>();
+  final _config = getIt<Config>();
 
   final Map<String, String?> _imageCache = {};
   final Map<String, Future<String?>> _fetching = {};
@@ -45,7 +48,12 @@ class ImageClient {
           ..vars.uploadType = uploadType))
         .first
         .then((value) {
-      final url = value.get_signed_download_link?.downloadUrl;
+      String? url = value.get_signed_download_link?.downloadUrl;
+
+      if (url != null && Platform.isAndroid && _config is LocalConfig) {
+        url = url.replaceFirst('localhost', '10.0.2.2');
+      }
+
       _imageCache[_serializeCacheKey(sourceId, uploadType)] = url;
       _fetching.remove(_serializeCacheKey(sourceId, uploadType));
 

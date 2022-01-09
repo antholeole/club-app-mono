@@ -85,6 +85,12 @@ import 'package:fe/gql/join_roles_with_join_codes.req.gql.dart'
     show GJoinRolesWithJoinCodesReq;
 import 'package:fe/gql/join_roles_with_join_codes.var.gql.dart'
     show GJoinRolesWithJoinCodesVars;
+import 'package:fe/gql/manage_device_token.data.gql.dart'
+    show GManageDeviceTokenData, GManageDeviceTokenData_handle_device_token;
+import 'package:fe/gql/manage_device_token.req.gql.dart'
+    show GManageDeviceTokenReq;
+import 'package:fe/gql/manage_device_token.var.gql.dart'
+    show GManageDeviceTokenVars;
 import 'package:fe/gql/query_all_roles_relative_to_thread.data.gql.dart'
     show
         GQueryAllRolesRelativeToThreadData,
@@ -224,6 +230,7 @@ import 'package:fe/gql/upsert_reaction.var.gql.dart' show GUpsertReactionVars;
 import 'package:fe/schema.schema.gql.dart'
     show
         GBoolean_comparison_exp,
+        GDeviceTokenHandleType,
         GIdentityProvider,
         GString_comparison_exp,
         GUploadType,
@@ -449,6 +456,7 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GAuthenticateReq,
   GAuthenticateVars,
   GBoolean_comparison_exp,
+  GDeviceTokenHandleType,
   GFakeGqlData,
   GFakeGqlData_dms,
   GFakeGqlReq,
@@ -488,6 +496,10 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GJoinRolesWithJoinCodesData_join_role_with_join_codes,
   GJoinRolesWithJoinCodesReq,
   GJoinRolesWithJoinCodesVars,
+  GManageDeviceTokenData,
+  GManageDeviceTokenData_handle_device_token,
+  GManageDeviceTokenReq,
+  GManageDeviceTokenVars,
   GQueryAllRolesRelativeToThreadData,
   GQueryAllRolesRelativeToThreadData_roles,
   GQueryAllRolesRelativeToThreadData_roles_role_to_threads,

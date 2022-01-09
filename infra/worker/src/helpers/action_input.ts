@@ -8,6 +8,20 @@ export interface IActionInput<T> {
     }
 }
 
+export interface IHookInput<T> extends IActionInput<T> {
+    event: {
+        session_variables: {
+            'x-hasura-user-id': string
+        },
+        data: {
+            old: T,
+            new: T
+        }
+    },
+    trigger: {
+        name: string
+    },
+}
 export interface IAuthActionInput<T> extends IActionInput<T> {
     session_variables: {
         'x-hasura-user-id': string
@@ -27,6 +41,14 @@ const verifyReqFromServer = (req: Request, jsonBody: any): jsonBody is IActionIn
 export const unauthRoute = async <T>(req: Request, handler: (p0: IActionInput<T>) => Promise<Response>): Promise<Response> => {
     const body = await req.json()
     verifyReqFromServer(req, body)
+    return handler(body)
+}
+
+export const hookRoute = async<T>(req: Request, handler: (p0: IHookInput<T>) => Promise<Response>): Promise<Response> => {
+    const body = await req.json()
+
+    verifyReqFromServer(req, body)
+
     return handler(body)
 }
 

@@ -22,7 +22,7 @@ export const createWorker = (config: pulumi.Config, hasuraEndpoint: pulumi.Outpu
     const script = new cloudflare.WorkerScript(workerName, {
         content: readFileSync('../worker/dist/worker.js', 'utf-8',),
         name: workerName,
-        kvNamespaceBindings: ['PUBLIC_KEYS', 'REFRESH_TOKENS'].map(name => ({
+        kvNamespaceBindings: ['PUBLIC_KEYS', 'REFRESH_TOKENS', 'DEVICE_TOKENS'].map(name => ({
             name,
             namespaceId: createKvStore(config, name).id
         })),

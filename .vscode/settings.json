@@ -1,3 +1,10 @@
 {
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "files.exclude": {
+        "fe/**": true,
+        "infra/**": true,
+        "hasura/**": true,
+        "site/**": true,
+        "*/node_modues/**": true
+    },
 }

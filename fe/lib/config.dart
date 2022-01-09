@@ -1,3 +1,5 @@
+import 'dart:io';
+
 abstract class Config {
   int? get hasuraPort;
   String get hasuraHost;
@@ -15,7 +17,7 @@ abstract class Config {
 
 class LocalConfig extends Config {
   @override
-  String get hasuraHost => 'localhost';
+  String get hasuraHost => Platform.isAndroid ? '10.0.2.2' : 'localhost';
 
   @override
   List<String> get gqlPathSegments => ['v1', 'graphql'];

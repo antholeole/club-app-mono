@@ -5,6 +5,7 @@ import 'package:fe/pages/chat/chat_page.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/pages/main/features/groupless/groupless_main.dart';
 import 'package:fe/pages/main/features/main_pager/cubit/page_cubit.dart';
+import 'package:fe/services/fn_providers/notification_permission_requester.dart';
 import 'package:fe/pages/scaffold/features/threads_bottom_sheet/cubit/threads_bottom_sheet_cubit.dart';
 import 'package:fe/services/fn_providers/group_joiner.dart';
 import 'package:fe/services/fn_providers/log_outer.dart';
@@ -28,22 +29,24 @@ class MainPage extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => UserCubit(_user)),
       ],
-      child: LogOutRunner(
-        child: GroupJoinDisplay(
-          child: HydratedBuilder<Group>('current_group',
-              onBuild: (_, group) => group.map(
-                  dm: (dm) => const ChatPage(),
-                  club: (club) => MultiProvider(
-                        providers: [
-                          BlocProvider(
-                              create: (_) => ThreadsBottomSheetCubit()),
-                          Provider.value(value: PageCubit(club: club))
-                        ],
-                        child: MainPager(),
-                      )),
-              onEmpty: (context) => const GrouplessMain(),
-              serialize: (group) => json.encode(group.toJson()),
-              deserialize: (group) => Group.fromJson(json.decode(group))),
+      child: NotificationPermissionRequester(
+        child: LogOutRunner(
+          child: GroupJoinDisplay(
+            child: HydratedBuilder<Group>('current_group',
+                onBuild: (_, group) => group.map(
+                    dm: (dm) => const ChatPage(),
+                    club: (club) => MultiProvider(
+                          providers: [
+                            BlocProvider(
+                                create: (_) => ThreadsBottomSheetCubit()),
+                            Provider.value(value: PageCubit(club: club))
+                          ],
+                          child: MainPager(),
+                        )),
+                onEmpty: (context) => const GrouplessMain(),
+                serialize: (group) => json.encode(group.toJson()),
+                deserialize: (group) => Group.fromJson(json.decode(group))),
+          ),
         ),
       ),
     );

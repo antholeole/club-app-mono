@@ -59,7 +59,7 @@ class _MessageOverlayDisplayState extends State<MessageOverlayDisplay> {
   }
 
   void _displayOverlay(Widget widget, Message message) {
-    FocusScope.of(context).requestFocus();
+    FocusScope.of(context).unfocus();
     if (_currentMessageOverlay != null) {
       _currentMessageOverlay!.remove();
     }

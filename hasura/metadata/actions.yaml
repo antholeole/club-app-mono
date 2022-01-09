@@ -26,6 +26,15 @@ actions:
       value_from_env: WEBHOOK_SECRET_KEY
   permissions:
   - role: user
+- name: handle_device_token
+  definition:
+    kind: synchronous
+    handler: '{{WEBHOOK_URL}}/api/notifications/deviceToken'
+    headers:
+    - name: WEBHOOK_SECRET_KEY
+      value_from_env: WEBHOOK_SECRET_KEY
+  permissions:
+  - role: user
 - name: insert_image
   definition:
     kind: synchronous
@@ -75,6 +84,14 @@ custom_types:
     - description: null
       is_deprecated: null
       value: Message
+  - name: DeviceTokenHandleType
+    values:
+    - description: null
+      is_deprecated: null
+      value: Add
+    - description: null
+      is_deprecated: null
+      value: Remove
   input_objects:
   - name: RefreshRequest
   - name: JoinRoleWithJoinCodesInput
@@ -88,4 +105,5 @@ custom_types:
   - name: JoinRoleWithJoinCodesOutput
   - name: InsertImageOutput
   - name: DownloadImageOutput
+  - name: HandleDeviceTokenOutput
   scalars: []

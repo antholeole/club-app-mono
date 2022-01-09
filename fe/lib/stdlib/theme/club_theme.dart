@@ -7,7 +7,6 @@ ThemeData clubTheme = ThemeData(
       color: Colors.grey,
       fontSize: 14,
     )),
-    primaryColor: const Color(0xffff5e4d),
-    primarySwatch: Colors.red,
+    primarySwatch: Colors.deepOrange,
     bottomSheetTheme:
         BottomSheetThemeData(backgroundColor: Colors.black.withOpacity(0)));

@@ -19,6 +19,13 @@ type Mutation {
 }
 
 type Mutation {
+  handle_device_token (
+    deviceToken: String!
+    handle: DeviceTokenHandleType!
+  ): HandleDeviceTokenOutput
+}
+
+type Mutation {
   insert_image (
     sourceId: uuid!
     uploadType: UploadType!
@@ -49,6 +56,11 @@ enum UploadType {
   GroupAvatar
   UserAvatar
   Message
+}
+
+enum DeviceTokenHandleType {
+  Add
+  Remove
 }
 
 input RefreshRequest {
@@ -101,5 +113,9 @@ type InsertImageOutput {
 
 type DownloadImageOutput {
   downloadUrl : String
+}
+
+type HandleDeviceTokenOutput {
+  success : Boolean!
 }
 

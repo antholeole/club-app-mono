@@ -31,6 +31,7 @@ class AddRolePrompt extends StatelessWidget {
       ),
       actions: <Widget>[
         PlatformDialogAction(
+          material: (context, platform) => MaterialDialogActionData(),
           cupertino: (_, __) =>
               CupertinoDialogActionData(isDestructiveAction: true),
           onPressed: () => Navigator.of(context).pop(),

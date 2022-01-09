@@ -28,6 +28,8 @@ class ThreadsBottomSheet extends StatelessWidget {
 
   static Future<Thread?> show(BuildContext context,
       {Thread? selectedThread, required Club club}) async {
+    FocusScope.of(context).unfocus();
+
     // ignore: unawaited_futures
     HapticFeedback.mediumImpact();
 
@@ -37,10 +39,19 @@ class ThreadsBottomSheet extends StatelessWidget {
         context: context,
         builder: (_) => PromptInjector(
               readableContext: context,
-              child: ThreadsBottomSheet(
-                selectedThread: selectedThread,
-                club: club,
-                providerReadableContext: context,
+              child: WillPopScope(
+                onWillPop: () async {
+                  //not sure why this is required -
+                  //without this, when clicking the backbutton
+                  //on android, the app freezes up
+                  Navigator.of(context).pop();
+                  return false;
+                },
+                child: ThreadsBottomSheet(
+                  selectedThread: selectedThread,
+                  club: club,
+                  providerReadableContext: context,
+                ),
               ),
             ));
 
