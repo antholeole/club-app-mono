@@ -4,6 +4,7 @@ import 'package:fe/data/models/group.dart';
 import 'package:fe/data/models/user.dart';
 import 'package:fe/schema.schema.gql.dart' show GUploadType;
 import 'package:fe/services/clients/image_client.dart';
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter/material.dart';
 
@@ -63,6 +64,7 @@ class Avatar extends StatefulWidget {
 
 class _AvatarState extends State<Avatar> {
   final ImageClient _imageClient = getIt<ImageClient>();
+  final _handler = getIt<Handler>();
 
   String? _url;
 
@@ -104,13 +106,18 @@ class _AvatarState extends State<Avatar> {
   }
 
   Future<void> _beginUrlSet() async {
-    final url =
-        await _imageClient.getImageDownloadUrl(widget._id, widget._type);
+    try {
+      final url =
+          await _imageClient.getImageDownloadUrl(widget._id, widget._type);
 
-    if (mounted) {
-      setState(() {
-        _url = url;
-      });
+      if (mounted) {
+        setState(() {
+          _url = url;
+        });
+      }
+    } on Exception catch (e) {
+      _handler.handleFailure(_handler.exceptionToFailure(e), context,
+          toast: false);
     }
   }
 }

@@ -5,3 +5,4 @@ worker
 .env
 src/generated/*
 coverage/*
+.mf/*

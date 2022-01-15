@@ -905,16 +905,16 @@ enum message_reaction_types_constraint {
 }
 
 enum message_reaction_types_enum {
-  """Red face angry emoji"""
+  """Red Face Angry Emoji"""
   ANGRY
 
-  """Heart emoji"""
+  """Heart Emoji"""
   HEART
 
-  """Laughing"""
+  """Crying Laughing Face"""
   LAUGH
 
-  """straight face"""
+  """Straight Bruh face"""
   STRAIGHT
 
   """Open mouth wow face"""
@@ -1321,12 +1321,10 @@ enum message_types_constraint {
 }
 
 enum message_types_enum {
-  """
-  image. body is url, relative to: <bucket-base>/<group-id>/<thread-id>/<body> 
-  """
+  """Image"""
   IMAGE
 
-  """default plain text message"""
+  """Text"""
   TEXT
 }
 
@@ -1932,8 +1930,6 @@ type mutation_root {
   delete_users_by_pk(id: uuid!): users
   get_or_create_dm(with_user_id: uuid!): ThreadResponse
   get_signed_download_link(sourceId: uuid!, uploadType: UploadType!): DownloadImageOutput
-
-  """adds/removes a device token from a user"""
   handle_device_token(deviceToken: String!, handle: DeviceTokenHandleType!): HandleDeviceTokenOutput
 
   """

@@ -3,7 +3,10 @@
         "browser": true,
         "es2020": true
     },
-    "ignorePatterns": ["static/*", "generated/*"],
+    "ignorePatterns": [
+        "static/*",
+        "generated/*"
+    ],
     "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended"
@@ -12,9 +15,7 @@
     "parserOptions": {
         "ecmaVersion": 11,
         "sourceType": "module",
-        "project": 
-            "./tsconfig.json"
-        
+        "project": "./tsconfig.json"
     },
     "plugins": [
         "@typescript-eslint"
@@ -28,6 +29,5 @@
             "error",
             "single"
         ]
-
     }
 }

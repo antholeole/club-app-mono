@@ -2,7 +2,7 @@ actions:
 - name: authenticate
   definition:
     kind: synchronous
-    handler: '{{WEBHOOK_URL}}/api/auth/'
+    handler: '{{WEBHOOK_URL}}/api/auth/register/'
     headers:
     - name: WEBHOOK_SECRET_KEY
       value_from_env: WEBHOOK_SECRET_KEY
@@ -47,7 +47,7 @@ actions:
 - name: join_role_with_join_codes
   definition:
     kind: synchronous
-    handler: '{{WEBHOOK_URL}}/api/group/join/joincode'
+    handler: '{{WEBHOOK_URL}}/api/groups/join/joincode'
     headers:
     - name: WEBHOOK_SECRET_KEY
       value_from_env: WEBHOOK_SECRET_KEY

@@ -17,7 +17,7 @@ class NameChangeButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: () => showModalBottomSheet(
+      onTap: () => showDialog(
           builder: (_) => PromptInjector(
               readableContext: context,
               providers: [

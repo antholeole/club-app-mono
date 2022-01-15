@@ -32,7 +32,7 @@ class PromptInjector extends StatelessWidget {
         Provider.value(value: _readableContext.read<ToasterCubit>()),
         Provider.value(value: _readableContext.read<UserCubit>()),
         Provider.value(value: _readableContext.read<LogOuter>()),
-        Provider.value(value: _readableContext.read<Group>()),
+        Provider.value(value: _readableContext.read<Group?>()),
         ..._providers,
       ],
       child: _child,

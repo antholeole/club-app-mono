@@ -1,7 +1,15 @@
 {
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS",
+      "types": [
+        "node",
+      ],
+    },
+  },
   "compilerOptions": {
     "outDir": "./dist",
-    "module": "commonjs",
+    "module": "esnext",
     "target": "es2018",
     "lib": [
       "es2018",
@@ -25,10 +33,12 @@
   ],
   "include": [
     "src",
-    "test"
+    "test",
+    "webpack.config.ts"
   ],
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    "start.mjs"
   ]
 }

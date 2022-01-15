@@ -5,7 +5,8 @@
             "name": "Debug",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "debug"
+            "flutterMode": "debug",
+            "console": "terminal"
           },
           {
             "name": "Flutter: Run all Tests",
@@ -14,4 +15,4 @@
             "program": "./test/"
            }
     ]
-}
+} 

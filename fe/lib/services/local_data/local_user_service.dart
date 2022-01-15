@@ -41,7 +41,10 @@ class LocalUserService {
   }
 
   Future<void> saveChanges(User other) {
-    return _localFileStore.serialize(
-        LocalStorageType.LocalUser, json.encode(other.toJson()));
+    return Future.wait([
+      _sharedPreferences.setString(USER_ID_KEY, other.id.uuid),
+      _localFileStore.serialize(
+          LocalStorageType.LocalUser, json.encode(other.toJson()))
+    ]);
   }
 }

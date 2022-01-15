@@ -1,0 +1,51 @@
+version: '3.6'
+services:
+  s3:
+    build: ./infra/infra-mocks/s3
+    ports:
+      - "9876:9876"
+  worker:
+    build: ./infra/worker
+    volumes:
+      - ./infra/worker:/app
+    working_dir: /app
+    ports:
+      - "8787:8787"
+      - "9229:9229"
+    environment:
+      ADMIN_SECRET: '${ADMIN_SECRET}'
+      JWT_SECRET: '${JWT_SECRET}'
+      WEBHOOK_SECRET_KEY: '${WEBHOOK_SECRET_KEY}'
+  postgres:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgrespassword
+  hasura:
+    image: hasura/graphql-engine:v2.1.0-beta.3.cli-migrations-v3
+    ports:
+      - "8080:8080"
+    depends_on:
+      - "postgres"
+    restart: always
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
+      ## enable the console served by server
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+      HASURA_GRAPHQL_DEV_MODE: "true"
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: http-log
+      HASURA_GRAPHQL_ADMIN_SECRET: '${ADMIN_SECRET}'
+      HASURA_GRAPHQL_MIGRATIONS_DIR: /migrations
+      HASURA_GRAPHQL_METADATA_DIR: /metadata
+      HASURA_GRAPHQL_JWT_SECRET: '{"type": "HS256","key": "${JWT_SECRET}"}'
+      WEBHOOK_URL: http://worker:8787
+      WEBHOOK_SECRET_KEY: '${WEBHOOK_SECRET_KEY}'
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: 'unauthenticated'
+      HASURA_GRAPHQL_ENABLE_ALLOWLIST: "true"
+    volumes:
+      - ./hasura/migrations:/migrations
+      - ./hasura/metadata:/metadata
+volumes:
+  db_data:
+
+    null
