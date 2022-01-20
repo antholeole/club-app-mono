@@ -1,8 +1,7 @@
 import 'package:fe/data/models/message.dart';
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/pages/chat/features/message_overlay/cubit/message_overlay_state.dart';
-import 'package:fe/pages/chat/features/message_overlay/widgets/hold_overlay/message_options_overlay.dart';
-import 'package:fe/pages/chat/features/message_overlay/widgets/reactions_overlay/message_reaction_overlay.dart';
+import 'package:fe/pages/chat/features/message_overlay/widgets/overlay/message_overlay_holder.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/services/toaster/cubit/toaster_cubit.dart';
 import 'package:flutter/material.dart';
@@ -29,48 +28,36 @@ class _MessageOverlayDisplayState extends State<MessageOverlayDisplay> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<MessageOverlayCubit, MessageOverlayState>(
-      listener: (context, state) => state.when(
-          none: _dismissOverlay,
-          settings: _onDisplaySettings,
-          reactions: _onDisplayReaction),
+      listener: (context, state) =>
+          state.when(none: _dismissOverlay, toggled: _displayOverlay),
       child: widget._child,
     );
   }
 
-  void _onDisplayReaction(LayerLink link, Message message) {
-    _displayOverlay(
-        MessageReactionOverlay(
-            link: link,
-            message: message,
-            selfId: context.read<UserCubit>().user.id,
-            dismissSelf: _dismissOverlay),
-        message);
-  }
-
-  void _onDisplaySettings(LayerLink link, Message message) {
-    _displayOverlay(
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          body: MessageOptionsOverlay(
-              dismissSelf: _dismissOverlay, link: link, message: message),
-        ),
-        message);
-    HapticFeedback.lightImpact();
-  }
-
-  void _displayOverlay(Widget widget, Message message) {
+  void _displayOverlay(LayerLink link, Message message) {
     FocusScope.of(context).unfocus();
     if (_currentMessageOverlay != null) {
       _currentMessageOverlay!.remove();
     }
 
+    HapticFeedback.lightImpact();
+
     _currentMessageOverlay = OverlayEntry(
         opaque: false,
         maintainState: true,
-        builder: (_) => MultiProvider(providers: [
-              BlocProvider.value(value: context.read<ToasterCubit>()),
-              Provider.value(value: context.read<Thread>())
-            ], child: widget));
+        builder: (_) => MultiProvider(
+                providers: [
+                  BlocProvider.value(value: context.read<ToasterCubit>()),
+                  Provider.value(value: context.read<Thread>())
+                ],
+                child: Scaffold(
+                  backgroundColor: Colors.transparent,
+                  body: MessageOverlayHolder(
+                      dismissSelf: _dismissOverlay,
+                      layerLink: link,
+                      selfId: context.read<UserCubit>().user.id,
+                      message: message),
+                )));
 
     Overlay.of(context)!.insert(_currentMessageOverlay!);
   }

@@ -1,0 +1,26 @@
+
+query GetNewMessageNotificationData($messageId: uuid!) {
+  messages_by_pk(
+    id: $messageId
+    
+  ) {
+    source_id
+    message_type
+    body
+    user {
+      name
+ 		}
+    dm {
+      name
+      id
+    }
+  	thread {
+      id
+      name
+      group {
+        name
+        id
+      }
+    }
+  }
+}

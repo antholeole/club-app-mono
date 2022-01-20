@@ -17,6 +17,11 @@ class CheckboxDropdown<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //due to the stateful widget rebuilding itself,
+    //it has some hiccups with context lookups.
+    // this is a workaround
+    final textStyle = Theme.of(context).textTheme.bodyText2;
+
     return StatefulBuilder(builder: (context, setStateful) {
       final Set<T> checked = {};
 
@@ -38,7 +43,7 @@ class CheckboxDropdown<T> extends StatelessWidget {
                           : checked.add(e)),
                       title: Text(
                         _elementRepr(e),
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: textStyle,
                       ),
                     ),
                   ),

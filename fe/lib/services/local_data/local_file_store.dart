@@ -63,7 +63,7 @@ class LocalFileStore {
   }
 }
 
-enum LocalStorageType { AccessTokens, LocalUser }
+enum LocalStorageType { AccessTokens, LocalUser, Notifications }
 enum _DocumentType {
   Document,
   Support,
@@ -77,6 +77,8 @@ extension FileName on LocalStorageType {
         return 'access_tokens';
       case LocalStorageType.LocalUser:
         return 'user';
+      case LocalStorageType.Notifications:
+        return 'notifications';
     }
   }
 
@@ -86,12 +88,15 @@ extension FileName on LocalStorageType {
         return _DocumentType.Support;
       case LocalStorageType.LocalUser:
         return _DocumentType.Document;
+      case LocalStorageType.Notifications:
+        return _DocumentType.Document;
     }
   }
 
   String get fileExtension {
     switch (this) {
       case LocalStorageType.AccessTokens:
+      case LocalStorageType.Notifications:
         return 'json';
       case LocalStorageType.LocalUser:
         return 'txt';

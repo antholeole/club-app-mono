@@ -25,6 +25,8 @@ declare const WEBHOOK_SECRET_KEY: string
 declare const B2_SECRET_ACCESS_KEY: string
 declare const B2_ACCESS_KEY_ID: string
 
+declare const FIREBASE_FCM_KEY: string
+
 //general
 declare const SECRET: string
 declare const ENVIRONMENT: string

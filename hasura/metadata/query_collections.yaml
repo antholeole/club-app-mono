@@ -138,6 +138,10 @@
     - name: join_roles_with_join_codes
       query: 'mutation JoinRolesWithJoinCodes($join_codes: [String]!) {  join_role_with_join_codes(join_codes:
         $join_codes) {    joined  }}  '
+    - name: get_new_message_notification_data
+      query: 'query GetNewMessageNotificationData($messageId: uuid!) {  messages_by_pk(    id:
+        $messageId      ) {    source_id    message_type    body    user {      name
+        }    dm {      name      id    }  thread {      id      name      group {        name        id      }    }  }}'
     - name: authenticate
       query: 'mutation Authenticate($identity_provider: IdentityProvider!, $id_token:
         String!) {  authenticate(identityProvider: $identity_provider, idToken: $id_token)

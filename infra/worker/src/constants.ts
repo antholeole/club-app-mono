@@ -8,6 +8,7 @@ export const GOOGLE_VALID_ISSUER = ['accounts.google.com', 'https://accounts.goo
 export const DEBUG = ENVIRONMENT === 'dev'
 export const DEFAULT_USERNAME = 'Club App User'
 
+export const FIREBASE_FCM_ENDPOINT = 'https://fcm.googleapis.com/fcm/send'
 
 export const VALID_CONTENT_TYPES = [
     'image/gif',
@@ -18,6 +19,8 @@ export const MAX_FILE_SIZE = 5_242_880
 export const BUCKET_NAME = ENVIRONMENT === 'dev' ? 'dev-club-app' : 'club-app'
 export const B2_ENDPOINT = ENVIRONMENT === 'dev' ?
     'http://s3:9876' : 'https://s3.us-west-000.backblazeb2.com'
-export const STANDARD_SUCCESS_JSON = json({
+
+//is a fn so that in the miniflare environment, we can reuse responses
+export const STANDARD_SUCCESS_JSON = (): Response => json({
     'success': true
 })

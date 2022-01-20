@@ -1,5 +1,5 @@
 import 'package:fe/flows/app_state.dart';
-import 'package:fe/services/clients/notification_client.dart';
+import 'package:fe/services/clients/notification_client/notification_client.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
 import 'package:fe/services/local_data/token_manager.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';

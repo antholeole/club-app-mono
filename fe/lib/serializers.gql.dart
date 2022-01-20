@@ -48,6 +48,18 @@ import 'package:fe/gql/get_image_upload_url.req.gql.dart'
     show GGetImageUploadUrlReq;
 import 'package:fe/gql/get_image_upload_url.var.gql.dart'
     show GGetImageUploadUrlVars;
+import 'package:fe/gql/get_new_message_notification_data.data.gql.dart'
+    show
+        GGetNewMessageNotificationDataData,
+        GGetNewMessageNotificationDataData_messages_by_pk,
+        GGetNewMessageNotificationDataData_messages_by_pk_dm,
+        GGetNewMessageNotificationDataData_messages_by_pk_thread,
+        GGetNewMessageNotificationDataData_messages_by_pk_thread_group,
+        GGetNewMessageNotificationDataData_messages_by_pk_user;
+import 'package:fe/gql/get_new_message_notification_data.req.gql.dart'
+    show GGetNewMessageNotificationDataReq;
+import 'package:fe/gql/get_new_message_notification_data.var.gql.dart'
+    show GGetNewMessageNotificationDataVars;
 import 'package:fe/gql/get_new_messages.data.gql.dart'
     show
         GGetNewMessagesData,
@@ -469,6 +481,14 @@ final SerializersBuilder _serializersBuilder = _$serializers.toBuilder()
   GGetImageUploadUrlData_insert_image,
   GGetImageUploadUrlReq,
   GGetImageUploadUrlVars,
+  GGetNewMessageNotificationDataData,
+  GGetNewMessageNotificationDataData_messages_by_pk,
+  GGetNewMessageNotificationDataData_messages_by_pk_dm,
+  GGetNewMessageNotificationDataData_messages_by_pk_thread,
+  GGetNewMessageNotificationDataData_messages_by_pk_thread_group,
+  GGetNewMessageNotificationDataData_messages_by_pk_user,
+  GGetNewMessageNotificationDataReq,
+  GGetNewMessageNotificationDataVars,
   GGetNewMessagesData,
   GGetNewMessagesData_messages,
   GGetNewMessagesData_messages_message_reactions,

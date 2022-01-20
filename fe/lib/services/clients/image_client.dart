@@ -36,7 +36,13 @@ class ImageClient {
 
   Future<String?> getImageDownloadUrl(
       UuidType sourceId, GUploadType uploadType) async {
-    var future = _fetching[_serializeCacheKey(sourceId, uploadType)];
+    final key = _serializeCacheKey(sourceId, uploadType);
+
+    if (_imageCache.containsKey(key)) {
+      return _imageCache[key];
+    }
+
+    var future = _fetching[key];
 
     if (future != null) {
       return future;
@@ -50,8 +56,16 @@ class ImageClient {
         .then((value) {
       String? url = value.get_signed_download_link?.downloadUrl;
 
-      if (url != null && Platform.isAndroid && _config is LocalConfig) {
-        url = url.replaceFirst('localhost', '10.0.2.2');
+      if (_config is LocalConfig && url != null) {
+        // docker to docker networking means that a url looks like bucket.s3:port,
+        // but to get here to docker, we need to say localhost
+        if (url.contains('s3')) {
+          url = url.replaceFirst('s3', 'localhost');
+        }
+
+        if (Platform.isAndroid) {
+          url = url.replaceFirst('localhost', '10.0.2.2');
+        }
       }
 
       _imageCache[_serializeCacheKey(sourceId, uploadType)] = url;

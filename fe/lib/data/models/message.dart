@@ -21,7 +21,7 @@ class Message with _$Message {
     required User user,
     @CustomUuidConverter() required UuidType id,
     required DateTime createdAt,
-    required UuidType sourceId,
+    @CustomUuidConverter() required UuidType sourceId,
     Uint8List? imageData,
     required DateTime updatedAt,
     @Default({}) Map<UuidType, Reaction> reactions,

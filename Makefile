@@ -1,6 +1,3 @@
-run:
-	concurrently -c "#800080.bold,#ffa500.bold" -n "BACKEND,HASURA" --handle-input "cd infra && npm run dev" "cd hasura && make run"
-
 i:
 	sudo make -i
 

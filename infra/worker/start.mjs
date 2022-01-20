@@ -11,7 +11,8 @@ const config = {
     SECRET: process.env.JWT_SECRET,
     WEBHOOK_SECRET_KEY: process.env.WEBHOOK_SECRET_KEY,
     B2_ACCESS_KEY_ID: 'accessKeyId',
-    B2_SECRET_ACCESS_KEY: 'screcretAccessKey'
+    B2_SECRET_ACCESS_KEY: 'screcretAccessKey',
+    FIREBASE_FCM_KEY: process.env.FIREBASE_FCM_KEY
   },
 }
 

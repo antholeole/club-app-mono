@@ -1,6 +1,10 @@
+import 'package:badges/badges.dart';
+import 'package:fe/data/models/group.dart';
 import 'package:fe/pages/main/features/main_pager/cubit/page_state.dart';
 import 'package:fe/pages/main/features/main_pager/cubit/page_cubit.dart';
 import 'package:fe/pages/scaffold/features/bottom_nav/widgets/bottom_nav_tab.dart';
+import 'package:fe/services/local_data/notification_container.dart';
+import 'package:fe/stdlib/shared_widgets/notification_container_listener.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
@@ -25,19 +29,33 @@ class BottomNav extends StatelessWidget {
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                BottomNavTab(
-                  icon: CHAT_TAB_ICON,
-                  active: selected == 0,
-                  onClick: () {
-                    if (selected == 0) {
-                      context.read<PageCubit>().bottomSheet(context);
-                    } else {
-                      context
-                          .read<PageCubit>()
-                          .switchTo(const PageState.chat());
-                    }
-                  },
-                  onHeld: () => context.read<PageCubit>().bottomSheet(context),
+                NotificationContainerListener<Map<dynamic, dynamic>>(
+                  defaultValue: {},
+                  path:
+                      GroupNotificationPath(groupId: context.read<Group>().id),
+                  builder: (notifications) => Badge(
+                    showBadge: notifications.values
+                        .any((element) => element is int && element > 0),
+                    badgeColor: Colors.red,
+                    position: BadgePosition.topEnd(top: -4, end: -4),
+                    toAnimate: false,
+                    padding: const EdgeInsets.all(7.0),
+                    child: BottomNavTab(
+                      icon: CHAT_TAB_ICON,
+                      active: selected == 0,
+                      onClick: () {
+                        if (selected == 0) {
+                          context.read<PageCubit>().bottomSheet(context);
+                        } else {
+                          context
+                              .read<PageCubit>()
+                              .switchTo(const PageState.chat());
+                        }
+                      },
+                      onHeld: () =>
+                          context.read<PageCubit>().bottomSheet(context),
+                    ),
+                  ),
                 ),
                 BottomNavTab(
                   icon: EVENT_TAB_ICON,

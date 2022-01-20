@@ -15,6 +15,7 @@ class ThreadGroup<TData, TVars> extends StatelessWidget {
   final bool _addable;
   final String _title;
   final Thread? _selectedThread;
+  final UuidType _currentGroupId;
 
   const ThreadGroup(
       {Key? key,
@@ -26,6 +27,7 @@ class ThreadGroup<TData, TVars> extends StatelessWidget {
       required String title})
       : _title = title,
         _addable = addable,
+        _currentGroupId = currentGroupId,
         _selectedThread = selectedThread,
         _operationRequest = operationRequest,
         _dataMap = dataMap,
@@ -66,11 +68,12 @@ class ThreadGroup<TData, TVars> extends StatelessWidget {
                         .map((v) => Thread(
                             name: v.name, id: v.id, isViewOnly: v.isViewOnly))
                         .map((v) => ChannelTile(
-                            viewOnly: v.isViewOnly,
-                            unreadMessages: 2,
-                            onTap: () => _selectThread(v, context),
-                            selected: v == _selectedThread,
-                            title: v.name))
+                              viewOnly: v.isViewOnly,
+                              currentGroupId: _currentGroupId,
+                              thread: v,
+                              onTap: () => _selectThread(v, context),
+                              selected: v == _selectedThread,
+                            ))
                         .toList());
               } else {
                 return Container(

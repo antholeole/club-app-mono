@@ -7,9 +7,6 @@ part 'message_overlay_state.freezed.dart';
 @freezed
 class MessageOverlayState with _$MessageOverlayState {
   factory MessageOverlayState.none() = _None;
-  factory MessageOverlayState.settings(LayerLink link, Message message) =
+  factory MessageOverlayState.toggled(LayerLink link, Message message) =
       _Settings;
-
-  factory MessageOverlayState.reactions(LayerLink link, Message message) =
-      _Reactions;
 }

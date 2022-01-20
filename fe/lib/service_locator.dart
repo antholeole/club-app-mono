@@ -5,9 +5,11 @@ import 'package:fe/flows/app_state.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/services/clients/gql_client/unauth_gql_client.dart';
 import 'package:fe/services/clients/image_client.dart';
-import 'package:fe/services/clients/notification_client.dart';
+import 'package:fe/services/clients/notification_client/notification_client.dart';
+import 'package:fe/services/clients/notification_client/notification_handler.dart';
 import 'package:fe/services/local_data/image_cache_handler.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
+import 'package:fe/services/local_data/notification_container.dart';
 import 'package:fe/services/local_data/token_manager.dart';
 import 'package:fe/services/local_data/local_user_service.dart';
 import 'package:fe/stdlib/errors/handler.dart';
@@ -66,9 +68,14 @@ void setupLocator({required bool isProd}) {
   getIt.registerSingletonAsync<AuthGqlClient>(() => AuthGqlClient.build(),
       dependsOn: [TokenManager]);
 
+  getIt.registerSingletonAsync<NotificationContainer>(
+      () => NotificationContainer.getNotificationContainer());
+
   getIt.registerSingletonWithDependencies(() => ImageClient(),
       dependsOn: [AuthGqlClient]);
+  getIt.registerSingletonWithDependencies(() => NotificationHandler(),
+      dependsOn: [AuthGqlClient, NotificationContainer]);
   getIt.registerSingletonWithDependencies<NotificationClient>(
       () => NotificationClient(),
-      dependsOn: [AuthGqlClient, FirebaseMessaging]);
+      dependsOn: [AuthGqlClient, FirebaseMessaging, NotificationHandler]);
 }

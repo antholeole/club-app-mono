@@ -20,8 +20,8 @@ class Handler {
   final Config _config = getIt<Config>();
   final Connectivity _connectivity = getIt<Connectivity>();
 
-  Future<void> reportUnknown(Object e) async {
-    await Sentry.captureException(e);
+  Future<void> reportUnknown(Object e, [dynamic hint]) async {
+    await Sentry.captureException(e, hint: hint);
   }
 
   Future<Failure?> checkConnectivity() async {

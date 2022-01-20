@@ -1,6 +1,6 @@
 import { gqlReq } from '../../../helpers/gql_connector'
 
-export interface IUser {
+export interface IRegisteringUser {
     id: string,
     sub: string,
     name: string,
@@ -8,7 +8,7 @@ export interface IUser {
 }
 
 
-export const getUserBySub = async (sub: string): Promise<IUser | null> => {
+export const getUserBySub = async (sub: string): Promise<IRegisteringUser | null> => {
     const { users } = await gqlReq(`query {
       users(where: { sub:{_eq: "${sub}"} }) {
             id,
@@ -21,7 +21,7 @@ export const getUserBySub = async (sub: string): Promise<IUser | null> => {
     return (users[0] ?? null)
 }
 
-export const addUser = async (sub: string, name: string, email?: string): Promise<IUser> => {
+export const addUser = async (sub: string, name: string, email?: string): Promise<IRegisteringUser> => {
     const reqObj = email ? `
         {
             sub: "${sub}",

@@ -1,4 +1,7 @@
 {
+    "jumpSource.relativeRoots": ["lib", "test"],
+    "jumpSource.testFileExtension": "sameAsSource",
+    "jumpSource.testFileSuffix": "_test",
     "[dart]": {
         "editor.formatOnSave": true,
         "editor.formatOnType": true,

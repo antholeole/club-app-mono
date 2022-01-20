@@ -6,15 +6,26 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'reaction.freezed.dart';
 
-enum ReactionType { Heart, Laugh, Wow, Straight, Angry }
+enum ReactionType {
+  @JsonValue('Heart')
+  Heart,
+  @JsonValue('Laugh')
+  Laugh,
+  @JsonValue('Wow')
+  Wow,
+  @JsonValue('Straight')
+  Straight,
+  @JsonValue('Angry')
+  Angry
+}
 
 @freezed
 class Reaction with _$Reaction {
   factory Reaction(
       {required ReactionType type,
-      required UuidType id,
+      @CustomUuidConverter() required UuidType id,
       required User likedBy,
-      required UuidType messageId}) = _Reaction;
+      @CustomUuidConverter() required UuidType messageId}) = _Reaction;
 }
 
 extension ReactionEmoji on ReactionType {

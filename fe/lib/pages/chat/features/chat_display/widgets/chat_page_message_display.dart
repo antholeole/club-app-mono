@@ -34,12 +34,9 @@ class _ChatPageMessageDisplayState extends State<ChatPageMessageDisplay>
     return CompositedTransformTarget(
       link: _link,
       child: GestureDetector(
-        onLongPress: () => context
-            .read<MessageOverlayCubit>()
-            .addSettingsOverlay(layerLink: _link, message: widget._message),
         onTap: () => context
             .read<MessageOverlayCubit>()
-            .addReactionOverlay(layerLink: _link, message: widget._message),
+            .addOverlay(layerLink: _link, message: widget._message),
         child: MessageDisplay(
           message: widget._message,
           sentBySelf: widget._sentBySelf ?? false,

@@ -1,7 +1,7 @@
 import 'package:fe/config.dart';
 import 'package:fe/flows/app_state.dart';
 import 'package:fe/service_locator.dart';
-import 'package:fe/services/clients/notification_client.dart';
+import 'package:fe/services/clients/notification_client/notification_client.dart';
 import 'package:fe/stdlib/theme/club_theme.dart';
 
 import 'package:fe/services/toaster/toaster.dart';
@@ -26,11 +26,10 @@ void main() async {
   ]);
 
   await SentryFlutter.init(
-    (options) {
-      options.dsn = getIt<Config>().sentryUrl;
-      options.tracesSampleRate = 0.2;
-      options.environment = getIt<Config>().repr;
-    },
+    (options) => options
+      ..dsn = getIt<Config>().sentryUrl
+      ..tracesSampleRate = 0.2
+      ..environment = getIt<Config>().repr,
     appRunner: () => runApp(ClubApp()),
   );
 }

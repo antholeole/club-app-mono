@@ -1,10 +1,13 @@
 import 'package:fe/data/models/message.dart';
 import 'package:fe/data/models/reaction.dart';
-import 'package:fe/pages/chat/features/message_overlay/widgets/reactions_overlay/reaction_display.dart';
+import 'package:fe/pages/chat/features/message_overlay/widgets/overlay/reactions/reaction_display.dart';
+import 'package:fe/pages/chat/view/widgets/message_display.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter/material.dart';
 
 class MessageReactionOverlay extends StatefulWidget {
+  final AnimationController _animationController;
+
   final LayerLink _link;
   final VoidCallback _dismissSelf;
 
@@ -15,10 +18,12 @@ class MessageReactionOverlay extends StatefulWidget {
       {Key? key,
       required LayerLink link,
       required Message message,
+      required AnimationController animationController,
       required UuidType selfId,
       required VoidCallback dismissSelf})
       : _link = link,
         _selfId = selfId,
+        _animationController = animationController,
         _message = message,
         _dismissSelf = dismissSelf,
         super(key: key);
@@ -29,12 +34,8 @@ class MessageReactionOverlay extends StatefulWidget {
 
 class _MessageReactionOverlayState extends State<MessageReactionOverlay>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _appearController = AnimationController(
-    duration: const Duration(milliseconds: 200),
-    vsync: this,
-  );
   late final Animation<double> _appearAnimation = CurvedAnimation(
-    parent: _appearController,
+    parent: widget._animationController,
     curve: Curves.easeIn,
   );
 
@@ -45,35 +46,26 @@ class _MessageReactionOverlayState extends State<MessageReactionOverlay>
   void initState() {
     widget._message.reactions.values.forEach((reaction) =>
         reactionCounts[reaction.type] = reactionCounts[reaction.type]! + 1);
-    _appearController.addListener(() => setState(() {}));
-    _appearController.forward();
+    widget._animationController.addListener(() => setState(() {}));
 
     super.initState();
   }
 
   @override
-  void dispose() {
-    _appearController.dispose();
-
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return Center(
       child: CompositedTransformFollower(
           link: widget._link,
-          offset: Offset(
-              screenWidth * 0.1, (widget._link.leaderSize?.height ?? 0) + 5),
+          followerAnchor: Alignment.topLeft,
+          offset: Offset(0, -(widget._link.leaderSize?.height ?? 0) - 30),
           child: DefaultTextStyle(
             style: const TextStyle(
                 decoration: TextDecoration.none, fontSize: 36.0),
             child: FadeTransition(
               opacity: _appearAnimation,
-              child: SizedBox(
-                width: screenWidth * 0.8,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: MessageDisplay.padding),
                 child: PhysicalModel(
                   elevation: _appearAnimation.value,
                   borderRadius: const BorderRadius.all(Radius.circular(20)),

@@ -1,4 +1,4 @@
-import 'package:fe/services/clients/notification_client.dart';
+import 'package:fe/services/clients/notification_client/notification_client.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import '../../service_locator.dart';

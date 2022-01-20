@@ -16,24 +16,17 @@ class MessageOverlayCubit extends Cubit<MessageOverlayState> {
     emit(MessageOverlayState.none());
   }
 
-  void addSettingsOverlay(
-      {required LayerLink layerLink, required Message message}) {
-    emit(MessageOverlayState.settings(layerLink, message));
-  }
-
-  void addReactionOverlay({
+  void addOverlay({
     required LayerLink layerLink,
     required Message message,
   }) {
-    final maybeMessage = state.when(
-        none: () => null,
-        settings: (_, message) => message,
-        reactions: (_, message) => message);
+    final maybeMessage =
+        state.when(none: () => null, toggled: (_, message) => message);
 
     if (maybeMessage == message) {
       emit(MessageOverlayState.none());
     } else {
-      emit(MessageOverlayState.reactions(layerLink, message));
+      emit(MessageOverlayState.toggled(layerLink, message));
     }
   }
 }
