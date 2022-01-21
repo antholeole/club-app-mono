@@ -56,8 +56,9 @@ class _ChatsState extends State<Chats> {
             failure: (failure) => _handler.handleFailure(failure, context),
           ),
           builder: (_, state) => state.when(
-              withMessages: (fm, hasMaxed) =>
-                  _buildChats(fm, hasMaxed, unsents),
+              withMessages: (fm, hasMaxed) {
+                return _buildChats(fm, hasMaxed, unsents);
+              },
               failure: (failure) => _buildError(failure),
               loading: () => _buildLoading()),
         ),

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:fe/data/models/group.dart';
 import 'package:fe/data/models/thread.dart';
 import 'package:fe/pages/chat/chat_scaffold.dart';
+import 'package:fe/pages/chat/features/notification_freeze/notification_freezer.dart';
 import 'package:fe/pages/main/cubit/user_cubit.dart';
 import 'package:fe/pages/main/features/main_pager/cubit/page_cubit.dart';
 import 'package:fe/pages/main/features/main_pager/cubit/page_state.dart';
@@ -50,35 +51,37 @@ class ChatPage extends StatelessWidget {
   }
 
   Widget _buildInner() {
-    return ChatScaffold(
-      child: MultiProvider(
-          providers: [
-            BlocProvider(create: (_) => MessageOverlayCubit()),
-            ProxyProvider<Thread, ChatCubit>(
-              create: (BuildContext context) =>
-                  ChatCubit(thread: context.read<Thread>()),
-              update: (BuildContext _, Thread thread, ChatCubit? value) =>
-                  ChatCubit(thread: thread),
-            ),
-            ProxyProvider<ChatCubit, SendCubit>(
-              create: (BuildContext context) => SendCubit(
-                  self: context.read<UserCubit>().user,
-                  chatCubit: context.read<ChatCubit>(),
-                  thread: context.read<Thread>()),
-              update: (BuildContext context, ChatCubit chatCubit,
-                      SendCubit? value) =>
-                  SendCubit(
-                      self: context.read<UserCubit>().user,
-                      thread: context.read<Thread>(),
-                      chatCubit: chatCubit),
-            )
-          ],
-          builder: (context, _) => const FooterLayout(
-                footer: KeyboardAttachable(
-                  child: ChatBar(),
-                ),
-                child: Chats(),
-              )),
+    return NotificationFreezer(
+      child: ChatScaffold(
+        child: MultiProvider(
+            providers: [
+              BlocProvider(create: (_) => MessageOverlayCubit()),
+              ProxyProvider<Thread, ChatCubit>(
+                create: (BuildContext context) =>
+                    ChatCubit(thread: context.read<Thread>()),
+                update: (BuildContext _, Thread thread, ChatCubit? value) =>
+                    ChatCubit(thread: thread),
+              ),
+              ProxyProvider<ChatCubit, SendCubit>(
+                create: (BuildContext context) => SendCubit(
+                    self: context.read<UserCubit>().user,
+                    chatCubit: context.read<ChatCubit>(),
+                    thread: context.read<Thread>()),
+                update: (BuildContext context, ChatCubit chatCubit,
+                        SendCubit? value) =>
+                    SendCubit(
+                        self: context.read<UserCubit>().user,
+                        thread: context.read<Thread>(),
+                        chatCubit: chatCubit),
+              )
+            ],
+            builder: (context, _) => const FooterLayout(
+                  footer: KeyboardAttachable(
+                    child: ChatBar(),
+                  ),
+                  child: Chats(),
+                )),
+      ),
     );
   }
 }

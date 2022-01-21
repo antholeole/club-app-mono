@@ -38,8 +38,7 @@ export const handleNewMessageSent = async (req: IHookInput<IMessage>): Promise<R
 
 
     await sendNotification(sendToUserIds
-
-        //.filter((v) => v.id !== sentFrom)
+        .filter((v) => v !== sentFrom)
         , {
             typename: 'newMessage',
             messageId: req.event.data.new.id

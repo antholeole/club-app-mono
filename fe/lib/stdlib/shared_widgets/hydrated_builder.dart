@@ -15,6 +15,7 @@ class HydratedSetter<T> {
 class HydratedBuilder<T> extends StatefulWidget {
   final Widget Function(BuildContext, T) _onBuild;
   final Widget Function(BuildContext) _onEmpty;
+  final void Function(T? oldVal, T? newVal)? _onUpdate;
   final String Function(T) _serialize;
   final T Function(String) _deserialize;
   final T? _initalValue;
@@ -23,6 +24,7 @@ class HydratedBuilder<T> extends StatefulWidget {
   const HydratedBuilder(String cacheKey,
       {Key? key,
       T? initalValue,
+      void Function(T? oldVal, T? newVal)? onUpdate,
       required Widget Function(BuildContext, T) onBuild,
       required Widget Function(BuildContext) onEmpty,
       required String Function(T) serialize,
@@ -30,6 +32,7 @@ class HydratedBuilder<T> extends StatefulWidget {
       : _onBuild = onBuild,
         _onEmpty = onEmpty,
         _cacheKey = cacheKey,
+        _onUpdate = onUpdate,
         _serialize = serialize,
         _deserialize = deserialize,
         _initalValue = initalValue,
@@ -85,6 +88,7 @@ class _HydratedBuilderState<T> extends State<HydratedBuilder<T>> {
   }
 
   void _set(T? value) {
+    widget._onUpdate?.call(_currentValue, value);
     if (value == null) {
       _sharedPreferences.remove(widget._cacheKey);
       setState(() {

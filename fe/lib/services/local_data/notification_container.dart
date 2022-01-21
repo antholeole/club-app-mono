@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
+import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/either.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter/material.dart';
@@ -94,14 +95,19 @@ class NotificationContainer extends ChangeNotifier {
 
   static Future<NotificationContainer> getNotificationContainer() async {
     final localFileStore = getIt<LocalFileStore>();
+    final handler = getIt<Handler>();
     final notifications =
         await localFileStore.deserialize(LocalStorageType.Notifications);
 
     if (notifications != null) {
-      return NotificationContainer._(json.decode(notifications));
-    } else {
-      return NotificationContainer._({});
+      try {
+        return NotificationContainer._(json.decode(notifications));
+      } on Exception catch (e) {
+        await handler.reportUnknown(e, 'while decoding NotificationContainer');
+      }
     }
+
+    return NotificationContainer._({});
   }
 
   /// if path points to a subdirectory, we will recursively freeze
