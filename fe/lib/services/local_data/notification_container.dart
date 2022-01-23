@@ -6,6 +6,7 @@ import 'package:fe/stdlib/errors/handler.dart';
 import 'package:fe/stdlib/helpers/either.dart';
 import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_badger/flutter_app_badger.dart';
 
 abstract class NotificationPath {
   const NotificationPath();
@@ -156,6 +157,7 @@ class NotificationContainer extends ChangeNotifier {
         LocalStorageType.Notifications,
         json.encode(
             NotificationContainer._serializeEitherMap(_notificationsCache)));
+    FlutterAppBadger.updateBadgeCount(_getTotalNotifications());
   }
 
   T get<T>(NotificationPath path, T defaultValue) {
@@ -198,5 +200,18 @@ class NotificationContainer extends ChangeNotifier {
     }
 
     return currentJson;
+  }
+
+  int _getTotalNotifications([EitherMap<int>? root]) {
+    root ??= _notificationsCache;
+
+    int total = 0;
+    for (final child in root.entries) {
+      child.value.when(
+          first: (val) => total += val,
+          second: (map) => total += _getTotalNotifications(map));
+    }
+
+    return total;
   }
 }

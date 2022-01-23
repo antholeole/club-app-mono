@@ -23,7 +23,7 @@ class DateTimeSerializer implements PrimitiveSerializer<DateTime> {
     assert(serialized is String,
         "Timestamptz expected 'String' but got ${serialized.runtimeType}");
 
-    return DateTime.parse(serialized as String);
+    return DateTime.parse(serialized as String).toLocal();
   }
 
   @override
@@ -32,7 +32,7 @@ class DateTimeSerializer implements PrimitiveSerializer<DateTime> {
     DateTime datetime, {
     FullType specifiedType = FullType.unspecified,
   }) {
-    return datetime.toIso8601String();
+    return datetime.toUtc().toIso8601String();
   }
 
   @override

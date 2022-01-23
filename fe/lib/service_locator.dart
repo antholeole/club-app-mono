@@ -22,10 +22,11 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 final getIt = GetIt.instance;
 
-void setupLocator({required bool isProd}) {
+GetIt setupLocator({required bool isProd}) {
   if (isProd) {
     getIt.registerSingleton<Config>(ProdConfig());
   } else {
@@ -42,6 +43,9 @@ void setupLocator({required bool isProd}) {
 
   //required to dependency inject app state
   getIt.registerSingleton(FlowController(const AppState.loading()));
+
+  getIt.registerSingletonAsync<FlutterLocalNotificationsPlugin>(
+      NotificationClient.localNotificationsPlugin);
 
   //firebase shit
   getIt.registerSingletonAsync<FirebaseApp>(() =>
@@ -77,5 +81,12 @@ void setupLocator({required bool isProd}) {
       dependsOn: [AuthGqlClient, NotificationContainer]);
   getIt.registerSingletonWithDependencies<NotificationClient>(
       () => NotificationClient(),
-      dependsOn: [AuthGqlClient, FirebaseMessaging, NotificationHandler]);
+      dependsOn: [
+        AuthGqlClient,
+        FirebaseMessaging,
+        NotificationHandler,
+        FlutterLocalNotificationsPlugin
+      ]);
+
+  return getIt;
 }
