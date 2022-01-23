@@ -1,42 +1,38 @@
 import 'package:fe/services/local_data/notification_container.dart';
+import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../service_locator.dart';
 
-class NotificationContainerListener<T> extends StatefulWidget {
-  final T _defaultValue;
+class NotificationContainerListener extends StatefulWidget {
   final NotificationPath _path;
-  final Widget Function(T) _builder;
+  final Widget Function(List<UuidType>?) _builder;
 
   const NotificationContainerListener(
       {Key? key,
       required NotificationPath path,
-      required T defaultValue,
-      required Widget Function(T) builder})
-      : assert(defaultValue is Map || defaultValue is int),
-        _defaultValue = defaultValue,
-        _path = path,
+      required Widget Function(List<UuidType>?) builder})
+      : _path = path,
         _builder = builder,
         super(key: key);
 
   @override
-  _NotificationContainerListenerState<T> createState() =>
-      _NotificationContainerListenerState<T>();
+  _NotificationContainerListenerState createState() =>
+      _NotificationContainerListenerState();
 }
 
-class _NotificationContainerListenerState<T>
-    extends State<NotificationContainerListener<T>> {
+class _NotificationContainerListenerState
+    extends State<NotificationContainerListener> {
   final _notificationContainer = getIt<NotificationContainer>();
 
-  late T _value = widget._defaultValue;
+  List<UuidType>? _value;
 
   @override
   void initState() {
     _notificationContainer.addListener(_onNotificationChange);
 
-    _value = _getDeepCopy(
-        _notificationContainer.get<T>(widget._path, widget._defaultValue));
+    _value = _notificationContainer.get(widget._path);
 
     super.initState();
   }
@@ -53,35 +49,18 @@ class _NotificationContainerListenerState<T>
   }
 
   void _onNotificationChange() {
-    final maybeNew =
-        _notificationContainer.get<T>(widget._path, widget._defaultValue);
+    final maybeNew = _notificationContainer.get(widget._path);
 
-    bool equal;
-    if (T is Map) {
-      equal =
-          const DeepCollectionEquality().equals(_value as Map, maybeNew as Map);
-    } else {
-      equal = _value == maybeNew;
-    }
-
-    if (!equal) {
+    if (!const DeepCollectionEquality().equals(_value, maybeNew)) {
       //issue: another widget in the tree is updating this (during it's build because we clicked on it, and thus)
       //we are trying to modify ourselves during the build
       SchedulerBinding.instance!.scheduleFrameCallback((_) {
         if (mounted) {
           setState(() {
-            _value = _getDeepCopy(maybeNew);
+            _value = maybeNew == null ? null : List.from(maybeNew);
           });
         }
       });
-    }
-  }
-
-  T _getDeepCopy(T val) {
-    if (T is Map) {
-      return Map.from(val as Map) as T;
-    } else {
-      return val;
     }
   }
 }

@@ -1,8 +1,11 @@
+import 'package:badges/badges.dart';
 import 'package:fe/data/models/group.dart';
 import 'package:fe/pages/scaffold/features/club_drawer/club_drawer.dart';
 import 'package:fe/pages/scaffold/features/bottom_nav/bottom_nav.dart';
 import 'package:fe/pages/scaffold/features/scaffold_title/scaffold_title.dart';
 import 'package:fe/pages/scaffold/widgets/scaffold_button.dart';
+import 'package:fe/services/local_data/notification_container.dart';
+import 'package:fe/stdlib/shared_widgets/notification_container_listener.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
@@ -35,9 +38,17 @@ class MainScaffold extends StatelessWidget {
           title: ScaffoldTitle(
             titleBarWidget: _titleBarWidget,
           ),
-          leading: ScaffoldButton(
-              icon: Icons.menu,
-              onPressed: (sbContext) => Scaffold.of(sbContext).openDrawer()),
+          leading: NotificationContainerListener(
+            path: const AllChatsNotificationPath(),
+            builder: (notifs) => Badge(
+              position: BadgePosition.topEnd(top: 13, end: 12),
+              showBadge: notifs != null && notifs.isNotEmpty,
+              child: ScaffoldButton(
+                  icon: Icons.menu,
+                  onPressed: (sbContext) =>
+                      Scaffold.of(sbContext).openDrawer()),
+            ),
+          ),
           actions: _actionButtons,
         ),
         drawer: ClubsDrawer(),

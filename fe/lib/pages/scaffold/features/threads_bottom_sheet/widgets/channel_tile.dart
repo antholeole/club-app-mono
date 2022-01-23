@@ -29,41 +29,41 @@ class ChannelTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final textColor = _viewOnly ? Colors.grey.shade500 : Colors.black;
 
-    return NotificationContainerListener<int>(
-      defaultValue: 0,
-      path: ThreadNotificationPath(
-          threadId: _thread.id, groupId: _currentGroupId),
-      builder: (unreadMessages) => Container(
-        decoration: BoxDecoration(
-            color: _selected ? Colors.grey.shade200 : Colors.transparent,
-            borderRadius: BorderRadius.circular(12)),
-        child: ListTile(
-            onTap: _onTap,
-            title: Text(_thread.name,
-                style: TextStyle(
-                    color: textColor,
-                    fontWeight: unreadMessages != 0
-                        ? FontWeight.bold
-                        : FontWeight.normal)),
-            leading: Text('#',
-                style: TextStyle(
-                    fontSize: 28,
-                    color: textColor,
-                    fontWeight: unreadMessages > 0
-                        ? FontWeight.bold
-                        : FontWeight.normal)),
-            trailing: (unreadMessages > 0)
-                ? Chip(
-                    backgroundColor: Colors.red,
-                    label: Text(
-                      unreadMessages.toString(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                  )
-                : null),
-      ),
-    );
+    return NotificationContainerListener(
+        path: ThreadNotificationPath(
+            threadId: _thread.id, groupId: _currentGroupId),
+        builder: (unreadMessages) {
+          final hasUnread = unreadMessages != null && unreadMessages.isNotEmpty;
+
+          return Container(
+            decoration: BoxDecoration(
+                color: _selected ? Colors.grey.shade200 : Colors.transparent,
+                borderRadius: BorderRadius.circular(12)),
+            child: ListTile(
+                onTap: _onTap,
+                title: Text(_thread.name,
+                    style: TextStyle(
+                        color: textColor,
+                        fontWeight:
+                            hasUnread ? FontWeight.bold : FontWeight.normal)),
+                leading: Text('#',
+                    style: TextStyle(
+                        fontSize: 28,
+                        color: textColor,
+                        fontWeight:
+                            hasUnread ? FontWeight.bold : FontWeight.normal)),
+                trailing: (hasUnread)
+                    ? Chip(
+                        backgroundColor: Colors.red,
+                        label: Text(
+                          unreadMessages!.length.toString(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
+                    : null),
+          );
+        });
   }
 }

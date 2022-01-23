@@ -5,7 +5,6 @@ import 'package:fe/pages/groups/features/club_tab/update_club_image/cubit/club_i
 import 'package:fe/pages/groups/features/club_tab/update_club_image/upate_club_image.dart';
 import 'package:fe/pages/groups/features/widgets/selected_tab_indicator.dart';
 import 'package:fe/services/local_data/notification_container.dart';
-import 'package:fe/stdlib/helpers/all_map_equals.dart';
 import 'package:fe/stdlib/shared_widgets/hydrated_builder.dart';
 import 'package:fe/stdlib/shared_widgets/notification_container_listener.dart';
 import 'package:flutter/material.dart';
@@ -29,11 +28,10 @@ class ClubTab extends StatelessWidget {
         child: ExpansionTile(
           tilePadding: const EdgeInsets.only(
               top: 12.0, bottom: 12.0, left: 4.0, right: 8.0),
-          leading: NotificationContainerListener<Map<dynamic, dynamic>>(
-            defaultValue: {},
+          leading: NotificationContainerListener(
             path: GroupNotificationPath(groupId: club.id),
             builder: (notifs) => Badge(
-              showBadge: !allMapEquals(notifs, 0),
+              showBadge: notifs != null && notifs.isNotEmpty,
               badgeColor: Colors.red,
               position: BadgePosition.topEnd(top: -3, end: -3),
               badgeContent: Container(
@@ -79,7 +77,7 @@ class ClubTab extends StatelessWidget {
               ClubRoleManager(),
             ],
             const ClubUsers(),
-            LeaveClubButton(),
+            if (!context.read<Club>().admin) LeaveClubButton(),
           ],
         ),
       ),

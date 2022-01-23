@@ -25,14 +25,13 @@ class DmTab extends StatelessWidget {
                   height: 36, selected: context.watch<Group?>()?.id == dm.id),
             ),
             Expanded(
-              child: NotificationContainerListener<int>(
+              child: NotificationContainerListener(
                 path: DmNotificationPath(dmId: dm.id),
-                defaultValue: 0,
                 builder: (notifs) => ListTile(
                   trailing: Container(
                     width: 12,
                     height: 12,
-                    decoration: notifs == 0
+                    decoration: notifs == null || notifs.isEmpty
                         ? null
                         : const BoxDecoration(
                             color: Colors.red, shape: BoxShape.circle),

@@ -29,13 +29,12 @@ class BottomNav extends StatelessWidget {
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                NotificationContainerListener<Map<dynamic, dynamic>>(
-                  defaultValue: {},
+                NotificationContainerListener(
                   path:
                       GroupNotificationPath(groupId: context.read<Group>().id),
                   builder: (notifications) => Badge(
-                    showBadge: notifications.values
-                        .any((element) => element is int && element > 0),
+                    showBadge:
+                        notifications != null && notifications.isNotEmpty,
                     badgeColor: Colors.red,
                     position: BadgePosition.topEnd(top: -4, end: -4),
                     toAnimate: false,

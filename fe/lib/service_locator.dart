@@ -7,6 +7,7 @@ import 'package:fe/services/clients/gql_client/unauth_gql_client.dart';
 import 'package:fe/services/clients/image_client.dart';
 import 'package:fe/services/clients/notification_client/notification_client.dart';
 import 'package:fe/services/clients/notification_client/notification_handler.dart';
+import 'package:fe/services/local_data/app_badger.dart';
 import 'package:fe/services/local_data/image_cache_handler.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
 import 'package:fe/services/local_data/notification_container.dart';
@@ -33,6 +34,7 @@ GetIt setupLocator({required bool isProd}) {
     getIt.registerSingleton<Config>(LocalConfig());
   }
 
+  getIt.registerSingleton<AppBadger>(AppBadger());
   getIt.registerSingleton<Connectivity>(Connectivity());
 
   getIt.registerSingleton<GoogleSignIn>(GoogleSignIn(
@@ -73,7 +75,8 @@ GetIt setupLocator({required bool isProd}) {
       dependsOn: [TokenManager]);
 
   getIt.registerSingletonAsync<NotificationContainer>(
-      () => NotificationContainer.getNotificationContainer());
+      () => NotificationContainer.getNotificationContainer(),
+      dependsOn: [FlutterLocalNotificationsPlugin]);
 
   getIt.registerSingletonWithDependencies(() => ImageClient(),
       dependsOn: [AuthGqlClient]);
@@ -85,7 +88,7 @@ GetIt setupLocator({required bool isProd}) {
         AuthGqlClient,
         FirebaseMessaging,
         NotificationHandler,
-        FlutterLocalNotificationsPlugin
+        FlutterLocalNotificationsPlugin,
       ]);
 
   return getIt;

@@ -19,6 +19,7 @@ import 'package:fe/pages/splash/features/app_boot/cubit/splash_cubit.dart';
 import 'package:fe/pages/splash/features/app_boot/cubit/splash_state.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/services/clients/gql_client/unauth_gql_client.dart';
+import 'package:fe/services/local_data/app_badger.dart';
 import 'package:fe/services/local_data/image_cache_handler.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
 import 'package:fe/services/local_data/token_manager.dart';
@@ -152,6 +153,14 @@ class MockImageCacheHandler extends Mock implements ImageCacheHandler {
 class ImageProviderFake extends Fake implements ImageProvider {}
 
 class MockSharedPreferences extends Mock implements SharedPreferences {}
+
+class MockAppBadger extends Mock implements AppBadger {
+  MockAppBadger._();
+
+  factory MockAppBadger.getMock() {
+    return MockAppBadger._();
+  }
+}
 
 class MockTokenManager extends Mock implements TokenManager {
   MockTokenManager._();
