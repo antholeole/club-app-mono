@@ -4,6 +4,7 @@ import 'package:fe/flows/app_state.dart';
 import 'package:fe/service_locator.dart';
 import 'package:fe/services/clients/gql_client/auth_gql_client.dart';
 import 'package:fe/services/clients/gql_client/unauth_gql_client.dart';
+import 'package:fe/services/local_data/app_badger.dart';
 import 'package:fe/services/local_data/image_cache_handler.dart';
 
 import 'package:fe/services/local_data/local_file_store.dart';
@@ -22,6 +23,7 @@ import 'testing_config.dart';
 Future<void> registerAllMockServices() {
   getIt.allowReassignment = true;
 
+  getIt.registerSingleton<AppBadger>(MockAppBadger.getMock());
   getIt.registerSingleton<TokenManager>(MockTokenManager.getMock());
   getIt.registerSingleton<LocalFileStore>(MockLocalFileStore.getMock());
   getIt.registerSingleton<LocalUserService>(MockLocalUserService());

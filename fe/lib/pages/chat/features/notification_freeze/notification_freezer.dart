@@ -53,7 +53,7 @@ class _NotificationFreezerState extends State<NotificationFreezer> {
         dm: (dm) => _currentlyFrozen = DmNotificationPath(dmId: dm.id),
         club: (club) => _currentlyFrozen =
             ThreadNotificationPath(groupId: club.id, threadId: thread.id));
-    _notificationContainer.set(_currentlyFrozen!, 0);
+    _notificationContainer.clear(_currentlyFrozen!);
     _notificationContainer.freeze(_currentlyFrozen!);
   }
 

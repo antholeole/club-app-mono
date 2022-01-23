@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:fe/service_locator.dart';
+import 'package:fe/services/local_data/app_badger.dart';
 import 'package:fe/services/local_data/local_file_store.dart';
 import 'package:fe/services/local_data/notification_container.dart';
 import 'package:fe/stdlib/helpers/either.dart';
-import 'package:flutter/foundation.dart';
+import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mocktail/mocktail.dart';
@@ -17,19 +18,37 @@ void main() {
         LocalStorageType.Notifications, captureAny())).captured[nth]);
   }
 
-  setUpAll(() {
+  List<String> getRandomUuidList(int count) {
+    List<String> list = [];
+
+    for (int i = 0; i < count; i++) {
+      list.add(UuidType.generate().uuid);
+    }
+
+    return list;
+  }
+
+  void expectDeepEquals(dynamic groupOne, dynamic groupTwo) {
+    expect(const DeepCollectionEquality().equals(groupOne, groupTwo), true);
+  }
+
+  setUp(() {
     registerAllMockServices();
   });
 
   group('constructor', () {
     test('should deserialize input json', () async {
+      final flatList = getRandomUuidList(1);
+      final multipleKeys = getRandomUuidList(2);
+      final deepNested = getRandomUuidList(3);
+
       when(() => getIt<LocalFileStore>()
               .deserialize(LocalStorageType.Notifications))
           .thenAnswer((_) async => json.encode({
-                'testFlat': 1,
+                'testFlat': flatList,
                 'testNested': {
-                  'multipleKeys': 2,
-                  'nestedVal': {'otherNested': 3}
+                  'multipleKeys': multipleKeys,
+                  'nestedVal': {'otherNested': deepNested}
                 }
               }));
 
@@ -37,33 +56,29 @@ void main() {
 
       expect(
           container.get(
-              const CustomNotificationPath(strings: ['invalidField', 'blah']),
-              5),
-          5);
+            const CustomNotificationPath(strings: ['invalidField', 'blah']),
+          ),
+          null);
 
-      expect(
-          container.get(
-              const CustomNotificationPath(strings: ['testFlat']), -1),
-          1);
+      expectDeepEquals(
+          container.get(const CustomNotificationPath(strings: ['testFlat'])),
+          flatList.map((e) => UuidType(e)).toList());
 
-      expect(
-          container.get(
-              const CustomNotificationPath(
-                  strings: ['testNested', 'multipleKeys']),
-              -1),
-          2);
+      expectDeepEquals(
+          container.get(const CustomNotificationPath(
+              strings: ['testNested', 'multipleKeys'])),
+          multipleKeys.map((e) => UuidType(e)).toList());
 
-      expect(
-          container.get(
-              const CustomNotificationPath(
-                  strings: ['testNested', 'nestedVal', 'otherNested']),
-              -1),
-          3);
+      expectDeepEquals(
+          container.get(const CustomNotificationPath(
+              strings: ['testNested', 'nestedVal', 'otherNested'])),
+          deepNested.map((e) => UuidType(e)).toList());
     });
   });
 
   group('set', () {
     setUp(() {
+      when(() => getIt<AppBadger>().set(any())).thenAnswer((_) async => null);
       when(() => getIt<LocalFileStore>()
               .deserialize(LocalStorageType.Notifications))
           .thenAnswer((_) async => json.encode({}));
@@ -71,60 +86,68 @@ void main() {
           LocalStorageType.Notifications, any())).thenAnswer((_) async => null);
     });
 
-    group('should set at path', () {
+    group('should add at path', () {
       test('flat', () async {
         final container =
             await NotificationContainer.getNotificationContainer();
-        await container.set(
-            const CustomNotificationPath(strings: ['testFlat']), 1);
+        final added = UuidType.generate();
+        await container.add(
+            const CustomNotificationPath(strings: ['testFlat']), added);
 
-        expect(
-            const DeepCollectionEquality()
-                .equals(getCapturedMap(), {'testFlat': 1}),
-            true);
+        expectDeepEquals(getCapturedMap(), {
+          'testFlat': [added.uuid]
+        });
       });
 
       test('nested', () async {
         final container =
             await NotificationContainer.getNotificationContainer();
-        await container.set(
+        final added = UuidType.generate();
+        await container.add(
             const CustomNotificationPath(strings: ['test', 'nested', 'stuff']),
-            1);
+            added);
 
-        expect(
-            const DeepCollectionEquality().equals(getCapturedMap(), {
-              'test': {
-                'nested': {'stuff': 1}
+        expectDeepEquals(
+          getCapturedMap(),
+          {
+            'test': {
+              'nested': {
+                'stuff': [added.uuid]
               }
-            }),
-            true);
+            }
+          },
+        );
       });
 
       test('multipleKeys', () async {
+        final added = UuidType.generate();
         final container =
             await NotificationContainer.getNotificationContainer();
-        await container.set(
-            const CustomNotificationPath(strings: ['testFlatAgain']), 1);
-        await container.set(
-            const CustomNotificationPath(strings: ['testFlat']), 1);
+        await container.add(
+            const CustomNotificationPath(strings: ['testFlatAgain']), added);
+        await container.add(
+            const CustomNotificationPath(strings: ['testFlat']), added);
 
-        expect(
-            mapEquals(getCapturedMap(1), {'testFlat': 1, 'testFlatAgain': 1}),
-            true);
+        expectDeepEquals(getCapturedMap(1), {
+          'testFlat': [added.uuid],
+          'testFlatAgain': [added.uuid]
+        });
       });
     });
 
     test('should throw if set at already written path', () async {
+      final added = UuidType.generate();
       final container = await NotificationContainer.getNotificationContainer();
-      await container.set(
-          const CustomNotificationPath(strings: ['blah', 'nested']), 1);
+      await container.add(
+          const CustomNotificationPath(strings: ['blah', 'nested']), added);
       expect(
-          () async => await container.set(
-              const CustomNotificationPath(strings: ['blah']), 1),
+          () async => await container.add(
+              const CustomNotificationPath(strings: ['blah']), added),
           throwsA(isA<IncorrectEitherMapTypeTraversal>()));
     });
 
     test('should notify listeners', () async {
+      final added = UuidType.generate();
       final container = await NotificationContainer.getNotificationContainer();
 
       bool listenerTrigged = false;
@@ -132,20 +155,36 @@ void main() {
         listenerTrigged = true;
       });
 
-      await container.set(
-          const CustomNotificationPath(strings: ['blah', 'nested']), 1);
+      await container.add(
+          const CustomNotificationPath(strings: ['blah', 'nested']), added);
 
       expect(listenerTrigged, true,
           reason: 'listener should have flipped bool');
     });
+
+    test('should call appBadger with correct number', () async {
+      final added = UuidType.generate();
+      final container = await NotificationContainer.getNotificationContainer();
+
+      const addedCount = 10;
+      for (int i = 0; i < addedCount; i++) {
+        await container.add(
+            const CustomNotificationPath(strings: ['blah', 'nested']), added);
+      }
+      final capturedList =
+          verify(() => getIt<AppBadger>().set(captureAny())).captured;
+      for (int i = 0; i < addedCount - 1; i++) {
+        expect(i + 1, capturedList[i]);
+      }
+    });
   });
 
   group('get', () {
-    final fakeMap = {
-      'testFlat': 1,
+    final Map<String, dynamic> fakeMap = {
+      'testFlat': getRandomUuidList(2),
       'testNested': {
-        'multipleKeys': 2,
-        'nestedVal': {'otherNested': 3}
+        'multipleKeys': getRandomUuidList(2),
+        'nestedVal': {'otherNested': getRandomUuidList(3)}
       }
     };
 
@@ -155,54 +194,46 @@ void main() {
           .thenAnswer((_) async => json.encode(fakeMap));
     });
 
-    test('should return map', () async {
+    test('should return added subtree', () async {
       final container = await NotificationContainer.getNotificationContainer();
 
-      final gottenMap = container.get<Map<String, dynamic>>(
-          const CustomNotificationPath(strings: ['testNested']), {});
+      final gottenMap =
+          container.get(const CustomNotificationPath(strings: ['testNested']));
 
-      expect(
-          const DeepCollectionEquality()
-              .equals(gottenMap, fakeMap['testNested']),
-          true);
+      expectDeepEquals(
+          gottenMap,
+          [
+            ...fakeMap['testNested']['multipleKeys'],
+            ...fakeMap['testNested']['nestedVal']['otherNested']
+          ].map((e) => UuidType(e)).toList());
     });
 
-    test('should return int', () async {
+    test('should return uuid List', () async {
       final container = await NotificationContainer.getNotificationContainer();
 
-      final gottenMap = container.get<int>(
-          const CustomNotificationPath(strings: ['testFlat']), 1);
+      final gottenList =
+          container.get(const CustomNotificationPath(strings: ['testFlat']));
 
-      expect(
-          const DeepCollectionEquality().equals(gottenMap, fakeMap['testFlat']),
-          true);
+      expectDeepEquals(
+          gottenList, fakeMap['testFlat'].map((e) => UuidType(e)).toList());
     });
 
-    test('should return defaultValue int', () async {
+    test('should return null if no path', () async {
       final container = await NotificationContainer.getNotificationContainer();
 
-      final gotten = container.get<int>(
-          const CustomNotificationPath(strings: ['notAKey']), 5);
+      final gotten =
+          container.get(const CustomNotificationPath(strings: ['notAKey']));
 
-      expect(gotten, 5);
-    });
-
-    test('should return defaultValue map', () async {
-      final container = await NotificationContainer.getNotificationContainer();
-
-      final gottenMap = container
-          .get<Map>(const CustomNotificationPath(strings: ['notAKey']), {});
-
-      expect(const DeepCollectionEquality().equals(gottenMap, {}), true);
+      expect(gotten, null);
     });
   });
 
   group('freeze / unfreeze', () {
-    final fakeMap = {
-      'testFlat': 1,
+    final Map<String, dynamic> fakeMap = {
+      'testFlat': getRandomUuidList(2),
       'testNested': {
-        'multipleKeys': 2,
-        'nestedVal': {'otherNested': 3}
+        'multipleKeys': getRandomUuidList(2),
+        'nestedVal': {'otherNested': getRandomUuidList(3)}
       }
     };
 
@@ -217,18 +248,15 @@ void main() {
           LocalStorageType.Notifications, any())).thenAnswer((_) async => null);
     });
     test('should not allow changes on freeze', () async {
-      const SET_VALUE = 1;
-      const NEW_VALUE = 7;
-
       final container = await NotificationContainer.getNotificationContainer();
+      final pathAsUuids = fakeMap['testNested']['multipleKeys']
+          .map((v) => UuidType(v))
+          .toList();
 
-      expect(container.get(path, 0), SET_VALUE);
+      expectDeepEquals(container.get(path), pathAsUuids);
       container.freeze(path);
-      await container.set(path, NEW_VALUE);
-      expect(container.get(path, 5), SET_VALUE);
-      container.unfreeze(path);
-      await container.set(path, NEW_VALUE);
-      expect(container.get(path, 5), NEW_VALUE);
+      await container.add(path, UuidType.generate());
+      expectDeepEquals(container.get(path), pathAsUuids);
     });
   });
 }

@@ -8,6 +8,8 @@ import 'package:fe/stdlib/helpers/uuid_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 
+import 'app_badger.dart';
+
 abstract class NotificationPath {
   const NotificationPath();
 
@@ -63,20 +65,26 @@ class CustomNotificationPath extends NotificationPath {
 
 class NotificationContainer extends ChangeNotifier {
   final LocalFileStore _localFileStore = getIt<LocalFileStore>();
+  final _appBadger = getIt<AppBadger>();
 
-  late final EitherMap<int> _notificationsCache;
+  late final EitherMap<List<UuidType>> _notificationsCache;
   final EitherMap<bool> _freeze = EitherMap({});
 
   NotificationContainer._(Map<String, dynamic> notifications) {
     _notificationsCache = _deserializeEitherMap(notifications);
   }
 
-  static EitherMap<int> _deserializeEitherMap(Map<String, dynamic> json) {
-    final EitherMap<int> building = EitherMap({});
+  static EitherMap<List<UuidType>> _deserializeEitherMap(
+      Map<String, dynamic> inputJson) {
+    final EitherMap<List<UuidType>> building = EitherMap({});
 
-    for (final entry in json.entries) {
-      if (entry.value is int) {
-        building.add(entry.key, Either.first(entry.value));
+    for (final entry in inputJson.entries) {
+      if (entry.value is List) {
+        building.add(
+            entry.key,
+            Either.first((entry.value as List<dynamic>)
+                .map((e) => UuidType(e))
+                .toList()));
       } else {
         building.add(
             entry.key, Either.second(_deserializeEitherMap(entry.value)));
@@ -86,11 +94,12 @@ class NotificationContainer extends ChangeNotifier {
     return building;
   }
 
-  static Map<String, dynamic> _serializeEitherMap(EitherMap<int> eitherMap) =>
+  static Map<String, dynamic> _serializeEitherMap(
+          EitherMap<List<UuidType>> eitherMap) =>
       Map.fromEntries(eitherMap.entries.map((mapEntry) => MapEntry(
           mapEntry.key,
           mapEntry.value.when(
-              first: (val) => val,
+              first: (val) => val.map((e) => e.uuid).toList(),
               second: (map) =>
                   NotificationContainer._serializeEitherMap(map)))));
 
@@ -136,7 +145,14 @@ class NotificationContainer extends ChangeNotifier {
             .forEach((entry) => _recursiveFreezeTravel(map, entry.key, setTo)));
   }
 
-  Future<void> set(NotificationPath path, int value) async {
+  /// MUST point to value, not submap
+  Future<void> clear(NotificationPath path) => _updatePath(path, (_) => []);
+
+  Future<void> add(NotificationPath path, UuidType value) =>
+      _updatePath(path, (old) => List<UuidType>.from(old)..add(value));
+
+  Future<void> _updatePath(NotificationPath path,
+      List<UuidType> Function(List<UuidType> old) update) async {
     final lastPathNode = path._getNotificationPath().last;
     final isFrozen = _getParentMap(path, _freeze).get(lastPathNode);
 
@@ -148,8 +164,12 @@ class NotificationContainer extends ChangeNotifier {
       return;
     }
 
-    _getParentMap(path, _notificationsCache)
-        .add(lastPathNode, Either.first(value));
+    final parentMap = _getParentMap(path, _notificationsCache);
+    final prev = parentMap.get(lastPathNode)?.when(
+        first: (list) => list,
+        second: (got) => throw IncorrectEitherMapTypeTraversal(
+            lastPathNode, got.runtimeType, List));
+    parentMap.add(lastPathNode, Either.first(update(prev ?? [])));
 
     notifyListeners();
 
@@ -157,28 +177,21 @@ class NotificationContainer extends ChangeNotifier {
         LocalStorageType.Notifications,
         json.encode(
             NotificationContainer._serializeEitherMap(_notificationsCache)));
-    FlutterAppBadger.updateBadgeCount(_getTotalNotifications());
+
+    await _appBadger.set(_getAllNotificationsAtSubtree().length);
   }
 
-  T get<T>(NotificationPath path, T defaultValue) {
-    assert(defaultValue is int || defaultValue is Map);
-
+  /// if path points to a subtree, will get all the uuids in the subtree
+  /// if it points to a value, will get the uuids at that value
+  List<UuidType>? get(NotificationPath path) {
     final parentMap = _getParentMap(path, _notificationsCache);
     final lastKey = path._getNotificationPath().last;
 
     if (parentMap.containsKey(lastKey)) {
       return parentMap.get(lastKey)!.when(
-          first: (val) => val as T,
-          second: (got) => _serializeEitherMap(got) as T);
+          first: (val) => val,
+          second: (subtree) => _getAllNotificationsAtSubtree(subtree));
     }
-
-    if (defaultValue is int) {
-      parentMap.add(lastKey, Either.first(defaultValue));
-    } else {
-      parentMap.add(lastKey, Either.second(EitherMap({})));
-    }
-
-    return defaultValue;
   }
 
   EitherMap<T> _getParentMap<T>(NotificationPath path, EitherMap<T> baseMap) {
@@ -202,16 +215,18 @@ class NotificationContainer extends ChangeNotifier {
     return currentJson;
   }
 
-  int _getTotalNotifications([EitherMap<int>? root]) {
+  List<UuidType> _getAllNotificationsAtSubtree(
+      [EitherMap<List<UuidType>>? root]) {
     root ??= _notificationsCache;
 
-    int total = 0;
+    List<UuidType> notifications = [];
     for (final child in root.entries) {
       child.value.when(
-          first: (val) => total += val,
-          second: (map) => total += _getTotalNotifications(map));
+          first: notifications.addAll,
+          second: (map) =>
+              notifications.addAll(_getAllNotificationsAtSubtree(map)));
     }
 
-    return total;
+    return notifications;
   }
 }

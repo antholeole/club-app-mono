@@ -81,8 +81,7 @@ class NotificationHandler {
           customMessage: 'message id not tied to source');
     }
 
-    await _notificationContainer.set(
-        path, _notificationContainer.get(path, 0) + 1);
+    await _notificationContainer.add(path, newMessageId);
 
     return notification;
   }
