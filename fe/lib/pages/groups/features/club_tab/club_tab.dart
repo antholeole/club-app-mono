@@ -73,7 +73,7 @@ class ClubTab extends StatelessWidget {
           initiallyExpanded: true,
           children: [
             if (context.read<Club>().admin) ...[
-              const UpdateClubImage(),
+              UpdateClubImage(),
               ClubRoleManager(),
             ],
             const ClubUsers(),

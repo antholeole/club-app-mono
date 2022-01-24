@@ -73,6 +73,11 @@ select_permissions:
           users:
             user_id:
               _eq: X-Hasura-User-Id
+      - thread:
+          group:
+            group_metadatum:
+              owner_id:
+                _eq: X-Hasura-User-Id
   role: user
 event_triggers:
 - definition:

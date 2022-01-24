@@ -39,6 +39,7 @@ class MainPage extends StatelessWidget {
                           providers: [
                             BlocProvider(
                                 create: (_) => ThreadsBottomSheetCubit()),
+                            Provider<Club>.value(value: club),
                             Provider.value(value: PageCubit(club: club))
                           ],
                           child: MainPager(),

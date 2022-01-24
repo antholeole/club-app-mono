@@ -42,6 +42,7 @@ class NotificationClient {
     final plugin = FlutterLocalNotificationsPlugin();
 
     await plugin.initialize(const InitializationSettings(
+        iOS: IOSInitializationSettings(),
         android: AndroidInitializationSettings('app_icon')));
 
     return plugin;

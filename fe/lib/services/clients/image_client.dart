@@ -55,18 +55,7 @@ class ImageClient {
         .first
         .then((value) {
       String? url = value.get_signed_download_link?.downloadUrl;
-
-      if (_config is LocalConfig && url != null) {
-        // docker to docker networking means that a url looks like bucket.s3:port,
-        // but to get here to docker, we need to say localhost
-        if (url.contains('s3')) {
-          url = url.replaceFirst('s3', 'localhost');
-        }
-
-        if (Platform.isAndroid) {
-          url = url.replaceFirst('localhost', '10.0.2.2');
-        }
-      }
+      if (url != null) url = _fixUrl(url);
 
       _imageCache[_serializeCacheKey(sourceId, uploadType)] = url;
       _fetching.remove(_serializeCacheKey(sourceId, uploadType));
@@ -95,11 +84,12 @@ class ImageClient {
           .insert_image!;
 
       final bytes = await image.readAsBytes();
-      await _httpClient.put(Uri.parse(uploadVerification.uploadUrl),
-          body: bytes);
 
-      _imageCache[_serializeCacheKey(sourceId, uploadType)] =
-          uploadVerification.uploadUrl;
+      final url = _fixUrl(uploadVerification.uploadUrl);
+
+      await _httpClient.put(Uri.parse(url), body: bytes);
+
+      _imageCache[_serializeCacheKey(sourceId, uploadType)] = url;
 
       return _ImageData(image: bytes, imageName: uploadVerification.imageName);
     } on Exception catch (e) {
@@ -115,4 +105,20 @@ class ImageClient {
 
   String _serializeCacheKey(UuidType sourceId, GUploadType uploadType) =>
       '${sourceId.uuid}+${uploadType.name}';
+
+  String _fixUrl(String url) {
+    if (_config is LocalConfig) {
+      // docker to docker networking means that a url looks like bucket.s3:port,
+      // but to get here to docker, we need to say localhost
+      if (url.contains('s3')) {
+        url = url.replaceFirst('s3', 'localhost');
+      }
+
+      if (Platform.isAndroid) {
+        url = url.replaceFirst('localhost', '10.0.2.2');
+      }
+    }
+
+    return url;
+  }
 }
