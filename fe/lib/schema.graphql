@@ -263,6 +263,198 @@ type DownloadImageOutput {
 }
 
 """
+columns and relationships of "events"
+"""
+type events {
+  """An object relationship"""
+  group: groups!
+  group_id: uuid!
+  ical_event: String!
+  id: uuid!
+
+  """An array relationship"""
+  roles(
+    """distinct select on columns"""
+    distinct_on: [roles_to_events_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [roles_to_events_order_by!]
+
+    """filter the rows returned"""
+    where: roles_to_events_bool_exp
+  ): [roles_to_events!]!
+
+  """An aggregate relationship"""
+  roles_aggregate(
+    """distinct select on columns"""
+    distinct_on: [roles_to_events_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [roles_to_events_order_by!]
+
+    """filter the rows returned"""
+    where: roles_to_events_bool_exp
+  ): roles_to_events_aggregate!
+}
+
+"""
+aggregated selection of "events"
+"""
+type events_aggregate {
+  aggregate: events_aggregate_fields
+  nodes: [events!]!
+}
+
+"""
+aggregate fields of "events"
+"""
+type events_aggregate_fields {
+  count(columns: [events_select_column!], distinct: Boolean): Int!
+  max: events_max_fields
+  min: events_min_fields
+}
+
+"""
+Boolean expression to filter rows from the table "events". All fields are combined with a logical 'AND'.
+"""
+input events_bool_exp {
+  _and: [events_bool_exp!]
+  _not: events_bool_exp
+  _or: [events_bool_exp!]
+  group: groups_bool_exp
+  group_id: uuid_comparison_exp
+  ical_event: String_comparison_exp
+  id: uuid_comparison_exp
+  roles: roles_to_events_bool_exp
+}
+
+"""
+unique or primary key constraints on table "events"
+"""
+enum events_constraint {
+  """unique or primary key constraint"""
+  events_pkey
+}
+
+"""
+input type for inserting data into table "events"
+"""
+input events_insert_input {
+  group: groups_obj_rel_insert_input
+  group_id: uuid
+  ical_event: String
+  id: uuid
+  roles: roles_to_events_arr_rel_insert_input
+}
+
+"""aggregate max on columns"""
+type events_max_fields {
+  group_id: uuid
+  ical_event: String
+  id: uuid
+}
+
+"""aggregate min on columns"""
+type events_min_fields {
+  group_id: uuid
+  ical_event: String
+  id: uuid
+}
+
+"""
+response of any mutation on the table "events"
+"""
+type events_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [events!]!
+}
+
+"""
+input type for inserting object relation for remote table "events"
+"""
+input events_obj_rel_insert_input {
+  data: events_insert_input!
+
+  """on conflict condition"""
+  on_conflict: events_on_conflict
+}
+
+"""
+on conflict condition type for table "events"
+"""
+input events_on_conflict {
+  constraint: events_constraint!
+  update_columns: [events_update_column!]! = []
+  where: events_bool_exp
+}
+
+"""Ordering options when selecting data from "events"."""
+input events_order_by {
+  group: groups_order_by
+  group_id: order_by
+  ical_event: order_by
+  id: order_by
+  roles_aggregate: roles_to_events_aggregate_order_by
+}
+
+"""primary key columns input for table: events"""
+input events_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "events"
+"""
+enum events_select_column {
+  """column name"""
+  group_id
+
+  """column name"""
+  ical_event
+
+  """column name"""
+  id
+}
+
+"""
+input type for updating data in table "events"
+"""
+input events_set_input {
+  group_id: uuid
+  ical_event: String
+  id: uuid
+}
+
+"""
+update columns of table "events"
+"""
+enum events_update_column {
+  """column name"""
+  group_id
+
+  """column name"""
+  ical_event
+
+  """column name"""
+  id
+}
+
+"""
 columns and relationships of "group_metadata"
 """
 type group_metadata {
@@ -1761,6 +1953,19 @@ type mutation_root {
   delete_dms_by_pk(id: uuid!): dms
 
   """
+  delete data from the table: "events"
+  """
+  delete_events(
+    """filter the rows which have to be deleted"""
+    where: events_bool_exp!
+  ): events_mutation_response
+
+  """
+  delete single row from the table: "events"
+  """
+  delete_events_by_pk(id: uuid!): events
+
+  """
   delete data from the table: "group_metadata"
   """
   delete_group_metadata(
@@ -1878,6 +2083,19 @@ type mutation_root {
   delete_roles_by_pk(group_id: uuid!, name: String!): roles
 
   """
+  delete data from the table: "roles_to_events"
+  """
+  delete_roles_to_events(
+    """filter the rows which have to be deleted"""
+    where: roles_to_events_bool_exp!
+  ): roles_to_events_mutation_response
+
+  """
+  delete single row from the table: "roles_to_events"
+  """
+  delete_roles_to_events_by_pk(event_id: uuid!, role_id: uuid!): roles_to_events
+
+  """
   delete data from the table: "threads"
   """
   delete_threads(
@@ -1953,6 +2171,28 @@ type mutation_root {
     """on conflict condition"""
     on_conflict: dms_on_conflict
   ): dms
+
+  """
+  insert data into the table: "events"
+  """
+  insert_events(
+    """the rows to be inserted"""
+    objects: [events_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: events_on_conflict
+  ): events_mutation_response
+
+  """
+  insert a single row into the table: "events"
+  """
+  insert_events_one(
+    """the row to be inserted"""
+    object: events_insert_input!
+
+    """on conflict condition"""
+    on_conflict: events_on_conflict
+  ): events
 
   """
   insert data into the table: "group_metadata"
@@ -2154,6 +2394,28 @@ type mutation_root {
   ): roles
 
   """
+  insert data into the table: "roles_to_events"
+  """
+  insert_roles_to_events(
+    """the rows to be inserted"""
+    objects: [roles_to_events_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: roles_to_events_on_conflict
+  ): roles_to_events_mutation_response
+
+  """
+  insert a single row into the table: "roles_to_events"
+  """
+  insert_roles_to_events_one(
+    """the row to be inserted"""
+    object: roles_to_events_insert_input!
+
+    """on conflict condition"""
+    on_conflict: roles_to_events_on_conflict
+  ): roles_to_events
+
+  """
   insert data into the table: "threads"
   """
   insert_threads(
@@ -2262,6 +2524,26 @@ type mutation_root {
     _set: dms_set_input
     pk_columns: dms_pk_columns_input!
   ): dms
+
+  """
+  update data of the table: "events"
+  """
+  update_events(
+    """sets the columns of the filtered rows to the given values"""
+    _set: events_set_input
+
+    """filter the rows which have to be updated"""
+    where: events_bool_exp!
+  ): events_mutation_response
+
+  """
+  update single row of the table: "events"
+  """
+  update_events_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: events_set_input
+    pk_columns: events_pk_columns_input!
+  ): events
 
   """
   update data of the table: "group_metadata"
@@ -2444,6 +2726,26 @@ type mutation_root {
   ): roles
 
   """
+  update data of the table: "roles_to_events"
+  """
+  update_roles_to_events(
+    """sets the columns of the filtered rows to the given values"""
+    _set: roles_to_events_set_input
+
+    """filter the rows which have to be updated"""
+    where: roles_to_events_bool_exp!
+  ): roles_to_events_mutation_response
+
+  """
+  update single row of the table: "roles_to_events"
+  """
+  update_roles_to_events_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: roles_to_events_set_input
+    pk_columns: roles_to_events_pk_columns_input!
+  ): roles_to_events
+
+  """
   update data of the table: "threads"
   """
   update_threads(
@@ -2588,6 +2890,49 @@ type query_root {
 
   """fetch data from the table: "dms" using primary key columns"""
   dms_by_pk(id: uuid!): dms
+
+  """
+  fetch data from the table: "events"
+  """
+  events(
+    """distinct select on columns"""
+    distinct_on: [events_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [events_order_by!]
+
+    """filter the rows returned"""
+    where: events_bool_exp
+  ): [events!]!
+
+  """
+  fetch aggregated fields from the table: "events"
+  """
+  events_aggregate(
+    """distinct select on columns"""
+    distinct_on: [events_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [events_order_by!]
+
+    """filter the rows returned"""
+    where: events_bool_exp
+  ): events_aggregate!
+
+  """fetch data from the table: "events" using primary key columns"""
+  events_by_pk(id: uuid!): events
 
   """
   fetch data from the table: "group_metadata"
@@ -2963,6 +3308,49 @@ type query_root {
 
   """fetch data from the table: "roles" using primary key columns"""
   roles_by_pk(group_id: uuid!, name: String!): roles
+
+  """
+  fetch data from the table: "roles_to_events"
+  """
+  roles_to_events(
+    """distinct select on columns"""
+    distinct_on: [roles_to_events_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [roles_to_events_order_by!]
+
+    """filter the rows returned"""
+    where: roles_to_events_bool_exp
+  ): [roles_to_events!]!
+
+  """
+  fetch aggregated fields from the table: "roles_to_events"
+  """
+  roles_to_events_aggregate(
+    """distinct select on columns"""
+    distinct_on: [roles_to_events_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [roles_to_events_order_by!]
+
+    """filter the rows returned"""
+    where: roles_to_events_bool_exp
+  ): roles_to_events_aggregate!
+
+  """fetch data from the table: "roles_to_events" using primary key columns"""
+  roles_to_events_by_pk(event_id: uuid!, role_id: uuid!): roles_to_events
 
   """An array relationship"""
   threads(
@@ -3666,6 +4054,178 @@ input roles_set_input {
 }
 
 """
+columns and relationships of "roles_to_events"
+"""
+type roles_to_events {
+  """An object relationship"""
+  event: events!
+  event_id: uuid!
+
+  """An object relationship"""
+  role: roles!
+  role_id: uuid!
+}
+
+"""
+aggregated selection of "roles_to_events"
+"""
+type roles_to_events_aggregate {
+  aggregate: roles_to_events_aggregate_fields
+  nodes: [roles_to_events!]!
+}
+
+"""
+aggregate fields of "roles_to_events"
+"""
+type roles_to_events_aggregate_fields {
+  count(columns: [roles_to_events_select_column!], distinct: Boolean): Int!
+  max: roles_to_events_max_fields
+  min: roles_to_events_min_fields
+}
+
+"""
+order by aggregate values of table "roles_to_events"
+"""
+input roles_to_events_aggregate_order_by {
+  count: order_by
+  max: roles_to_events_max_order_by
+  min: roles_to_events_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "roles_to_events"
+"""
+input roles_to_events_arr_rel_insert_input {
+  data: [roles_to_events_insert_input!]!
+
+  """on conflict condition"""
+  on_conflict: roles_to_events_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "roles_to_events". All fields are combined with a logical 'AND'.
+"""
+input roles_to_events_bool_exp {
+  _and: [roles_to_events_bool_exp!]
+  _not: roles_to_events_bool_exp
+  _or: [roles_to_events_bool_exp!]
+  event: events_bool_exp
+  event_id: uuid_comparison_exp
+  role: roles_bool_exp
+  role_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "roles_to_events"
+"""
+enum roles_to_events_constraint {
+  """unique or primary key constraint"""
+  roles_to_events_pkey
+}
+
+"""
+input type for inserting data into table "roles_to_events"
+"""
+input roles_to_events_insert_input {
+  event: events_obj_rel_insert_input
+  event_id: uuid
+  role: roles_obj_rel_insert_input
+  role_id: uuid
+}
+
+"""aggregate max on columns"""
+type roles_to_events_max_fields {
+  event_id: uuid
+  role_id: uuid
+}
+
+"""
+order by max() on columns of table "roles_to_events"
+"""
+input roles_to_events_max_order_by {
+  event_id: order_by
+  role_id: order_by
+}
+
+"""aggregate min on columns"""
+type roles_to_events_min_fields {
+  event_id: uuid
+  role_id: uuid
+}
+
+"""
+order by min() on columns of table "roles_to_events"
+"""
+input roles_to_events_min_order_by {
+  event_id: order_by
+  role_id: order_by
+}
+
+"""
+response of any mutation on the table "roles_to_events"
+"""
+type roles_to_events_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [roles_to_events!]!
+}
+
+"""
+on conflict condition type for table "roles_to_events"
+"""
+input roles_to_events_on_conflict {
+  constraint: roles_to_events_constraint!
+  update_columns: [roles_to_events_update_column!]! = []
+  where: roles_to_events_bool_exp
+}
+
+"""Ordering options when selecting data from "roles_to_events"."""
+input roles_to_events_order_by {
+  event: events_order_by
+  event_id: order_by
+  role: roles_order_by
+  role_id: order_by
+}
+
+"""primary key columns input for table: roles_to_events"""
+input roles_to_events_pk_columns_input {
+  event_id: uuid!
+  role_id: uuid!
+}
+
+"""
+select columns of table "roles_to_events"
+"""
+enum roles_to_events_select_column {
+  """column name"""
+  event_id
+
+  """column name"""
+  role_id
+}
+
+"""
+input type for updating data in table "roles_to_events"
+"""
+input roles_to_events_set_input {
+  event_id: uuid
+  role_id: uuid
+}
+
+"""
+update columns of table "roles_to_events"
+"""
+enum roles_to_events_update_column {
+  """column name"""
+  event_id
+
+  """column name"""
+  role_id
+}
+
+"""
 update columns of table "roles"
 """
 enum roles_update_column {
@@ -3775,6 +4335,49 @@ type subscription_root {
 
   """fetch data from the table: "dms" using primary key columns"""
   dms_by_pk(id: uuid!): dms
+
+  """
+  fetch data from the table: "events"
+  """
+  events(
+    """distinct select on columns"""
+    distinct_on: [events_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [events_order_by!]
+
+    """filter the rows returned"""
+    where: events_bool_exp
+  ): [events!]!
+
+  """
+  fetch aggregated fields from the table: "events"
+  """
+  events_aggregate(
+    """distinct select on columns"""
+    distinct_on: [events_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [events_order_by!]
+
+    """filter the rows returned"""
+    where: events_bool_exp
+  ): events_aggregate!
+
+  """fetch data from the table: "events" using primary key columns"""
+  events_by_pk(id: uuid!): events
 
   """
   fetch data from the table: "group_metadata"
@@ -4150,6 +4753,49 @@ type subscription_root {
 
   """fetch data from the table: "roles" using primary key columns"""
   roles_by_pk(group_id: uuid!, name: String!): roles
+
+  """
+  fetch data from the table: "roles_to_events"
+  """
+  roles_to_events(
+    """distinct select on columns"""
+    distinct_on: [roles_to_events_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [roles_to_events_order_by!]
+
+    """filter the rows returned"""
+    where: roles_to_events_bool_exp
+  ): [roles_to_events!]!
+
+  """
+  fetch aggregated fields from the table: "roles_to_events"
+  """
+  roles_to_events_aggregate(
+    """distinct select on columns"""
+    distinct_on: [roles_to_events_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [roles_to_events_order_by!]
+
+    """filter the rows returned"""
+    where: roles_to_events_bool_exp
+  ): roles_to_events_aggregate!
+
+  """fetch data from the table: "roles_to_events" using primary key columns"""
+  roles_to_events_by_pk(event_id: uuid!, role_id: uuid!): roles_to_events
 
   """An array relationship"""
   threads(

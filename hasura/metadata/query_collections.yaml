@@ -45,6 +45,11 @@
         {  _and: {      group_id: {        _eq: $groupId      },      _not: {      users:
         {        user_id: {          _eq: $userId        }      }       }    }  })
         {    name,     id  }}'
+    - name: insert_event
+      query: 'mutation InsertEvent(  $iCalEvent: String!,  $eventId: uuid!,  $groupId:
+        uuid!,   $roles: [roles_to_events_insert_input!]!) {  insert_events_one(object:
+        {    ical_event: $iCalEvent,    group_id: $groupId,  id: $eventId   roles:
+        {      data: $roles    }  }) {    id  }}'
     - name: update_self_name
       query: 'mutation UpdateSelfName($id: uuid!, $name: String!) {  update_users_by_pk(    pk_columns:
         { id: $id }  _set: { name: $name }  ) {    name  }}'

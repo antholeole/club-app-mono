@@ -1,15 +1,21 @@
 import 'package:fe/data/models/group.dart';
+import 'package:fe/data/models/role.dart';
 import 'package:fe/pages/events/features/event_creator/cubit/event_creator_form_cubit.dart';
 import 'package:fe/pages/events/features/event_creator/widgets/form_fields/all_day_switch.dart';
 import 'package:fe/pages/events/features/event_creator/widgets/form_fields/event_date.dart';
 import 'package:fe/pages/events/features/event_creator/widgets/form_fields/event_description.dart';
 import 'package:fe/pages/events/features/event_creator/widgets/form_fields/event_name.dart';
 import 'package:fe/pages/events/features/event_creator/widgets/form_fields/event_repeats.dart';
+import 'package:fe/pages/events/features/event_creator/widgets/form_fields/event_roles.dart';
 import 'package:fe/pages/events/features/event_creator/widgets/form_fields/event_time.dart';
 import 'package:fe/pages/events/features/event_creator/widgets/form_fields/event_until_date.dart';
 import 'package:fe/pages/events/features/event_creator/widgets/form_fields/submit_event_button.dart';
+import 'package:fe/stdlib/shared_widgets/gql_operation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fe/gql/query_roles_in_group.var.gql.dart';
+import 'package:fe/gql/query_roles_in_group.data.gql.dart';
+import 'package:fe/gql/query_roles_in_group.req.gql.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -24,6 +30,8 @@ class EventCreator extends StatelessWidget {
       GlobalKey<FormFieldState<DateTime>>();
   final GlobalKey<FormFieldState<List<bool>>> _repeatsKey =
       GlobalKey<FormFieldState<List<bool>>>();
+  final GlobalKey<FormFieldState<List<Role>>> _rolesKey =
+      GlobalKey<FormFieldState<List<Role>>>();
 
   EventCreator({Key? key}) : super(key: key);
 
@@ -97,7 +105,19 @@ class EventCreator extends StatelessWidget {
           context: context,
           startDate: _startDateKey,
           repeats: _repeatsKey),
+      GqlOperation<GQueryRolesInGroupData, GQueryRolesInGroupVars>(
+        operationRequest: GQueryRolesInGroupReq(
+            (q) => q..vars.groupId = context.read<Club>().id),
+        onResponse: (data) => EventRoles(
+          context: context,
+          key: _rolesKey,
+          allRoles: data.roles
+              .map((roleData) => Role(id: roleData.id, name: roleData.name))
+              .toList(),
+        ),
+      ),
       SubmitEventButton(
+        rolesKey: _rolesKey,
         formKey: _formKey,
       )
     ];

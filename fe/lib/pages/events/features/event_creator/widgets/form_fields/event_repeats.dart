@@ -14,19 +14,13 @@ class EventRepeats extends FormField<List<bool>> {
       : super(
             key: key,
             onSaved: (events) {
-              final List<IRecurrenceRule> rules = [];
-              for (int i = 0; i < DAYS_TEXT.length; i++) {
-                if (events![i]) {
-                  rules.add(IRecurrenceRule(
-                      untilDate: until.currentState!.value,
-                      weekday: i,
-                      frequency: IRecurrenceFrequency.WEEKLY));
-                }
-              }
-
               final cubit = context.read<EventCreatorFormCubit>();
 
-              cubit.update(cubit.state.copyWith(recurrenceRule: rules));
+              cubit.update(cubit.state.copyWith(
+                  reoccurOn: events!,
+                  recurrenceRule: IRecurrenceRule(
+                      frequency: IRecurrenceFrequency.WEEKLY,
+                      untilDate: until.currentState!.value)));
             },
             initialValue: EventRepeats.DAYS_TEXT.map((e) => false).toList(),
             builder: (state) => Column(

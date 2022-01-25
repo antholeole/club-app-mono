@@ -1,0 +1,1 @@
+CREATE TABLE "public"."roles_to_events" ("role_id" uuid NOT NULL, "event_id" uuid NOT NULL, PRIMARY KEY ("event_id","role_id") , FOREIGN KEY ("event_id") REFERENCES "public"."events"("id") ON UPDATE cascade ON DELETE cascade, FOREIGN KEY ("role_id") REFERENCES "public"."roles"("id") ON UPDATE cascade ON DELETE cascade);

@@ -1,0 +1,17 @@
+mutation InsertEvent(
+  $iCalEvent: String!,
+  $eventId: uuid!,
+  $groupId: uuid!, 
+  $roles: [roles_to_events_insert_input!]!
+) {
+  insert_events_one(object: {
+    ical_event: $iCalEvent,
+    group_id: $groupId,
+  	id: $eventId
+   	roles: {
+      data: $roles
+    }
+  }) {
+    id
+  }
+}

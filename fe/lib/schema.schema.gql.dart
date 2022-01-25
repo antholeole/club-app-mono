@@ -238,6 +238,203 @@ class Gdms_update_column extends EnumClass {
       _$gdmsUpdateColumnValueOf(name);
 }
 
+abstract class Gevents_bool_exp
+    implements Built<Gevents_bool_exp, Gevents_bool_expBuilder> {
+  Gevents_bool_exp._();
+
+  factory Gevents_bool_exp([Function(Gevents_bool_expBuilder b) updates]) =
+      _$Gevents_bool_exp;
+
+  @BuiltValueField(wireName: '_and')
+  BuiltList<Gevents_bool_exp>? get G_and;
+  @BuiltValueField(wireName: '_not')
+  Gevents_bool_exp? get G_not;
+  @BuiltValueField(wireName: '_or')
+  BuiltList<Gevents_bool_exp>? get G_or;
+  Ggroups_bool_exp? get group;
+  Guuid_comparison_exp? get group_id;
+  GString_comparison_exp? get ical_event;
+  Guuid_comparison_exp? get id;
+  Groles_to_events_bool_exp? get roles;
+  static Serializer<Gevents_bool_exp> get serializer =>
+      _$geventsBoolExpSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gevents_bool_exp.serializer, this)
+          as Map<String, dynamic>);
+  static Gevents_bool_exp? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(Gevents_bool_exp.serializer, json);
+}
+
+class Gevents_constraint extends EnumClass {
+  const Gevents_constraint._(String name) : super(name);
+
+  static const Gevents_constraint events_pkey = _$geventsConstraintevents_pkey;
+
+  static Serializer<Gevents_constraint> get serializer =>
+      _$geventsConstraintSerializer;
+  static BuiltSet<Gevents_constraint> get values => _$geventsConstraintValues;
+  static Gevents_constraint valueOf(String name) =>
+      _$geventsConstraintValueOf(name);
+}
+
+abstract class Gevents_insert_input
+    implements Built<Gevents_insert_input, Gevents_insert_inputBuilder> {
+  Gevents_insert_input._();
+
+  factory Gevents_insert_input(
+          [Function(Gevents_insert_inputBuilder b) updates]) =
+      _$Gevents_insert_input;
+
+  Ggroups_obj_rel_insert_input? get group;
+  _i2.UuidType? get group_id;
+  String? get ical_event;
+  _i2.UuidType? get id;
+  Groles_to_events_arr_rel_insert_input? get roles;
+  static Serializer<Gevents_insert_input> get serializer =>
+      _$geventsInsertInputSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gevents_insert_input.serializer, this)
+          as Map<String, dynamic>);
+  static Gevents_insert_input? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(Gevents_insert_input.serializer, json);
+}
+
+abstract class Gevents_obj_rel_insert_input
+    implements
+        Built<Gevents_obj_rel_insert_input,
+            Gevents_obj_rel_insert_inputBuilder> {
+  Gevents_obj_rel_insert_input._();
+
+  factory Gevents_obj_rel_insert_input(
+          [Function(Gevents_obj_rel_insert_inputBuilder b) updates]) =
+      _$Gevents_obj_rel_insert_input;
+
+  Gevents_insert_input get data;
+  Gevents_on_conflict? get on_conflict;
+  static Serializer<Gevents_obj_rel_insert_input> get serializer =>
+      _$geventsObjRelInsertInputSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
+      Gevents_obj_rel_insert_input.serializer, this) as Map<String, dynamic>);
+  static Gevents_obj_rel_insert_input? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gevents_obj_rel_insert_input.serializer, json);
+}
+
+abstract class Gevents_on_conflict
+    implements Built<Gevents_on_conflict, Gevents_on_conflictBuilder> {
+  Gevents_on_conflict._();
+
+  factory Gevents_on_conflict(
+      [Function(Gevents_on_conflictBuilder b) updates]) = _$Gevents_on_conflict;
+
+  Gevents_constraint get constraint;
+  BuiltList<Gevents_update_column> get update_columns;
+  Gevents_bool_exp? get where;
+  static Serializer<Gevents_on_conflict> get serializer =>
+      _$geventsOnConflictSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gevents_on_conflict.serializer, this)
+          as Map<String, dynamic>);
+  static Gevents_on_conflict? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(Gevents_on_conflict.serializer, json);
+}
+
+abstract class Gevents_order_by
+    implements Built<Gevents_order_by, Gevents_order_byBuilder> {
+  Gevents_order_by._();
+
+  factory Gevents_order_by([Function(Gevents_order_byBuilder b) updates]) =
+      _$Gevents_order_by;
+
+  Ggroups_order_by? get group;
+  Gorder_by? get group_id;
+  Gorder_by? get ical_event;
+  Gorder_by? get id;
+  Groles_to_events_aggregate_order_by? get roles_aggregate;
+  static Serializer<Gevents_order_by> get serializer =>
+      _$geventsOrderBySerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gevents_order_by.serializer, this)
+          as Map<String, dynamic>);
+  static Gevents_order_by? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(Gevents_order_by.serializer, json);
+}
+
+abstract class Gevents_pk_columns_input
+    implements
+        Built<Gevents_pk_columns_input, Gevents_pk_columns_inputBuilder> {
+  Gevents_pk_columns_input._();
+
+  factory Gevents_pk_columns_input(
+          [Function(Gevents_pk_columns_inputBuilder b) updates]) =
+      _$Gevents_pk_columns_input;
+
+  _i2.UuidType get id;
+  static Serializer<Gevents_pk_columns_input> get serializer =>
+      _$geventsPkColumnsInputSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gevents_pk_columns_input.serializer, this)
+          as Map<String, dynamic>);
+  static Gevents_pk_columns_input? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Gevents_pk_columns_input.serializer, json);
+}
+
+class Gevents_select_column extends EnumClass {
+  const Gevents_select_column._(String name) : super(name);
+
+  static const Gevents_select_column group_id = _$geventsSelectColumngroup_id;
+
+  static const Gevents_select_column ical_event =
+      _$geventsSelectColumnical_event;
+
+  static const Gevents_select_column id = _$geventsSelectColumnid;
+
+  static Serializer<Gevents_select_column> get serializer =>
+      _$geventsSelectColumnSerializer;
+  static BuiltSet<Gevents_select_column> get values =>
+      _$geventsSelectColumnValues;
+  static Gevents_select_column valueOf(String name) =>
+      _$geventsSelectColumnValueOf(name);
+}
+
+abstract class Gevents_set_input
+    implements Built<Gevents_set_input, Gevents_set_inputBuilder> {
+  Gevents_set_input._();
+
+  factory Gevents_set_input([Function(Gevents_set_inputBuilder b) updates]) =
+      _$Gevents_set_input;
+
+  _i2.UuidType? get group_id;
+  String? get ical_event;
+  _i2.UuidType? get id;
+  static Serializer<Gevents_set_input> get serializer =>
+      _$geventsSetInputSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Gevents_set_input.serializer, this)
+          as Map<String, dynamic>);
+  static Gevents_set_input? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(Gevents_set_input.serializer, json);
+}
+
+class Gevents_update_column extends EnumClass {
+  const Gevents_update_column._(String name) : super(name);
+
+  static const Gevents_update_column group_id = _$geventsUpdateColumngroup_id;
+
+  static const Gevents_update_column ical_event =
+      _$geventsUpdateColumnical_event;
+
+  static const Gevents_update_column id = _$geventsUpdateColumnid;
+
+  static Serializer<Gevents_update_column> get serializer =>
+      _$geventsUpdateColumnSerializer;
+  static BuiltSet<Gevents_update_column> get values =>
+      _$geventsUpdateColumnValues;
+  static Gevents_update_column valueOf(String name) =>
+      _$geventsUpdateColumnValueOf(name);
+}
+
 abstract class Ggroup_metadata_bool_exp
     implements
         Built<Ggroup_metadata_bool_exp, Ggroup_metadata_bool_expBuilder> {
@@ -2604,6 +2801,283 @@ abstract class Groles_set_input
           as Map<String, dynamic>);
   static Groles_set_input? fromJson(Map<String, dynamic> json) =>
       _i1.serializers.deserializeWith(Groles_set_input.serializer, json);
+}
+
+abstract class Groles_to_events_aggregate_order_by
+    implements
+        Built<Groles_to_events_aggregate_order_by,
+            Groles_to_events_aggregate_order_byBuilder> {
+  Groles_to_events_aggregate_order_by._();
+
+  factory Groles_to_events_aggregate_order_by(
+          [Function(Groles_to_events_aggregate_order_byBuilder b) updates]) =
+      _$Groles_to_events_aggregate_order_by;
+
+  Gorder_by? get count;
+  Groles_to_events_max_order_by? get max;
+  Groles_to_events_min_order_by? get min;
+  static Serializer<Groles_to_events_aggregate_order_by> get serializer =>
+      _$grolesToEventsAggregateOrderBySerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers
+          .serializeWith(Groles_to_events_aggregate_order_by.serializer, this)
+      as Map<String, dynamic>);
+  static Groles_to_events_aggregate_order_by? fromJson(
+          Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(
+          Groles_to_events_aggregate_order_by.serializer, json);
+}
+
+abstract class Groles_to_events_arr_rel_insert_input
+    implements
+        Built<Groles_to_events_arr_rel_insert_input,
+            Groles_to_events_arr_rel_insert_inputBuilder> {
+  Groles_to_events_arr_rel_insert_input._();
+
+  factory Groles_to_events_arr_rel_insert_input(
+          [Function(Groles_to_events_arr_rel_insert_inputBuilder b) updates]) =
+      _$Groles_to_events_arr_rel_insert_input;
+
+  BuiltList<Groles_to_events_insert_input> get data;
+  Groles_to_events_on_conflict? get on_conflict;
+  static Serializer<Groles_to_events_arr_rel_insert_input> get serializer =>
+      _$grolesToEventsArrRelInsertInputSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers
+          .serializeWith(Groles_to_events_arr_rel_insert_input.serializer, this)
+      as Map<String, dynamic>);
+  static Groles_to_events_arr_rel_insert_input? fromJson(
+          Map<String, dynamic> json) =>
+      _i1.serializers.deserializeWith(
+          Groles_to_events_arr_rel_insert_input.serializer, json);
+}
+
+abstract class Groles_to_events_bool_exp
+    implements
+        Built<Groles_to_events_bool_exp, Groles_to_events_bool_expBuilder> {
+  Groles_to_events_bool_exp._();
+
+  factory Groles_to_events_bool_exp(
+          [Function(Groles_to_events_bool_expBuilder b) updates]) =
+      _$Groles_to_events_bool_exp;
+
+  @BuiltValueField(wireName: '_and')
+  BuiltList<Groles_to_events_bool_exp>? get G_and;
+  @BuiltValueField(wireName: '_not')
+  Groles_to_events_bool_exp? get G_not;
+  @BuiltValueField(wireName: '_or')
+  BuiltList<Groles_to_events_bool_exp>? get G_or;
+  Gevents_bool_exp? get event;
+  Guuid_comparison_exp? get event_id;
+  Groles_bool_exp? get role;
+  Guuid_comparison_exp? get role_id;
+  static Serializer<Groles_to_events_bool_exp> get serializer =>
+      _$grolesToEventsBoolExpSerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Groles_to_events_bool_exp.serializer, this)
+          as Map<String, dynamic>);
+  static Groles_to_events_bool_exp? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Groles_to_events_bool_exp.serializer, json);
+}
+
+class Groles_to_events_constraint extends EnumClass {
+  const Groles_to_events_constraint._(String name) : super(name);
+
+  static const Groles_to_events_constraint roles_to_events_pkey =
+      _$grolesToEventsConstraintroles_to_events_pkey;
+
+  static Serializer<Groles_to_events_constraint> get serializer =>
+      _$grolesToEventsConstraintSerializer;
+  static BuiltSet<Groles_to_events_constraint> get values =>
+      _$grolesToEventsConstraintValues;
+  static Groles_to_events_constraint valueOf(String name) =>
+      _$grolesToEventsConstraintValueOf(name);
+}
+
+abstract class Groles_to_events_insert_input
+    implements
+        Built<Groles_to_events_insert_input,
+            Groles_to_events_insert_inputBuilder> {
+  Groles_to_events_insert_input._();
+
+  factory Groles_to_events_insert_input(
+          [Function(Groles_to_events_insert_inputBuilder b) updates]) =
+      _$Groles_to_events_insert_input;
+
+  Gevents_obj_rel_insert_input? get event;
+  _i2.UuidType? get event_id;
+  Groles_obj_rel_insert_input? get role;
+  _i2.UuidType? get role_id;
+  static Serializer<Groles_to_events_insert_input> get serializer =>
+      _$grolesToEventsInsertInputSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
+      Groles_to_events_insert_input.serializer, this) as Map<String, dynamic>);
+  static Groles_to_events_insert_input? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Groles_to_events_insert_input.serializer, json);
+}
+
+abstract class Groles_to_events_max_order_by
+    implements
+        Built<Groles_to_events_max_order_by,
+            Groles_to_events_max_order_byBuilder> {
+  Groles_to_events_max_order_by._();
+
+  factory Groles_to_events_max_order_by(
+          [Function(Groles_to_events_max_order_byBuilder b) updates]) =
+      _$Groles_to_events_max_order_by;
+
+  Gorder_by? get event_id;
+  Gorder_by? get role_id;
+  static Serializer<Groles_to_events_max_order_by> get serializer =>
+      _$grolesToEventsMaxOrderBySerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
+      Groles_to_events_max_order_by.serializer, this) as Map<String, dynamic>);
+  static Groles_to_events_max_order_by? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Groles_to_events_max_order_by.serializer, json);
+}
+
+abstract class Groles_to_events_min_order_by
+    implements
+        Built<Groles_to_events_min_order_by,
+            Groles_to_events_min_order_byBuilder> {
+  Groles_to_events_min_order_by._();
+
+  factory Groles_to_events_min_order_by(
+          [Function(Groles_to_events_min_order_byBuilder b) updates]) =
+      _$Groles_to_events_min_order_by;
+
+  Gorder_by? get event_id;
+  Gorder_by? get role_id;
+  static Serializer<Groles_to_events_min_order_by> get serializer =>
+      _$grolesToEventsMinOrderBySerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
+      Groles_to_events_min_order_by.serializer, this) as Map<String, dynamic>);
+  static Groles_to_events_min_order_by? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Groles_to_events_min_order_by.serializer, json);
+}
+
+abstract class Groles_to_events_on_conflict
+    implements
+        Built<Groles_to_events_on_conflict,
+            Groles_to_events_on_conflictBuilder> {
+  Groles_to_events_on_conflict._();
+
+  factory Groles_to_events_on_conflict(
+          [Function(Groles_to_events_on_conflictBuilder b) updates]) =
+      _$Groles_to_events_on_conflict;
+
+  Groles_to_events_constraint get constraint;
+  BuiltList<Groles_to_events_update_column> get update_columns;
+  Groles_to_events_bool_exp? get where;
+  static Serializer<Groles_to_events_on_conflict> get serializer =>
+      _$grolesToEventsOnConflictSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
+      Groles_to_events_on_conflict.serializer, this) as Map<String, dynamic>);
+  static Groles_to_events_on_conflict? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Groles_to_events_on_conflict.serializer, json);
+}
+
+abstract class Groles_to_events_order_by
+    implements
+        Built<Groles_to_events_order_by, Groles_to_events_order_byBuilder> {
+  Groles_to_events_order_by._();
+
+  factory Groles_to_events_order_by(
+          [Function(Groles_to_events_order_byBuilder b) updates]) =
+      _$Groles_to_events_order_by;
+
+  Gevents_order_by? get event;
+  Gorder_by? get event_id;
+  Groles_order_by? get role;
+  Gorder_by? get role_id;
+  static Serializer<Groles_to_events_order_by> get serializer =>
+      _$grolesToEventsOrderBySerializer;
+  Map<String, dynamic> toJson() =>
+      (_i1.serializers.serializeWith(Groles_to_events_order_by.serializer, this)
+          as Map<String, dynamic>);
+  static Groles_to_events_order_by? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Groles_to_events_order_by.serializer, json);
+}
+
+abstract class Groles_to_events_pk_columns_input
+    implements
+        Built<Groles_to_events_pk_columns_input,
+            Groles_to_events_pk_columns_inputBuilder> {
+  Groles_to_events_pk_columns_input._();
+
+  factory Groles_to_events_pk_columns_input(
+          [Function(Groles_to_events_pk_columns_inputBuilder b) updates]) =
+      _$Groles_to_events_pk_columns_input;
+
+  _i2.UuidType get event_id;
+  _i2.UuidType get role_id;
+  static Serializer<Groles_to_events_pk_columns_input> get serializer =>
+      _$grolesToEventsPkColumnsInputSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers
+          .serializeWith(Groles_to_events_pk_columns_input.serializer, this)
+      as Map<String, dynamic>);
+  static Groles_to_events_pk_columns_input? fromJson(
+          Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Groles_to_events_pk_columns_input.serializer, json);
+}
+
+class Groles_to_events_select_column extends EnumClass {
+  const Groles_to_events_select_column._(String name) : super(name);
+
+  static const Groles_to_events_select_column event_id =
+      _$grolesToEventsSelectColumnevent_id;
+
+  static const Groles_to_events_select_column role_id =
+      _$grolesToEventsSelectColumnrole_id;
+
+  static Serializer<Groles_to_events_select_column> get serializer =>
+      _$grolesToEventsSelectColumnSerializer;
+  static BuiltSet<Groles_to_events_select_column> get values =>
+      _$grolesToEventsSelectColumnValues;
+  static Groles_to_events_select_column valueOf(String name) =>
+      _$grolesToEventsSelectColumnValueOf(name);
+}
+
+abstract class Groles_to_events_set_input
+    implements
+        Built<Groles_to_events_set_input, Groles_to_events_set_inputBuilder> {
+  Groles_to_events_set_input._();
+
+  factory Groles_to_events_set_input(
+          [Function(Groles_to_events_set_inputBuilder b) updates]) =
+      _$Groles_to_events_set_input;
+
+  _i2.UuidType? get event_id;
+  _i2.UuidType? get role_id;
+  static Serializer<Groles_to_events_set_input> get serializer =>
+      _$grolesToEventsSetInputSerializer;
+  Map<String, dynamic> toJson() => (_i1.serializers.serializeWith(
+      Groles_to_events_set_input.serializer, this) as Map<String, dynamic>);
+  static Groles_to_events_set_input? fromJson(Map<String, dynamic> json) =>
+      _i1.serializers
+          .deserializeWith(Groles_to_events_set_input.serializer, json);
+}
+
+class Groles_to_events_update_column extends EnumClass {
+  const Groles_to_events_update_column._(String name) : super(name);
+
+  static const Groles_to_events_update_column event_id =
+      _$grolesToEventsUpdateColumnevent_id;
+
+  static const Groles_to_events_update_column role_id =
+      _$grolesToEventsUpdateColumnrole_id;
+
+  static Serializer<Groles_to_events_update_column> get serializer =>
+      _$grolesToEventsUpdateColumnSerializer;
+  static BuiltSet<Groles_to_events_update_column> get values =>
+      _$grolesToEventsUpdateColumnValues;
+  static Groles_to_events_update_column valueOf(String name) =>
+      _$grolesToEventsUpdateColumnValueOf(name);
 }
 
 class Groles_update_column extends EnumClass {

@@ -1,4 +1,5 @@
 - "!include public_dms.yaml"
+- "!include public_events.yaml"
 - "!include public_group_metadata.yaml"
 - "!include public_groups.yaml"
 - "!include public_join_tokens.yaml"
@@ -8,6 +9,7 @@
 - "!include public_messages.yaml"
 - "!include public_role_to_threads.yaml"
 - "!include public_roles.yaml"
+- "!include public_roles_to_events.yaml"
 - "!include public_threads.yaml"
 - "!include public_user_to_dm.yaml"
 - "!include public_user_to_group.yaml"

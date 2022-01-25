@@ -1,0 +1,55 @@
+table:
+  name: roles_to_events
+  schema: public
+object_relationships:
+- name: event
+  using:
+    foreign_key_constraint_on: event_id
+- name: role
+  using:
+    foreign_key_constraint_on: role_id
+insert_permissions:
+- permission:
+    backend_only: false
+    check:
+      _and:
+      - role:
+          group:
+            group_metadatum:
+              owner_id:
+                _eq: X-Hasura-User-Id
+      - event:
+          group:
+            group_metadatum:
+              owner_id:
+                _eq: X-Hasura-User-Id
+    columns:
+    - event_id
+    - role_id
+  role: user
+select_permissions:
+- permission:
+    columns:
+    - event_id
+    - role_id
+    filter:
+      role:
+        user_to_roles:
+          user_id:
+            _eq: X-Hasura-User-Id
+  role: user
+delete_permissions:
+- permission:
+    filter:
+      _and:
+      - role:
+          group:
+            group_metadatum:
+              owner_id:
+                _eq: X-Hasura-User-Id
+      - event:
+          group:
+            group_metadatum:
+              owner_id:
+                _eq: X-Hasura-User-Id
+  role: user

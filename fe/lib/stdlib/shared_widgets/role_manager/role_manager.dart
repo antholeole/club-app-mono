@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fe/data/models/role.dart';
 import 'package:fe/stdlib/shared_widgets/role_manager/addable_roles_dropdown.dart';
 import 'package:fe/services/toaster/cubit/data_carriers/toast.dart';
@@ -13,24 +15,24 @@ import '../../../service_locator.dart';
 class RoleManagerData {
   final List<Role> initalAddableRoles;
 
-  final String Function(List<Role>) successfullyAddedRolesText;
-  final String Function() failedToAddRolesText;
-  final Future<void> Function(List<Role>) addRoles;
+  final String Function(List<Role>)? successfullyAddedRolesText;
+  final String Function()? failedToAddRolesText;
+  final FutureOr<void> Function(List<Role>) addRoles;
 
-  final String Function(Role) removeRolePromptText;
-  final Future<void> Function(Role) removeRole;
-  final String Function(Role) successfullyRemovedRoleText;
-  final String Function(Role) failedToRemoveRoleText;
+  final String Function(Role)? removeRolePromptText;
+  final FutureOr<void> Function(Role) removeRole;
+  final String Function(Role)? successfullyRemovedRoleText;
+  final String Function(Role)? failedToRemoveRoleText;
 
   const RoleManagerData(
       {required this.initalAddableRoles,
-      required this.removeRolePromptText,
-      required this.successfullyRemovedRoleText,
+      this.removeRolePromptText,
+      this.successfullyRemovedRoleText,
+      this.failedToRemoveRoleText,
       required this.removeRole,
-      required this.failedToRemoveRoleText,
-      required this.failedToAddRolesText,
+      this.failedToAddRolesText,
       required this.addRoles,
-      required this.successfullyAddedRolesText});
+      this.successfullyAddedRolesText});
 }
 
 /// make initalAddableRoles null if not addable.
@@ -41,14 +43,18 @@ class RoleManager extends StatefulWidget {
   final List<Role> _hasRoles;
   final RoleManagerData? _roleManagerData;
 
+  final bool _initallyOpen;
+
   const RoleManager(
       {Key? key,
       required List<Role> initalRoles,
       required Widget header,
+      bool initallyOpen = false,
       RoleManagerData? roleManagerData})
       : _hasRoles = initalRoles,
         _header = header,
         _roleManagerData = roleManagerData,
+        _initallyOpen = initallyOpen,
         super(key: key);
 
   @override
@@ -80,6 +86,7 @@ class _RoleManagerState extends State<RoleManager> {
         child: Padding(
             padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
             child: ExpansionTile(
+              initiallyExpanded: widget._initallyOpen,
               title: Row(
                 children: [
                   Expanded(
@@ -92,10 +99,19 @@ class _RoleManagerState extends State<RoleManager> {
                     )
                 ],
               ),
-              children: _displayingHasRoles
-                  .map((role) =>
-                      _buildRoleTile(role, _displayingHasRoles, context))
-                  .toList(),
+              children: _displayingHasRoles.isEmpty
+                  ? [
+                      ListTile(
+                        title: Text(
+                          'No roles added!',
+                          style: Theme.of(context).textTheme.bodyText2,
+                        ),
+                      )
+                    ]
+                  : _displayingHasRoles
+                      .map((role) =>
+                          _buildRoleTile(role, _displayingHasRoles, context))
+                      .toList(),
             )));
   }
 
@@ -109,13 +125,25 @@ class _RoleManagerState extends State<RoleManager> {
     );
 
     if (widget._roleManagerData != null) {
-      return ToastingDismissable(
+      if (widget._roleManagerData!.removeRolePromptText != null) {
+        return ToastingDismissable(
+            key: Key(role.id.uuid),
+            confirmDismissText:
+                widget._roleManagerData!.removeRolePromptText!(role),
+            onConfirm: () => _removeRole(role, context),
+            actionText: RoleManager.CONFIRM_REMOVE_TEXT,
+            child: tile);
+      } else {
+        return Dismissible(
+          background: Container(
+            color: Colors.red,
+            child: const Icon(Icons.remove, color: Colors.white),
+          ),
+          onDismissed: (_) => _removeRole(role, context),
           key: Key(role.id.uuid),
-          confirmDismissText:
-              widget._roleManagerData!.removeRolePromptText(role),
-          onConfirm: () => _removeRole(role, context),
-          actionText: RoleManager.CONFIRM_REMOVE_TEXT,
-          child: tile);
+          child: tile,
+        );
+      }
     }
 
     return tile;
@@ -129,9 +157,12 @@ class _RoleManagerState extends State<RoleManager> {
     try {
       await widget._roleManagerData!.addRoles(roles);
 
-      context.read<ToasterCubit>().add(Toast(
-          message: widget._roleManagerData!.successfullyAddedRolesText(roles),
-          type: ToastType.Success));
+      if (widget._roleManagerData!.successfullyAddedRolesText != null) {
+        context.read<ToasterCubit>().add(Toast(
+            message:
+                widget._roleManagerData!.successfullyAddedRolesText!(roles),
+            type: ToastType.Success));
+      }
 
       //diff the two lists
       final List<Role> newAddableRoles = [];
@@ -146,8 +177,10 @@ class _RoleManagerState extends State<RoleManager> {
         _displayingAddableRoles = newAddableRoles;
       });
     } on Failure catch (f) {
-      _handler.handleFailure(f, context,
-          withPrefix: widget._roleManagerData!.failedToAddRolesText());
+      if (widget._roleManagerData!.failedToAddRolesText != null) {
+        _handler.handleFailure(f, context,
+            withPrefix: widget._roleManagerData!.failedToAddRolesText!());
+      }
     }
   }
 
@@ -155,9 +188,12 @@ class _RoleManagerState extends State<RoleManager> {
     try {
       await widget._roleManagerData!.removeRole(role);
 
-      context.read<ToasterCubit>().add(Toast(
-          message: widget._roleManagerData!.successfullyRemovedRoleText(role),
-          type: ToastType.Success));
+      if (widget._roleManagerData!.successfullyRemovedRoleText != null) {
+        context.read<ToasterCubit>().add(Toast(
+            message:
+                widget._roleManagerData!.successfullyRemovedRoleText!(role),
+            type: ToastType.Success));
+      }
 
       setState(() {
         _displayingHasRoles = List.from(_displayingHasRoles..remove(role));
@@ -165,8 +201,10 @@ class _RoleManagerState extends State<RoleManager> {
             List.from([..._displayingAddableRoles!, role]);
       });
     } on Failure catch (f) {
-      _handler.handleFailure(f, context,
-          withPrefix: widget._roleManagerData!.failedToRemoveRoleText(role));
+      if (widget._roleManagerData!.failedToRemoveRoleText != null) {
+        _handler.handleFailure(f, context,
+            withPrefix: widget._roleManagerData!.failedToRemoveRoleText!(role));
+      }
     }
   }
 }
