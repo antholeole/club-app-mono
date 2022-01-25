@@ -31,7 +31,11 @@ class DmTab extends StatelessWidget {
                   trailing: Container(
                     width: 12,
                     height: 12,
+<<<<<<< HEAD
                     decoration: notifs == null || notifs.isEmpty
+=======
+                    decoration: notifs != null && notifs.isNotEmpty
+>>>>>>> 6c94e04144309fde918931db4ea26ebccb63ee1a
                         ? null
                         : const BoxDecoration(
                             color: Colors.red, shape: BoxShape.circle),
